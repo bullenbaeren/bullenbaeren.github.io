@@ -268,7 +268,7 @@ body.stream .welcome{display:none}
       <div class="lrow"><b>Wetter</b><span>Zeigt, wie stark der Kurs in den letzten 2 Minuten schwankt: Sonne, Wolken, Regen, Gewitter. Im Weltall: Sternenstaub, Meteorschauer, Sonnensturm.</span></div>
       <div class="lrow"><b class="y">Zeitlupe</b><span>Bei einem Trade oder einer Liquidation ab 1 Mio. $ hält die Zeit kurz an und die Kamera fährt heran.</span></div>
       <div class="lrow"><b>Krabben</b><span>Bewegt sich der Kurs 8 Minuten lang kaum, übernehmen die Krabben: Krabbenmarkt, es geht seitwärts.</span></div>
-      <div class="lrow"><b class="y">Feiertage</b><span>Am Pizza Day (22.5.), Bitcoins Geburtstag (3.1.), Halloween, in der Weihnachtszeit und an Silvester ist das Schlachtfeld geschmückt.</span></div>
+      <div class="lrow"><b class="y">Feiertage</b><span>Am Pizza Day (22.5.), Bitcoins Geburtstag (3.1.), Halloween (Skelette steigen aus den Gräbern), in der Weihnachtszeit und an Silvester ist das Schlachtfeld geschmückt.</span></div>
       <div class="lrow"><b>24-Std.-Linien</b><span>Gestrichelte Linien markieren Hoch und Tief der letzten 24 Stunden.</span></div>
       <div class="lrow"><b class="y">Portal</b><span>Neue Größenordnung, vom Mikrokosmos bis ins Universum. Bewacht von einem Riesen.</span></div>
     </div>
@@ -941,6 +941,12 @@ let fest = festToday(), festShown = "", festCheck = 60, festFx = [], festIn = 1,
 function festStep(dt){
   if ((festCheck -= dt) <= 0){ festCheck = 30; fest = festToday(); }
   for (const f of festFx){ f.x += f.vx*dt; f.y += f.vy*dt; f.r += (f.vr || 0)*dt; f.life -= dt; if (f.k === "rocket" && f.y < f.top){ f.life = 0; burst(f.x, f.y, f.c, reduce ? 12 : 30, 170); } }
+  for (const f of festFx) if (f.k === "skel"){
+    const age = t - f.t0;
+    f.vx = age > 2.2 ? f.dir*60*KS : 0; f.vy = 0;
+    if (!f.boo && age > .9){ f.boo = true; if (Math.random() < .5) pop(pick(["Buh!", "Klapper!", "Huhu!"]), f.x, f.y - 52*KS, "#f3efe2", 14); }
+    if (f.x < -70 || f.x > W + 70) f.life = 0;
+  }
   festFx = festFx.filter(f => f.life > 0 && f.y < H + 40);
   if (!fest || mode === "zeit" || mode === "connecting") return;
   // Einmaliger Auftritt pro Fest
@@ -973,8 +979,49 @@ function festStep(dt){
     festFx.push({k:"rocket", x: rnd(W*.1, W*.9), y: groundY, vx: rnd(-20, 20), vy: -rnd(260, 380), r: 0, life: 4, top: rnd(H*.1, groundY*.45), c: pick([["#ffc94d","#ffffff"],["#34d982","#b8ffd9"],["#ff5c73","#ffd0d8"],["#7ab8ff","#ffffff"]])});
   }
 }
+// Halloween: Skelett-Bulle bzw. -Bär steigt aus dem Grab, tanzt kurz und klappert davon
+function bone(x1, y1, x2, y2){
+  ctx.lineCap = "round";
+  ctx.strokeStyle = C.ink; ctx.lineWidth = 4.4; ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+  ctx.strokeStyle = "#f3efe2"; ctx.lineWidth = 2.4; ctx.stroke();
+}
+function drawSkel(f){
+  const age = t - f.t0, rise = clamp(age/.8, 0, 1), walk = age > 2.2, ph = age*(walk ? 12 : 9);
+  const k = KS*1.15, bob = walk ? -Math.abs(Math.sin(ph))*1.5 : (age > .8 ? Math.sin(ph*1.4)*1.6 : 0);
+  const B = "#f3efe2", O = C.ink;
+  ctx.save(); ctx.translate(f.x, f.y);
+  ctx.beginPath(); ctx.rect(-50*k, -90*k, 100*k, 90*k + 2); ctx.clip();   // unterhalb des Bodens unsichtbar
+  ctx.translate(0, (1 - rise)*46*k + bob*k); ctx.scale(k*f.dir, k);
+  // Beine
+  const lg = walk ? Math.sin(ph)*3 : (age > .8 ? Math.sin(ph*2)*1.5 : 0);
+  [-9,-3,4,10].forEach((x,i) => { const dx = x + (i%2 ? -lg : lg); bone(x, -13, dx, -1.5); });
+  // Wirbelsäule, Becken, Rippen, Schwanz
+  bone(-12, -15, 7, -17);
+  ctx.lineCap = "round";
+  for (let i=0;i<4;i++){ const x = -8 + i*4; ctx.beginPath(); ctx.moveTo(x, -16.5); ctx.quadraticCurveTo(x + 3, -13, x + 1, -9); ctx.strokeStyle = O; ctx.lineWidth = 3.6; ctx.stroke(); ctx.strokeStyle = B; ctx.lineWidth = 1.8; ctx.stroke(); }
+  if (f.side === "bull") bone(-12, -15, -17, -9 + Math.sin(ph)*2);
+  // Schädel
+  const jaw = age > .8 && !walk ? Math.abs(Math.sin(ph*2.2))*2.2 : Math.abs(Math.sin(ph))*.8;
+  if (f.side === "bull"){
+    for (const [bx, cx, tx] of [[8, 2, 3], [18, 25, 24]]){ ctx.beginPath(); ctx.moveTo(bx, -27); ctx.quadraticCurveTo(cx, -28, tx, -34); ctx.strokeStyle = O; ctx.lineWidth = 5; ctx.stroke(); ctx.strokeStyle = B; ctx.lineWidth = 2.8; ctx.stroke(); }
+  } else {
+    for (const ex of [7, 18]){ ctx.beginPath(); ctx.arc(ex, -30, 3, 0, TAU); ctx.fillStyle = B; ctx.fill(); ctx.strokeStyle = O; ctx.lineWidth = 1.5; ctx.stroke(); }
+  }
+  ctx.beginPath(); ctx.arc(13, -22, 8.2, 0, TAU); ctx.fillStyle = B; ctx.fill(); ctx.strokeStyle = O; ctx.lineWidth = 1.8; ctx.stroke();
+  // Unterkiefer mit Zähnen
+  ctx.beginPath(); ctx.ellipse(18.5, -15 + jaw, 4.6, 2.4, 0, 0, TAU); ctx.fillStyle = B; ctx.fill(); ctx.lineWidth = 1.4; ctx.stroke();
+  ctx.beginPath(); ctx.ellipse(18.5, -18, 5.2, 3.2, 0, 0, TAU); ctx.fill(); ctx.stroke();
+  ctx.lineWidth = .9; ctx.beginPath(); for (const tx of [16, 18.5, 21]){ ctx.moveTo(tx, -16); ctx.lineTo(tx, -14.6 + jaw*.4); } ctx.stroke();
+  // Augenhöhlen mit glühenden Pupillen, Nasenloch
+  ctx.fillStyle = O; ctx.beginPath(); ctx.arc(10.5, -23.5, 2.4, 0, TAU); ctx.arc(16, -24, 2.4, 0, TAU); ctx.fill();
+  ctx.fillStyle = "#ff8a1f"; ctx.beginPath(); ctx.arc(11, -23.5, .9, 0, TAU); ctx.arc(16.5, -24, .9, 0, TAU); ctx.fill();
+  ctx.fillStyle = O; ctx.beginPath(); ctx.moveTo(20.5, -20.5); ctx.lineTo(22, -18.6); ctx.lineTo(19.2, -18.6); ctx.closePath(); ctx.fill();
+  ctx.restore();
+}
 function drawFest(){
+  for (const f of festFx) if (f.k === "skel") drawSkel(f);
   for (const f of festFx){
+    if (f.k === "skel") continue;
     ctx.save(); ctx.translate(f.x, f.y); ctx.rotate(f.r); const k = KS;
     if (f.k === "pizza"){
       ctx.scale(k*1.7, k*1.7); ctx.beginPath(); ctx.moveTo(0, 10); ctx.lineTo(-8, -8); ctx.quadraticCurveTo(0, -12, 8, -8); ctx.closePath();
@@ -1061,7 +1108,8 @@ function ko(u, kind, val){
   const c = {u: Object.assign({}, u, {kb:null, yOff:0, rot:0, dizzy:0, stuck:0, fight:false}), kind, x:u.x, y:u.y, t0:t};
   if (kind === "flat"){ c.life = 1.6; burst(u.x, u.y - 4, ["#c9cde8","#ffffff"], 6, 60); }
   else if (kind === "launch"){ c.life = 2.2; c.vx = rnd(-60, 60); c.vy = -rnd(620, 820); c.vr = reduce ? 0 : rnd(-14, 14); c.rot = 0; c.sc = 1; }
-  else if (kind === "grave"){ c.life = .01; graves.push({x:u.x, y:u.y, side:u.side, label: val ? "R.I.P. " + usdK(val) : "R.I.P.", life:6}); if (mode !== "zeit" && t > epitaphCd && Math.random() < .35){ epitaphCd = t + 3; sayAt(u.x, u.y - 34*KS, pick(EPITAPH[u.side])); } burst(u.x, u.y - 8, ["#ff9a3a","#ffd76a","#ffffff"], 10, 110); }
+  else if (kind === "grave"){ c.life = .01; graves.push({x:u.x, y:u.y, side:u.side, label: val ? "R.I.P. " + usdK(val) : "R.I.P.", life:6}); if (fest === "halloween" && mode !== "zeit" && Math.random() < .6 && festFx.filter(f => f.k === "skel").length < 6) festFx.push({k:"skel", side:u.side, x:u.x, y:u.y, t0:t, dir: u.side === "bull" ? -1 : 1, vx:0, vy:0, r:0, life:99});
+    if (mode !== "zeit" && t > epitaphCd && Math.random() < .35){ epitaphCd = t + 3; sayAt(u.x, u.y - 34*KS, pick(EPITAPH[u.side])); } burst(u.x, u.y - 8, ["#ff9a3a","#ffd76a","#ffffff"], 10, 110); }
   corpses.push(c);
 }
 // Figur verschwindet in einer Staubwolke
