@@ -267,6 +267,8 @@ body.stream .welcome{display:none}
       <div class="lrow"><b class="y">Goldenes Tor</b><span>Das Allzeithoch, der höchste Kurs aller Zeiten. Unter dem Kurs steht, wie weit es noch ist.</span></div>
       <div class="lrow"><b>Wetter</b><span>Zeigt, wie stark der Kurs in den letzten 2 Minuten schwankt: Sonne, Wolken, Regen, Gewitter. Im Weltall: Sternenstaub, Meteorschauer, Sonnensturm.</span></div>
       <div class="lrow"><b class="y">Zeitlupe</b><span>Bei einem Trade oder einer Liquidation ab 1 Mio. $ hält die Zeit kurz an und die Kamera fährt heran.</span></div>
+      <div class="lrow"><b>Krabben</b><span>Bewegt sich der Kurs 8 Minuten lang kaum, übernehmen die Krabben: Krabbenmarkt, es geht seitwärts.</span></div>
+      <div class="lrow"><b class="y">Feiertage</b><span>Am Pizza Day (22.5.), Bitcoins Geburtstag (3.1.), Halloween, in der Weihnachtszeit und an Silvester ist das Schlachtfeld geschmückt.</span></div>
       <div class="lrow"><b>24-Std.-Linien</b><span>Gestrichelte Linien markieren Hoch und Tief der letzten 24 Stunden.</span></div>
       <div class="lrow"><b class="y">Portal</b><span>Neue Größenordnung, vom Mikrokosmos bis ins Universum. Bewacht von einem Riesen.</span></div>
     </div>
@@ -611,6 +613,7 @@ function hit(buy, v){
   const ix = (a.x + d.x)/2, iy = d.y - 22*d.s;
   for (let i=0;i<4 + power*3;i++) fx.push({k:"dot", x:ix, y:iy, vx:rnd(-110,110), vy:rnd(-140,-20), life:.45, max:.45, c: pick(["#ffffff", C.gold, buy ? C.bull : C.bear]), r:rnd(1.5,3.2)});
   fx.push({k:"ring", x:ix, y:iy, r:4, life:.3, max:.3, c: buy ? C.bull : C.bear});
+  if (Math.random() < .2) say(d, d.side + "Hit"); else if (Math.random() < .08) say(a, a.side + "Atk");
   if (power >= 3) pop(pick(buy ? ["BONK!","MUH!","POW!"] : ["WUMMS!","BRUMM!","ZACK!"]), ix, iy - 12, buy ? C.bull : C.bear, 15);
   sfx("bonk", power);
 }
@@ -620,7 +623,7 @@ function updateIdle(dt){
   for (const u of bulls.concat(bears)){
     if (u.idle && (u.idle.until < t || u.kb || u.retreat || !u.fight)) u.idle = null;
     if (!u.idle && calm && u.fight && !u.kb && !(u.dizzy > t) && !(u.stuck > t) && Math.random() < dt*.03)
-      u.idle = u.side === "bull" ? {k:"scrape", t0:t, until:t + 1.4} : {k:"yawn", t0:t, until:t + 1.8};
+      { u.idle = u.side === "bull" ? {k:"scrape", t0:t, until:t + 1.4} : {k:"yawn", t0:t, until:t + 1.8}; if (Math.random() < .35) say(u, u.idle.k); }
     // Staub unter dem scharrenden Huf
     if (u.idle && u.idle.k === "scrape" && !reduce && Math.random() < dt*8)
       fx.push({k:"dot", x:u.x + 13*u.s, y:u.y - 1, vx:rnd(-60,-15), vy:rnd(-45,-10), life:.4, max:.4, c:"rgba(225,215,195,.6)", r:rnd(1.2,2.4)});
@@ -791,6 +794,225 @@ function weatherFlash(){
   ctx.fillStyle = `rgba(255,255,255,${(1 - k)*.28})`; ctx.fillRect(-20, -20, W + 40, H + 40);
 }
 
+// ---------- Sprechblasen ----------
+const FONT_B = getComputedStyle(document.documentElement).getPropertyValue("--f-body").trim() || "system-ui, sans-serif";
+// Einzelne Figuren rufen kurz etwas – ausgelöst von echten Treffern, Walen, Liquidationen und dem Druck an der Front.
+// Höchstens zwei Blasen gleichzeitig, damit es übersichtlich bleibt.
+let bubbles = [], bubbleCd = 0, talkIn = 5, epitaphCd = 0;
+const SAY = {
+  bullHit:  ["Mein Hebel!", "Autsch!", "Nur ein Rücksetzer …", "Mama?!", "Ich HODL trotzdem!", "Das war geplant!"],
+  bearHit:  ["Mein Short!", "Aua!", "Das war Glück!", "Mein Honig!", "Short gequetscht!", "Unfair!"],
+  bullAtk:  ["HODL!", "Kauf den Dip!", "To the moon!", "Grüne Kerze!", "Muuuh!", "Diamanthufe!"],
+  bearAtk:  ["Ausverkauf!", "Gewinne mitnehmen!", "Bärenmarkt!", "Alles muss raus!", "Brumm!", "Blase!"],
+  bullWin:  ["Zu einfach!", "Wer kauft, gewinnt!", "Neues Hoch?", "Ab zum Mond!"],
+  bullLose: ["Rückzug!?", "Wo ist der Boden?", "Nur ein Test …", "Ich kauf nach!"],
+  bearWin:  ["Winter is coming!", "Honig für alle!", "Ab nach unten!", "Gute Nacht, Bullen!"],
+  bearLose: ["Wer kauft da?!", "Das hält nicht!", "Ich short nach!", "Das ist eine Falle!"],
+  whaleBuy: ["Danke, Wal!", "WAL!!", "Was für ein Brocken!"],
+  whaleSell:["Amboss!!", "Danke, Amboss!", "Kopf einziehen!"],
+  liqLong:  ["Deckung!", "Meteor!", "Wer hat 100x?!"],
+  liqShort: ["Deckung!", "Meteor!", "Mein Short-Hebel!"],
+  yawn:     ["Gääähn …", "Langweilig …", "Weckt mich beim Pump."],
+  scrape:   ["Komm doch!", "Na los!", "Traust dich nicht!"],
+};
+// Grabsprüche für liquidierte Figuren
+const EPITAPH = {
+  bull: ["100x war zu viel", "Kaufte das Top", "Stop-Loss? Nie gehört", "Hebel war mein Hobby", "War doch erst der Anfang …", "Nur kurz Long gegangen"],
+  bear: ["Wollte nur kurz shorten", "Shortete den Boden", "„Das muss fallen“", "Hebel 50x. Leider.", "Gegen den Trend", "Hielt es für eine Blase"],
+};
+function say(u, key, force){
+  if (!u || mode === "zeit" || mode === "connecting" || (!force && t < bubbleCd) || bubbles.length >= 2 || bubbles.some(b => b.u === u)) return;
+  bubbleCd = t + rnd(2.5, 4);
+  bubbles.push({u, text: pick(SAY[key]), t0: t, until: t + 2.2});
+}
+const sayAt = (x, y, text) => { if (bubbles.length < 3) bubbles.push({x, y, text, t0: t, until: t + 3, stone: true}); };
+function bubbleStep(dt){
+  bubbles = bubbles.filter(b => t < b.until && !(b.u && (b.u.dead || b.u.retreat)));
+  if (mode === "zeit" || mode === "connecting") return;
+  if ((talkIn -= dt) <= 0){
+    talkIn = rnd(4, 8);
+    const side = Math.random() < .5 ? "bull" : "bear", arr = (side === "bull" ? bulls : bears).filter(u => u.fight && !u.kb);
+    if (arr.length){
+      const p = side === "bull" ? pressure : -pressure;
+      say(pick(arr), side + (p > .3 ? "Win" : p < -.3 ? "Lose" : "Atk"));
+    }
+  }
+}
+// Blase über dem Kopf (folgt der Figur), Grabsprüche als graue Steintafel
+function drawBubbles(){
+  for (const b of bubbles){
+    let x, y;
+    if (b.u){ const u = b.u; x = u.x + (u.side === "bull" ? 14 : -14)*u.s*(u.retreat ? -1 : 1); y = u.y + (u.yOff || 0) - 44*u.s; }
+    else { x = b.x; y = b.y; }
+    const age = t - b.t0, e = reduce ? 1 : Math.min(1, age/.15), a = Math.min(1, (b.until - t)/.3);
+    ctx.save(); ctx.globalAlpha = a;
+    ctx.font = `${b.stone ? "italic 700" : "800"} ${Math.round(8*KS + 5)}px ${FONT_B}`;
+    const w = ctx.measureText(b.text).width + 14, h = 8*KS + 12;
+    const bx = clamp(x, w/2 + 6, W - w/2 - 6);
+    ctx.translate(bx, y); ctx.scale(.6 + .4*e, .6 + .4*e);
+    ctx.fillStyle = b.stone ? "#c9cbe0" : "#ffffff"; ctx.strokeStyle = C.ink; ctx.lineWidth = 2;
+    rr(-w/2, -h, w, h, b.stone ? 4 : h/2); ctx.fill(); ctx.stroke();
+    // Spitze zur Figur bzw. zum Grab
+    const tx = clamp(x - bx, -w/2 + 8, w/2 - 8);
+    ctx.beginPath(); ctx.moveTo(tx - 5, -1); ctx.lineTo(tx, 7); ctx.lineTo(tx + 5, -1); ctx.fill(); ctx.stroke();
+    ctx.fillRect(tx - 4, -3, 8, 3);
+    ctx.fillStyle = b.stone ? "#2a2d45" : C.ink; ctx.textAlign = "center"; ctx.fillText(b.text, 0, -h/2 + 4*KS + 1);
+    ctx.restore();
+  }
+}
+
+// ---------- Seitwärts-Krabben ----------
+// "Krabbenmarkt": Bewegt sich der echte Kurs 8 Minuten lang um weniger als 0,12 %, laufen Krabben seitwärts übers Feld.
+// Sobald wieder Bewegung reinkommt, flüchten sie.
+let crabSamples = [], crabAcc = 0, crabs = [], crabFlat = false, crabMode = "", crabNewsCd = 0;
+function crabStep(dt){
+  if (mode !== crabMode){ crabMode = mode; crabSamples = []; crabAcc = 0; crabFlat = false; }
+  if (mode === "zeit"){ crabs = []; return; }
+  if ((mode === "live" || mode === "demo") && price > 0 && (crabAcc += dt) >= 5){
+    crabAcc = 0; crabSamples.push(price); if (crabSamples.length > 96) crabSamples.shift();
+    let hi = -Infinity, lo = Infinity; for (const v of crabSamples){ if (v > hi) hi = v; if (v < lo) lo = v; }
+    const bp = (hi - lo)/((hi + lo)/2)*1e4, flat = crabSamples.length >= 96 && bp < 12;
+    if (flat && !crabFlat && t > crabNewsCd){
+      crabNewsCd = t + 600;
+      news(`<b>Krabbenmarkt!</b> Seit 8 Minuten bewegt sich der Kurs kaum (${(bp/100).toLocaleString("de-DE", {maximumFractionDigits: 2})} %). Die Krabben übernehmen.`);
+    }
+    crabFlat = flat;
+  }
+  if (crabFlat && crabs.filter(c => !c.flee).length < 4 && Math.random() < dt*.6){
+    const dir = Math.random() < .5 ? 1 : -1;
+    crabs.push({x: dir > 0 ? -20 : W + 20, y: groundY + rnd(10, Math.max(12, H - groundY - 16)), vx: dir*rnd(24, 42)*KS, s: rnd(1.2, 1.5)*KS, ph: rnd(0, 6), pause: 0, flee: false});
+  }
+  for (const c of crabs){
+    if (!crabFlat) c.flee = true;
+    c.ph += dt*(c.pause > 0 ? 6 : 16);
+    if (c.pause > 0) c.pause -= dt;
+    else { c.x += c.vx*dt*(c.flee ? 4 : 1); if (!c.flee && Math.random() < dt*.25) c.pause = rnd(.8, 1.8); }
+  }
+  crabs = crabs.filter(c => c.x > -40 && c.x < W + 40);
+}
+function drawCrabs(){
+  for (const c of crabs){
+    ctx.save(); ctx.translate(c.x, c.y); ctx.scale(c.s, c.s);
+    const O = C.ink, snap = c.pause > 0 ? Math.abs(Math.sin(c.ph*1.5)) : .3;
+    ctx.fillStyle = "rgba(0,0,0,.25)"; ctx.beginPath(); ctx.ellipse(0, 1, 11, 2.5, 0, 0, TAU); ctx.fill();
+    // Beine (je drei, trippeln abwechselnd)
+    ctx.strokeStyle = O; ctx.lineWidth = 1.6; ctx.lineCap = "round"; ctx.beginPath();
+    for (let i=0;i<3;i++) for (const d of [-1, 1]){
+      const lift = Math.sin(c.ph + i*2 + (d > 0 ? Math.PI : 0))*1.5;
+      ctx.moveTo(d*5, -4 + i*1.2); ctx.lineTo(d*(9 + i*1.5), -6 + i*1.5 + lift); ctx.lineTo(d*(11 + i*1.5), 0);
+    }
+    ctx.stroke();
+    // Scheren
+    for (const d of [-1, 1]){
+      ctx.strokeStyle = O; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.moveTo(d*6, -7); ctx.lineTo(d*10, -11); ctx.stroke();
+      ctx.beginPath(); ctx.arc(d*11, -13, 3.4, 0, TAU); ctx.fillStyle = "#ff6b3d"; ctx.fill(); ctx.lineWidth = 1.4; ctx.stroke();
+      ctx.fillStyle = C.ink; ctx.beginPath(); ctx.moveTo(d*11, -13); ctx.lineTo(d*14.5, -15 - snap*2); ctx.lineTo(d*14.5, -12 + snap*2); ctx.closePath(); ctx.fill();
+    }
+    // Körper
+    ctx.beginPath(); ctx.ellipse(0, -5, 8, 5.5, 0, 0, TAU); ctx.fillStyle = "#ff7a45"; ctx.fill(); ctx.strokeStyle = O; ctx.lineWidth = 1.8; ctx.stroke();
+    ctx.fillStyle = "rgba(255,255,255,.3)"; ctx.beginPath(); ctx.ellipse(-2, -7.5, 3.5, 1.4, 0, 0, TAU); ctx.fill();
+    // Stielaugen
+    for (const d of [-1, 1]){
+      ctx.strokeStyle = O; ctx.lineWidth = 1.4; ctx.beginPath(); ctx.moveTo(d*2.5, -9.5); ctx.lineTo(d*3, -13); ctx.stroke();
+      ctx.beginPath(); ctx.arc(d*3, -14, 2, 0, TAU); ctx.fillStyle = "#fff"; ctx.fill(); ctx.stroke();
+      ctx.fillStyle = O; ctx.beginPath(); ctx.arc(d*3 + Math.sign(c.vx)*.6, -14, .9, 0, TAU); ctx.fill();
+    }
+    ctx.restore();
+  }
+}
+
+// ---------- Bitcoin-Feiertage ----------
+// Echte Daten im Bitcoin-Kalender: 22.5. Pizza Day, 3.1. Geburtstag des ersten Blocks,
+// 31.10. Halloween und Geburtstag des Whitepapers, Dezember Weihnachtszeit, Silvester mit Feuerwerk um Mitternacht.
+// Zum Ausprobieren: Adresse mit ?fest=pizza (geburtstag, halloween, weihnachten, silvester, neujahr) öffnen.
+function festToday(){
+  const q = new URLSearchParams(location.search).get("fest"); if (q) return q;
+  const d = new Date(), m = d.getMonth() + 1, day = d.getDate(), h = d.getHours();
+  if (m === 1 && day === 1 && h < 2) return "neujahr";
+  if (m === 12 && day === 31 && h >= 18) return "silvester";
+  if (m === 5 && day === 22) return "pizza";
+  if (m === 1 && day === 3) return "geburtstag";
+  if (m === 10 && day === 31) return "halloween";
+  if (m === 12 && day <= 26) return "weihnachten";
+  return "";
+}
+const FEST_HAT = {pizza:"chef", geburtstag:"party", halloween:"witch", weihnachten:"santa", silvester:"party", neujahr:"party"};
+let fest = festToday(), festShown = "", festCheck = 60, festFx = [], festIn = 1, lastSec = -1;
+function festStep(dt){
+  if ((festCheck -= dt) <= 0){ festCheck = 30; fest = festToday(); }
+  for (const f of festFx){ f.x += f.vx*dt; f.y += f.vy*dt; f.r += (f.vr || 0)*dt; f.life -= dt; if (f.k === "rocket" && f.y < f.top){ f.life = 0; burst(f.x, f.y, f.c, reduce ? 12 : 30, 170); } }
+  festFx = festFx.filter(f => f.life > 0 && f.y < H + 40);
+  if (!fest || mode === "zeit" || mode === "connecting") return;
+  // Einmaliger Auftritt pro Fest
+  if (festShown !== fest && t - modeSince > 3 && !banner){
+    festShown = fest;
+    const y = new Date().getFullYear();
+    const B = {
+      pizza:       ["BITCOIN PIZZA DAY", `22.5.2010: 2 Pizzen für 10.000 BTC – heute wären das ${usdK(price*10000)}`],
+      geburtstag:  ["HAPPY BIRTHDAY, BITCOIN!", `Der erste Block wurde am 3.1.2009 geschürft – vor ${y - 2009} Jahren`],
+      halloween:   ["HALLOWEEN", `Heute vor ${y - 2008} Jahren erschien das Bitcoin-Whitepaper`],
+      weihnachten: ["HO HO HODL!", "Weihnachtszeit auf dem Schlachtfeld"],
+      silvester:   ["SILVESTER", "Um Mitternacht gibt es Feuerwerk"],
+      neujahr:     ["FROHES NEUES JAHR!", "Auf ein starkes Bitcoin-Jahr " + y],
+    }[fest];
+    if (B){ banner = {text: B[0], sub: B[1], color: C.gold, until: t + 4}; news(`<b>${B[0]}</b> ${B[1]}.`, true); confetti(60); }
+  }
+  // Silvester-Countdown in den letzten 10 Sekunden
+  if (fest === "silvester"){
+    const d = new Date(), s = d.getSeconds();
+    if (d.getHours() === 23 && d.getMinutes() === 59 && s >= 50 && s !== lastSec){ lastSec = s; banner = {text: String(60 - s), sub: "Gleich ist Mitternacht!", color: C.gold, until: t + .95}; sfx("ding", 1); }
+  }
+  // Laufende Effekte je Fest
+  if ((festIn -= dt) > 0) return;
+  if (fest === "pizza"){ festIn = reduce ? 1.6 : .55; festFx.push({k:"pizza", x: rnd(0, W), y: -20, vx: rnd(-15, 15), vy: rnd(70, 120), r: rnd(0, 6), vr: rnd(-2, 2), life: 12}); }
+  else if (fest === "weihnachten"){ festIn = reduce ? .5 : .12; festFx.push({k:"snow", x: rnd(-20, W + 20), y: -6, vx: rnd(-12, 12), vy: rnd(25, 50), r: 0, life: 20, sz: rnd(1.2, 2.8)}); }
+  else if (fest === "halloween"){ festIn = rnd(2.5, 5); const d = Math.random() < .5 ? 1 : -1; festFx.push({k:"bat", x: d > 0 ? -20 : W + 20, y: rnd(H*.08, groundY*.6), vx: d*rnd(70, 120), vy: rnd(-8, 8), r: 0, life: 14}); }
+  else if (fest === "geburtstag"){ festIn = rnd(14, 22); confetti(30); }
+  else if (fest === "neujahr" || (fest === "silvester" && new Date().getHours() === 0)){
+    festIn = reduce ? 2.5 : rnd(.35, .9);
+    festFx.push({k:"rocket", x: rnd(W*.1, W*.9), y: groundY, vx: rnd(-20, 20), vy: -rnd(260, 380), r: 0, life: 4, top: rnd(H*.1, groundY*.45), c: pick([["#ffc94d","#ffffff"],["#34d982","#b8ffd9"],["#ff5c73","#ffd0d8"],["#7ab8ff","#ffffff"]])});
+  }
+}
+function drawFest(){
+  for (const f of festFx){
+    ctx.save(); ctx.translate(f.x, f.y); ctx.rotate(f.r); const k = KS;
+    if (f.k === "pizza"){
+      ctx.scale(k*1.7, k*1.7); ctx.beginPath(); ctx.moveTo(0, 10); ctx.lineTo(-8, -8); ctx.quadraticCurveTo(0, -12, 8, -8); ctx.closePath();
+      ctx.fillStyle = "#ffd36b"; ctx.fill(); ctx.strokeStyle = C.ink; ctx.lineWidth = 1.6; ctx.stroke();
+      ctx.strokeStyle = "#d9893a"; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(-8, -8); ctx.quadraticCurveTo(0, -12, 8, -8); ctx.stroke();
+      ctx.fillStyle = "#d8413a"; for (const [px, py] of [[-2,-3],[3,-2],[0,3]]){ ctx.beginPath(); ctx.arc(px, py, 1.7, 0, TAU); ctx.fill(); }
+    } else if (f.k === "snow"){ ctx.fillStyle = "rgba(255,255,255,.85)"; ctx.beginPath(); ctx.arc(0, 0, f.sz*k, 0, TAU); ctx.fill(); }
+    else if (f.k === "bat"){
+      ctx.scale(k*Math.sign(f.vx), k); const fl = Math.sin(t*18)*5;
+      ctx.fillStyle = "#1a1030"; ctx.beginPath(); ctx.ellipse(0, 0, 4, 3, 0, 0, TAU); ctx.fill();
+      ctx.beginPath(); ctx.moveTo(-2, 0); ctx.quadraticCurveTo(-8, -6 - fl, -14, -2 + fl*.4); ctx.quadraticCurveTo(-8, 0, -2, 2); ctx.moveTo(2, 0); ctx.quadraticCurveTo(8, -6 - fl, 14, -2 + fl*.4); ctx.quadraticCurveTo(8, 0, 2, 2); ctx.fill();
+      ctx.fillStyle = "#ffc94d"; ctx.fillRect(1.2, -1.2, 1, 1); ctx.fillRect(-2.2, -1.2, 1, 1);
+    } else if (f.k === "rocket"){ ctx.strokeStyle = "rgba(255,230,180,.9)"; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(-f.vx*.05, 14); ctx.stroke(); }
+    ctx.restore();
+  }
+}
+// Fest-Mütze auf dem Kopf (Koordinaten der Figur; dir = Blickrichtung)
+function festHat(x, y, dir){
+  const h = FEST_HAT[fest]; if (!h) return;
+  const O = C.ink; ctx.lineWidth = 1.4; ctx.strokeStyle = O;
+  if (h === "santa"){
+    ctx.beginPath(); ctx.moveTo(x - 9, y + 2); ctx.quadraticCurveTo(x - 2, y - 14, x + dir*13, y - 8); ctx.quadraticCurveTo(x + 4, y - 6, x + 9, y + 2); ctx.closePath(); ctx.fillStyle = "#e23b3b"; ctx.fill(); ctx.stroke();
+    rr(x - 10, y, 20, 4.5, 2); ctx.fillStyle = "#fff"; ctx.fill(); ctx.stroke();
+    ctx.beginPath(); ctx.arc(x + dir*13, y - 8, 2.6, 0, TAU); ctx.fill(); ctx.stroke();
+  } else if (h === "party"){
+    ctx.beginPath(); ctx.moveTo(x - 6, y + 2); ctx.lineTo(x, y - 13); ctx.lineTo(x + 6, y + 2); ctx.closePath(); ctx.fillStyle = "#7ab8ff"; ctx.fill(); ctx.stroke();
+    ctx.fillStyle = C.gold; ctx.fillRect(x - 3.5, y - 4, 7, 2); ctx.beginPath(); ctx.arc(x, y - 13, 2, 0, TAU); ctx.fill();
+  } else if (h === "witch"){
+    ctx.beginPath(); ctx.ellipse(x, y + 1, 13, 3, 0, 0, TAU); ctx.fillStyle = "#2b1a45"; ctx.fill(); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x - 7, y); ctx.quadraticCurveTo(x - 2, y - 10, x + dir*6, y - 19); ctx.quadraticCurveTo(x + 2, y - 8, x + 7, y); ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = "#ff8a1f"; ctx.fillRect(x - 6.5, y - 3, 13, 2.4);
+  } else if (h === "chef"){
+    rr(x - 7, y - 4, 14, 6, 1.5); ctx.fillStyle = "#fff"; ctx.fill(); ctx.stroke();
+    ctx.beginPath(); ctx.arc(x - 4.5, y - 7, 4, 0, TAU); ctx.arc(x + 4.5, y - 7, 4, 0, TAU); ctx.fill(); ctx.stroke();
+    ctx.beginPath(); ctx.arc(x, y - 9.5, 4.6, 0, TAU); ctx.fill(); ctx.stroke(); rr(x - 6.5, y - 4, 13, 5, 1); ctx.fill();
+  }
+}
+
 // ---------- Start-Intro ----------
 // Während der Live-Kurs lädt, marschieren ein Bullen- und ein Bären-Anführer auf und stellen sich gegenüber.
 // Sobald der Kurs da ist, rennen sie zurück und die echten Armeen marschieren ein.
@@ -839,7 +1061,7 @@ function ko(u, kind, val){
   const c = {u: Object.assign({}, u, {kb:null, yOff:0, rot:0, dizzy:0, stuck:0, fight:false}), kind, x:u.x, y:u.y, t0:t};
   if (kind === "flat"){ c.life = 1.6; burst(u.x, u.y - 4, ["#c9cde8","#ffffff"], 6, 60); }
   else if (kind === "launch"){ c.life = 2.2; c.vx = rnd(-60, 60); c.vy = -rnd(620, 820); c.vr = reduce ? 0 : rnd(-14, 14); c.rot = 0; c.sc = 1; }
-  else if (kind === "grave"){ c.life = .01; graves.push({x:u.x, y:u.y, side:u.side, label: val ? "R.I.P. " + usdK(val) : "R.I.P.", life:6}); burst(u.x, u.y - 8, ["#ff9a3a","#ffd76a","#ffffff"], 10, 110); }
+  else if (kind === "grave"){ c.life = .01; graves.push({x:u.x, y:u.y, side:u.side, label: val ? "R.I.P. " + usdK(val) : "R.I.P.", life:6}); if (mode !== "zeit" && t > epitaphCd && Math.random() < .35){ epitaphCd = t + 3; sayAt(u.x, u.y - 34*KS, pick(EPITAPH[u.side])); } burst(u.x, u.y - 8, ["#ff9a3a","#ffd76a","#ffffff"], 10, 110); }
   corpses.push(c);
 }
 // Figur verschwindet in einer Staubwolke
@@ -1061,6 +1283,7 @@ function land(d){
   shake = reduce ? 0 : (d.k === "piano" || d.k === "goldwhale" ? 16 : 9);
   // Genau so viele Figuren wie der Auftrag Volumen hat (je 100.000 $)
   seen(d.k === "whale" || d.k === "goldwhale" ? "whales" : "anvils");
+  { const fans = (d.k === "whale" || d.k === "goldwhale" ? bulls : bears).filter(u => u.fight); if (fans.length) say(pick(fans), d.k === "whale" || d.k === "goldwhale" ? "whaleBuy" : "whaleSell", true); }
   const buySide = d.k === "whale" || d.k === "goldwhale", units = Math.max(1, Math.round((d.v || 1e5)/1e5));
   const cap = (W < 560 ? 30 : 44)*(lowPerf ? .5 : 1);
   for (let i=0;i<Math.min(units, 40);i++) killOne(buySide ? "bear" : "bull", d.x, buySide ? "launch" : "flat");
@@ -1079,6 +1302,7 @@ function land(d){
 function onLiq(longs, v, demo){
   if (!(v > 0) || (!demo && mode !== "live")) return;
   seen("maxLiq", v);
+  if (v >= 250000){ const vic = (longs ? bulls : bears).filter(u => u.fight); if (vic.length) say(pick(vic), longs ? "liqLong" : "liqShort", v >= 1e6); }
   liqWin.push({t, v}); liqWin = liqWin.filter(x => t - x.t < 30);
   const sum = liqWin.reduce((a,x) => a + x.v, 0), fs = sx(frontP);
   const n = Math.min(mode === "zeit" ? 4 : 24, Math.max(1, Math.round(v/1e5)));
@@ -1483,7 +1707,7 @@ function update(dt){
   if (!lowPerf && t > 6 && frameAvg > 1/32){ lowPerf = true; resize(); }
   if (!store.intro && mode !== "connecting" && !introUntil){ introUntil = t + 5.5; store.intro = true; save(); }
   if (store.visit.streak >= 7 && t > 6) unlock("treue");
-  welcomeStep(dt); weatherStep(dt); introStep(dt);
+  welcomeStep(dt); weatherStep(dt); introStep(dt); bubbleStep(dt); crabStep(dt); festStep(dt);
   if (mode === "zeit") zeitStep(dt);
   else if (isTest()){
     simAcc += dt; while (simAcc >= .2){ simAcc -= .2; demoStep(); }
@@ -1803,6 +2027,7 @@ function drawBull(u){
   }
   // Bewegte Teile werden immer live gezeichnet
   if (u.fight && Math.sin(u.ph*.5) > .7){ ctx.fillStyle = "rgba(255,255,255,.6)"; ctx.beginPath(); ctx.arc(28,-17,2.4,0,TAU); ctx.arc(31,-21,1.8,0,TAU); ctx.fill(); }
+  if (fest && !u.statue && u.acc !== 3) festHat(14, -33, 1);
   if (losing) sweat(4,-34);
   if (t < laserUntil && !u.statue){ ctx.strokeStyle = "rgba(255,40,60,.9)"; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(18,-27); ctx.lineTo(70,-31); ctx.stroke(); }
   ctx.restore();
@@ -1864,6 +2089,7 @@ function drawBear(u){
     blit(sprite("RL|" + P.main + "|" + (yawn ? "y" : f), "bear", "legs", () => bearLegs(P, legFn)), "bear", "legs");
     blit(sprite("RB|" + P.main + "|" + u.acc + "|" + (losing ? 1 : 0) + (closed ? "c" : "o") + (yawn ? "y" : "") + "|" + gearNow, "bear", "body", () => bearBody({acc: u.acc, fight: false, ph: 0}, P, losing, closed, yawn)), "bear", "body");
   }
+  if (fest && !u.statue && u.acc !== 2 && !(t < snowUntil)) festHat(-14, -35, -1);
   if (t < snowUntil && !u.statue){ ctx.fillStyle = "#ffffff"; ctx.fillRect(-25,-38,21,3); ctx.beginPath(); ctx.arc(-14,-40,2.6,0,TAU); ctx.fill(); }
   if (losing) sweat(-3,-37);
   ctx.restore();
@@ -2168,6 +2394,7 @@ function draw(){
       ctx.strokeText(l2, x, y - sz*.9 + 15*KS); ctx.fillText(l2, x, y - sz*.9 + 15*KS);
     }
   }
+  drawCrabs();
   const all = bulls.concat(bears).sort((a,b) => a.y - b.y);
   ctx.fillStyle = "rgba(0,0,0,.22)";
   const fade = u => u.retreat ? Math.max(0, 1 - (t - u.rt)/1.6) : 1;
@@ -2211,7 +2438,9 @@ function draw(){
   }
 
   drawIntro();
+  drawFest();
   drawWeatherFront(wiNow);
+  drawBubbles();
   for (const p of amb){
     ctx.globalAlpha = Math.min(1, p.life);
     if (p.k === "ring"){ ctx.strokeStyle = p.c; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI*2); ctx.stroke(); }
