@@ -440,6 +440,7 @@ let shake = 0, snowUntil = 0, laserUntil = 0, laserCd = 0, winterCd = 0, hiTime 
 let banner = null, t = 0, chatterIn = 8, dropCd = 0;
 let combo = {side:null, n:0};
 let sessionHi = 0, liveSince = 0, curWorld = -1, curZone = "", worldCd = 0, zoneCd = 0;
+const borderFx = {};   // letzter großer Auftritt je Weltengrenze (echte Zeit)
 let flags = {}, flagCd = {}, streak = {side:null, n:0};
 const feeds = {}, seenWorlds = {};
 let candles = [];
@@ -1005,6 +1006,14 @@ function checkWorld(){
     if (prev < 0 || t < worldCd || Math.abs(i - prev) > 1) return;
     worldCd = t + 2.5;
     const w = world(i), B = WORLDS[Math.max(i, prev)].lo, x = sx(B);
+    // Wird an derselben Grenze hin und her gekämpft, nur leise wechseln: großer Auftritt
+    // (Kamerafahrt, Banner, Konfetti) höchstens alle 10 Minuten je Grenze, in der Zeitreise alle 20 s
+    const quietFor = mode === "zeit" ? 20 : 600;
+    if (rt - (borderFx[B] ?? -1e9) < quietFor){
+      if (mode !== "zeit") news(`Die Front wankt an der Grenze ${usd(B)}: jetzt wieder <b>${w.n}</b>.`);
+      return;
+    }
+    borderFx[B] = rt;
     banner = {text: "NEUE WELT: " + w.n.toUpperCase(), sub: w.year, color: C.gold, until: t + 3.2};
     if (!reduce) camFx = {kind: "world", t0: rt, dur: mode === "zeit" ? 1.6 : 2.6, z0: 1.9, fx: clamp(x, W*.15, W*.85), fy: groundY - 50};
     burst(x, groundY - 60, [C.gold, "#ffffff", zn.z.grass], 50, 220);
