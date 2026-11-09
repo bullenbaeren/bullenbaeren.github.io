@@ -962,6 +962,7 @@ function festStep(dt){
       neujahr:     ["FROHES NEUES JAHR!", "Auf ein starkes Bitcoin-Jahr " + y],
     }[fest];
     if (B){ banner = {text: B[0], sub: B[1], color: C.gold, until: t + 4}; news(`<b>${B[0]}</b> ${B[1]}.`, true); confetti(60); }
+    if (fest === "halloween") [[.18, "bull"], [.5, Math.random() < .5 ? "bull" : "bear"], [.82, "bear"]].forEach(([xf, sd], i) => setTimeout(() => spawnSkel(sd, W*xf, laneY(i % 2 ? 0 : 2)), 600 + i*700));
   }
   // Silvester-Countdown in den letzten 10 Sekunden
   if (fest === "silvester"){
@@ -978,6 +979,11 @@ function festStep(dt){
     festIn = reduce ? 2.5 : rnd(.35, .9);
     festFx.push({k:"rocket", x: rnd(W*.1, W*.9), y: groundY, vx: rnd(-20, 20), vy: -rnd(260, 380), r: 0, life: 4, top: rnd(H*.1, groundY*.45), c: pick([["#ffc94d","#ffffff"],["#34d982","#b8ffd9"],["#ff5c73","#ffd0d8"],["#7ab8ff","#ffffff"]])});
   }
+}
+// Skelett erscheinen lassen (nur an Halloween, höchstens 6 gleichzeitig)
+function spawnSkel(side, x, y){
+  if (fest !== "halloween" || mode === "zeit" || festFx.filter(f => f.k === "skel").length >= 6) return;
+  festFx.push({k:"skel", side, x, y, t0:t, dir: side === "bull" ? -1 : 1, vx:0, vy:0, r:0, life:99});
 }
 // Halloween: Skelett-Bulle bzw. -Bär steigt aus dem Grab, tanzt kurz und klappert davon
 function bone(x1, y1, x2, y2){
@@ -1105,10 +1111,11 @@ function ko(u, kind, val){
   seen(u.side);
   if (!kind){ poof(u); return; }
   u.dead = true;
+  if (kind !== "grave" && Math.random() < .35) spawnSkel(u.side, u.x, laneY(u.lane ?? 1));
   const c = {u: Object.assign({}, u, {kb:null, yOff:0, rot:0, dizzy:0, stuck:0, fight:false}), kind, x:u.x, y:u.y, t0:t};
   if (kind === "flat"){ c.life = 1.6; burst(u.x, u.y - 4, ["#c9cde8","#ffffff"], 6, 60); }
   else if (kind === "launch"){ c.life = 2.2; c.vx = rnd(-60, 60); c.vy = -rnd(620, 820); c.vr = reduce ? 0 : rnd(-14, 14); c.rot = 0; c.sc = 1; }
-  else if (kind === "grave"){ c.life = .01; graves.push({x:u.x, y:u.y, side:u.side, label: val ? "R.I.P. " + usdK(val) : "R.I.P.", life:6}); if (fest === "halloween" && mode !== "zeit" && Math.random() < .6 && festFx.filter(f => f.k === "skel").length < 6) festFx.push({k:"skel", side:u.side, x:u.x, y:u.y, t0:t, dir: u.side === "bull" ? -1 : 1, vx:0, vy:0, r:0, life:99});
+  else if (kind === "grave"){ c.life = .01; graves.push({x:u.x, y:u.y, side:u.side, label: val ? "R.I.P. " + usdK(val) : "R.I.P.", life:6}); if (Math.random() < .6) spawnSkel(u.side, u.x, u.y);
     if (mode !== "zeit" && t > epitaphCd && Math.random() < .35){ epitaphCd = t + 3; sayAt(u.x, u.y - 34*KS, pick(EPITAPH[u.side])); } burst(u.x, u.y - 8, ["#ff9a3a","#ffd76a","#ffffff"], 10, 110); }
   corpses.push(c);
 }
