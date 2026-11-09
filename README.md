@@ -2,6 +2,6 @@
 
 Der echte Bitcoin-Kurs als Comic-Schlacht.
 
-Live: https://bullen-baeren.pages.dev/
+Live: https://bullenbaeren.github.io/
 
 Unterhaltung, keine Anlageberatung. Kursdaten ohne Gewähr.

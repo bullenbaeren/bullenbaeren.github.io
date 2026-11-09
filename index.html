@@ -12,16 +12,16 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Bullen vs Bären">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://bullen-baeren.pages.dev/">
+<meta property="og:url" content="https://bullenbaeren.github.io/">
 <meta property="og:title" content="Bullen vs Bären – Bitcoin live als Comic-Schlacht">
 <meta property="og:description" content="Echte Trades, Wale, Liquidationen: Schau zu, wer gerade gewinnt. Vom Mikrokosmos bis ins Universum.">
-<meta property="og:image" content="https://bullen-baeren.pages.dev/og.png">
+<meta property="og:image" content="https://bullenbaeren.github.io/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:locale" content="de_DE">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Bullen vs Bären – Bitcoin live als Comic-Schlacht">
-<meta name="twitter:image" content="https://bullen-baeren.pages.dev/og.png">
+<meta name="twitter:image" content="https://bullenbaeren.github.io/og.png">
 <title>Bullen gegen Bären</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -265,6 +265,8 @@ body.stream .welcome{display:none}
       <div class="lrow"><b>Halving</b><span>Alle 210.000 Blöcke halbiert sich die Belohnung der Miner. Unten läuft der Countdown.</span></div>
       <div class="lrow"><b>Fear &amp; Greed</b><span>Tagesstimmung am Markt von 0 (Panik) bis 100 (Gier). Bei Panik schwitzen die Bullen, bei Gier die Bären.</span></div>
       <div class="lrow"><b class="y">Goldenes Tor</b><span>Das Allzeithoch, der höchste Kurs aller Zeiten. Unter dem Kurs steht, wie weit es noch ist.</span></div>
+      <div class="lrow"><b>Wetter</b><span>Zeigt, wie stark der Kurs in den letzten 2 Minuten schwankt: Sonne, Wolken, Regen, Gewitter. Im Weltall: Sternenstaub, Meteorschauer, Sonnensturm.</span></div>
+      <div class="lrow"><b class="y">Zeitlupe</b><span>Bei einem Trade oder einer Liquidation ab 1 Mio. $ hält die Zeit kurz an und die Kamera fährt heran.</span></div>
       <div class="lrow"><b>24-Std.-Linien</b><span>Gestrichelte Linien markieren Hoch und Tief der letzten 24 Stunden.</span></div>
       <div class="lrow"><b class="y">Portal</b><span>Neue Größenordnung, vom Mikrokosmos bis ins Universum. Bewacht von einem Riesen.</span></div>
     </div>
@@ -495,6 +497,7 @@ const SND = {
   piano(){ if (!canPlay("piano", .5)) return; for (let i=0;i<9;i++) tone("triangle", 110*Math.pow(2, Math.floor(rnd(0,30))/12), i*.025, 1.6, .09); },
   bonk(pw){ if (!canPlay("bonk", .07)) return; const o = ac.createOscillator(), g = ac.createGain(); o.type = "triangle"; const n = ac.currentTime, f0 = 260 - pw*30; o.frequency.setValueAtTime(f0, n); o.frequency.exponentialRampToValueAtTime(f0*.45, n + .12); o.connect(g).connect(ac.destination); env(g, .003, .13, .05 + pw*.02); o.start(); o.stop(n + .18); },
   block(){ if (!canPlay("block", 2)) return; tone("sine", 65, 0, .5, .25); [196,247,294,392].forEach((f,i) => tone("triangle", f, .05 + i*.06, .5, .05)); },
+  thunder(){ if (!canPlay("thunder", 2)) return; const s = noise(2.4), f = ac.createBiquadFilter(), g = ac.createGain(); f.type = "lowpass"; f.frequency.value = 160; s.connect(f).connect(g).connect(ac.destination); env(g, .06, 2.2, .55); s.start(); },
   ding(level){ if (!canPlay("ding", .08)) return; tone("sine", 660*Math.pow(2, Math.min(level,12)/12), 0, .25, .12); },
   fanfare(){ if (!canPlay("fanfare", 1)) return; [523,659,784,1047].forEach((fr,i) => tone("square", fr, i*.12, i===3?.6:.12, .06)); },
   sparkle(){ if (!canPlay("sparkle", .5)) return; [1568,2093,2637,3136].forEach((fr,i) => tone("sine", fr, i*.07, .4, .07)); },
@@ -658,6 +661,175 @@ function welcomeStep(dt){
   if (!welcomeDone && t - liveSince > 2.5 && (chain.real || t - liveSince > 8)) showWelcome();
   if ((seenCd -= dt) <= 0){ seenCd = 10; saveSeen(); }
 }
+// ---------- Kino-Effekte: Zeitlupe und Kamera ----------
+// rt = echte Zeit in Sekunden. Sie läuft auch während der Zeitlupe normal weiter,
+// während die Spielzeit t dann nur mit einem Viertel der Geschwindigkeit vergeht.
+let rt = 0, slowmo = null, slowCd = -99, camFx = null;
+// Zeitlupe mit Zoom auf einen Einschlag – nur bei echten Großereignissen ab 1 Mio. $
+function cinema(x, y){
+  if (mode === "zeit" || mode === "connecting" || rt < slowCd) return;
+  slowCd = rt + 45;   // höchstens alle 45 Sekunden, damit es besonders bleibt
+  slowmo = {t0: rt, dur: 2.4};
+  if (!reduce) camFx = {kind: "impact", t0: rt, dur: 2.8, fx: clamp(x, W*.2, W*.8), fy: clamp(y, H*.3, groundY)};
+}
+// Zeitfaktor fürs Spiel: 25 % während der Zeitlupe, mit weichem Ein- und Ausblenden
+function timeScale(){
+  if (!slowmo) return 1;
+  const k = rt - slowmo.t0;
+  if (k > slowmo.dur){ slowmo = null; return 1; }
+  const e = Math.min(clamp(k/.2, 0, 1), clamp((slowmo.dur - k)/.45, 0, 1));
+  return 1 - .75*e;
+}
+// Aktueller Kamera-Zoom: "impact" fährt kurz heran, "world" startet nah und fährt groß heraus
+function camNow(){
+  if (!camFx) return null;
+  const k = (rt - camFx.t0)/camFx.dur;
+  if (k >= 1){ camFx = null; return null; }
+  let z;
+  if (camFx.kind === "impact"){ const e = Math.min(clamp(k/.12, 0, 1), clamp((1 - k)/.3, 0, 1)); z = 1 + .45*e*e*(3 - 2*e); }
+  else { const e = 1 - Math.pow(1 - k, 3); z = camFx.z0 + (1 - camFx.z0)*e; }
+  return {z, fx: camFx.fx, fy: camFx.fy};
+}
+// Kinobalken oben und unten während der Zeitlupe
+function letterbox(){
+  if (!slowmo) return;
+  const k = rt - slowmo.t0, e = Math.min(clamp(k/.25, 0, 1), clamp((slowmo.dur - k)/.4, 0, 1)), h = H*.075*e;
+  ctx.fillStyle = "#000"; ctx.fillRect(-20, -20, W + 40, h + 20); ctx.fillRect(-20, H - h, W + 40, h + 20);
+}
+
+// ---------- Wetter = Schwankung ----------
+// Aus der echten Kursbewegung: Spanne (Hoch minus Tief) der letzten 2 Minuten in Basispunkten.
+// Auf der Erde: Sonne → Wolken → Regen → Gewitter. Im Weltall: Klar → Sternenstaub → Meteorschauer → Sonnensturm.
+const WX_EARTH = ["Sonne", "Wolken", "Regen", "Gewitter"], WX_SPACE = ["Klare Sicht", "Sternenstaub", "Meteorschauer", "Sonnensturm"];
+let wxSamples = [], wxAcc = 0, wxLvl = 0, wxTarget = 0, wxBp = 0, wxStage = -1, wxMode = "", wxNewsCd = 0, boltAt = 0, bolt = null;
+const wxRnd = i => { const v = Math.sin(i*12.9898)*43758.5453; return v - Math.floor(v); };   // feste Zufallszahl je Index
+function weatherStep(dt){
+  if (mode !== wxMode){ wxMode = mode; wxSamples = []; wxAcc = 0; }   // Moduswechsel: neu messen
+  if (mode === "zeit") wxTarget = 0;
+  else if ((mode === "live" || mode === "demo") && price > 0 && (wxAcc += dt) >= 1){
+    wxAcc = 0; wxSamples.push(price); if (wxSamples.length > 120) wxSamples.shift();
+    if (wxSamples.length >= 15){
+      let hi = -Infinity, lo = Infinity; for (const v of wxSamples){ if (v > hi) hi = v; if (v < lo) lo = v; }
+      wxBp = (hi - lo)/((hi + lo)/2)*1e4;
+      wxTarget = wxBp < 10 ? 0 : wxBp < 25 ? (wxBp - 10)/15 : wxBp < 60 ? 1 + (wxBp - 25)/35 : Math.min(3, 2 + (wxBp - 60)/90);
+    }
+  }
+  wxLvl += (wxTarget - wxLvl)*Math.min(1, dt*.25);
+  // Wetterwechsel im Kommentar melden (nur live)
+  const stage = wxLvl < .75 ? 0 : wxLvl < 1.6 ? 1 : wxLvl < 2.35 ? 2 : 3;
+  if (stage !== wxStage){
+    const prev = wxStage; wxStage = stage;
+    if (prev >= 0 && mode === "live" && t > wxNewsCd){
+      wxNewsCd = t + 90;
+      const sp = zoneAt(camP || 1).wi >= 7, pct = (wxBp/100).toLocaleString("de-DE", {maximumFractionDigits: 2});
+      news(sp ? [`<b>Klare Sicht.</b> Der Kurs beruhigt sich.`, `<b>Sternenstaub zieht auf.</b> Der Kurs wird unruhiger.`, `<b>Meteorschauer!</b> Der Kurs schwankt kräftig: ${pct} % in 2 Minuten.`, `<b>SONNENSTURM!</b> Der Kurs schwankt heftig: ${pct} % in 2 Minuten.`][stage]
+              : [`<b>Die Sonne kommt raus.</b> Der Kurs beruhigt sich.`, `<b>Wolken ziehen auf.</b> Der Kurs wird unruhiger.`, `<b>Es regnet!</b> Der Kurs schwankt kräftig: ${pct} % in 2 Minuten.`, `<b>GEWITTER!</b> Der Kurs schwankt heftig: ${pct} % in 2 Minuten.`][stage], stage === 3);
+    }
+  }
+  // Blitze bzw. Plasma-Entladungen im Sturm
+  if (wxLvl > 2.35 && t > boltAt){ boltAt = t + rnd(2.5, 7)/Math.max(.4, wxLvl - 1.6); bolt = {t0: t, x: rnd(W*.1, W*.9), seed: Math.random()*1000}; sfx("thunder"); }
+}
+// Ist es gerade Nacht? (gleiche Formel wie der Himmel)
+function nightAmt(){ const d = new Date(), hr = d.getHours() + d.getMinutes()/60; return hr < 5.5 || hr > 21.5 ? .45 : hr < 7.5 ? (7.5 - hr)/2*.45 : hr > 19.5 ? (hr - 19.5)/2*.45 : 0; }
+// Himmel: Sonne, Verdunkelung, Wolken oder Sternenstaub-Schleier
+function drawWeatherSky(wi){
+  if (mode === "zeit") return;
+  const sp = wi >= 7, L = wxLvl;
+  if (!sp && wi >= 1 && L < .8 && nightAmt() === 0){
+    const a = 1 - L/.8, sx0 = W*.84, sy0 = groundY*.2, r = 16*KS;
+    const g = ctx.createRadialGradient(sx0, sy0, r*.5, sx0, sy0, r*5); g.addColorStop(0, `rgba(255,230,150,${.35*a})`); g.addColorStop(1, "rgba(255,230,150,0)");
+    ctx.fillStyle = g; ctx.fillRect(sx0 - r*5, sy0 - r*5, r*10, r*10);
+    ctx.fillStyle = `rgba(255,236,170,${.9*a})`; ctx.beginPath(); ctx.arc(sx0, sy0, r, 0, TAU); ctx.fill();
+  }
+  if (L > .3){ ctx.fillStyle = sp ? `rgba(30,10,50,${Math.min(.35, (L - .3)*.13)})` : `rgba(15,18,32,${Math.min(.45, (L - .3)*.17)})`; ctx.fillRect(-20, -20, W + 40, groundY + 20); }
+  const n = Math.round(clamp((L - .3)*3.4, 0, 9));
+  const dark = clamp(L/3, 0, 1), speed = 8 + L*16;
+  for (let i=0;i<n;i++){
+    const sz = (36 + wxRnd(i + 3)*44)*KS, span = W + sz*4;
+    const x = ((wxRnd(i)*span + rt*speed*(.7 + wxRnd(i + 9)*.6)) % span) - sz*2, y = groundY*(.08 + wxRnd(i + 5)*.32);
+    if (sp){
+      const g = ctx.createRadialGradient(x, y, 2, x, y, sz*1.4), c = i % 2 ? "160,90,255" : "90,200,255";
+      g.addColorStop(0, `rgba(${c},${.16 + dark*.18})`); g.addColorStop(1, `rgba(${c},0)`);
+      ctx.fillStyle = g; ctx.fillRect(x - sz*1.4, y - sz*1.4, sz*2.8, sz*2.8);
+    } else {
+      const c = [Math.round(225 - dark*150), Math.round(230 - dark*150), Math.round(245 - dark*140)];
+      ctx.fillStyle = `rgba(${c[0]},${c[1]},${c[2]},${.55 + dark*.35})`; ctx.beginPath();
+      ctx.ellipse(x, y, sz, sz*.32, 0, 0, TAU); ctx.ellipse(x - sz*.35, y - sz*.12, sz*.42, sz*.3, 0, 0, TAU); ctx.ellipse(x + sz*.25, y - sz*.2, sz*.5, sz*.36, 0, 0, TAU); ctx.fill();
+    }
+  }
+}
+// Vordergrund: Regen bzw. Mikrometeoriten und Blitze bzw. Plasma-Bögen
+function drawWeatherFront(wi){
+  if (mode === "zeit") return;
+  const sp = wi >= 7, L = wxLvl;
+  if (L > 1.2){
+    const n = Math.round((L - 1.2)*(reduce ? 30 : 75)), wind = sp ? .9 : .25 + L*.08, v = sp ? 520 : 760, len = sp ? 26 : 12;
+    ctx.strokeStyle = sp ? "rgba(255,225,170,.55)" : "rgba(190,215,255,.45)"; ctx.lineWidth = sp ? 1.6 : 1.2; ctx.beginPath();
+    for (let i=0;i<n;i++){
+      const y = ((wxRnd(i + 40)*(H + 60) + rt*v*(.8 + wxRnd(i + 70)*.4)) % (H + 60)) - 30;
+      const x = (((wxRnd(i + 11)*(W + 200) + y*wind) % (W + 200)) + W + 200) % (W + 200) - 100;
+      ctx.moveTo(x, y); ctx.lineTo(x - len*wind, y - len);
+    }
+    ctx.stroke();
+  }
+  if (bolt && t - bolt.t0 < .35){
+    const k = (t - bolt.t0)/.35;
+    ctx.save(); ctx.globalAlpha = 1 - k; ctx.lineCap = "round"; ctx.lineJoin = "round";
+    let x = bolt.x, y = 0; const pts = [[x, y]];
+    for (let i=1;i<=9;i++){ y = groundY*i/9; x += (wxRnd(bolt.seed + i) - .5)*46*KS; pts.push([x, y]); }
+    for (const [w, c] of [[9, sp ? "rgba(170,110,255,.35)" : "rgba(160,190,255,.35)"], [3, sp ? "#d9c2ff" : "#ffffff"]]){
+      ctx.strokeStyle = c; ctx.lineWidth = w; ctx.beginPath(); pts.forEach(([px, py], i) => i ? ctx.lineTo(px, py) : ctx.moveTo(px, py)); ctx.stroke();
+    }
+    ctx.restore();
+  }
+}
+// Heller Blitz über das ganze Bild (nicht bei "Bewegung reduzieren")
+function weatherFlash(){
+  if (!bolt || reduce || mode === "zeit") return;
+  const k = (t - bolt.t0)/.3; if (k > 1) return;
+  ctx.fillStyle = `rgba(255,255,255,${(1 - k)*.28})`; ctx.fillRect(-20, -20, W + 40, H + 40);
+}
+
+// ---------- Start-Intro ----------
+// Während der Live-Kurs lädt, marschieren ein Bullen- und ein Bären-Anführer auf und stellen sich gegenüber.
+// Sobald der Kurs da ist, rennen sie zurück und die echten Armeen marschieren ein.
+let introFig = null;
+function introStep(dt){
+  if (mode === "connecting"){
+    if (!introFig) introFig = {t0: t, leave: 0,
+      bull: {side:"bull", x:-90, y:0, s:1, ph:0, fight:false, acc:2, atkUntil:0, stuck:0},
+      bear: {side:"bear", x:W + 90, y:0, s:1, ph:0, fight:false, acc:2, atkUntil:0, stuck:0}};
+  } else if (introFig && !introFig.leave) introFig.leave = t;
+  if (!introFig) return;
+  const gap = 96*KS;
+  for (const u of [introFig.bull, introFig.bear]){
+    u.s = 2*KS; u.y = laneY(2);
+    const dir = u.side === "bull" ? -1 : 1, home = W/2 + dir*gap;
+    if (introFig.leave){ u.retreat = true; u.idle = null; u.x += dir*300*dt*KS; u.fight = false; u.ph += dt*13; }
+    else if (Math.abs(u.x - home) > 1){ u.x += Math.sign(home - u.x)*Math.min(Math.abs(home - u.x), 240*dt*KS); u.fight = false; u.ph += dt*10; }
+    else {
+      u.x = home; u.fight = true; u.ph += dt*4;
+      if (u.idle && u.idle.until < t) u.idle = null;
+      if (!u.idle && Math.random() < dt*.45) u.idle = u.side === "bull" ? {k:"scrape", t0:t, until:t + 1.4} : {k:"yawn", t0:t, until:t + 1.8};
+      if (u.idle && u.idle.k === "scrape" && !reduce && Math.random() < dt*10) fx.push({k:"dot", x:u.x + 13*u.s, y:u.y - 1, vx:rnd(-70,-20), vy:rnd(-50,-10), life:.45, max:.45, c:"rgba(225,215,195,.6)", r:rnd(1.5,3)});
+    }
+  }
+  if (introFig.leave && t - introFig.leave > 1.5) introFig = null;
+}
+function drawIntro(){
+  if (!introFig) return;
+  const a = introFig.leave ? Math.max(0, 1 - (t - introFig.leave)/1.3) : Math.min(1, (t - introFig.t0)/.3);
+  ctx.globalAlpha = a; ctx.fillStyle = "rgba(0,0,0,.25)";
+  for (const u of [introFig.bull, introFig.bear]){ ctx.beginPath(); ctx.ellipse(u.x, u.y + 1, 15*u.s, 3.2*u.s, 0, 0, TAU); ctx.fill(); }
+  drawBull(introFig.bull); drawBear(introFig.bear);
+  const b = introFig.bull, r = introFig.bear;
+  if (!introFig.leave && Math.abs(b.x - (W/2 - 96*KS)) < 2){
+    const sz = Math.round(30*KS*(1 + .06*Math.sin(t*5))), y = b.y - 16*b.s;
+    ctx.font = `400 ${sz}px ${FONT_D}`; ctx.textAlign = "center"; ctx.lineWidth = 5; ctx.strokeStyle = C.ink; ctx.strokeText("VS", (b.x + r.x)/2, y); ctx.fillStyle = C.gold; ctx.fillText("VS", (b.x + r.x)/2, y);
+  }
+  ctx.globalAlpha = 1;
+}
+
 // Verschiedene K.-o.-Arten
 function ko(u, kind, val){
   seen(u.side);
@@ -834,6 +1006,7 @@ function checkWorld(){
     worldCd = t + 2.5;
     const w = world(i), B = WORLDS[Math.max(i, prev)].lo, x = sx(B);
     banner = {text: "NEUE WELT: " + w.n.toUpperCase(), sub: w.year, color: C.gold, until: t + 3.2};
+    if (!reduce) camFx = {kind: "world", t0: rt, dur: mode === "zeit" ? 1.6 : 2.6, z0: 1.9, fx: clamp(x, W*.15, W*.85), fy: groundY - 50};
     burst(x, groundY - 60, [C.gold, "#ffffff", zn.z.grass], 50, 220);
     shake = reduce ? 0 : 14;
     if (mode !== "zeit") pop("BOSS BESIEGT!", x, groundY - 130, C.gold, 22, 1.8);
@@ -875,6 +1048,7 @@ function onBigTrade(buy, notional, src){
 }
 // Wal/Amboss/Klavier landet: Figuren je 100.000 $ ausschalten
 function land(d){
+  if (d.k === "goldwhale" || d.k === "piano") cinema(d.x, groundY - 20);
   shake = reduce ? 0 : (d.k === "piano" || d.k === "goldwhale" ? 16 : 9);
   // Genau so viele Figuren wie der Auftrag Volumen hat (je 100.000 $)
   seen(d.k === "whale" || d.k === "goldwhale" ? "whales" : "anvils");
@@ -900,7 +1074,7 @@ function onLiq(longs, v, demo){
   const sum = liqWin.reduce((a,x) => a + x.v, 0), fs = sx(frontP);
   const n = Math.min(mode === "zeit" ? 4 : 24, Math.max(1, Math.round(v/1e5)));
   for (let i=0;i<n;i++) meteors.push({v: v/n, x: fs + (longs ? -1 : 1)*rnd(20, W*.45) - (longs ? -1 : 1)*60, y: rnd(-260, -20), vx: (longs ? -1 : 1)*rnd(30, 90), vy: rnd(260, 380), side: longs ? "bull" : "bear", r: rnd(5, 9)});
-  if (v >= 1e6){ news(longs ? `<b>LIQUIDIERT!</b> Gehebelte Bullen verlieren ${usdK(v)} auf einen Schlag.` : `<b>LIQUIDIERT!</b> Gehebelte Bären verlieren ${usdK(v)} auf einen Schlag.`, true); unlock("liqbig"); }
+  if (v >= 1e6){ cinema(fs + (longs ? -1 : 1)*W*.2, groundY - 40); news(longs ? `<b>LIQUIDIERT!</b> Gehebelte Bullen verlieren ${usdK(v)} auf einen Schlag.` : `<b>LIQUIDIERT!</b> Gehebelte Bären verlieren ${usdK(v)} auf einen Schlag.`, true); unlock("liqbig"); }
   else if (v >= 100000) news(longs ? `Meteoritenschauer! ${usdK(v)} Long-Positionen zwangsgeschlossen.` : `Meteoritenschauer! ${usdK(v)} Short-Positionen zwangsgeschlossen.`);
   if (sum >= 5e6 && t > kaskadeCd){ kaskadeCd = t + 60; banner = {text: "LIQUIDATIONS-KASKADE!", sub: usdK(sum) + " in 30 Sekunden", color: C.gold, until: t + 3}; shake = reduce ? 0 : 16; unlock("kaskade"); sfx("piano"); }
 }
@@ -1300,7 +1474,7 @@ function update(dt){
   if (!lowPerf && t > 6 && frameAvg > 1/32){ lowPerf = true; resize(); }
   if (!store.intro && mode !== "connecting" && !introUntil){ introUntil = t + 5.5; store.intro = true; save(); }
   if (store.visit.streak >= 7 && t > 6) unlock("treue");
-  welcomeStep(dt);
+  welcomeStep(dt); weatherStep(dt); introStep(dt);
   if (mode === "zeit") zeitStep(dt);
   else if (isTest()){
     simAcc += dt; while (simAcc >= .2){ simAcc -= .2; demoStep(); }
@@ -1492,8 +1666,8 @@ function worldGear(hx, hy, facing){
   else if (a === "scarf"){ ctx.fillStyle = "#ff5a6a"; rr(hx - 7*facing - 6, hy + 6, 12, 4, 2); ctx.fill(); ctx.fillRect(hx - 9*facing, hy + 8, 3, 7); }
 }
 // Figur ohne Position zeichnen (für Spezialeffekte)
-const drawBullBody = u => drawBull(Object.assign({}, u, {stuck:0, x:0, y:0, yOff:0, rot:0, fight:false}));
-const drawBearBody = u => drawBear(Object.assign({}, u, {stuck:0, x:0, y:0, yOff:0, rot:0, fight:false}));
+const drawBullBody = u => drawBull(Object.assign({}, u, {stuck:-Infinity, x:0, y:0, yOff:0, rot:0, fight:false}));
+const drawBearBody = u => drawBear(Object.assign({}, u, {stuck:-Infinity, x:0, y:0, yOff:0, rot:0, fight:false}));
 // Kopfüber im Boden stecken, Beine zappeln
 function drawStuck(u, body){
   ctx.save(); ctx.translate(u.x, u.y + 6*u.s); ctx.rotate(Math.PI + Math.sin(t*14)*.08);
@@ -1889,6 +2063,9 @@ function draw(){
   ctx.setTransform(dpr,0,0,dpr,0,0);
   ctx.save();
   if (shake > .3) ctx.translate(rnd(-shake,shake), rnd(-shake,shake));
+  ctx.save();
+  const cam = camNow();
+  if (cam){ ctx.translate(cam.fx, cam.fy); ctx.scale(cam.z, cam.z); ctx.translate(-cam.fx, -cam.fy); }
   const w = zoneAt(mode === "connecting" ? 99780 : camP).z;
   const sky = ctx.createLinearGradient(0,0,0,groundY);
   sky.addColorStop(0, rgb(skyA)); sky.addColorStop(1, rgb(skyB));
@@ -1909,6 +2086,7 @@ function draw(){
     const night = hr < 5.5 || hr > 21.5 ? .45 : hr < 7.5 ? (7.5 - hr)/2*.45 : hr > 19.5 ? (hr - 19.5)/2*.45 : 0;
     if (night > 0){ ctx.fillStyle = `rgba(5,8,35,${night})`; ctx.fillRect(-20,-20,W+40,groundY+20); ctx.fillStyle = `rgba(255,244,214,${night*1.6})`; ctx.beginPath(); ctx.arc(W*.85, H*.12, H*.035, 0, Math.PI*2); ctx.fill(); }
   }
+  drawWeatherSky(wiNow);
 
   const fp = camP*ppu*.15, far = [0,1,2].map(i => hillC[i]*.55 + skyB[i]*.45);
   ctx.fillStyle = rgb(far); ctx.beginPath(); ctx.moveTo(0, groundY);
@@ -2023,6 +2201,8 @@ function draw(){
     ctx.fillStyle = "#ffd76a"; ctx.beginPath(); ctx.arc(m.x, m.y, m.r*.6, 0, Math.PI*2); ctx.fill();
   }
 
+  drawIntro();
+  drawWeatherFront(wiNow);
   for (const p of amb){
     ctx.globalAlpha = Math.min(1, p.life);
     if (p.k === "ring"){ ctx.strokeStyle = p.c; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI*2); ctx.stroke(); }
@@ -2048,9 +2228,12 @@ function draw(){
   }
   ctx.globalAlpha = 1;
 
+  ctx.restore();   // Ende Kamera
+  weatherFlash();
   const vg = ctx.createRadialGradient(W/2, H*.55, Math.min(W,H)*.35, W/2, H*.55, Math.max(W,H)*.75);
   vg.addColorStop(0, "rgba(0,0,0,0)"); vg.addColorStop(1, "rgba(0,0,8,.38)");
   ctx.fillStyle = vg; ctx.fillRect(-20, -20, W+40, H+40);
+  letterbox();
   const big = (txt, y, size, color) => { ctx.font = `400 ${size}px ${FONT_D}`; ctx.textAlign = "center"; ctx.lineWidth = Math.max(4, size/6); ctx.strokeStyle = C.ink; ctx.strokeText(txt, W/2, y); ctx.fillStyle = color; ctx.fillText(txt, W/2, y); };
   if (banner){ let sz = Math.round(Math.min(W/13, 38)); ctx.font = `400 ${sz}px ${FONT_D}`; while (ctx.measureText(banner.text).width > W - 30 && sz > 12){ sz--; ctx.font = `400 ${sz}px ${FONT_D}`; } big(banner.text, H*0.3, sz, banner.color); big(banner.sub, H*0.3 + sz*.9, Math.max(12, Math.round(sz*.5)), "#ffffff"); }
   if (trans){
@@ -2142,8 +2325,9 @@ renderAlbum(); renderWorlds(); renderEur(); hud();
 if (stream) setStream(true);
 let last = performance.now(), hudAcc = 0;
 (function loop(now){
-  const dt = Math.min(.05, (now - last)/1000); last = now;
-  update(dt); draw(); musicTick();
+  const dt = clamp((now - last)/1000, 0, .05); last = now;   // nie negativ (erstes Bild kann vor "last" liegen)
+  rt += dt;
+  update(dt*timeScale()); draw(); musicTick();
   if ((hudAcc += dt) > .2){ hudAcc = 0; hud(); }
   requestAnimationFrame(loop);
 })(last);
