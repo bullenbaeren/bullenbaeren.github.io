@@ -1,0 +1,17 @@
+{
+  "name": "Bullen vs Bären",
+  "short_name": "Bullen vs Bären",
+  "description": "Der echte Bitcoin-Kurs als Comic-Schlacht.",
+  "lang": "de",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0b0f2a",
+  "theme_color": "#0b0f2a",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

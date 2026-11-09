@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="112" fill="#0b0f2a"/>
+  <circle cx="256" cy="256" r="230" fill="#151c4d"/>
+  <!-- Bär (rechts) -->
+  <circle cx="356" cy="214" r="38" fill="#ff5c73"/><circle cx="356" cy="214" r="18" fill="#ffb3bb"/>
+  <circle cx="462" cy="214" r="38" fill="#ff5c73"/><circle cx="462" cy="214" r="18" fill="#ffb3bb"/>
+  <circle cx="380" cy="306" r="110" fill="#ff5c73"/>
+  <ellipse cx="322" cy="350" rx="52" ry="38" fill="#ffd7db"/>
+  <ellipse cx="294" cy="336" rx="18" ry="13" fill="#0b0f2a"/>
+  <circle cx="352" cy="270" r="20" fill="#fff"/><circle cx="345" cy="272" r="11" fill="#0b0f2a"/>
+  <path d="M322 238 L370 250" stroke="#0b0f2a" stroke-width="10" stroke-linecap="round"/>
+  <!-- Bulle (links) -->
+  <path d="M86 210 Q40 130 92 92" stroke="#fff4d6" stroke-width="30" fill="none" stroke-linecap="round"/>
+  <path d="M206 206 Q250 128 204 90" stroke="#fff4d6" stroke-width="30" fill="none" stroke-linecap="round"/>
+  <circle cx="146" cy="290" r="112" fill="#34d982"/>
+  <ellipse cx="196" cy="350" rx="64" ry="44" fill="#b6f5cf"/>
+  <circle cx="178" cy="346" r="9" fill="#1a9e5a"/><circle cx="214" cy="346" r="9" fill="#1a9e5a"/>
+  <circle cx="196" cy="392" r="18" fill="none" stroke="#ffc94d" stroke-width="8"/>
+  <circle cx="168" cy="262" r="20" fill="#fff"/><circle cx="175" cy="264" r="11" fill="#0b0f2a"/>
+  <!-- Funke -->
+  <path d="M262 120 l12 30 30 12 -30 12 -12 30 -12 -30 -30 -12 30 -12z" fill="#ffc94d"/>
+</svg>
