@@ -57,6 +57,13 @@
 /* 4 · Merksätze, Quiz, Quellen */
 @media (max-width:760px){ .clock{grid-template-columns:1fr;justify-items:center} .kv{width:100%} .learn{grid-template-columns:repeat(2,minmax(0,1fr))} .learn span{font-size:13px} .tm{grid-template-columns:1fr 1fr 1fr;gap:6px} .tm div{padding:8px} .st span{font-size:9px} .st em{font-size:9px} }
 @media (max-width:340px){ .learn{grid-template-columns:1fr} }
+.ssplit{display:flex;height:40px;border-radius:12px;overflow:hidden;margin-top:12px;border:1px solid var(--line)}
+.ssplit div{display:grid;place-items:center;font:700 13px var(--f-num);white-space:nowrap;overflow:hidden;min-width:0}
+.ssplit .a{background:#f7931a;color:#1a1000} .ssplit .b{background:#2ecc71;color:#06210f}
+.sleg{display:flex;gap:14px;flex-wrap:wrap;margin-top:6px;font-size:13px;color:var(--muted)} .sleg i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+table.stab{width:100%;border-collapse:collapse;margin-top:12px;font-size:14px}
+.stab th,.stab td{padding:8px 6px;border-bottom:1px solid var(--line);text-align:right} .stab th:first-child,.stab td:first-child{text-align:left}
+.stab th{font-size:12px;color:var(--muted);font-weight:600} .stab td{font-family:var(--f-num)} .stab .lo{color:var(--bear)}
 </style>
 </head>
 <body>
@@ -109,6 +116,15 @@
   </section>
 
   <!-- 4 · Merksätze -->
+<section class="card" aria-labelledby="hSs">
+    <h2 id="hSs">Wer bezahlt die Miner danach? <span class="mode" id="sMode">Verbinde …</span></h2>
+    <p class="muted" style="margin:0">Miner bekommen pro Block <b style="color:#f7931a">neue Bitcoin</b> plus die <b style="color:#2ecc71">Gebühren</b> aller Zahlungen darin. Der erste Teil halbiert sich immer weiter. So sieht es gerade aus:</p>
+    <div class="ssplit" id="sSplit"><div class="a"></div><div class="b"></div></div>
+    <div class="sleg"><span><i style="background:#f7931a"></i>Neue Bitcoin</span><span><i style="background:#2ecc71"></i>Gebühren (Schnitt der letzten Blöcke)</span></div>
+    <table class="stab" id="sTab"></table>
+    <p class="note">Ohne neue Bitcoin müssen langfristig <b>Gebühren</b> die Miner bezahlen. Ob das reicht, ist eine <b>offene Frage</b>: Befürworter setzen auf mehr Nutzung und einen höheren Kurs, Kritiker warnen, dass ein Angriff sonst billiger würde.</p>
+  </section>
+
   <section class="card" aria-labelledby="h4s">
     <h2 id="h4s">Das solltest du dir merken</h2>
     <div class="learn">
@@ -225,6 +241,23 @@ async function load(){
 }
 
 // ---------- Quiz ----------
+// Sicherheitsbudget (früher eigene Welt "Miner-Lohn"): Anteil Gebühren heute und bei gleichen Gebühren in Zukunft
+{
+  const btc = v => v.toLocaleString("de-DE", {maximumFractionDigits: v < 0.01 ? 4 : 3});
+  const sub = y => y >= 2140 ? 0 : 3.125/Math.pow(2, Math.floor((y - 2024)/4));
+  const show = (fee, live) => {
+    const t = 3.125 + fee, [a, b] = $("sSplit").children, pa = 3.125/t*100;
+    a.style.flexBasis = pa + "%"; b.style.flexBasis = (100 - pa) + "%"; a.textContent = Math.round(pa) + " %"; b.textContent = 100 - pa >= 12 ? Math.round(100 - pa) + " %" : "";
+    $("sTab").innerHTML = `<tr><th>Jahr</th><th>Neue BTC</th><th>+ Gebühren</th><th>Lohn im Vergleich zu heute</th></tr>` + [new Date().getFullYear(), 2028, 2032, 2040, 2060, 2140].map((y, i) => {
+      const s = sub(y), p = (s + fee)/t*100; return `<tr><td>${i ? y : "heute"}</td><td>${btc(s)}</td><td>${btc(fee)}</td><td class="${p < 50 ? "lo" : ""}">${p >= 99.5 ? "100" : p < 1 ? "< 1" : Math.round(p)} %</td></tr>`; }).join("");
+    $("sMode").className = "mode " + (live ? "live" : "demo"); $("sMode").textContent = live ? "Live" : "Beispielwerte";
+  };
+  fetch("https://mempool.space/api/v1/blocks").then(r => r.json()).then(bl => {
+    const f = bl.map(x => x.extras && x.extras.totalFees).filter(v => v >= 0); if (!f.length) throw 0;
+    show(f.reduce((a, v) => a + v, 0)/f.length/1e8, true);
+  }).catch(() => show(0.03, false));
+}
+
 const QUIZ = [
   ["Wie oft halbiert sich die Belohnung für Miner?", ["Jedes Jahr", "Alle 210.000 Blöcke, etwa alle 4 Jahre", "Wenn der Kurs fällt"], 1, "Die Regel hängt an der Blockzahl, nicht am Kalender: alle 210.000 Blöcke. Bei rund 10 Minuten pro Block sind das etwa 4 Jahre."],
   ["Wann wird ungefähr der letzte Bitcoin geschürft?", ["2030", "2050", "Um 2140"], 2, "Weil sich die Belohnung immer weiter halbiert, kommen die letzten Bruchteile erst um das Jahr 2140 dazu, obwohl heute schon über 95 % geschürft sind."],

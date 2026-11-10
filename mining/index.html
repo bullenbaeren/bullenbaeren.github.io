@@ -24,6 +24,13 @@
 .hx.win{border-color:var(--bull)}
 .note{margin:10px 0 0;font-size:14px;color:var(--muted)} .note b{color:var(--ink)}
 @media (max-width:700px){ .kv{grid-template-columns:1fr 1fr} }
+.ekv{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px}
+.ekv div{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;padding:10px 12px} .ekv small{display:block;font-size:12px;color:var(--muted)} .ekv b{font:600 18px var(--f-num)} .ekv .g{color:var(--gold)}
+.ebars{display:grid;gap:8px;margin-top:12px} .ebars div{display:grid;grid-template-columns:10em 1fr 5.5em;align-items:center;gap:8px;font-size:13px}
+.ebars i{height:12px;border-radius:6px;background:#3a4170;display:block} .ebars .me i{background:var(--gold)} .ebars b{font:700 13px var(--f-num);text-align:right}
+.esides{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px} .esides div{border:2px solid var(--line);border-radius:14px;padding:10px 12px;font-size:14px;line-height:1.5}
+.esides .c{border-color:rgba(231,76,60,.6)} .esides .p{border-color:rgba(46,204,113,.6)} .esides b{display:block;margin-bottom:2px}
+@media (max-width:620px){ .ekv,.esides{grid-template-columns:1fr} .ebars div{grid-template-columns:7.5em 1fr 4.8em} }
 </style>
 </head>
 <body>
@@ -69,6 +76,21 @@
     </div>
   </section>
 
+<section class="card" aria-labelledby="hEs">
+    <h2 id="hEs">Wie viel Strom braucht das?</h2>
+    <p class="muted" style="margin:0">Niemand misst den Strom aller Miner direkt. Er wird aus der <b>echten Rechenleistung</b> von oben geschätzt und davon, wie sparsam die Geräte sind. Darum zeigen wir eine <b>Spanne</b>.</p>
+    <div class="ekv">
+      <div><small>Strom pro Jahr (Schätzung)</small><b class="num g" id="eY">–</b></div>
+      <div><small>So viel wie deutsche Haushalte</small><b class="num" id="eHh">–</b></div>
+      <div><small>1 Stunde Bitcoin-Strom reicht deinem Haushalt</small><b class="num" id="eHour">–</b></div>
+    </div>
+    <div class="ebars" id="eBars"></div>
+    <div class="esides">
+      <div class="c"><b>👎 Kritiker sagen</b>Ein großer Teil kommt aus Gas und Kohle. Die Geräte werden schnell zu Elektroschrott.</div>
+      <div class="p"><b>👍 Befürworter sagen</b>Miner nutzen oft überschüssigen Strom und können sich sofort abschalten. Das stützt Stromnetze.</div>
+    </div>
+  </section>
+
   <section class="card" aria-labelledby="h4s">
     <h2 id="h4s">Das solltest du dir merken</h2>
     <div class="learn">
@@ -81,7 +103,7 @@
   </section>
 
   <section class="card next" id="next" aria-label="Weiter"></section>
-  <details class="foot"><summary>Quellen</summary><p>Hashrate und Schwierigkeits-Anpassung live von <a href="https://mempool.space/mining">mempool.space</a>. Das Minen hier nutzt echtes SHA-256 in deinem Browser, Bitcoin selbst rechnet doppeltes SHA-256 mit einem echten Block-Kopf.</p></details>
+  <details class="foot"><summary>Quellen</summary><p>Hashrate und Schwierigkeits-Anpassung live von <a href="https://mempool.space/mining">mempool.space</a>. Strom-Vergleich gerundet: Deutschland rund 500 TWh, Rechenzentren weltweit rund 415 TWh (IEA, 2024), Norwegen rund 130 TWh. Das Minen hier nutzt echtes SHA-256 in deinem Browser, Bitcoin selbst rechnet doppeltes SHA-256 mit einem echten Block-Kopf.</p></details>
   <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
 </div>
 
@@ -121,6 +143,7 @@ $("go").addEventListener("click", () => {
 // Vergleich mit dem echten Netz
 function compare(){
   if (!netHash) return;
+  energy();
   $("net").textContent = fmt(netHash/1e18) + " EH/s";
   if (myRate > 0){ $("dev").textContent = big(netHash/myRate); if (diff) $("solo").textContent = dur(diff*4294967296/myRate); }
 }
@@ -141,6 +164,17 @@ async function load(){
   compare();
 }
 load();
+
+// Strom-Schätzung aus der Live-Hashrate (früher eigene Welt "Strom-Check")
+// Spanne 15 J/TH (nur neue Geräte) bis 30 J/TH (viele ältere), Mitte 22; Haushalt ca. 3.500 kWh/Jahr
+function energy(){
+  const tw = e => netHash/1e12*e/1e9*8.766, mid = tw(22), gw = netHash/1e12*22/1e9;
+  $("eY").textContent = `${fmt(tw(15))} bis ${fmt(tw(30))} TWh`;
+  $("eHh").textContent = `ca. ${fmt(mid*1e9/3500/1e6)} Mio.`;
+  $("eHour").textContent = `ca. ${fmt(gw*1e6/3500)} Jahre`;
+  const rows = [["₿ Bitcoin (Mitte)", mid, 1], ["Rechenzentren weltweit", 415], ["Deutschland", 500], ["Norwegen", 130]].sort((a, b) => b[1] - a[1]), max = rows[0][1];
+  $("eBars").innerHTML = rows.map(([n, v, me]) => `<div class="${me ? "me" : ""}"><span>${n}</span><i style="width:${(v/max*100).toFixed(1)}%"></i><b>${fmt(v)} TWh</b></div>`).join("");
+}
 
 const QUIZ = [
   ["Wie findet ein Miner einen gültigen Block?", ["Er rechnet ihn mit einer Formel aus", "Er probiert Milliarden Zahlen durch, bis der Hash passt", "Er bekommt ihn zugeteilt"], 1, "Einen passenden Hash kann man nicht berechnen, nur durch Ausprobieren finden. Das ist die Arbeit im Proof of Work."],
