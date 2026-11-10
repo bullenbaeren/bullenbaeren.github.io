@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hebel-Falle · Satsland</title>
+<meta name="description" content="Lernwelt: Hebel und Liquidation. Teste mit echten Kursen der letzten Tage, wie schnell eine gehebelte Wette alles verliert.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0b0f2a">
+<link rel="icon" href="../icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="stylesheet" href="../lern.css?v=3">
+<style>
+/* Lernwelt "Hebel": nur seitenspezifische Teile, der Rest kommt aus lern.css */
+.idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
+.ctl{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+.ctl label{display:block;font-size:13px;color:var(--muted)} .ctl .row{display:flex;align-items:center;gap:10px} .ctl .row input{flex:1}
+.ctl .row b{font:800 22px var(--f-num);min-width:4.5ch;text-align:right}
+.seg{display:flex;gap:6px;margin-top:4px} .seg .btn{flex:1;padding:9px 6px} .seg .btn[aria-pressed="true"]{outline:2px solid var(--gold);background:rgba(247,147,26,.15)}
+.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.facts div{border:1px solid var(--line);border-radius:12px;padding:8px 10px;font-size:12px;color:var(--muted)} .facts b{display:block;font:700 16px var(--f-num);color:var(--ink)}
+.facts .liq b{color:var(--bear)}
+svg.ch{width:100%;height:auto;display:block;margin-top:12px}
+.res{margin-top:10px;padding:12px 14px;border-radius:14px;border:2px solid var(--line);font-size:15px;line-height:1.5;min-height:1.5em}
+.res strong{display:block;font-size:20px} .res.ok{border-color:var(--bull)} .res.ok strong{color:var(--bull)} .res.bad{border-color:var(--bear)} .res.bad strong{color:var(--bear)}
+.acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+table.t{width:100%;border-collapse:collapse;margin-top:10px;font-size:14px}
+.t th,.t td{padding:8px 6px;border-bottom:1px solid var(--line);text-align:left} .t th{color:var(--muted);font-weight:600;font-size:12px}
+.t td b{font-family:var(--f-num)} .t tr.x td{color:var(--bear)} .t tr.x td:last-child::after{content:" 💥"}
+@media (max-width:620px){ .ctl{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a class="back" href="../">← Satsland</a><a class="back" href="../spiel/">Zum Spiel</a></div>
+  <div>
+    <h1><span class="btc">Hebel</span>-Falle</h1>
+    <p class="lead">Mit <b>Hebel</b> wettest du mit geliehenem Geld. Gewinne werden größer, aber schon eine kleine Bewegung in die falsche Richtung, und dein Einsatz ist <b>komplett weg</b>.</p>
+  </div>
+
+  <section class="card" aria-labelledby="h1s">
+    <h2 id="h1s">Teste eine Wette mit echten Kursen <span class="mode" id="mode">Verbinde …</span></h2>
+    <div class="idea">Du setzt <b>100 $</b>. Mit Hebel 10 wettest du so, als hättest du 1.000 $. Fällt der Kurs aber nur um <b>10 %</b>, ist dein Einsatz aufgebraucht. Die Börse schließt die Wette dann sofort: <b>Liquidation</b>.</div>
+    <div class="ctl">
+      <div><label for="lev">Hebel</label><div class="row"><input id="lev" type="range" min="1" max="100" value="10"><b id="levV" class="num">10×</b></div></div>
+      <div><label>Du wettest, dass Bitcoin …</label><div class="seg" id="dir"><button class="btn ghost" data-d="1" type="button" aria-pressed="true">📈 steigt (Long)</button><button class="btn ghost" data-d="-1" type="button" aria-pressed="false">📉 fällt (Short)</button></div></div>
+    </div>
+    <div class="facts">
+      <div>Du setzt<b class="num">100 $</b></div>
+      <div>Du bewegst<b class="num" id="fPos">–</b></div>
+      <div class="liq">Weg bei<b class="num" id="fLiq">–</b></div>
+    </div>
+    <div class="acts"><button class="btn" id="go" type="button">▶ Wette starten</button></div>
+    <svg class="ch" id="ch" viewBox="0 0 500 200" aria-hidden="true"></svg>
+    <div class="res" id="res" aria-live="polite"></div>
+  </section>
+
+  <section class="card" aria-labelledby="h2s">
+    <h2 id="h2s">Wie viel Bewegung verträgt welcher Hebel?</h2>
+    <p class="muted" style="margin:0" id="swing">Bitcoin schwankt stark. Zeilen in Rot wären bei der echten Schwankung der letzten 24 Stunden <b>liquidiert</b> worden.</p>
+    <table class="t" id="tab"></table>
+  </section>
+
+  <section class="card" aria-labelledby="h3s">
+    <h2 id="h3s">Das solltest du dir merken</h2>
+    <div class="learn">
+      <div><b>Hebel = Lupe</b><span>Hebel vergrößert <b>Gewinne und Verluste</b>. Bei 10× bedeutet 10 % Minus: alles weg.</span></div>
+      <div><b>Liquidation</b><span>Ist dein Einsatz aufgebraucht, verkauft die Börse <b>automatisch</b>. Kein Warten auf Erholung.</span></div>
+      <div><b>Gebühren fressen mit</b><span>Gehebelte Positionen kosten <b>laufend Zinsen</b> (Funding). Das Halten wird teuer.</span></div>
+      <div><b>Die meisten verlieren</b><span>Ein Großteil der Hebel-Händler verliert Geld. Bitcoin <b>ohne Hebel</b> kann nie liquidiert werden.</span></div>
+    </div>
+    <details class="qz"><summary>Teste dich: 3 Fragen</summary><div id="quiz"></div></details>
+  </section>
+
+  <section class="card next" id="next" aria-label="Weiter"></section>
+  <details class="foot"><summary>Quellen</summary><p>Stündliche Kurse der letzten 3 Tage live von Coinbase. Vereinfachte Rechnung: Liquidation, wenn der Verlust den Einsatz erreicht, ohne Gebühren, Funding und Sicherheitspuffer der Börsen. In echt wird oft noch früher liquidiert.</p></details>
+  <p class="foot">Lernen und Unterhaltung, keine Anlageberatung. Hebel-Handel kann zum Totalverlust führen.</p>
+</div>
+
+<script src="../lern.js?v=3"></script>
+<script>
+/* =====================================================================
+   HEBEL-FALLE – Lernwelt von Satsland
+   Gehebelte Wette über echte Stundenkurse der letzten 3 Tage abspielen.
+   ===================================================================== */
+(() => {
+const $ = id => document.getElementById(id);
+const usd = v => Math.round(v).toLocaleString("de-DE") + " $";
+const pct = v => v.toLocaleString("de-DE", {maximumFractionDigits: 1}) + " %";
+let C = [], live = false, lev = 10, dir = 1, timer = 0;   // C: [Tief, Hoch, Schluss] je Stunde, älteste zuerst
+
+// Liquidations-Kurs: Verlust = Einsatz, also Bewegung von 1/Hebel gegen dich
+const liqAt = (entry, l, d) => entry*(1 - d/l);
+function facts(){
+  lev = +$("lev").value; $("levV").textContent = lev + "×";
+  $("fPos").textContent = usd(100*lev);
+  $("fLiq").textContent = lev === 1 && dir === 1 ? "nie" : (dir === 1 ? "−" : "+") + pct(100/lev);
+}
+function chart(upto, entry, liq){
+  const seg = C.slice(0, upto + 1), all = C.flatMap(c => [c[0], c[1]]).concat(liq > 0 ? [liq] : []);
+  const lo = Math.min(...all)*.998, hi = Math.max(...all)*1.002, X = k => 10 + k/(C.length - 1)*480, Y = v => 190 - (v - lo)/(hi - lo)*180;
+  let s = "";
+  if (liq > 0 && liq > lo && liq < hi) s += `<line x1="10" x2="490" y1="${Y(liq).toFixed(1)}" y2="${Y(liq).toFixed(1)}" stroke="#e74c3c" stroke-width="2" stroke-dasharray="6 5"/><text x="488" y="${(Y(liq) - 5).toFixed(1)}" fill="#e74c3c" font-size="12" text-anchor="end">Liquidation</text>`;
+  s += `<line x1="10" x2="490" y1="${Y(entry).toFixed(1)}" y2="${Y(entry).toFixed(1)}" stroke="#9aa2d6" stroke-width="1" stroke-dasharray="3 4"/>`;
+  s += `<polyline points="${seg.map((c, k) => X(k).toFixed(1) + "," + Y(c[2]).toFixed(1)).join(" ")}" fill="none" stroke="#f7931a" stroke-width="2.5"/>`;
+  $("ch").innerHTML = s;
+}
+// Wette Stunde für Stunde abspielen
+$("go").onclick = () => {
+  clearInterval(timer);
+  const entry = C[0][2], liq = lev === 1 && dir === 1 ? 0 : liqAt(entry, lev, dir);
+  let k = 0;
+  $("res").className = "res"; $("res").textContent = "Läuft …";
+  timer = setInterval(() => {
+    k++; const [l, h, c] = C[k], hit = liq > 0 && (dir === 1 ? l <= liq : h >= liq);
+    chart(k, entry, liq);
+    const pnl = 100*lev*dir*(c - entry)/entry;
+    if (hit){ clearInterval(timer); $("res").className = "res bad"; $("res").innerHTML = `<strong>💥 Liquidiert nach ${k} Stunde${k > 1 ? "n" : ""}</strong>Der Kurs hat die rote Linie berührt. Deine 100 $ sind weg, auch wenn er sich danach vielleicht erholt hat.`; return; }
+    $("res").innerHTML = `Stunde ${k} von ${C.length - 1}: Wert deiner Wette <b class="num">${usd(100 + pnl)}</b>`;
+    if (k >= C.length - 1){ clearInterval(timer); const ok = pnl >= 0;
+      $("res").className = "res " + (ok ? "ok" : "bad");
+      $("res").innerHTML = `<strong>${ok ? "Überlebt: " + usd(100 + pnl) : "Überlebt, aber im Minus: " + usd(100 + pnl)}</strong>${ok ? "Glück gehabt. Probier einen höheren Hebel oder die andere Richtung." : "Nicht liquidiert, aber Geld verloren."} ${lev > 1 ? `Ohne Hebel hättest du ${usd(100 + 100*dir*(c - entry)/entry)}.` : "Ohne Hebel schwankt dein Geld nur so stark wie Bitcoin selbst."}`; }
+  }, 2400/C.length);
+};
+
+// Tabelle: Wie weit darf der Kurs laufen? Rot, wenn die echte 24-h-Schwankung gereicht hätte
+function table(){
+  const d = C.slice(-25), hi = Math.max(...d.map(c => c[1])), lo = Math.min(...d.map(c => c[0])), sw = (hi - lo)/lo*100;
+  $("swing").innerHTML = `In den letzten 24 Stunden lag Bitcoin zwischen ${usd(lo)} und ${usd(hi)}, also <b>${pct(sw)}</b> Schwankung. Hebel in Rot hätte das schon <b>liquidiert</b> haben können.`;
+  $("tab").innerHTML = `<tr><th>Hebel</th><th>Aus 100 $ werden</th><th>Alles weg bei</th></tr>` + [1, 2, 5, 10, 25, 50, 100].map(l =>
+    `<tr class="${l > 1 && 100/l <= sw ? "x" : ""}"><td><b>${l}×</b></td><td>${usd(100*l)} Wette</td><td>${l === 1 ? "nie" : pct(100/l) + " Bewegung"}</td></tr>`).join("");
+}
+
+// Echte Stundenkurse von Coinbase, sonst ein Beispielverlauf
+async function load(){
+  try {
+    const j = await (await fetch("https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600")).json();
+    if (!Array.isArray(j) || j.length < 30) throw 0;
+    C = j.slice(0, 73).reverse().map(c => [c[1], c[2], c[4]]); live = true;
+  } catch(e){
+    let p = 100000; C = []; for (let k = 0; k < 73; k++){ const c = p*(1 + Math.sin(k/6)*.006 + (Math.random() - .5)*.012); C.push([Math.min(p, c)*.996, Math.max(p, c)*1.004, c]); p = c; }
+  }
+  $("mode").className = "mode " + (live ? "live" : "demo"); $("mode").textContent = live ? "Echte Kurse, 3 Tage" : "Beispielverlauf";
+  facts(); chart(0, C[0][2], 0); table();
+}
+$("lev").addEventListener("input", facts);
+$("dir").onclick = e => { const b = e.target.closest("button"); if (!b) return; dir = +b.dataset.d; [...$("dir").children].forEach(x => x.setAttribute("aria-pressed", x === b)); facts(); };
+load();
+
+const QUIZ = [
+  ["Du setzt 100 $ mit Hebel 20 auf steigende Kurse. Ab welchem Minus ist alles weg?", ["20 %", "5 %", "50 %"], 1, "100 % geteilt durch 20 = 5 %. Schon ein normaler Tag kann so eine Bewegung bringen."],
+  ["Was passiert bei einer Liquidation?", ["Die Börse wartet, bis der Kurs sich erholt", "Die Börse schließt die Wette automatisch, dein Einsatz ist weg", "Du bekommst eine Mahnung"], 1, "Ist der Einsatz aufgebraucht, schließt die Börse sofort. Eine spätere Erholung hilft dir nicht mehr."],
+  ["Wer kann nie liquidiert werden?", ["Wer mit Hebel 2 handelt", "Wer Bitcoin ohne Hebel kauft und selbst verwahrt", "Wer nur nachts handelt"], 1, "Ohne geliehenes Geld gibt es nichts zu liquidieren. Der Kurs kann fallen, aber deine Bitcoin bleiben deine."],
+];
+Lern.quiz($("quiz"), "hebel", QUIZ, "../"); Lern.visit("hebel"); Lern.renderNext("hebel", "../");
+})();
+</script>
+</body>
+</html>

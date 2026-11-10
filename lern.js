@@ -14,7 +14,7 @@ const Lern = (() => {
     ["betrug", "Betrug erkennen", "betrug/"],
     ["sparplan", "Sparplan", "sparplan/"],
     ["lightning", "Lightning", "lightning/"],
-    ["mining", "Mining-Werkstatt", "mining/"], ["nodes", "Node-Wache", "nodes/"], ["schluessel", "Schlüssel-Labor", "schluessel/"], ["utxo", "Wechselgeld-Kasse", "utxo/"], ["wallets", "Wallet-Check", "wallets/"], ["erben", "Notfall-Plan", "erben/"], ["fomo", "Gefühls-Achterbahn", "fomo/"],
+    ["mining", "Mining-Werkstatt", "mining/"], ["nodes", "Node-Wache", "nodes/"], ["schluessel", "Schlüssel-Labor", "schluessel/"], ["utxo", "Wechselgeld-Kasse", "utxo/"], ["wallets", "Wallet-Check", "wallets/"], ["erben", "Notfall-Plan", "erben/"], ["fomo", "Gefühls-Achterbahn", "fomo/"], ["hebel", "Hebel-Falle", "hebel/"],
   ];
   const load = () => { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch(e){ return {}; } };
   const save = s => { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch(e){} };
