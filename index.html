@@ -10,19 +10,19 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Bullen vs Bären">
+<meta name="apple-mobile-web-app-title" content="Satsland">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://bullenbaeren.github.io/">
-<meta property="og:title" content="Bullen vs Bären – Bitcoin live als Comic-Schlacht">
+<meta property="og:title" content="Bullen vs Bären – Bitcoin live als Comic-Schlacht · Satsland">
 <meta property="og:description" content="Echte Trades, Wale, Liquidationen: Schau zu, wer gerade gewinnt. Vom Mikrokosmos bis ins Universum.">
 <meta property="og:image" content="https://bullenbaeren.github.io/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:locale" content="de_DE">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Bullen vs Bären – Bitcoin live als Comic-Schlacht">
+<meta name="twitter:title" content="Bullen vs Bären – Bitcoin live als Comic-Schlacht · Satsland">
 <meta name="twitter:image" content="https://bullenbaeren.github.io/og.png">
-<title>Bullen gegen Bären</title>
+<title>Bullen vs Bären · Satsland</title>
 <style>
 /* Layout: Kopfzeile mit Symbolleiste, Anzeige-Karte, große Bühne, Live-Kommentar, Weltkarte, Sammelalbum. Nacht-Indigo mit Grün/Rot für die Armeen und Gold als einziger Akzent. */
 :root{
@@ -128,6 +128,7 @@ canvas.drag{cursor:grabbing}
 .stats{display:flex;flex-wrap:wrap;gap:6px 20px;margin-top:14px;font-size:13px;color:var(--muted)}
 .stats b{color:var(--ink);font-family:var(--f-num);font-weight:500}
 .foot{font-size:12px;color:var(--muted);margin:0;max-width:75ch}
+.foot a{color:inherit;text-underline-offset:3px}
 .priv summary{cursor:pointer;display:inline-block;text-decoration:underline;text-underline-offset:3px}
 .priv p{margin:8px 0 0}
 .priv b{color:var(--ink)}
@@ -208,7 +209,7 @@ body.stream .welcome{display:none}
   <div class="top">
     <h1><span class="b">Bullen</span><span class="v">vs</span><span class="r">Bären</span></h1>
     <div class="tools">
-      <a class="pill learn" href="lernen/" title="Bitcoin spielerisch verstehen">🎓 Lernwelten</a>
+      <a class="pill learn" href="lernen/" title="Satsland: Bitcoin spielerisch verstehen">🎓 Satsland</a>
       <button class="pill time" id="timeBtn" type="button">Zeitreise</button>
       <div class="tgroup" role="group" aria-label="Einstellungen">
         <button class="ib" id="snd" type="button" aria-pressed="false" aria-label="Ton" title="Ton"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg></button>
@@ -315,7 +316,7 @@ body.stream .welcome{display:none}
     </div>
   </section>
 
-  <p class="foot">Echte Daten von Coinbase, Kraken, Binance, mempool.space, CoinGecko und alternative.me. Unterhaltung, keine Anlageberatung. Kursdaten ohne Gewähr.</p>
+  <p class="foot">Ein Spiel von <a href="lernen/">Satsland</a>. Echte Daten von Coinbase, Kraken, Binance, mempool.space, CoinGecko und alternative.me. Unterhaltung, keine Anlageberatung. Kursdaten ohne Gewähr.</p>
   <details class="foot priv"><summary>Datenschutz</summary>
     <p><b>Keine Cookies, kein Tracking, keine Analyse-Tools, keine Werbung.</b> Deine Einstellungen (Ton, Album, Besuchsserie) speichert nur dein eigener Browser.</p>
     <p>Für die Live-Daten verbindet sich dein Browser direkt mit Coinbase, Kraken, Binance, mempool.space, CoinGecko und alternative.me. Diese Dienste sehen dabei, wie bei jedem Seitenaufruf, deine IP-Adresse. Die Seite liegt bei GitHub Pages (GitHub Inc.), das technisch nötige Zugriffsdaten protokollieren kann. Schriften werden nicht nachgeladen.</p>
