@@ -23,9 +23,6 @@
 <meta name="twitter:title" content="Bullen vs Bären – Bitcoin live als Comic-Schlacht">
 <meta name="twitter:image" content="https://bullenbaeren.github.io/og.png">
 <title>Bullen gegen Bären</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Atkinson+Hyperlegible:wght@400;700&family=Martian+Mono:wght@500;600&display=swap">
 <style>
 /* Layout: Kopfzeile mit Symbolleiste, Anzeige-Karte, große Bühne, Live-Kommentar, Weltkarte, Sammelalbum. Nacht-Indigo mit Grün/Rot für die Armeen und Gold als einziger Akzent. */
 :root{
@@ -40,9 +37,10 @@
   --bear:#ff5c73;
   --gold:#ffc94d;
   --sky:#7cc4ff;
-  --f-display:"Bungee","Arial Black",Impact,sans-serif;
-  --f-body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
-  --f-num:"Martian Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  /* Nur Systemschriften: nichts wird von fremden Servern (z. B. Google) geladen – gut für den Datenschutz */
+  --f-display:"Arial Black","Segoe UI Black","Helvetica Neue",Roboto,system-ui,sans-serif;
+  --f-body:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --f-num:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,Consolas,"Liberation Mono",monospace;
   color-scheme:dark;
 }
 [hidden]{display:none!important}
@@ -50,7 +48,7 @@ body{margin:0;background:var(--night) radial-gradient(1100px 520px at 50% -180px
 .wrap{max-width:1060px;margin:0 auto;padding-block:24px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:16px}
 
 .top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px}
-h1{font-family:var(--f-display);font-weight:400;font-size:clamp(26px,5.5vw,40px);line-height:1;margin:0;letter-spacing:.01em}
+h1{font-family:var(--f-display);font-weight:900;font-size:clamp(26px,5.5vw,40px);line-height:1;margin:0;letter-spacing:.01em}
 h1 .b{color:var(--bull)} h1 .r{color:var(--bear)} h1 .v{color:var(--muted);font-size:.55em;vertical-align:.35em;margin:0 .15em}
 .tools{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .tgroup{display:flex;gap:2px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:4px}
@@ -77,13 +75,13 @@ h1 .b{color:var(--bull)} h1 .r{color:var(--bear)} h1 .v{color:var(--muted);font-
 .price .ath{display:block;margin-top:2px;color:var(--gold);opacity:.9}
 .up{color:var(--bull)!important} .down{color:var(--bear)!important}
 .meter{min-width:0}
-.meter .labels{display:flex;justify-content:space-between;gap:8px;font:400 12px var(--f-display);letter-spacing:.04em;margin-bottom:7px}
+.meter .labels{display:flex;justify-content:space-between;gap:8px;font:900 12px var(--f-display);letter-spacing:.04em;margin-bottom:7px}
 .meter .labels span:first-child{color:var(--bull)} .meter .labels span:last-child{color:var(--bear)}
 .meter .labels em{font:500 11px var(--f-num);font-style:normal;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;align-self:center}
 .mbar{position:relative;height:14px;border-radius:999px;background:linear-gradient(90deg,#c9374f,var(--bear));overflow:hidden;box-shadow:inset 0 1px 2px rgba(0,0,0,.35)}
 .mbar span{display:block;height:100%;background:linear-gradient(90deg,#1fa862,var(--bull));border-right:2px solid #fff;transition:width .4s}
 .mbar::after{content:"";position:absolute;left:50%;top:-2px;bottom:-2px;width:1px;background:rgba(255,255,255,.35)}
-.score{text-align:right;font-family:var(--f-display);font-size:24px;line-height:1;white-space:nowrap}
+.score{text-align:right;font-family:var(--f-display);font-weight:900;font-size:24px;line-height:1;white-space:nowrap}
 .score small{display:block;font:700 10px var(--f-body);color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin-top:6px}
 
 .stage{border-radius:20px;overflow:hidden;background:#0f1638;position:relative;border:1px solid var(--line);box-shadow:0 24px 60px -20px rgba(0,0,0,.6)}
@@ -97,14 +95,14 @@ canvas.drag{cursor:grabbing}
 .eyebrow{flex:none;font:500 10px var(--f-num);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
 .eyebrow::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--gold);margin-right:7px;vertical-align:1px}
 .news{margin:0;font-size:17px;min-height:3em;min-width:0}
-.news b{font-family:var(--f-display);font-weight:400;letter-spacing:.02em}
+.news b{font-family:var(--f-display);font-weight:900;letter-spacing:.02em}
 
 .panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px}
 .ph{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:12px;flex-wrap:wrap}
-.ph h2{margin:0;font-family:var(--f-display);font-weight:400;font-size:17px;letter-spacing:.03em}
+.ph h2{margin:0;font-family:var(--f-display);font-weight:900;font-size:17px;letter-spacing:.03em}
 .ph span{font-family:var(--f-num);font-size:12px;color:var(--muted)}
 .wnow{font-size:14px;margin:0 0 12px;color:var(--muted)}
-.wnow b{color:var(--ink);font-family:var(--f-display);font-weight:400;font-size:22px;margin-right:10px}
+.wnow b{color:var(--ink);font-family:var(--f-display);font-weight:900;font-size:22px;margin-right:10px}
 .wmap{position:relative;display:flex;gap:2px;height:46px;cursor:pointer;touch-action:pan-y}
 .wmap div{flex:1;min-width:0;border-radius:6px;transition:transform .2s,filter .2s}
 .wmap div:first-child{border-radius:10px 6px 6px 10px} .wmap div:nth-child(13){border-radius:6px 10px 10px 6px}
@@ -149,7 +147,7 @@ button.mode{cursor:pointer}
 .tab{font:700 14px var(--f-body);color:var(--muted);background:transparent;border:0;border-radius:999px;padding:8px 16px;cursor:pointer;white-space:nowrap}
 .tab[aria-selected=true]{background:var(--card);color:var(--ink);box-shadow:0 1px 0 rgba(255,255,255,.06) inset}
 .tab:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
-.legend summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;font-family:var(--f-display);font-size:17px;letter-spacing:.03em}
+.legend summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;font-family:var(--f-display);font-weight:900;font-size:17px;letter-spacing:.03em}
 .legend summary::-webkit-details-marker{display:none}
 .legend summary::after{content:"+";font-family:var(--f-num);color:var(--muted);font-size:20px}
 .legend[open] summary::after{content:"–"}
@@ -318,8 +316,8 @@ const PAL = {
   goldBull:{main:"#ffc94d", dark:"#c8902a", snout:"#ffe9a8"},
   goldBear:{main:"#ffc94d", dark:"#c8902a", belly:"#ffe9a8", snout:"#fff1c2"}
 };
-const FONT_D = '"Bungee","Arial Black",Impact,sans-serif';
-const FONT_N = '"Martian Mono",ui-monospace,Menlo,monospace';
+const FONT_D = '"Arial Black","Segoe UI Black","Helvetica Neue",Roboto,system-ui,sans-serif';   // immer mit Gewicht 900 nutzen
+const FONT_N = 'ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,Consolas,monospace';
 
 // ---------- Welten (Größenordnungen) mit Zonen (je ~5 %) ----------
 const Z = (n, sky, hill, ground, grass, deco, amb, extra) => Object.assign({n, sky, hill, ground, grass, deco, amb}, extra || {});
@@ -1132,7 +1130,7 @@ function drawIntro(){
   const b = introFig.bull, r = introFig.bear;
   if (!introFig.leave && Math.abs(b.x - (W/2 - 96*KS)) < 2){
     const sz = Math.round(30*KS*(1 + .06*Math.sin(t*5))), y = b.y - 16*b.s;
-    ctx.font = `400 ${sz}px ${FONT_D}`; ctx.textAlign = "center"; ctx.lineWidth = 5; ctx.strokeStyle = C.ink; ctx.strokeText("VS", (b.x + r.x)/2, y); ctx.fillStyle = C.gold; ctx.fillText("VS", (b.x + r.x)/2, y);
+    ctx.font = `900 ${sz}px ${FONT_D}`; ctx.textAlign = "center"; ctx.lineWidth = 5; ctx.strokeStyle = C.ink; ctx.strokeText("VS", (b.x + r.x)/2, y); ctx.fillStyle = C.gold; ctx.fillText("VS", (b.x + r.x)/2, y);
   }
   ctx.globalAlpha = 1;
 }
@@ -1672,9 +1670,9 @@ function drawAthGate(){
   ctx.fillStyle = C.gold; ctx.fill(); ctx.stroke();
   // Krone mit ₿
   ctx.beginPath(); ctx.arc(x, top + 4*k, 11*k, 0, Math.PI*2); ctx.fillStyle = C.gold; ctx.fill(); ctx.stroke();
-  ctx.fillStyle = "#8a5a10"; ctx.font = `400 ${Math.round(13*k)}px ${FONT_D}`; ctx.textAlign = "center"; ctx.fillText("₿", x, top + 9*k);
+  ctx.fillStyle = "#8a5a10"; ctx.font = `900 ${Math.round(13*k)}px ${FONT_D}`; ctx.textAlign = "center"; ctx.fillText("₿", x, top + 9*k);
   // Schild
-  ctx.font = `400 ${Math.round(11*k + 2)}px ${FONT_D}`; const t1 = "ALLZEITHOCH", w1 = ctx.measureText(t1).width + 16;
+  ctx.font = `900 ${Math.round(11*k + 2)}px ${FONT_D}`; const t1 = "ALLZEITHOCH", w1 = ctx.measureText(t1).width + 16;
   ctx.fillStyle = C.ink; rr(x - w1/2, top + 40*k, w1, 18*k + 4, 6); ctx.fill();
   ctx.fillStyle = C.gold; ctx.fillText(t1, x, top + 40*k + 13*k + 2);
   ctx.font = `600 ${W<560?9:10}px ${FONT_N}`; ctx.fillStyle = "#ffffff"; ctx.fillText(money(ath), x, top + 72*k);
@@ -2011,7 +2009,7 @@ function sweat(x, y){ ctx.fillStyle = "#8fd3ff"; ctx.beginPath(); ctx.moveTo(x, 
 // Kleines Schild (Statuen)
 function sign(x, y, text, bg, fg){
   ctx.fillStyle = "#8a6a44"; ctx.fillRect(x-1, y, 2, 22);
-  ctx.font = `400 6px ${FONT_D}`; const w = ctx.measureText(text).width + 6;
+  ctx.font = `900 6px ${FONT_D}`; const w = ctx.measureText(text).width + 6;
   ctx.fillStyle = bg; rr(x - w/2, y - 9, w, 10, 2); ctx.fill();
   ctx.fillStyle = fg; ctx.textAlign = "center"; ctx.fillText(text, x, y - 1.8);
 }
@@ -2095,7 +2093,7 @@ function bullBody(u, P, losing, closed){
   ctx.beginPath(); ctx.ellipse(-1,-14,15,10,0,0,TAU); ctx.fillStyle = P.main; ctx.fill(); ctx.strokeStyle = O; ctx.lineWidth = L; ctx.stroke();
   ctx.fillStyle = "rgba(255,255,255,.3)"; ctx.beginPath(); ctx.ellipse(-3,-18,7,2.4,0,0,TAU); ctx.fill();
   // Goldkette mit ₿
-  if (u.acc === 2){ ctx.strokeStyle = C.gold; ctx.lineWidth = 1.8; ctx.beginPath(); ctx.arc(10,-17,7,.6,2.3); ctx.stroke(); ctx.beginPath(); ctx.arc(8,-10,2.6,0,TAU); ctx.fillStyle = C.gold; ctx.fill(); ctx.strokeStyle = O; ctx.lineWidth = 1; ctx.stroke(); ctx.fillStyle = O; ctx.font = `400 4px ${FONT_D}`; ctx.textAlign = "center"; ctx.fillText("₿",8,-8.6); }
+  if (u.acc === 2){ ctx.strokeStyle = C.gold; ctx.lineWidth = 1.8; ctx.beginPath(); ctx.arc(10,-17,7,.6,2.3); ctx.stroke(); ctx.beginPath(); ctx.arc(8,-10,2.6,0,TAU); ctx.fillStyle = C.gold; ctx.fill(); ctx.strokeStyle = O; ctx.lineWidth = 1; ctx.stroke(); ctx.fillStyle = O; ctx.font = `900 4px ${FONT_D}`; ctx.textAlign = "center"; ctx.fillText("₿",8,-8.6); }
   // Hörner: kurz, kräftig, seitlich ausladend, dunklere Spitzen
   const horn = (bx,by,cx,cy,tx,ty) => {
     ctx.lineCap = "round";
@@ -2235,7 +2233,7 @@ function drawGrave(g){
   ctx.fillStyle = "#7a7f9a"; ctx.beginPath(); ctx.moveTo(-11*k, 0); ctx.lineTo(-11*k, -20*k*rise); ctx.arc(0, -20*k*rise, 11*k, Math.PI, 0); ctx.lineTo(11*k, 0); ctx.closePath(); ctx.fill();
   ctx.fillStyle = "#5a5f7a"; ctx.fillRect(-14*k, -2*k, 28*k, 4*k);
   ctx.fillStyle = "#e8eaf6"; ctx.textAlign = "center";
-  ctx.font = `400 ${Math.round(6*k + 2)}px ${FONT_D}`; ctx.fillText("R.I.P.", 0, -20*k*rise);
+  ctx.font = `900 ${Math.round(6*k + 2)}px ${FONT_D}`; ctx.fillText("R.I.P.", 0, -20*k*rise);
   ctx.font = `600 ${Math.round(5*k + 3)}px ${FONT_N}`; ctx.fillText(g.label.replace("R.I.P. ", ""), 0, -10*k*rise);
   ctx.restore(); ctx.globalAlpha = 1;
 }
@@ -2250,7 +2248,7 @@ function drawWhale(d, gold){
   ctx.strokeStyle = C.ink; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(-30,-16,5,.2,Math.PI-.4); ctx.stroke();
   ctx.strokeStyle = gold ? "#fff1c2" : "#7cc4ff"; ctx.lineWidth = 3; ctx.lineCap = "round";
   ctx.beginPath(); ctx.moveTo(-10,-44); ctx.lineTo(-10,-56); ctx.moveTo(-10,-50); ctx.lineTo(-18,-60); ctx.moveTo(-10,-50); ctx.lineTo(-2,-60); ctx.stroke();
-  ctx.fillStyle = "#ffffff"; ctx.font = `400 13px ${FONT_D}`; ctx.textAlign = "center"; ctx.fillText(d.label, 0, -68);
+  ctx.fillStyle = "#ffffff"; ctx.font = `900 13px ${FONT_D}`; ctx.textAlign = "center"; ctx.fillText(d.label, 0, -68);
   ctx.restore();
 }
 // Amboss (Großverkauf)
@@ -2258,8 +2256,8 @@ function drawAnvil(d){
   ctx.save(); ctx.translate(d.x, d.y); const s = KS; ctx.scale(s, s);
   ctx.fillStyle = "#5b6080";
   ctx.beginPath(); ctx.moveTo(-34,-34); ctx.lineTo(30,-34); ctx.lineTo(42,-26); ctx.lineTo(18,-22); ctx.lineTo(14,-10); ctx.lineTo(24,0); ctx.lineTo(-24,0); ctx.lineTo(-14,-10); ctx.lineTo(-18,-22); ctx.lineTo(-34,-26); ctx.closePath(); ctx.fill();
-  ctx.fillStyle = C.bear; ctx.font = `400 12px ${FONT_D}`; ctx.textAlign = "center"; ctx.fillText("SELL", 0, -24);
-  ctx.fillStyle = "#ffffff"; ctx.font = `400 13px ${FONT_D}`; ctx.fillText(d.label, 0, -46);
+  ctx.fillStyle = C.bear; ctx.font = `900 12px ${FONT_D}`; ctx.textAlign = "center"; ctx.fillText("SELL", 0, -24);
+  ctx.fillStyle = "#ffffff"; ctx.font = `900 13px ${FONT_D}`; ctx.fillText(d.label, 0, -46);
   ctx.restore();
 }
 // Klavier (Verkauf ab 1 Mio. $)
@@ -2270,7 +2268,7 @@ function drawPiano(d){
   ctx.fillStyle = "#ffffff"; ctx.fillRect(-36,-16,72,10);
   ctx.fillStyle = "#1b1b2a"; for (let i=0;i<8;i++) if (i%7 !== 2) ctx.fillRect(-32 + i*9, -16, 4, 6);
   ctx.fillRect(-36,-6,4,8); ctx.fillRect(32,-6,4,8);
-  ctx.fillStyle = "#ffffff"; ctx.font = `400 11px ${FONT_D}`; ctx.textAlign = "center"; ctx.fillText(d.label, 0, -56);
+  ctx.fillStyle = "#ffffff"; ctx.font = `900 11px ${FONT_D}`; ctx.textAlign = "center"; ctx.fillText(d.label, 0, -56);
   ctx.restore();
 }
 // Satoshis Geist (Denkmal überquert)
@@ -2280,8 +2278,8 @@ function drawGhost(g){
   for (let i=0;i<4;i++) ctx.quadraticCurveTo(13.5 - i*9, 8, 9 - i*9, 0);
   ctx.closePath(); ctx.fill();
   ctx.fillStyle = C.ink; ctx.beginPath(); ctx.arc(-6,-32,2.5,0,Math.PI*2); ctx.arc(6,-32,2.5,0,Math.PI*2); ctx.fill();
-  ctx.fillStyle = C.gold; ctx.font = `400 14px ${FONT_D}`; ctx.textAlign = "center"; ctx.fillText("₿", 0, -14);
-  ctx.fillStyle = "#ffffff"; ctx.font = `400 11px ${FONT_D}`; ctx.fillText("SATOSHI", 0, -54);
+  ctx.fillStyle = C.gold; ctx.font = `900 14px ${FONT_D}`; ctx.textAlign = "center"; ctx.fillText("₿", 0, -14);
+  ctx.fillStyle = "#ffffff"; ctx.font = `900 11px ${FONT_D}`; ctx.fillText("SATOSHI", 0, -54);
   ctx.restore();
 }
 
@@ -2302,7 +2300,7 @@ function deco(type, x, y, s, h){
     case "cloud": ctx.fillStyle = "rgba(255,255,255,.95)"; [[-16,-10,12],[0,-16,15],[16,-10,11],[6,-4,10],[-8,-4,10]].forEach(([a,b,r]) => { ctx.beginPath(); ctx.arc(a,b,r,0,Math.PI*2); ctx.fill(); }); if (h > .7){ ctx.fillStyle = C.gold; ctx.fillRect(-1,-40,2,22); ctx.beginPath(); ctx.arc(0,-42,4,0,Math.PI*2); ctx.fill(); } break;
     case "crystal": { const cols = ["#7af0ff","#c080ff","#ff7ad8"]; ctx.fillStyle = cols[Math.floor(h*3)]; ctx.globalAlpha = .85; ctx.beginPath(); ctx.moveTo(-8,0); ctx.lineTo(-10,-30); ctx.lineTo(-4,-42); ctx.lineTo(2,-30); ctx.lineTo(0,0); ctx.fill(); ctx.beginPath(); ctx.moveTo(2,0); ctx.lineTo(6,-24); ctx.lineTo(12,-30); ctx.lineTo(14,-20); ctx.lineTo(12,0); ctx.fill(); ctx.globalAlpha = 1; ctx.fillStyle = "rgba(255,255,255,.5)"; ctx.fillRect(-6,-34,2,18); break; }
     case "sakura": ctx.strokeStyle = "#4a2a2a"; ctx.lineWidth = 5; ctx.beginPath(); ctx.moveTo(0,0); ctx.quadraticCurveTo(-4,-20,4,-34); ctx.stroke(); ctx.fillStyle = "#ffb3c8"; [[-10,-38,12],[6,-44,14],[16,-34,10],[-2,-30,10]].forEach(([a,b,r]) => { ctx.beginPath(); ctx.arc(a,b,r,0,Math.PI*2); ctx.fill(); }); break;
-    case "crater": ctx.fillStyle = "rgba(60,60,75,.7)"; ctx.beginPath(); ctx.ellipse(0,-3,22,6,0,0,Math.PI*2); ctx.fill(); ctx.fillStyle = "rgba(200,200,215,.5)"; ctx.beginPath(); ctx.ellipse(0,-5,22,3,0,Math.PI,0); ctx.fill(); if (h > .8){ ctx.fillStyle = "#e0e0ea"; ctx.fillRect(-2,-40,2,36); ctx.fillStyle = C.bull; ctx.fillRect(0,-40,14,9); ctx.fillStyle = C.ink; ctx.font = `400 6px ${FONT_D}`; ctx.fillText("₿",4,-33); } break;
+    case "crater": ctx.fillStyle = "rgba(60,60,75,.7)"; ctx.beginPath(); ctx.ellipse(0,-3,22,6,0,0,Math.PI*2); ctx.fill(); ctx.fillStyle = "rgba(200,200,215,.5)"; ctx.beginPath(); ctx.ellipse(0,-5,22,3,0,Math.PI,0); ctx.fill(); if (h > .8){ ctx.fillStyle = "#e0e0ea"; ctx.fillRect(-2,-40,2,36); ctx.fillStyle = C.bull; ctx.fillRect(0,-40,14,9); ctx.fillStyle = C.ink; ctx.font = `900 6px ${FONT_D}`; ctx.fillText("₿",4,-33); } break;
     case "rock": ctx.fillStyle = h < .5 ? "#6a3a2a" : "#5a5a68"; ctx.beginPath(); ctx.moveTo(-16,0); ctx.lineTo(-12,-14); ctx.lineTo(-2,-20); ctx.lineTo(10,-14); ctx.lineTo(16,0); ctx.fill(); if (h > .85){ ctx.fillStyle = "#c0c0cc"; rr(18,-14,18,10,3); ctx.fill(); ctx.fillStyle = "#333"; ctx.beginPath(); ctx.arc(22,-3,3,0,Math.PI*2); ctx.arc(32,-3,3,0,Math.PI*2); ctx.fill(); ctx.fillStyle = "#c0c0cc"; ctx.fillRect(26,-24,2,10); ctx.fillRect(22,-26,10,3); } break;
     case "atom": { ctx.fillStyle = h < .5 ? "#ff5a6a" : "#7af0ff"; ctx.beginPath(); ctx.arc(0,-30,6,0,Math.PI*2); ctx.fill(); ctx.strokeStyle = "rgba(200,230,255,.7)"; ctx.lineWidth = 1.5; for (let i=0;i<3;i++){ ctx.beginPath(); ctx.ellipse(0,-30,22,7,i*Math.PI/3 + t*.5,0,Math.PI*2); ctx.stroke(); } ctx.fillStyle = "#ffffff"; for (let i=0;i<3;i++){ const a = t*3 + i*2.1; ctx.beginPath(); ctx.arc(Math.cos(a)*22*Math.cos(i*Math.PI/3) - Math.sin(a)*7*Math.sin(i*Math.PI/3), -30 + Math.cos(a)*22*Math.sin(i*Math.PI/3) + Math.sin(a)*7*Math.cos(i*Math.PI/3), 2.2, 0, Math.PI*2); ctx.fill(); } break; }
     case "cell": ctx.fillStyle = "rgba(120,220,160,.45)"; ctx.beginPath(); ctx.ellipse(0,-22,24 + Math.sin(t*2 + h*9)*2,18,0,0,Math.PI*2); ctx.fill(); ctx.strokeStyle = "rgba(160,255,200,.8)"; ctx.lineWidth = 2; ctx.stroke(); ctx.fillStyle = "#3a8a6a"; ctx.beginPath(); ctx.arc(4,-24,7,0,Math.PI*2); ctx.fill(); ctx.fillStyle = "rgba(255,255,255,.5)"; ctx.beginPath(); ctx.arc(-10,-16,3,0,Math.PI*2); ctx.arc(-6,-30,2,0,Math.PI*2); ctx.fill(); break;
@@ -2311,7 +2309,7 @@ function deco(type, x, y, s, h){
     case "windmill": ctx.fillStyle = "#e8dcc4"; ctx.beginPath(); ctx.moveTo(-10,0); ctx.lineTo(-6,-40); ctx.lineTo(6,-40); ctx.lineTo(10,0); ctx.fill(); ctx.save(); ctx.translate(0,-40); ctx.rotate(t*1.2 + h*6); ctx.fillStyle = "#ffffff"; for (let i=0;i<4;i++){ ctx.rotate(Math.PI/2); ctx.fillRect(-2,0,4,26); } ctx.restore(); ctx.fillStyle = "#6a4a2a"; ctx.beginPath(); ctx.arc(0,-40,3,0,Math.PI*2); ctx.fill(); break;
     case "mountain": ctx.fillStyle = "#5a6a8a"; ctx.beginPath(); ctx.moveTo(-46,0); ctx.lineTo(-6,-60); ctx.lineTo(36,0); ctx.fill(); ctx.fillStyle = "#ffffff"; ctx.beginPath(); ctx.moveTo(-6,-60); ctx.lineTo(-17,-44); ctx.lineTo(-9,-47); ctx.lineTo(-3,-41); ctx.lineTo(5,-46); ctx.closePath(); ctx.fill(); break;
     case "satellite": ctx.save(); ctx.translate(0,-50 - Math.sin(t + h*9)*6); ctx.rotate(Math.sin(t*.7 + h*5)*.3); ctx.fillStyle = "#c0c0cc"; ctx.fillRect(-6,-5,12,10); ctx.fillStyle = "#2a5ad8"; ctx.fillRect(-26,-3,18,6); ctx.fillRect(8,-3,18,6); ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(0,-5); ctx.lineTo(0,-12); ctx.stroke(); ctx.fillStyle = C.gold; ctx.beginPath(); ctx.arc(0,-13,2,0,Math.PI*2); ctx.fill(); ctx.restore(); break;
-    case "goldtree": ctx.strokeStyle = "#6a4a1a"; ctx.lineWidth = 5; ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(0,-30); ctx.stroke(); ctx.fillStyle = C.gold; [[-10,-36,12],[8,-40,13],[0,-48,11]].forEach(([a,b,r]) => { ctx.beginPath(); ctx.arc(a,b,r,0,Math.PI*2); ctx.fill(); }); ctx.fillStyle = "#fff1a0"; ctx.font = `400 8px ${FONT_D}`; ctx.textAlign = "center"; ctx.fillText("₿",-6,-36); ctx.fillText("₿",8,-44); break;
+    case "goldtree": ctx.strokeStyle = "#6a4a1a"; ctx.lineWidth = 5; ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(0,-30); ctx.stroke(); ctx.fillStyle = C.gold; [[-10,-36,12],[8,-40,13],[0,-48,11]].forEach(([a,b,r]) => { ctx.beginPath(); ctx.arc(a,b,r,0,Math.PI*2); ctx.fill(); }); ctx.fillStyle = "#fff1a0"; ctx.font = `900 8px ${FONT_D}`; ctx.textAlign = "center"; ctx.fillText("₿",-6,-36); ctx.fillText("₿",8,-44); break;
   }
   ctx.restore();
 }
@@ -2341,12 +2339,12 @@ function drawPortal(i){
   ctx.fillStyle = "#4a3a6a"; ctx.fillRect(x - wid/2 - 10*k, groundY - hgt, 12*k, hgt + 4); ctx.fillRect(x + wid/2 - 2*k, groundY - hgt, 12*k, hgt + 4);
   ctx.strokeStyle = C.gold; ctx.lineWidth = 8*k; ctx.beginPath(); ctx.arc(x, groundY - hgt, wid/2 + 2*k, Math.PI, 0); ctx.stroke();
   ctx.strokeStyle = `hsla(${(t*90)%360},90%,70%,.8)`; ctx.lineWidth = 3*k; ctx.beginPath(); ctx.ellipse(x, groundY - hgt*.55, wid*.38, hgt*.42, 0, 0, Math.PI*2); ctx.stroke();
-  ctx.font = `400 ${Math.round(11*k + 3)}px ${FONT_D}`; ctx.textAlign = "center";
+  ctx.font = `900 ${Math.round(11*k + 3)}px ${FONT_D}`; ctx.textAlign = "center";
   ctx.fillStyle = C.gold; rr(x - 44*k, groundY - hgt - wid/2 - 26*k, 88*k, 18*k, 4); ctx.fill();
   ctx.fillStyle = C.ink; ctx.fillText(usd(B), x, groundY - hgt - wid/2 - 13*k);
-  ctx.font = `400 ${Math.round(7*k + 3)}px ${FONT_D}`; ctx.lineWidth = 3; ctx.strokeStyle = C.ink; ctx.fillStyle = C.gold;
+  ctx.font = `900 ${Math.round(7*k + 3)}px ${FONT_D}`; ctx.lineWidth = 3; ctx.strokeStyle = C.ink; ctx.fillStyle = C.gold;
   ctx.strokeText(nw.year.toUpperCase(), x, groundY - hgt - wid/2 - 32*k); ctx.fillText(nw.year.toUpperCase(), x, groundY - hgt - wid/2 - 32*k);
-  ctx.fillStyle = "#ffffff"; ctx.font = `400 ${Math.round(8*k + 3)}px ${FONT_D}`;
+  ctx.fillStyle = "#ffffff"; ctx.font = `900 ${Math.round(8*k + 3)}px ${FONT_D}`;
   ctx.lineWidth = 3; ctx.strokeStyle = C.ink;
   ctx.textAlign = "right"; ctx.strokeText("← " + pw.n.toUpperCase(), x - wid/2 - 16*k, groundY - hgt + 10*k); ctx.fillText("← " + pw.n.toUpperCase(), x - wid/2 - 16*k, groundY - hgt + 10*k);
   ctx.textAlign = "left"; ctx.strokeText(nw.n.toUpperCase() + " →", x + wid/2 + 16*k, groundY - hgt + 10*k); ctx.fillText(nw.n.toUpperCase() + " →", x + wid/2 + 16*k, groundY - hgt + 10*k);
@@ -2371,7 +2369,7 @@ function drawMonument(L, n){
     ctx.fillStyle = "#7a7a9a"; ctx.fillRect(x - 6*k, groundY - 40*k, 12*k, 44*k);
     ctx.fillStyle = C.gold; ctx.beginPath(); ctx.arc(x, groundY - 52*k, 14*k, 0, Math.PI*2); ctx.fill();
     ctx.strokeStyle = "#c8902a"; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(x, groundY - 52*k, 11*k, 0, Math.PI*2); ctx.stroke();
-    ctx.fillStyle = "#8a5a10"; ctx.font = `400 ${Math.round(12*k)}px ${FONT_D}`; ctx.textAlign = "center"; ctx.fillText("₿", x, groundY - 47*k);
+    ctx.fillStyle = "#8a5a10"; ctx.font = `900 ${Math.round(12*k)}px ${FONT_D}`; ctx.textAlign = "center"; ctx.fillText("₿", x, groundY - 47*k);
     ctx.fillStyle = "#ffffff"; ctx.font = `600 ${W<560?9:10}px ${FONT_N}`; ctx.fillText(usd(L), x, groundY - 72*k);
   }
 }
@@ -2520,11 +2518,11 @@ function draw(){
       const gr = ctx.createLinearGradient(-sz/2, -sz/2, sz/2, sz/2); gr.addColorStop(0, "#ffb347"); gr.addColorStop(1, "#e8780e");
       ctx.fillStyle = gr; rr(-sz/2, -sz/2, sz, sz, 8*KS); ctx.fill();
       ctx.strokeStyle = "rgba(255,255,255,.35)"; ctx.lineWidth = 2; rr(-sz/2 + 5, -sz/2 + 5, sz - 10, sz - 10, 6*KS); ctx.stroke();
-      ctx.fillStyle = "#ffffff"; ctx.font = `400 ${Math.round(sz*.55)}px ${FONT_D}`; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("₿", 0, 2); ctx.textBaseline = "alphabetic";
+      ctx.fillStyle = "#ffffff"; ctx.font = `900 ${Math.round(sz*.55)}px ${FONT_D}`; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("₿", 0, 2); ctx.textBaseline = "alphabetic";
       ctx.restore();
       if (Math.random() < .5) fx.push({k:"dot", x: x + sz*.4, y: groundY - 2, vx: rnd(10, 60), vy: rnd(-40, -10), life: .5, max: .5, c: "rgba(230,210,180,.6)", r: rnd(2, 4)});
       ctx.textAlign = "center"; ctx.lineWidth = 4; ctx.strokeStyle = C.ink;
-      ctx.font = `400 ${Math.round(12*KS + 3)}px ${FONT_D}`; ctx.fillStyle = "#ffb347";
+      ctx.font = `900 ${Math.round(12*KS + 3)}px ${FONT_D}`; ctx.fillStyle = "#ffb347";
       const l1 = (blockAnim.fee >= 60 ? "STAU! " : "") + "BLOCK " + fmtInt(blockAnim.h), l2 = fmtInt(blockAnim.tx) + " Tx" + (blockAnim.fee >= 20 ? " · " + fmtFee(blockAnim.fee) + " sat/vB" : blockAnim.pool ? " · " + blockAnim.pool : "");
       let rows = 0; if (heavy){ for (let left = clamp(Math.round(blockAnim.fee/8), 3, 12); left > 0; rows++) left -= Math.max(1, 4 - rows); }
       const ly = heavy ? y - sz/2 - rows*13*KS*1.02 - 28*KS : y - sz*.9;
@@ -2596,7 +2594,7 @@ function draw(){
   for (const p of fx){
     ctx.globalAlpha = Math.min(1, p.life/p.max*1.5);
     if (p.k === "text"){
-      ctx.font = `400 ${Math.round(p.size*(W<560?.8:1))}px ${FONT_D}`; ctx.textAlign = "center";
+      ctx.font = `900 ${Math.round(p.size*(W<560?.8:1))}px ${FONT_D}`; ctx.textAlign = "center";
       const hw = ctx.measureText(p.text).width/2 + 8, tx = clamp(p.x, hw, W - hw);
       ctx.lineWidth = 4; ctx.strokeStyle = C.ink; ctx.strokeText(p.text, tx, p.y); ctx.fillStyle = p.c; ctx.fillText(p.text, tx, p.y);
     } else if (p.k === "ring"){ ctx.strokeStyle = p.c; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(p.x, p.y, p.r + (1 - p.life/p.max)*18, 0, Math.PI*2); ctx.stroke(); }
@@ -2611,23 +2609,23 @@ function draw(){
   vg.addColorStop(0, "rgba(0,0,0,0)"); vg.addColorStop(1, "rgba(0,0,8,.38)");
   ctx.fillStyle = vg; ctx.fillRect(-20, -20, W+40, H+40);
   letterbox();
-  const big = (txt, y, size, color) => { ctx.font = `400 ${size}px ${FONT_D}`; ctx.textAlign = "center"; ctx.lineWidth = Math.max(4, size/6); ctx.strokeStyle = C.ink; ctx.strokeText(txt, W/2, y); ctx.fillStyle = color; ctx.fillText(txt, W/2, y); };
-  if (banner){ let sz = Math.round(Math.min(W/13, 38)); ctx.font = `400 ${sz}px ${FONT_D}`; while (ctx.measureText(banner.text).width > W - 30 && sz > 12){ sz--; ctx.font = `400 ${sz}px ${FONT_D}`; } big(banner.text, H*0.3, sz, banner.color); big(banner.sub, H*0.3 + sz*.9, Math.max(12, Math.round(sz*.5)), "#ffffff"); }
+  const big = (txt, y, size, color) => { ctx.font = `900 ${size}px ${FONT_D}`; ctx.textAlign = "center"; ctx.lineWidth = Math.max(4, size/6); ctx.strokeStyle = C.ink; ctx.strokeText(txt, W/2, y); ctx.fillStyle = color; ctx.fillText(txt, W/2, y); };
+  if (banner){ let sz = Math.round(Math.min(W/13, 38)); ctx.font = `900 ${sz}px ${FONT_D}`; while (ctx.measureText(banner.text).width > W - 30 && sz > 12){ sz--; ctx.font = `900 ${sz}px ${FONT_D}`; } big(banner.text, H*0.3, sz, banner.color); big(banner.sub, H*0.3 + sz*.9, Math.max(12, Math.round(sz*.5)), "#ffffff"); }
   if (trans){
     const k = (t - trans.t0)/trans.dur;
     if (!trans.done && k >= .5){ trans.done = true; try { trans.mid(); } catch(e){ console.error(e); } }
     const a = k < .5 ? k*2 : Math.max(0, (1 - k)*2);
     ctx.fillStyle = `rgba(5,7,20,${Math.min(1, a)})`; ctx.fillRect(-20, -20, W + 40, H + 40);
-    if (k < .5){ ctx.fillStyle = `rgba(124,196,255,${Math.min(1, a)})`; ctx.font = `400 ${Math.round(Math.min(W/16, 30))}px ${FONT_D}`; ctx.textAlign = "center"; ctx.fillText(zt && zt.stopping ? "ZURÜCK INS JETZT" : "ZURÜCKSPULEN …", W/2, H/2); }
+    if (k < .5){ ctx.fillStyle = `rgba(124,196,255,${Math.min(1, a)})`; ctx.font = `900 ${Math.round(Math.min(W/16, 30))}px ${FONT_D}`; ctx.textAlign = "center"; ctx.fillText(zt && zt.stopping ? "ZURÜCK INS JETZT" : "ZURÜCKSPULEN …", W/2, H/2); }
     if (k >= 1) trans = null;
   }
   if (zt){
     const mo = Math.floor(zt.m);
     // Datum klein oben links, damit es Ereignis-Banner nicht überdeckt
     const yz = Math.round(Math.min(W/14, 36));
-    ctx.textAlign = "left"; ctx.font = `400 ${yz}px ${FONT_D}`; ctx.lineWidth = 5; ctx.strokeStyle = C.ink; ctx.fillStyle = "#7cc4ff";
+    ctx.textAlign = "left"; ctx.font = `900 ${yz}px ${FONT_D}`; ctx.lineWidth = 5; ctx.strokeStyle = C.ink; ctx.fillStyle = "#7cc4ff";
     ctx.strokeText(String(Math.floor(mo/12)), 16, 16 + yz); ctx.fillText(String(Math.floor(mo/12)), 16, 16 + yz);
-    ctx.font = `400 ${Math.round(yz*.4)}px ${FONT_D}`; ctx.lineWidth = 3; ctx.fillStyle = "#ffffff";
+    ctx.font = `900 ${Math.round(yz*.4)}px ${FONT_D}`; ctx.lineWidth = 3; ctx.fillStyle = "#ffffff";
     ctx.strokeText(MONTHS[mo % 12].toUpperCase(), 18, 22 + yz + yz*.45); ctx.fillText(MONTHS[mo % 12].toUpperCase(), 18, 22 + yz + yz*.45);
     const prog = clamp((zt.m - ym(HIST[0][0]))/(zt.end - ym(HIST[0][0])), 0, 1);
     ctx.fillStyle = "rgba(255,255,255,.2)"; ctx.fillRect(0, 0, W, 4); ctx.fillStyle = "#7cc4ff"; ctx.fillRect(0, 0, W*prog, 4);
@@ -2644,10 +2642,10 @@ function draw(){
     const zn = zoneAt(price);
     ctx.textAlign = "left"; ctx.font = `600 ${Math.round(Math.min(W/22, 40))}px ${FONT_N}`; ctx.lineWidth = 6; ctx.strokeStyle = C.ink; ctx.fillStyle = "#ffffff";
     ctx.strokeText(money(price), 20, H - 70); ctx.fillText(money(price), 20, H - 70);
-    ctx.font = `400 ${Math.round(Math.min(W/45, 20))}px ${FONT_D}`; ctx.fillStyle = C.gold; ctx.lineWidth = 4;
+    ctx.font = `900 ${Math.round(Math.min(W/45, 20))}px ${FONT_D}`; ctx.fillStyle = C.gold; ctx.lineWidth = 4;
     const sub = world(zn.wi).n.toUpperCase() + " · " + zn.z.n.toUpperCase() + (mode === "live" ? "" : " · " + $("mode").textContent.toUpperCase());
     ctx.strokeText(sub, 20, H - 42); ctx.fillText(sub, 20, H - 42);
-    ctx.font = `400 ${Math.round(Math.min(W/60, 16))}px "Atkinson Hyperlegible",system-ui,sans-serif`; ctx.fillStyle = "#ffffff"; ctx.lineWidth = 4;
+    ctx.font = `400 ${Math.round(Math.min(W/60, 16))}px system-ui,-apple-system,"Segoe UI",Roboto,sans-serif`; ctx.fillStyle = "#ffffff"; ctx.lineWidth = 4;
     ctx.strokeText(newsText, 20, H - 18); ctx.fillText(newsText, 20, H - 18);
   }
   if (mode === "connecting"){ big("VERBINDE MIT DEM LIVE-KURS", H*0.32, Math.round(Math.min(W/22, 26)), C.gold); big(".".repeat(1 + Math.floor(t*2)%3), H*0.32 + 30, 26, "#ffffff"); }
