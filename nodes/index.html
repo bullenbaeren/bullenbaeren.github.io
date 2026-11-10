@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Node-Wache · Satsland</title>
+<meta name="description" content="Lernwelt: Was Nodes sind, warum niemand die Regeln von Bitcoin allein ändern kann und warum Dezentralität zählt.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0b0f2a">
+<link rel="icon" href="../icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="stylesheet" href="../lern.css?v=3">
+<style>
+/* Lernwelt "Nodes": nur seitenspezifische Teile, der Rest kommt aus lern.css */
+.src{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.src div{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;padding:10px 12px}
+.src small{display:block;font-size:12px;color:var(--muted)}
+.src b{font:600 21px var(--f-num)} .src code{display:block;font:12px var(--f-num);color:var(--muted);word-break:break-all;margin-top:4px}
+.verdict{margin-top:10px;font-weight:700} .ok{color:var(--bull)} .bad{color:var(--bear)}
+.picks{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.picks .btn[aria-pressed="true"]{outline:2px solid var(--gold)}
+.ring{position:relative;width:min(320px,100%);aspect-ratio:1;margin:8px auto}
+.ring span{position:absolute;width:26px;height:26px;margin:-13px;border-radius:50%;display:grid;place-items:center;font-size:13px;background:#1b2150;border:2px solid var(--line);transition:background .25s,border-color .25s}
+.ring span.y{background:rgba(46,204,113,.25);border-color:var(--bull)} .ring span.n{background:rgba(231,76,60,.25);border-color:var(--bear)}
+.ring .blk{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:auto;height:auto;margin:0;border-radius:12px;padding:8px 10px;font-size:13px;text-align:center;max-width:46%;background:#0b0f2a;border-color:var(--gold)}
+.row{display:flex;align-items:center;gap:12px;font-size:14px;color:var(--muted)} .row b{font:600 18px var(--f-num);color:var(--ink);min-width:4.5ch}
+.res{margin:10px 0 0;font-size:15px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a class="back" href="../">← Satsland</a><a class="back" href="../spiel/">Zum Spiel</a></div>
+  <div>
+    <h1><span class="btc">Node</span>-Wache</h1>
+    <p class="lead">Tausende Computer auf der ganzen Welt prüfen jeden Block nach denselben Regeln. Das sind die Nodes. Sie gehorchen niemandem, nur den Regeln.</p>
+  </div>
+
+  <section class="card" aria-labelledby="h1s">
+    <h2 id="h1s">Zwei Nodes, ein Bitcoin <span class="mode" id="mode">Verbinde …</span></h2>
+    <p class="muted" style="margin:0">Zwei voneinander unabhängige Betreiber, jeder mit eigener Node. Sehen sie denselben neuesten Block?</p>
+    <div class="src">
+      <div><small>mempool.space</small><b class="num" id="aH">–</b><code id="aX">–</code></div>
+      <div><small>blockstream.info</small><b class="num" id="bH">–</b><code id="bX">–</code></div>
+    </div>
+    <p class="verdict" id="vd"></p>
+  </section>
+
+  <section class="card" aria-labelledby="h2s">
+    <h2 id="h2s">Versuch, die Regeln zu brechen</h2>
+    <p class="muted" style="margin:0">Ein Miner schickt einen Block ins Netz. Such dir aus, was drinsteht, und stell ein, wie viele Miner mitmachen.</p>
+    <div class="picks" id="picks"></div>
+    <div class="row"><label for="mp">Miner, die mitmachen</label><input id="mp" type="range" min="1" max="100" value="60"><b id="mpV" class="num">60 %</b></div>
+    <div class="ring" id="ring" aria-hidden="true"></div>
+    <p class="res" id="res" aria-live="polite"></p>
+  </section>
+
+  <section class="card" aria-labelledby="h3s">
+    <h2 id="h3s">Das solltest du dir merken</h2>
+    <div class="learn">
+      <div><b>Jeder kann prüfen</b><span>Eine Node läuft auf einem <b>einfachen Computer</b> und lädt die ganze Kette selbst. Vertrauen ist nicht nötig.</span></div>
+      <div><b>Miner schlagen vor</b><span>Miner bauen Blöcke, aber <b>Nodes entscheiden</b>, ob sie gültig sind. Ungültige Blöcke werden einfach ignoriert.</span></div>
+      <div><b>Kein Chef</b><span>Es gibt keine Firma und keinen Server, den man abschalten kann. Regeln ändern sich nur, wenn <b>fast alle freiwillig</b> mitziehen.</span></div>
+      <div><b>Deshalb 21 Mio.</b><span>Mehr Bitcoin zu drucken würde jede Node ablehnen. Die Obergrenze wird <b>von allen gleichzeitig</b> bewacht.</span></div>
+    </div>
+    <details class="qz"><summary>Teste dich: 3 Fragen</summary><div id="quiz"></div></details>
+  </section>
+
+  <section class="card next" id="next" aria-label="Weiter"></section>
+  <details class="foot"><summary>Quellen</summary><p>Neuester Block live von <a href="https://mempool.space">mempool.space</a> und <a href="https://blockstream.info">blockstream.info</a>. Die Abstimmung ist eine vereinfachte Simulation: Echte Nodes prüfen Hunderte Regeln, etwa Belohnung, Signaturen, Blockgröße und doppelte Ausgaben.</p></details>
+  <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
+</div>
+
+<script src="../lern.js?v=3"></script>
+<script>
+/* =====================================================================
+   NODE-WACHE – Lernwelt von Satsland
+   1) Live: zwei unabhängige Nodes melden denselben neuesten Block.
+   2) Simulation: Nodes prüfen einen Block, egal wie viele Miner ihn wollen.
+   ===================================================================== */
+(() => {
+const $ = id => document.getElementById(id);
+
+// ---------- 1) Zwei unabhängige Quellen vergleichen ----------
+async function tip(base){
+  const h = +(await (await fetch(base + "blocks/tip/height")).text());
+  const x = (await (await fetch(base + "blocks/tip/hash")).text()).trim();
+  return h > 0 ? {h, x} : null;
+}
+async function compare(){
+  const [a, b] = await Promise.all([tip("https://mempool.space/api/").catch(() => null), tip("https://blockstream.info/api/").catch(() => null)]);
+  const put = (r, H, X) => { if (r){ $(H).textContent = "Block " + r.h.toLocaleString("de-DE"); $(X).textContent = "Hash …" + r.x.slice(-12); } };
+  put(a, "aH", "aX"); put(b, "bH", "bX");
+  const ok = a || b; $("mode").className = "mode " + (ok ? "live" : "demo"); $("mode").textContent = ok ? "Live" : "Keine Live-Daten";
+  const vd = $("vd");
+  if (a && b && a.x === b.x){ vd.className = "verdict ok"; vd.textContent = "✓ Beide sehen exakt denselben Block, ohne sich abzusprechen."; }
+  else if (a && b){ vd.className = "verdict"; vd.textContent = `Gerade unterschiedlich (${Math.abs(a.h - b.h)} Block Abstand): Ein neuer Block verbreitet sich noch. In Sekunden sind sich wieder alle einig.`; }
+  else vd.textContent = ok ? "Nur eine Quelle erreichbar." : "";
+}
+compare(); setInterval(compare, 60000);
+
+// ---------- 2) Regel-Simulation ----------
+// [Knopf, Text im Block, gültig?, Erklärung]
+const CASES = [
+  ["Normaler Block", "Belohnung + Gebühren korrekt", true, "Alles nach Regeln: Jede Node akzeptiert den Block und hängt ihn an ihre Kette."],
+  ["Belohnung 100 BTC", "Miner zahlt sich 100 BTC", false, "Die Belohnung ist festgelegt. Jede Node rechnet nach und wirft den Block weg, egal wie viele Miner ihn wollen."],
+  ["Fremde Coins", "Ausgabe ohne Signatur", false, "Ohne passende Signatur darf niemand Coins bewegen. Die Nodes lehnen den Block ab."],
+  ["Doppelt ausgeben", "Gleiche Coins zweimal", false, "Coins, die schon ausgegeben wurden, gibt es nicht mehr. Jede Node merkt das sofort."],
+  ["22 Mio. Bitcoin", "Neue Regel: mehr Coins", false, "Die Obergrenze steht im Code jeder Node. Ein Block mit zu vielen Coins ist für sie einfach ungültig."],
+];
+const N = 24, ring = $("ring"); let pick = 0, timer = 0;
+for (let i = 0; i < N; i++){ const s = document.createElement("span"), a = i/N*2*Math.PI - Math.PI/2; s.style.left = 50 + 44*Math.cos(a) + "%"; s.style.top = 50 + 44*Math.sin(a) + "%"; ring.appendChild(s); }
+const blk = document.createElement("span"); blk.className = "blk"; ring.appendChild(blk);
+CASES.forEach((c, i) => { const b = document.createElement("button"); b.type = "button"; b.className = "btn ghost"; b.textContent = c[0]; b.onclick = () => { pick = i; run(); }; $("picks").appendChild(b); });
+
+function run(){
+  clearInterval(timer);
+  const c = CASES[pick], mp = +$("mp").value, dots = [...ring.querySelectorAll("span:not(.blk)")];
+  $("mpV").textContent = mp + " %"; blk.textContent = "📦 " + c[1];
+  [...$("picks").children].forEach((b, i) => b.setAttribute("aria-pressed", i === pick));
+  dots.forEach(d => { d.className = ""; d.textContent = ""; }); $("res").textContent = "Nodes prüfen …";
+  let i = 0;
+  timer = setInterval(() => {   // eine Node nach der anderen prüft
+    const d = dots[i]; d.className = c[2] ? "y" : "n"; d.textContent = c[2] ? "✓" : "✗";
+    if (++i >= N){ clearInterval(timer);
+      $("res").innerHTML = `<b class="${c[2] ? "ok" : "bad"}">${c[2] ? `${N} von ${N} Nodes akzeptieren.` : `0 von ${N} Nodes akzeptieren, obwohl ${mp} % der Miner dahinterstehen.`}</b> ${c[3]}${c[2] ? "" : " Die Miner haben nur Strom verschwendet."}`;
+    }
+  }, 60);
+}
+$("mp").addEventListener("input", run);
+run();
+
+const QUIZ = [
+  ["Wer entscheidet, ob ein Block gültig ist?", ["Der größte Miner", "Jede Node selbst, nach den Regeln", "Eine Bitcoin-Firma"], 1, "Jede Node prüft jeden Block eigenständig. Ungültige Blöcke werden ignoriert, egal von wem sie kommen."],
+  ["90 % der Miner wollen 22 Millionen Bitcoin. Was passiert?", ["Es gibt dann 22 Millionen", "Die Nodes lehnen ihre Blöcke ab", "Bitcoin wird abgeschaltet"], 1, "Die Nodes halten an den Regeln fest. Die Miner würden wertlose Blöcke bauen, die niemand annimmt."],
+  ["Warum ist es gut, dass jeder eine Node betreiben kann?", ["Man muss niemandem vertrauen", "Man bekommt Bitcoin dafür", "Es macht Überweisungen schneller"], 0, "Mit eigener Node prüfst du selbst, statt einer Firma zu glauben. Bezahlt wird man dafür nicht."],
+];
+Lern.quiz($("quiz"), "nodes", QUIZ, "../"); Lern.visit("nodes"); Lern.renderNext("nodes", "../");
+})();
+</script>
+</body>
+</html>
