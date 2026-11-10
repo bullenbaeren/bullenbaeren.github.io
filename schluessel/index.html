@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Schlüssel-Labor · Satsland</title>
+<meta name="description" content="Lernwelt: Privater Schlüssel, öffentlicher Schlüssel und digitale Signatur. Selbst unterschreiben, fälschen versuchen und prüfen.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0b0f2a">
+<link rel="icon" href="../icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="stylesheet" href="../lern.css?v=3">
+<style>
+/* Lernwelt "Schlüssel": nur seitenspezifische Teile, der Rest kommt aus lern.css */
+.keys{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.keys div,.sig{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;padding:10px 12px}
+.keys small,.sig small{display:block;font-size:12px;color:var(--muted)}
+.keys code,.sig code{display:block;font:600 13px var(--f-num);word-break:break-all;margin-top:4px}
+.keys .priv{border-color:var(--bear)} .keys .priv code{color:#ff9b8f} .keys .pub{border-color:var(--bull)} .keys .pub code{color:#8ff0b5}
+.step{margin-top:16px;font-weight:700} .step span{color:var(--gold)}
+.msg{width:100%;box-sizing:border-box;margin-top:8px;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:#0b0f2a;color:var(--ink);font:15px inherit}
+.acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.sig{margin-top:10px}
+.vd{margin:10px 0 0;font-weight:700;min-height:1.4em} .ok{color:var(--bull)} .bad{color:var(--bear)}
+.big{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.big div{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;padding:10px 12px;font-size:14px;color:var(--muted)}
+.big b{display:block;font:600 19px var(--f-num);color:var(--ink)}
+@media (max-width:700px){ .keys,.big{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a class="back" href="../">← Satsland</a><a class="back" href="../spiel/">Zum Spiel</a></div>
+  <div>
+    <h1><span class="btc">Schlüssel</span>-Labor</h1>
+    <p class="lead">Bitcoin gehört nicht dem, der ein Passwort kennt, sondern dem, der <b>unterschreiben</b> kann. Probier es mit echter Kryptografie direkt in deinem Browser.</p>
+  </div>
+
+  <section class="card" aria-labelledby="h1s">
+    <h2 id="h1s">Unterschreiben und prüfen</h2>
+    <p class="step"><span>1.</span> Dein Schlüsselpaar</p>
+    <div class="keys">
+      <div class="priv"><small>🔒 Privater Schlüssel · geheim halten</small><code id="kPriv">…</code></div>
+      <div class="pub"><small>🔓 Öffentlicher Schlüssel · darf jeder sehen</small><code id="kPub">…</code></div>
+    </div>
+    <div class="acts"><button class="btn ghost" id="newKey" type="button">🎲 Neues Schlüsselpaar</button></div>
+
+    <p class="step"><span>2.</span> Nachricht unterschreiben</p>
+    <input class="msg" id="msg" value="Zahle 0,01 BTC an Anna" aria-label="Nachricht">
+    <div class="acts"><button class="btn" id="sign" type="button">✍️ Mit privatem Schlüssel unterschreiben</button></div>
+    <div class="sig"><small>Signatur</small><code id="sig">noch keine</code></div>
+
+    <p class="step"><span>3.</span> Jemand prüft mit deinem öffentlichen Schlüssel</p>
+    <div class="acts">
+      <button class="btn ghost" id="vOk" type="button">✅ Prüfen</button>
+      <button class="btn ghost" id="vTamper" type="button">✏️ Betrag fälschen</button>
+      <button class="btn ghost" id="vThief" type="button">🦹 Dieb unterschreibt</button>
+    </div>
+    <p class="vd" id="vd" aria-live="polite"></p>
+  </section>
+
+  <section class="card" aria-labelledby="h2s">
+    <h2 id="h2s">Warum niemand deinen Schlüssel errät</h2>
+    <p class="muted" style="margin:0">Ein privater Schlüssel ist eine Zufallszahl mit 256 Bit. Raten ist hoffnungslos:</p>
+    <div class="big">
+      <div><b class="num">≈ 1,2 × 10⁷⁷</b>mögliche Schlüssel</div>
+      <div><b class="num">≈ 10⁵⁰</b>Atome, aus denen die ganze Erde besteht</div>
+      <div><b class="num" id="myRate">–</b>Schlüssel pro Sekunde schafft dein Gerät</div>
+      <div><b class="num" id="myTime">–</b>bräuchtest du im Schnitt, um einen bestimmten zu treffen</div>
+    </div>
+  </section>
+
+  <section class="card" aria-labelledby="h3s">
+    <h2 id="h3s">Das solltest du dir merken</h2>
+    <div class="learn">
+      <div><b>Privat = Besitz</b><span>Wer den <b>privaten Schlüssel</b> hat, kann die Coins ausgeben. Verlierst du ihn, sind sie weg.</span></div>
+      <div><b>Öffentlich = Prüfen</b><span>Mit dem öffentlichen Schlüssel kann jeder prüfen, aber <b>niemand unterschreiben</b>.</span></div>
+      <div><b>Fälschung fällt auf</b><span>Ändert jemand auch nur ein Zeichen, passt die Signatur <b>nicht mehr</b>.</span></div>
+      <div><b>Seed = alle Schlüssel</b><span>Deine 12 oder 24 Wörter sind die Quelle <b>aller</b> deiner privaten Schlüssel. Deshalb niemals teilen.</span></div>
+    </div>
+    <details class="qz"><summary>Teste dich: 3 Fragen</summary><div id="quiz"></div></details>
+  </section>
+
+  <section class="card next" id="next" aria-label="Weiter"></section>
+  <details class="foot"><summary>Quellen</summary><p>Signaturen werden echt mit der Web-Crypto-Schnittstelle deines Browsers erzeugt (ECDSA, Kurve P-256). Bitcoin nutzt das gleiche Verfahren mit der Kurve secp256k1 und zusätzlich Schnorr-Signaturen (Taproot). Die Schlüssel hier sind nur zum Üben und werden nirgends gespeichert.</p></details>
+  <p class="foot">Lernen und Unterhaltung, keine Anlageberatung. Niemals echte Schlüssel oder Seed-Wörter auf Webseiten eingeben.</p>
+</div>
+
+<script src="../lern.js?v=3"></script>
+<script>
+/* =====================================================================
+   SCHLÜSSEL-LABOR – Lernwelt von Satsland
+   Echte ECDSA-Signaturen per Web Crypto: unterschreiben, prüfen, fälschen.
+   ===================================================================== */
+(() => {
+const $ = id => document.getElementById(id);
+const C = crypto.subtle, ALG = {name: "ECDSA", namedCurve: "P-256"}, SIG = {name: "ECDSA", hash: "SHA-256"};
+const hex = buf => [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, "0")).join("");
+const b64u = s => hex(Uint8Array.from(atob(s.replace(/-/g, "+").replace(/_/g, "/")), c => c.charCodeAt(0)));
+const short = h => h.slice(0, 24) + "…" + h.slice(-8);
+const enc = t => new TextEncoder().encode(t);
+let pair = null, sig = null, signedMsg = "";
+
+async function newKey(){
+  pair = await C.generateKey(ALG, true, ["sign", "verify"]);
+  const jwk = await C.exportKey("jwk", pair.privateKey);
+  $("kPriv").textContent = short(b64u(jwk.d));
+  $("kPub").textContent = short(hex(await C.exportKey("raw", pair.publicKey)));
+  sig = null; $("sig").textContent = "noch keine"; say("", "");
+}
+function say(cls, t){ $("vd").className = "vd " + cls; $("vd").textContent = t; }
+async function check(msg, s){ return C.verify(SIG, pair.publicKey, s, enc(msg)); }
+
+$("newKey").onclick = newKey;
+$("sign").onclick = async () => {
+  signedMsg = $("msg").value; sig = await C.sign(SIG, pair.privateKey, enc(signedMsg));
+  $("sig").textContent = short(hex(sig)); say("", "Unterschrieben. Jetzt kann jeder prüfen.");
+};
+const need = () => { if (!sig){ say("bad", "Erst bei Schritt 2 unterschreiben."); return false; } return true; };
+$("vOk").onclick = async () => { if (!need()) return;
+  const m = $("msg").value, ok = await check(m, sig);
+  say(ok ? "ok" : "bad", ok ? "✓ Gültig: Die Nachricht stammt von deinem Schlüssel und ist unverändert." : "✗ Ungültig: Die Nachricht wurde nach dem Unterschreiben geändert.");
+};
+$("vTamper").onclick = async () => { if (!need()) return;
+  const fake = signedMsg.replace(/\d+([,.]\d+)?/, "100") === signedMsg ? signedMsg + "!" : signedMsg.replace(/\d+([,.]\d+)?/, "100");
+  $("msg").value = fake; const ok = await check(fake, sig);
+  say(ok ? "ok" : "bad", ok ? "?" : `✗ Ungültig: „${fake}“ passt nicht zur Signatur. Schon ein geändertes Zeichen fliegt auf.`);
+};
+$("vThief").onclick = async () => { if (!need()) return;
+  const thief = await C.generateKey(ALG, false, ["sign", "verify"]), m = "Zahle alles an den Dieb";
+  const s = await C.sign(SIG, thief.privateKey, enc(m)), ok = await check(m, s);
+  say(ok ? "ok" : "bad", ok ? "?" : "✗ Ungültig: „Zahle alles an den Dieb“ ist mit dem Schlüssel des Diebs unterschrieben. Er hat nur seinen eigenen Schlüssel, deine Coins kann nur dein privater Schlüssel bewegen.");
+};
+
+// Wie schnell rät dieses Gerät Schlüssel? (Zufallszahlen erzeugen, 300 ms lang)
+function rate(){
+  const buf = new Uint8Array(32), t0 = performance.now(); let n = 0;
+  while (performance.now() - t0 < 300){ for (let i = 0; i < 1000; i++) crypto.getRandomValues(buf); n += 1000; }
+  const r = n/((performance.now() - t0)/1000), yrs = 1.16e77/2/r/3.156e7;
+  $("myRate").textContent = Math.round(r).toLocaleString("de-DE");
+  const e = Math.floor(Math.log10(yrs)), sup = String(e).split("").map(d => "⁰¹²³⁴⁵⁶⁷⁸⁹"[d]).join("");
+  $("myTime").textContent = `≈ 10${sup} Jahre`;
+}
+
+newKey().catch(() => say("bad", "Dein Browser unterstützt Web Crypto hier nicht. Öffne die Seite über https."));
+setTimeout(rate, 400);
+
+const QUIZ = [
+  ["Was darfst du anderen zeigen?", ["Den privaten Schlüssel", "Den öffentlichen Schlüssel", "Die Seed-Wörter"], 1, "Der öffentliche Schlüssel (bzw. die Adresse daraus) ist zum Teilen da. Privater Schlüssel und Seed bleiben geheim."],
+  ["Jemand ändert in einer unterschriebenen Zahlung den Betrag. Was passiert?", ["Die Zahlung geht mit dem neuen Betrag durch", "Die Signatur passt nicht mehr, alle Nodes lehnen ab", "Nur große Beträge fallen auf"], 1, "Die Signatur gilt nur für genau diese Nachricht. Jede Änderung macht sie ungültig."],
+  ["Warum kann niemand deinen privaten Schlüssel erraten?", ["Weil er geheim gespeichert ist", "Weil es mehr mögliche Schlüssel gibt als Atome auf der Erde", "Weil Raten verboten ist"], 1, "2²⁵⁶ Möglichkeiten sind so viele, dass alle Computer der Welt zusammen keine Chance hätten."],
+];
+Lern.quiz($("quiz"), "schluessel", QUIZ, "../"); Lern.visit("schluessel"); Lern.renderNext("schluessel", "../");
+})();
+</script>
+</body>
+</html>
