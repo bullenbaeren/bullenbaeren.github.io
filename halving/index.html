@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Knappheit &amp; Halving · Bullen vs Bären</title>
+<meta name="description" content="Lernwelt: Warum es nur 21 Millionen Bitcoin gibt und die Belohnung alle 4 Jahre halbiert wird. Mit Live-Countdown zum nächsten Halving.">
+<meta name="theme-color" content="#0b0f2a">
+<link rel="icon" href="../icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<meta property="og:title" content="Knappheit &amp; Halving · Bullen vs Bären">
+<meta property="og:description" content="Live-Countdown zum nächsten Bitcoin-Halving und warum es nur 21 Millionen gibt.">
+<meta property="og:image" content="https://bullenbaeren.github.io/og.png">
+<meta property="og:url" content="https://bullenbaeren.github.io/halving/">
+<style>
+/* Lernwelt "Knappheit & Halving": gleiche Farben und Schriften wie das Spiel. Nur Systemschriften, keine Cookies, kein Tracking. */
+:root{
+  --night:#0b0f2a; --night2:#151c4d; --card:#141a42; --line:rgba(255,255,255,.07);
+  --ink:#eef0ff; --muted:#9aa2d6; --bull:#34d982; --bear:#ff5c73; --gold:#ffc94d; --sky:#7cc4ff; --btc:#f7931a;
+  --f-display:"Arial Black","Segoe UI Black","Helvetica Neue",Roboto,system-ui,sans-serif;
+  --f-body:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --f-num:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,Consolas,"Liberation Mono",monospace;
+  color-scheme:dark;
+}
+[hidden]{display:none!important}
+*{box-sizing:border-box}
+body{margin:0;background:var(--night) radial-gradient(1100px 520px at 50% -180px, var(--night2), transparent 70%) no-repeat;color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5}
+.wrap{max-width:1060px;margin:0 auto;padding-block:20px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:16px}
+a{color:var(--sky)}
+.top{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px}
+.back{font:700 14px var(--f-body);color:var(--muted);text-decoration:none;display:inline-flex;align-items:center;height:40px;padding:0 14px;border:1px solid var(--line);border-radius:999px;background:var(--card)}
+.back:hover{color:var(--ink)}
+h1{font-family:var(--f-display);font-weight:900;font-size:clamp(26px,5.5vw,40px);line-height:1.05;margin:0}
+h1 span{color:var(--btc)}
+h2{margin:0 0 8px;font:900 19px var(--f-display)}
+.lead{margin:4px 0 0;color:var(--muted);max-width:62ch}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px 18px}
+.muted{color:var(--muted)}
+.num{font-family:var(--f-num);font-variant-numeric:tabular-nums}
+.mode{font:500 10px var(--f-num);letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--line);border-radius:999px;padding:3px 9px;display:inline-block;color:var(--muted)}
+.mode.live{color:var(--bull);border-color:rgba(52,217,130,.45)}
+.mode.demo{color:var(--gold);border-color:rgba(255,201,77,.45)}
+
+/* 1 · Halving-Uhr */
+.clock{display:grid;grid-template-columns:auto minmax(0,1fr);gap:24px;align-items:center}
+.ring{position:relative;width:min(240px,52vw);aspect-ratio:1}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring .in{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.ring .in b{font:600 clamp(26px,6vw,36px) var(--f-num);line-height:1}
+.ring .in small{color:var(--muted);font-size:12px;margin-top:4px}
+.kv{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.kv div{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;padding:10px 12px}
+.kv small{display:block;font-size:12px;color:var(--muted)}
+.kv b{font:600 clamp(18px,3.2vw,22px) var(--f-num)}
+.kv .g{color:var(--gold)}
+
+/* 2 · Belohnungs-Treppe */
+.stairs{display:flex;align-items:flex-end;gap:6px;height:170px;margin:8px 0 4px;border-bottom:1px solid var(--line)}
+.st{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;min-width:0}
+.st i{display:block;width:100%;border-radius:6px 6px 0 0;background:#3d4778;min-height:3px}
+.st.past i{background:#8a5a1a} .st.now i{background:var(--btc);box-shadow:0 0 0 2px var(--gold)}
+.st span{font:600 11px var(--f-num);margin-bottom:3px;white-space:nowrap}
+.st em{font-style:normal;font-size:11px;color:var(--muted);margin-top:4px;white-space:nowrap}
+.st.now em{color:var(--gold);font-weight:800}
+.note{margin:8px 0 0;font-size:14px;color:var(--muted)}
+.note b{color:var(--ink)}
+
+/* 3 · Zeitmaschine */
+.yearRow{display:flex;align-items:center;gap:12px;margin:4px 0 12px}
+.yearRow b{font:600 26px var(--f-num);min-width:4ch}
+input[type=range]{flex:1;accent-color:var(--btc);height:28px}
+input:focus-visible,.back:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.curve{width:100%;height:150px;display:block}
+.cwrap{position:relative} .cap{position:absolute;left:6px;top:12px;font:600 11px var(--f-num);color:var(--muted)}
+.axis{position:relative;height:16px;font:600 11px var(--f-num);color:var(--muted)}
+.axis span{position:absolute;transform:translateX(-50%)}
+.axis span:first-child{transform:none} .axis span:last-child{transform:translateX(-100%)}
+.tm{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:10px}
+.tm div{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;padding:10px 12px}
+.tm small{display:block;font-size:12px;color:var(--muted)}
+.tm b{font:600 clamp(16px,3vw,20px) var(--f-num)}
+
+/* 4 · Merksätze, Quiz, Quellen */
+.learn{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.learn div{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;padding:12px}
+.learn div > b{display:block;font:900 14px var(--f-display);color:var(--gold);margin-bottom:4px}
+.learn span{font-size:14px;color:var(--muted)} .learn span b{color:var(--ink)}
+.qz{margin-top:14px;border-top:1px solid var(--line);padding-top:12px}
+.qz summary{cursor:pointer;font:900 15px var(--f-display);color:var(--gold)}
+.q{margin-top:12px} .q p{margin:0 0 8px;font-weight:700}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opts button{font:700 14px var(--f-body);padding:9px 14px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--ink);cursor:pointer}
+.opts button.ok{background:var(--bull);color:#04240f;border-color:var(--bull)}
+.opts button.no{background:rgba(255,92,115,.2);border-color:var(--bear)}
+.q .why{margin:8px 0 0;font-size:14px;color:var(--muted)}
+.foot{font-size:12px;color:var(--muted);margin:0;max-width:80ch}
+.foot a{color:var(--muted)}
+.foot summary{cursor:pointer;display:inline-block;text-decoration:underline;text-underline-offset:3px;font-weight:800}
+.foot p{margin:6px 0 0}
+@media (max-width:760px){ .clock{grid-template-columns:1fr;justify-items:center} .kv{width:100%} .learn{grid-template-columns:repeat(2,minmax(0,1fr))} .learn span{font-size:13px} .tm{grid-template-columns:1fr 1fr 1fr;gap:6px} .tm div{padding:8px} .st span{font-size:9px} .st em{font-size:9px} }
+@media (max-width:340px){ .learn{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a class="back" href="../lernen/">← Lernwelten</a><a class="back" href="../">Zum Spiel</a></div>
+  <div>
+    <h1>Knappheit &amp; <span>Halving</span></h1>
+    <p class="lead">Es wird nie mehr als 21 Millionen Bitcoin geben. Alle 210.000 Blöcke halbiert sich die Belohnung der Miner. Hier siehst du live, wann es wieder so weit ist.</p>
+  </div>
+
+  <!-- 1 · Halving-Uhr -->
+  <section class="card" aria-labelledby="h1s">
+    <h2 id="h1s">Halving-Uhr <span class="mode" id="mode">Verbinde …</span></h2>
+    <div class="clock">
+      <div class="ring" aria-hidden="true">
+        <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="9"/><circle id="arc" cx="50" cy="50" r="44" fill="none" stroke="#f7931a" stroke-width="9" stroke-linecap="round" stroke-dasharray="276.5" stroke-dashoffset="276.5"/></svg>
+        <div class="in"><b id="left">–</b><small>Blöcke bis zum Halving</small></div>
+      </div>
+      <div class="kv">
+        <div><small>Nächstes Halving bei Block</small><b class="num" id="next">–</b></div>
+        <div><small>Voraussichtlich</small><b class="num g" id="eta">–</b></div>
+        <div><small>Belohnung jetzt</small><b class="num" id="rNow">–</b></div>
+        <div><small>Danach</small><b class="num" id="rNext">–</b></div>
+        <div><small>Aktueller Block</small><b class="num" id="tip">–</b></div>
+        <div><small>Diese Epoche geschafft</small><b class="num" id="pct">–</b></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2 · Belohnungs-Treppe -->
+  <section class="card" aria-labelledby="h2s">
+    <h2 id="h2s">Die Belohnungs-Treppe</h2>
+    <p class="muted" style="margin:0">So viele neue Bitcoin bekommt ein Miner pro Block, Epoche für Epoche.</p>
+    <div class="stairs" id="stairs"></div>
+    <p class="note" id="feeNote">Dazu kommen die Gebühren der Transaktionen im Block.</p>
+  </section>
+
+  <!-- 3 · Zeitmaschine -->
+  <section class="card" aria-labelledby="h3s">
+    <h2 id="h3s">Zeitmaschine bis 2140</h2>
+    <p class="muted" style="margin:0">Schieb das Jahr: Wie viele der 21 Millionen sind dann geschürft?</p>
+    <div class="yearRow"><input id="year" type="range" min="2009" max="2140" value="2026" aria-label="Jahr"><b id="yearVal" class="num">2026</b></div>
+    <div class="cwrap"><span class="cap">21 Mio.</span><svg class="curve" id="curve" viewBox="0 0 1000 150" preserveAspectRatio="none" aria-hidden="true"></svg></div>
+    <div class="axis" id="axis" aria-hidden="true"></div>
+    <div class="tm">
+      <div><small>Geschürft</small><b class="num" id="tmMined">–</b></div>
+      <div><small>Belohnung pro Block</small><b class="num" id="tmReward">–</b></div>
+      <div><small>Noch übrig</small><b class="num" id="tmLeft">–</b></div>
+    </div>
+  </section>
+
+  <!-- 4 · Merksätze -->
+  <section class="card" aria-labelledby="h4s">
+    <h2 id="h4s">Das solltest du dir merken</h2>
+    <div class="learn">
+      <div><b>21 Millionen</b><span>Die Höchstmenge steht im Code. Ändern ließe sie sich nur, wenn fast <b>alle Nutzer weltweit</b> mitmachen, und das gilt als ausgeschlossen.</span></div>
+      <div><b>Halving</b><span>Alle <b>210.000 Blöcke</b>, also etwa alle 4 Jahre, halbiert sich die Belohnung. So kommen immer langsamer neue Bitcoin dazu.</span></div>
+      <div><b>Fast alles geschürft</b><span>Schon heute sind über <b>95 %</b> im Umlauf. Der allerletzte Satoshi wird erst um das Jahr <b>2140</b> geschürft.</span></div>
+      <div><b>Und dann?</b><span>Ohne neue Bitcoin leben Miner nur noch von <b>Gebühren</b>. Ob das reicht, um das Netz sicher zu halten, ist eine der großen offenen Fragen.</span></div>
+    </div>
+    <details class="qz"><summary>Teste dich: 3 Fragen</summary><div id="quiz"></div></details>
+  </section>
+
+  <details class="foot"><summary>Quellen</summary><p>Blockhöhe, Blockzeiten und Gebühren live von <a href="https://mempool.space">mempool.space</a>. Belohnungen und Geldmenge sind exakt aus den Bitcoin-Regeln berechnet (50 BTC Startbelohnung, Halbierung alle 210.000 Blöcke). Halving-Termine: 28.11.2012, 9.7.2016, 11.5.2020, 20.4.2024. Jahre in der Zukunft sind Schätzungen mit 10 Minuten pro Block.</p></details>
+  <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
+</div>
+
+<script>
+/* =====================================================================
+   KNAPPHEIT & HALVING – Lernwelt von Bullen vs Bären
+   Alles wird exakt aus den Bitcoin-Regeln berechnet; live kommen nur Blockhöhe,
+   durchschnittliche Blockzeit und Gebühren der letzten Blöcke (mempool.space).
+   ===================================================================== */
+(() => {
+const $ = id => document.getElementById(id);
+const MP = "https://mempool.space/api/";
+const EPOCH = 210000;
+const fmt = n => Math.round(n).toLocaleString("de-DE");
+const btc = v => (v >= 1 ? v.toLocaleString("de-DE", {maximumFractionDigits: 4}) : v.toLocaleString("de-DE", {maximumSignificantDigits: 4})) + " BTC";
+// Belohnung in sats für eine Epoche (ganzzahlig halbiert, wie im Bitcoin-Code)
+const rewardSat = e => e >= 64 ? 0 : Math.floor(50e8/Math.pow(2, e));
+function minedSat(h){ let sat = 0, n = h + 1, e = 0; while (n > 0 && rewardSat(e) > 0){ const k = Math.min(n, EPOCH); sat += k*rewardSat(e); n -= k; e++; } return sat; }
+const TOTAL = minedSat(EPOCH*64);   // tatsächliche Endmenge (knapp unter 21 Mio. wegen Abrundung)
+// Bekannte Halving-Termine; weitere werden mit 10 Minuten pro Block geschätzt
+const HALVINGS = [Date.UTC(2009,0,3), Date.UTC(2012,10,28), Date.UTC(2016,6,9), Date.UTC(2020,4,11), Date.UTC(2024,3,20)];
+const epochStart = e => e < HALVINGS.length ? HALVINGS[e] : HALVINGS[4] + (e - 4)*EPOCH*600e3;
+// Blockhöhe zu einem Zeitpunkt (Vergangenheit grob linear zwischen Halvings, Zukunft 10 Min/Block)
+function heightAt(ms){
+  for (let e = 0; e < 40; e++){ const a = epochStart(e), b = epochStart(e + 1); if (ms < b) return Math.max(0, Math.round(e*EPOCH + (ms - a)/(b - a)*EPOCH)); }
+  return EPOCH*40;
+}
+
+let tip = 0, avgMs = 600e3, live = false;
+
+// ---------- Halving-Uhr ----------
+function renderClock(){
+  if (!tip) return;
+  const e = Math.floor(tip/EPOCH), next = (e + 1)*EPOCH, left = next - tip, done = (tip - e*EPOCH)/EPOCH;
+  $("left").textContent = fmt(left);
+  $("next").textContent = fmt(next);
+  $("tip").textContent = fmt(tip);
+  $("pct").textContent = (done*100).toLocaleString("de-DE", {maximumFractionDigits: 1}) + " %";
+  $("rNow").textContent = btc(rewardSat(e)/1e8);
+  $("rNext").textContent = btc(rewardSat(e + 1)/1e8);
+  const eta = new Date(Date.now() + left*avgMs);
+  $("eta").textContent = eta.toLocaleDateString("de-DE", {month: "long", year: "numeric"});
+  $("arc").style.strokeDashoffset = (276.5*(1 - done)).toFixed(1);
+  renderStairs(e);
+}
+
+// ---------- Belohnungs-Treppe ----------
+function renderStairs(cur){
+  const n = 9, box = $("stairs"); box.innerHTML = "";
+  for (let e = 0; e < n; e++){
+    const r = rewardSat(e)/1e8, y = new Date(epochStart(e)).getFullYear();
+    const d = document.createElement("div"); d.className = "st" + (e < cur ? " past" : e === cur ? " now" : "");
+    d.innerHTML = `<span>${r >= 1 ? r.toLocaleString("de-DE") : r.toLocaleString("de-DE", {maximumFractionDigits: 3})}</span><i style="height:${(r/50*100).toFixed(1)}%"></i><em>${e === cur ? "jetzt" : (e > 4 ? "~" : "") + y}</em>`;
+    box.appendChild(d);
+  }
+}
+
+// ---------- Zeitmaschine ----------
+function renderCurve(){
+  const svg = $("curve"), pts = [];
+  for (let y = 2009; y <= 2140; y++){ const h = heightAt(Date.UTC(y, 0, 1)); pts.push([(y - 2009)/131*1000, 145 - minedSat(h)/TOTAL*135]); }
+  const y = +$("year").value, x = (y - 2009)/131*1000, nowX = (new Date().getFullYear() - 2009)/131*1000;
+  svg.innerHTML = `<line x1="0" y1="10" x2="1000" y2="10" stroke="rgba(255,255,255,.15)" stroke-dasharray="6 6"/>
+    <polyline fill="none" stroke="#f7931a" stroke-width="3" points="${pts.map(p => p.map(v => v.toFixed(1)).join(",")).join(" ")}"/>
+    <line x1="${nowX}" y1="10" x2="${nowX}" y2="148" stroke="rgba(255,255,255,.25)" stroke-dasharray="3 4"/>
+    <line x1="${x}" y1="0" x2="${x}" y2="150" stroke="#ffc94d" stroke-width="2"/>`;
+  // Jahreszahlen unter der Kurve (als HTML, damit sie nicht mitgestreckt werden)
+  $("axis").innerHTML = [2009, 2040, 2070, 2100, 2140].map(v => `<span style="left:${((v - 2009)/131*100).toFixed(1)}%">${v}</span>`).join("");
+}
+function renderYear(){
+  const y = +$("year").value; $("yearVal").textContent = y;
+  const h = y === new Date().getFullYear() && tip ? tip : heightAt(Date.UTC(y, 6, 1));
+  const m = minedSat(h)/1e8, e = Math.floor(h/EPOCH);
+  $("tmMined").textContent = (m/TOTAL*1e8*100).toLocaleString("de-DE", {maximumFractionDigits: m/TOTAL*1e8 > .999 ? 3 : 1}) + " %";
+  $("tmReward").textContent = rewardSat(e) ? btc(rewardSat(e)/1e8) : "0 BTC";
+  const rest = TOTAL/1e8 - m;
+  $("tmLeft").textContent = rest >= 1000 ? fmt(rest) + " BTC" : rest.toLocaleString("de-DE", {maximumFractionDigits: 2}) + " BTC";
+  renderCurve();
+}
+$("year").addEventListener("input", renderYear);
+
+// ---------- Live-Daten ----------
+async function load(){
+  try {
+    const h = parseInt(await (await fetch(MP + "blocks/tip/height")).text(), 10);
+    if (h > 0){ tip = h; live = true; }
+  } catch(e){}
+  try { const d = await (await fetch(MP + "v1/difficulty-adjustment")).json(); if (d.timeAvg > 60e3) avgMs = d.timeAvg; } catch(e){}
+  try {
+    const bl = await (await fetch(MP + "v1/blocks")).json();
+    const withFees = bl.filter(b => b.extras && b.extras.reward > 0).slice(0, 10);
+    if (withFees.length){
+      const fees = withFees.reduce((a, b) => a + b.extras.totalFees, 0)/withFees.length, rew = withFees.reduce((a, b) => a + b.extras.reward, 0)/withFees.length;
+      $("feeNote").innerHTML = `Dazu kommen die Gebühren: In den letzten ${withFees.length} Blöcken im Schnitt <b>${btc(fees/1e8)}</b> pro Block. Das sind erst <b>${(fees/rew*100).toLocaleString("de-DE", {maximumFractionDigits: 1})} %</b> der Einnahmen eines Miners, der Rest ist noch die Belohnung.`;
+    }
+  } catch(e){}
+  if (!live){ tip = heightAt(Date.now()); $("mode").className = "mode demo"; $("mode").textContent = "Geschätzt – keine Live-Daten"; }
+  else { $("mode").className = "mode live"; $("mode").textContent = "Live"; }
+  renderClock(); renderYear();
+}
+
+// ---------- Quiz ----------
+const QUIZ = [
+  ["Wie oft halbiert sich die Belohnung für Miner?", ["Jedes Jahr", "Alle 210.000 Blöcke, etwa alle 4 Jahre", "Wenn der Kurs fällt"], 1, "Die Regel hängt an der Blockzahl, nicht am Kalender: alle 210.000 Blöcke. Bei rund 10 Minuten pro Block sind das etwa 4 Jahre."],
+  ["Wann wird ungefähr der letzte Bitcoin geschürft?", ["2030", "2050", "Um 2140"], 2, "Weil sich die Belohnung immer weiter halbiert, kommen die letzten Bruchteile erst um das Jahr 2140 dazu, obwohl heute schon über 95 % geschürft sind."],
+  ["Wovon leben Miner, wenn es keine neuen Bitcoin mehr gibt?", ["Von den Transaktionsgebühren", "Vom Staat", "Von nichts, dann endet Bitcoin"], 0, "Schon heute bekommen Miner neben der Belohnung die Gebühren aller Transaktionen im Block. Langfristig sollen diese allein reichen."],
+];
+QUIZ.forEach(([q, opts, ok, why], qi) => {
+  const d = document.createElement("div"); d.className = "q";
+  d.innerHTML = `<p>${qi + 1}. ${q}</p><div class="opts">${opts.map((o, i) => `<button type="button" data-i="${i}">${o}</button>`).join("")}</div><p class="why" hidden></p>`;
+  d.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
+    const i = +b.dataset.i;
+    d.querySelectorAll("button").forEach(x => { x.classList.remove("ok", "no"); if (+x.dataset.i === ok) x.classList.add("ok"); });
+    if (i !== ok) b.classList.add("no");
+    const w = d.querySelector(".why"); w.hidden = false; w.textContent = (i === ok ? "Richtig! " : "Nicht ganz. ") + why;
+  }));
+  $("quiz").appendChild(d);
+});
+
+$("year").value = new Date().getFullYear();
+renderYear(); load(); setInterval(load, 60000);
+})();
+</script>
+</body>
+</html>
