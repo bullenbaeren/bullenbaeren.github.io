@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Miner-Lohn · Satsland</title>
+<meta name="description" content="Lernwelt: Sicherheitsbudget. Wer bezahlt die Miner, wenn es keine neuen Bitcoin mehr gibt? Mit echten Daten der letzten Blöcke.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0b0f2a">
+<link rel="icon" href="../icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="stylesheet" href="../lern.css?v=3">
+<style>
+/* Lernwelt "Sicherheitsbudget": nur seitenspezifische Teile, der Rest kommt aus lern.css */
+.idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
+.split{display:flex;height:44px;border-radius:12px;overflow:hidden;margin-top:12px;border:1px solid var(--line)}
+.split div{display:grid;place-items:center;font:700 13px var(--f-num);color:#1a1000;transition:flex-basis .4s;min-width:0;white-space:nowrap;overflow:hidden}
+.split .sub{background:#f7931a} .split .fee{background:#2ecc71;color:#06210f}
+.leg{display:flex;gap:16px;flex-wrap:wrap;margin-top:8px;font-size:13px;color:var(--muted)} .leg i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.kv{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px}
+.kv div{border:1px solid var(--line);border-radius:14px;padding:10px 12px;background:rgba(255,255,255,.03)} .kv small{display:block;font-size:12px;color:var(--muted)} .kv b{font:700 19px var(--f-num)}
+.ctl{margin-top:14px} .ctl label{display:block;font-size:13px;color:var(--muted)} .ctl .row{display:flex;align-items:center;gap:10px} .ctl .row input{flex:1} .ctl .row b{font:800 20px var(--f-num);min-width:6.5ch;text-align:right}
+.say{margin-top:12px;font-size:15px;line-height:1.5}
+.ways{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+.ways div{border:1px solid var(--line);border-radius:14px;padding:10px 12px;font-size:14px;line-height:1.45;color:var(--muted)} .ways b{display:block;color:var(--ink);margin-bottom:2px}
+@media (max-width:620px){ .kv,.ways{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a class="back" href="../">← Satsland</a><a class="back" href="../spiel/">Zum Spiel</a></div>
+  <div>
+    <h1><span class="btc">Miner</span>-Lohn</h1>
+    <p class="lead">Miner sichern Bitcoin mit Strom und Hardware. Dafür bekommen sie einen Lohn. Doch ein Teil dieses Lohns <b>schrumpft alle 4 Jahre</b> und verschwindet um 2140 ganz. Was dann?</p>
+  </div>
+
+  <section class="card" aria-labelledby="h1s">
+    <h2 id="h1s">Was ein Miner heute pro Block bekommt <span class="mode" id="mode">Verbinde …</span></h2>
+    <div class="idea">Der Lohn hat <b>zwei Teile</b>: <b style="color:#f7931a">neue Bitcoin</b>, die das Netz frisch erzeugt, und die <b style="color:#2ecc71">Gebühren</b>, die Nutzer für ihre Zahlungen bezahlen. Das zusammen nennt man das <b>Sicherheitsbudget</b>.</div>
+    <div class="split" id="sNow"><div class="sub"></div><div class="fee"></div></div>
+    <div class="leg"><span><i style="background:#f7931a"></i>Neue Bitcoin</span><span><i style="background:#2ecc71"></i>Gebühren</span></div>
+    <div class="kv">
+      <div><small>Neue Bitcoin pro Block</small><b class="num" id="kSub">3,125 BTC</b></div>
+      <div><small>Gebühren pro Block (Schnitt der letzten Blöcke)</small><b class="num" id="kFee">–</b></div>
+      <div><small>Lohn aller Miner pro Tag</small><b class="num" id="kDay">–</b></div>
+    </div>
+  </section>
+
+  <section class="card" aria-labelledby="h2s">
+    <h2 id="h2s">Blick in die Zukunft</h2>
+    <p class="muted" style="margin:0">Schieb das Jahr nach vorne. Alle 4 Jahre halbiert sich der Anteil <b style="color:#f7931a">neue Bitcoin</b>. Wie viele Gebühren müssten dann kommen?</p>
+    <div class="ctl"><label for="yr">Jahr</label><div class="row"><input id="yr" type="range" min="2024" max="2140" value="2026"><b id="yrV" class="num">2026</b></div></div>
+    <div class="ctl"><label for="fee">Gebühren pro Block (in BTC)</label><div class="row"><input id="fee" type="range" min="0" max="200" value="3"><b id="feeV" class="num">–</b></div></div>
+    <div class="split" id="sFut"><div class="sub"></div><div class="fee"></div></div>
+    <p class="say" id="say"></p>
+  </section>
+
+  <section class="card" aria-labelledby="h3s">
+    <h2 id="h3s">Wie es weitergehen kann</h2>
+    <p class="muted" style="margin:0">Das ist eine <b>offene Frage</b>, über die Bitcoiner seit Jahren streiten. Diese Antworten werden oft genannt:</p>
+    <div class="ways">
+      <div><b>📈 Mehr Nutzung</b>Wenn mehr Menschen Bitcoin nutzen, wollen mehr in die Blöcke. Der Platz ist begrenzt, also steigen die Gebühren.</div>
+      <div><b>💵 Höherer Kurs</b>Steigt der Bitcoin-Kurs, ist auch eine kleine Belohnung in Euro viel wert. Bisher hat das jede Halbierung ausgeglichen.</div>
+      <div><b>⚠️ Die Sorge</b>Kritiker warnen: Bleiben die Gebühren niedrig, sinkt der Lohn. Dann wäre ein Angriff auf das Netz billiger.</div>
+    </div>
+  </section>
+
+  <section class="card" aria-labelledby="h4s">
+    <h2 id="h4s">Das solltest du dir merken</h2>
+    <div class="learn">
+      <div><b>Zwei Lohnquellen</b><span>Miner bekommen <b>neue Bitcoin plus Gebühren</b>. Zusammen bezahlt das die Sicherheit des Netzes.</span></div>
+      <div><b>Schrumpfender Anteil</b><span>Die neuen Bitcoin halbieren sich alle 4 Jahre. Um 2140 gibt es <b>keine mehr</b>.</span></div>
+      <div><b>Gebühren übernehmen</b><span>Langfristig sollen <b>Gebühren allein</b> die Miner bezahlen. Ob das reicht, ist offen.</span></div>
+      <div><b>Lohn = Sicherheit</b><span>Je mehr Miner verdienen, desto mehr Rechenleistung schützt das Netz und desto <b>teurer</b> wäre ein Angriff.</span></div>
+    </div>
+    <details class="qz"><summary>Teste dich: 3 Fragen</summary><div id="quiz"></div></details>
+  </section>
+
+  <section class="card next" id="next" aria-label="Weiter"></section>
+  <details class="foot"><summary>Quellen</summary><p>Belohnung und Gebühren der letzten Blöcke live von <a href="https://mempool.space">mempool.space</a>, Kurs live von Coinbase. Halbierungen alle 210.000 Blöcke, ungefähr alle 4 Jahre. Die Zukunft ist eine vereinfachte Rechnung, keine Vorhersage.</p></details>
+  <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
+</div>
+
+<script src="../lern.js?v=3"></script>
+<script>
+/* =====================================================================
+   MINER-LOHN – Lernwelt von Satsland
+   Live: Anteil neue Bitcoin vs. Gebühren pro Block. Zukunft: Halbierungen bis 2140.
+   ===================================================================== */
+(() => {
+const $ = id => document.getElementById(id);
+const b = v => v.toLocaleString("de-DE", {maximumFractionDigits: v < 0.01 ? 4 : v < 1 ? 3 : 2}) + " BTC";
+const usd = v => v >= 1e6 ? (v/1e6).toLocaleString("de-DE", {maximumFractionDigits: 1}) + " Mio. $" : Math.round(v).toLocaleString("de-DE") + " $";
+let feeNow = 0.03, price = 0, live = false;
+
+// Neue Bitcoin pro Block in einem Jahr (Halbierung 2024, 2028, ...; ab 2140 nichts mehr)
+const subsidy = y => y >= 2140 ? 0 : 3.125/Math.pow(2, Math.floor((y - 2024)/4));
+function bar(id, sub, fee){
+  const t = sub + fee || 1, ps = sub/t*100, pf = fee/t*100, [a, c] = $(id).children;
+  a.style.flexBasis = ps + "%"; c.style.flexBasis = pf + "%";
+  a.textContent = ps >= 12 ? Math.round(ps) + " %" : ""; c.textContent = pf >= 12 ? Math.round(pf) + " %" : "";
+}
+// Gebühren-Regler: logarithmisch von 0,001 bis 10 BTC pro Block
+const feeFromSlider = v => v === 0 ? 0 : Math.pow(10, -3 + v/200*4);
+const sliderFromFee = f => Math.round((Math.log10(Math.max(f, .001)) + 3)/4*200);
+function future(){
+  const y = +$("yr").value, sub = subsidy(y), fee = feeFromSlider(+$("fee").value);
+  $("yrV").textContent = y; $("feeV").textContent = b(fee); bar("sFut", sub, fee);
+  const tot = sub + fee, today = 3.125 + feeNow, share = fee/(tot || 1)*100;
+  $("say").innerHTML = (y >= 2140 ? "<b>Keine neuen Bitcoin mehr.</b> Der Lohn besteht nur noch aus Gebühren. " : `Im Jahr ${y} werden pro Block noch <b>${b(sub)}</b> neu erzeugt. `)
+    + `Mit ${b(fee)} Gebühren bekäme ein Miner <b>${b(tot)}</b> pro Block, ${tot >= today ? "<b>mehr</b> als heute" : `nur <b>${Math.round(tot/today*100)} %</b> von heute`}. Gebühren-Anteil: <b>${Math.round(share)} %</b>.`
+    + (tot < today ? (tot > 0 ? ` Damit der Lohn in Dollar gleich bleibt, müsste der Kurs auf das <b>${Math.round(today/tot).toLocaleString("de-DE")}-Fache</b> steigen.` : " Ohne Gebühren gäbe es gar keinen Lohn mehr.") : "");
+}
+
+async function load(){
+  try {
+    const bl = await (await fetch("https://mempool.space/api/v1/blocks")).json();
+    const f = bl.map(x => x.extras && x.extras.totalFees).filter(v => v >= 0);
+    if (f.length){ feeNow = f.reduce((a, v) => a + v, 0)/f.length/1e8; live = true; }
+  } catch(e){}
+  try { const j = await (await fetch("https://api.coinbase.com/v2/prices/BTC-USD/spot")).json(); price = +j.data.amount || 0; } catch(e){}
+  $("mode").className = "mode " + (live ? "live" : "demo"); $("mode").textContent = live ? "Live, letzte Blöcke" : "Beispielwerte";
+  $("kFee").textContent = b(feeNow); bar("sNow", 3.125, feeNow);
+  $("kDay").textContent = price ? usd(144*(3.125 + feeNow)*price) : b(144*(3.125 + feeNow));
+  $("fee").value = sliderFromFee(feeNow); future();
+}
+$("yr").addEventListener("input", future); $("fee").addEventListener("input", future);
+load();
+
+const QUIZ = [
+  ["Woraus besteht der Lohn eines Miners?", ["Nur aus neuen Bitcoin", "Aus neuen Bitcoin und den Gebühren der Zahlungen im Block", "Aus einer festen Zahlung einer Stiftung"], 1, "Neue Bitcoin plus Gebühren. Zusammen bezahlt das die Sicherheit des Netzes."],
+  ["Was passiert um das Jahr 2140?", ["Bitcoin wird abgeschaltet", "Es werden keine neuen Bitcoin mehr erzeugt, Miner leben nur von Gebühren", "Die Gebühren fallen weg"], 1, "Dann sind alle 21 Millionen Bitcoin erzeugt. Der Lohn kommt nur noch aus Gebühren."],
+  ["Warum ist ein hoher Miner-Lohn wichtig?", ["Damit Miner reich werden", "Weil mehr Lohn mehr Rechenleistung anzieht und Angriffe teurer macht", "Weil sonst die Gebühren sinken"], 1, "Je mehr es zu verdienen gibt, desto mehr Rechenleistung schützt Bitcoin. Ein Angreifer müsste diese Leistung übertreffen."],
+];
+Lern.quiz($("quiz"), "sicherheit", QUIZ, "../"); Lern.visit("sicherheit"); Lern.renderNext("sicherheit", "../");
+})();
+</script>
+</body>
+</html>
