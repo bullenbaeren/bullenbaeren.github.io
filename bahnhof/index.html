@@ -106,7 +106,7 @@ input[type=range]{flex:1;accent-color:var(--btc);height:28px}
       <p>Wähle eine Gebühr und schick einen Übungs-Fahrgast los. Es wird <b>kein echtes Bitcoin</b> bewegt. Der Bahnhof prüft mit den echten Blöcken, wann du mitgekommen wärst.</p>
     </div>
     <div class="ctrl">
-      <div class="feeRow"><input id="fee" type="range" min="0" max="100" value="40" aria-label="Gebühr in sat pro vByte"><span class="feeVal" id="feeVal">–</span></div>
+      <div class="feeRow"><input id="fee" type="range" min="0" max="100" value="30" aria-label="Gebühr in sat pro vByte"><span class="feeVal" id="feeVal">–</span></div>
       <div class="out" id="out">–</div>
       <div><button class="btn" id="send" type="button">Fahrgast losschicken</button></div>
       <div class="conf" id="conf" hidden aria-label="Bestätigungen"><i></i><i></i><i></i><i></i><i></i><i></i></div>
@@ -235,20 +235,34 @@ function zoneRect(zi){
 }
 
 // ---------- Übungs-Überweisung ----------
-const feeFromSlider = v => Math.round(Math.exp(Math.log(1) + (Math.log(200) - Math.log(1))*v/100)*10)/10;
+// Regler logarithmisch von 0,1 bis 200 sat/vB (seit 2025 sind auch Gebühren unter 1 sat/vB üblich)
+const feeFromSlider = v => { const f = Math.exp(Math.log(.1) + (Math.log(200) - Math.log(.1))*v/100); return f < 10 ? Math.round(f*10)/10 : Math.round(f); };
+// Wie viel Prozent der Fahrgäste in einem Zug zahlen weniger als du? (feeRange = Perzentile: min, 10, 25, 50, 75, 90, max)
+function pctBelow(fee, mb){
+  const r = mb.feeRange, P = r.length === 7 ? [0, 10, 25, 50, 75, 90, 100] : r.map((_, i) => i/(r.length - 1)*100);
+  if (fee <= r[0]) return 0; if (fee >= r[r.length - 1]) return 100;
+  for (let i = 1; i < r.length; i++) if (fee <= r[i]) return P[i - 1] + (P[i] - P[i - 1])*(fee - r[i - 1])/Math.max(1e-9, r[i] - r[i - 1]);
+  return 100;
+}
 function zoneFor(fee){
   if (!mblocks || !mblocks.length) return null;
   for (let i = 0; i < mblocks.length; i++) if (fee >= mblocks[i].feeRange[0]) return i;
   return mblocks.length;
 }
+const cheap0 = () => mblocks && mblocks[0] ? mblocks[0].feeRange[0] : 1;
 function renderYou(){
   const fee = feeFromSlider(+$("fee").value);
   $("feeVal").innerHTML = `${fmtFee(fee)} <small>sat/vB</small>`;
   const sats = fee*VBYTES, euro = eur ? sats/1e8*eur : 0;
   const zi = zoneFor(fee);
-  let place = "–";
+  let place = "–", tip2 = "";
   if (zi !== null){
-    if (zi === 0) place = `<b class="z1">Nächster Zug</b>, in ca. 10 Minuten bestätigt`;
+    const m0 = mblocks[0], cheap = m0.feeRange[0];
+    if (zi === 0){
+      const more = Math.round(100 - pctBelow(fee, m0));
+      place = `<b class="z1">Nächster Zug</b>, in ca. 10 Minuten bestätigt. ` + (more <= 0 ? "Du zahlst mit am meisten im ganzen Zug." : `Im Zug zahlen ca. ${more} % mehr als du.`);
+      if (fee > cheap*1.5) tip2 = `<br><b class="z2">Spartipp:</b> Gerade reichen schon <b>${fmtFee(cheap)} sat/vB</b> für den nächsten Zug. Mehr zu zahlen macht dich nicht schneller, nur teurer.`;
+    }
     else if (zi < mblocks.length - 1) place = `<b class="z2">Zug ${zi + 1}</b>, in ca. ${(zi + 1)*10} Minuten bestätigt`;
     else place = `<b class="z3">Ganz hinten</b>, eher Stunden. Vielleicht wartet er sogar, bis der Andrang nachlässt`;
   }
@@ -258,7 +272,8 @@ function renderYou(){
     st = mine.state === "wait" ? `<br>Dein Fahrgast (${fmtFee(mine.fee)} sat/vB) <b>wartet</b> auf den nächsten Zug …`
        : `<br>Dein Fahrgast ist <b>in Block ${fmt(mine.h)}</b>: ${Math.min(6, mine.conf)} von 6 Bestätigungen${mine.conf >= 6 ? " – final!" : ""}`;
   }
-  $("out").innerHTML = `${cost}<br>Platz: ${place}${st}`;
+  if (zi !== null && cheap0() <= .2 && fee <= cheap0()*1.5) tip2 = `<br>Gerade ist <b>wenig los</b> im Netzwerk: Fast jede Gebühr passt in den nächsten Zug. Bei viel Andrang sieht das ganz anders aus.`;
+  $("out").innerHTML = `${cost}<br>Platz: ${place}${tip2}${st}`;
   $("conf").hidden = !mine || mine.state !== "in";
   [...$("conf").children].forEach((c, i) => c.classList.toggle("on", !!mine && mine.state === "in" && i < mine.conf));
   $("send").textContent = mine ? "Neuen Fahrgast losschicken" : "Fahrgast losschicken";
@@ -268,8 +283,10 @@ $("send").addEventListener("click", () => {
   const fee = feeFromSlider(+$("fee").value);
   mine = {fee, state: "wait", h: 0, conf: 0, t0: t};
   const zi = zoneFor(fee);
-  say(zi === 0 ? `<b>Fahrgast unterwegs!</b> Mit ${fmtFee(fee)} sat/vB stehst du ganz vorne und kommst sehr wahrscheinlich mit dem nächsten Zug mit.`
-               : `<b>Fahrgast unterwegs!</b> Mit ${fmtFee(fee)} sat/vB stellst du dich weiter hinten an. Mal sehen, wann du dran bist.`);
+  const top = zi === 0 ? Math.round(100 - pctBelow(fee, mblocks[0])) : 0;
+  say(zi === 0 ? (top <= 10 ? `<b>Fahrgast unterwegs!</b> Mit ${fmtFee(fee)} sat/vB stehst du ganz vorne im nächsten Zug.`
+                            : `<b>Fahrgast unterwegs!</b> Mit ${fmtFee(fee)} sat/vB passt du in den nächsten Zug, ca. ${top} % zahlen aber mehr als du. Wird es voller, rutschst du nach hinten.`)
+               : `<b>Fahrgast unterwegs!</b> Mit ${fmtFee(fee)} sat/vB passt du nicht in den nächsten Zug und stellst dich weiter hinten an.`);
   renderYou();
 });
 
@@ -370,7 +387,8 @@ function draw(){
     if (mine && mine.state === "wait" && !(anim && t - anim.t0 < 3.2)){
       const zi = Math.min(2, zoneFor(mine.fee)), zr = zoneRect(zi);
       // steht vorne an der Bahnsteigkante, gut sichtbar
-      const yx = zr.x + 16*k, yy = plY + H*.05;
+      const rank = zi === 0 && mblocks[0] ? pctBelow(mine.fee, mblocks[0])/100 : .5;
+      const yx = zr.x + 16*k + (1 - rank)*(zr.w - 32*k), yy = plY + H*.05;
       passenger(yx, yy, k*1.7, "#ffc94d", 0, true);
       ctx.font = `900 ${Math.round(9*k + 3)}px Arial`; ctx.textAlign = "center"; ctx.lineWidth = 3; ctx.strokeStyle = INK; ctx.strokeText("DU", yx, yy - 40*k); ctx.fillStyle = "#ffc94d"; ctx.fillText("DU", yx, yy - 40*k);
     }
