@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mining-Werkstatt · Satsland</title>
+<meta name="description" content="Lernwelt: Was Miner tun, warum Bitcoin Strom braucht und warum im Schnitt alle 10 Minuten ein Block kommt. Selbst minen im Browser.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0b0f2a">
+<link rel="icon" href="../icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="stylesheet" href="../lern.css">
+<style>
+/* Lernwelt "Mining": nur seitenspezifische Teile, der Rest kommt aus lern.css */
+.diff{display:flex;align-items:center;gap:12px;margin:8px 0 12px}
+.diff b{font:600 20px var(--f-num);min-width:5ch}
+.kv{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:12px}
+.kv div{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;padding:10px 12px}
+.kv small{display:block;font-size:12px;color:var(--muted)}
+.kv b{font:600 clamp(16px,3vw,21px) var(--f-num)}
+.kv .g{color:var(--gold)}
+.hx{margin-top:12px;font:600 13px var(--f-num);word-break:break-all;background:#0b0f2a;border:1px solid var(--line);border-radius:12px;padding:10px 12px;color:var(--muted)}
+.hx i{font-style:normal;color:var(--gold);font-weight:800}
+.hx.win{border-color:var(--bull)}
+.note{margin:10px 0 0;font-size:14px;color:var(--muted)} .note b{color:var(--ink)}
+@media (max-width:700px){ .kv{grid-template-columns:1fr 1fr} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a class="back" href="../">← Satsland</a><a class="back" href="../spiel/">Zum Spiel</a></div>
+  <div>
+    <h1><span class="btc">Mining</span>-Werkstatt</h1>
+    <p class="lead">Miner raten um die Wette: Wer zuerst einen Hash mit genug Nullen findet, darf den nächsten Block anhängen und bekommt die Belohnung. Probier es mit deinem Gerät aus.</p>
+  </div>
+
+  <section class="card" aria-labelledby="h1s">
+    <h2 id="h1s">Selbst minen</h2>
+    <p class="muted" style="margin:0">Wie viele Nullen soll der Hash am Anfang haben? Jede Null mehr macht es etwa <b>16-mal schwerer</b>.</p>
+    <div class="diff"><input id="z" type="range" min="1" max="6" value="4" aria-label="Anzahl Nullen"><b id="zV" class="num">0000</b><button class="btn" id="go" type="button">⛏ Minen</button></div>
+    <div class="kv">
+      <div><small>Versuche</small><b class="num" id="tries">0</b></div>
+      <div><small>Dein Tempo</small><b class="num" id="rate">–</b></div>
+      <div><small>Erwartet im Schnitt</small><b class="num" id="exp">–</b></div>
+      <div><small>Gefunden nach</small><b class="num g" id="time">–</b></div>
+    </div>
+    <div class="hx" id="hx">Drück auf „Minen“.</div>
+  </section>
+
+  <section class="card" aria-labelledby="h2s">
+    <h2 id="h2s">Du gegen das echte Netz <span class="mode" id="mode">Verbinde …</span></h2>
+    <div class="kv">
+      <div><small>Rechenleistung Bitcoin</small><b class="num" id="net">–</b></div>
+      <div><small>So viele deiner Geräte</small><b class="num" id="dev">–</b></div>
+      <div><small>Dein Gerät bräuchte für 1 Block</small><b class="num g" id="solo">–</b></div>
+      <div><small>Nullen bei echten Blöcken</small><b class="num" id="realz">–</b></div>
+    </div>
+    <p class="note">Deshalb rechnen Miner mit Spezialchips in großen Hallen und schließen sich zu <b>Pools</b> zusammen, die sich die Belohnung teilen.</p>
+  </section>
+
+  <section class="card" aria-labelledby="h3s">
+    <h2 id="h3s">Warum immer etwa 10 Minuten?</h2>
+    <p class="muted" style="margin:0">Alle <b>2016 Blöcke</b>, also ungefähr alle 2 Wochen, passt sich die Schwierigkeit an: Waren die Blöcke zu schnell, wird es schwerer, waren sie zu langsam, leichter.</p>
+    <div class="kv">
+      <div><small>Blockzeit zuletzt</small><b class="num" id="avg">–</b></div>
+      <div><small>Nächste Anpassung in</small><b class="num" id="rem">–</b></div>
+      <div><small>Voraussichtlich</small><b class="num g" id="chg">–</b></div>
+      <div><small>Letzte Anpassung</small><b class="num" id="prev">–</b></div>
+    </div>
+  </section>
+
+  <section class="card" aria-labelledby="h4s">
+    <h2 id="h4s">Das solltest du dir merken</h2>
+    <div class="learn">
+      <div><b>Raten statt Rechnen</b><span>Einen gültigen Hash kann man nicht ausrechnen, nur <b>durch Ausprobieren finden</b>. Das ist Proof of Work.</span></div>
+      <div><b>Strom = Sicherheit</b><span>Wer die Kette fälschen will, müsste <b>mehr Rechenleistung</b> aufbringen als alle anderen Miner zusammen.</span></div>
+      <div><b>Selbstregulierung</b><span>Die Schwierigkeit passt sich <b>automatisch</b> an. Mehr Miner machen Bitcoin nicht schneller, nur sicherer.</span></div>
+      <div><b>Belohnung</b><span>Der Gewinner bekommt neue Bitcoin plus die <b>Gebühren</b> aller Transaktionen im Block.</span></div>
+    </div>
+    <details class="qz"><summary>Teste dich: 3 Fragen</summary><div id="quiz"></div></details>
+  </section>
+
+  <section class="card next" id="next" aria-label="Weiter"></section>
+  <details class="foot"><summary>Quellen</summary><p>Hashrate und Schwierigkeits-Anpassung live von <a href="https://mempool.space/mining">mempool.space</a>. Das Minen hier nutzt echtes SHA-256 in deinem Browser, Bitcoin selbst rechnet doppeltes SHA-256 mit einem echten Block-Kopf.</p></details>
+  <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
+</div>
+
+<script src="../lern.js"></script>
+<script>
+/* =====================================================================
+   MINING-WERKSTATT – Lernwelt von Satsland
+   Selbst minen (SHA-256 aus lern.js), Vergleich mit der echten Hashrate, Difficulty-Anpassung live.
+   ===================================================================== */
+(() => {
+const $ = id => document.getElementById(id);
+const MP = "https://mempool.space/api/v1/";
+const fmt = n => Math.round(n).toLocaleString("de-DE");
+const dur = s => s < 1 ? "< 1 Sek." : s < 90 ? Math.round(s) + " Sek." : s < 5400 ? Math.round(s/60) + " Min." : s < 172800 ? Math.round(s/3600) + " Std." : s < 3.2e7*2 ? Math.round(s/86400) + " Tage" : big(s/3.156e7) + " Jahre";
+function big(v){ if (v < 1e6) return fmt(v); const u = [["Mio.", 1e6], ["Mrd.", 1e9], ["Bio.", 1e12], ["Brd.", 1e15], ["Trio.", 1e18]]; let k = u[0]; for (const x of u) if (v >= x[1]) k = x; return (v/k[1]).toLocaleString("de-DE", {maximumFractionDigits: 1}) + " " + k[0]; }
+const zeros = hx => { const m = hx.match(/^0*/)[0].length; return `<i>${hx.slice(0, m)}</i>${hx.slice(m)}`; };
+let myRate = 0, netHash = 0, diff = 0, busy = false;
+
+$("z").addEventListener("input", () => { const z = +$("z").value; $("zV").textContent = "0".repeat(z); $("exp").textContent = fmt(Math.pow(16, z)) + " Versuche"; });
+$("z").dispatchEvent(new Event("input"));
+
+$("go").addEventListener("click", () => {
+  if (busy) return; busy = true; $("go").disabled = true;
+  const z = +$("z").value, pre = "0".repeat(z), data = "Satsland-Block " + Date.now();
+  let n = 0; const t0 = performance.now(); $("hx").className = "hx"; $("time").textContent = "…";
+  const step = () => {
+    const end = performance.now() + 30;   // je Bild ca. 30 ms rechnen, damit die Seite flüssig bleibt
+    let h;
+    while (performance.now() < end){ for (let k = 0; k < 200; k++){ h = Lern.sha256(data + n); if (h.startsWith(pre)) return found(h); n++; } }
+    show(h); requestAnimationFrame(step);
+  };
+  const show = h => { const s = (performance.now() - t0)/1000; myRate = n/s; $("tries").textContent = fmt(n); $("rate").textContent = big(myRate) + " H/s"; $("hx").innerHTML = "Versuch: " + zeros(h); };
+  const found = h => { show(h); $("hx").className = "hx win"; $("hx").innerHTML = `Gefunden! Nonce ${fmt(n)}<br>${zeros(h)}`; $("time").textContent = dur((performance.now() - t0)/1000); busy = false; $("go").disabled = false; compare(); };
+  step();
+});
+
+// Vergleich mit dem echten Netz
+function compare(){
+  if (!netHash) return;
+  $("net").textContent = fmt(netHash/1e18) + " EH/s";
+  if (myRate > 0){ $("dev").textContent = big(netHash/myRate); if (diff) $("solo").textContent = dur(diff*4294967296/myRate); }
+}
+async function load(){
+  let ok = false;
+  try { const j = await (await fetch(MP + "mining/hashrate/3d")).json(); if (j.currentHashrate > 0){ netHash = j.currentHashrate; diff = j.currentDifficulty; ok = true;
+    $("realz").textContent = "ca. " + Math.floor(Math.log(diff*4294967296)/Math.log(16)); } } catch(e){}
+  try {
+    const d = await (await fetch(MP + "difficulty-adjustment")).json();
+    if (isFinite(d.difficultyChange)){ ok = true;
+      const p = v => (v > 0 ? "+" : "") + v.toLocaleString("de-DE", {maximumFractionDigits: 1}) + " %";
+      $("avg").textContent = (d.timeAvg/60000).toLocaleString("de-DE", {maximumFractionDigits: 1}) + " Min.";
+      $("rem").textContent = fmt(d.remainingBlocks) + " Blöcken";
+      $("chg").textContent = p(d.difficultyChange); $("prev").textContent = p(d.previousRetarget);
+    }
+  } catch(e){}
+  $("mode").className = "mode " + (ok ? "live" : "demo"); $("mode").textContent = ok ? "Live" : "Keine Live-Daten";
+  compare();
+}
+load();
+
+const QUIZ = [
+  ["Wie findet ein Miner einen gültigen Block?", ["Er rechnet ihn mit einer Formel aus", "Er probiert Milliarden Zahlen durch, bis der Hash passt", "Er bekommt ihn zugeteilt"], 1, "Einen passenden Hash kann man nicht berechnen, nur durch Ausprobieren finden. Das ist die Arbeit im Proof of Work."],
+  ["Doppelt so viele Miner steigen ein. Was passiert langfristig?", ["Blöcke kommen doppelt so schnell", "Die Schwierigkeit steigt, es bleibt bei etwa 10 Minuten", "Es gibt mehr Bitcoin"], 1, "Alle 2016 Blöcke passt sich die Schwierigkeit an. Mehr Rechenleistung macht das Netz sicherer, aber nicht schneller."],
+  ["Warum macht Mining Bitcoin sicher?", ["Weil Miner Polizisten sind", "Weil eine Fälschung mehr Rechenleistung bräuchte als alle ehrlichen Miner zusammen", "Weil die Daten verschlüsselt sind"], 1, "Um die Kette zu ändern, müsste man das ganze Netz überholen. Das kostet unvorstellbar viel Strom und Hardware."],
+];
+Lern.quiz($("quiz"), "mining", QUIZ, "../"); Lern.visit("mining"); Lern.renderNext("mining", "../");
+})();
+</script>
+</body>
+</html>
