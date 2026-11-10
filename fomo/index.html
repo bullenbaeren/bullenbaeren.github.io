@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Gefühls-Achterbahn · Satsland</title>
+<meta name="description" content="Lernwelt: FOMO und FUD. Erlebe acht echte Momente der Bitcoin-Geschichte und entscheide selbst: kaufen, halten oder verkaufen?">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0b0f2a">
+<link rel="icon" href="../icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="stylesheet" href="../lern.css?v=3">
+<style>
+/* Lernwelt "FOMO & FUD": nur seitenspezifische Teile, der Rest kommt aus lern.css */
+.idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
+.mom{margin-top:14px;padding:14px;border-radius:16px;border:2px solid var(--line);background:rgba(255,255,255,.03)}
+.mom .d{font-size:13px;color:var(--muted)} .mom .p{font:800 26px var(--f-num);margin:2px 0}
+.mom .h{font-size:17px;font-weight:700;line-height:1.35} .mom .f{display:inline-block;margin-top:8px;padding:3px 10px;border-radius:999px;font-size:13px;font-weight:700}
+.f.eu{background:rgba(46,204,113,.2);color:var(--bull)} .f.pa{background:rgba(231,76,60,.2);color:var(--bear)} .f.ne{background:rgba(255,255,255,.08);color:var(--muted)}
+.dec{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px} .dec .btn{padding:12px 4px}
+.port{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.port div{border:1px solid var(--line);border-radius:12px;padding:8px 10px;font-size:12px;color:var(--muted)} .port b{display:block;font:700 16px var(--f-num);color:var(--ink)}
+.prog{margin-top:10px;font-size:13px;color:var(--muted)}
+svg.ch{width:100%;height:auto;display:block;margin-top:12px;max-height:220px}
+.end{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.end div{border:2px solid var(--line);border-radius:14px;padding:10px 12px;font-size:13px;color:var(--muted)} .end b{display:block;font:800 19px var(--f-num);color:var(--ink);margin-top:2px}
+.end .me{border-color:var(--gold)} .end .up{color:var(--bull)} .end .dn{color:var(--bear)}
+.verdict{margin-top:10px;font-size:15px;line-height:1.5}
+@media (max-width:620px){ .end{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a class="back" href="../">← Satsland</a><a class="back" href="../spiel/">Zum Spiel</a></div>
+  <div>
+    <h1><span class="btc">Gefühls</span>-Achterbahn</h1>
+    <p class="lead"><b>FOMO</b> ist die Angst, etwas zu verpassen. <b>FUD</b> heißt Angst, Unsicherheit und Zweifel. Beide bringen Menschen dazu, <b>teuer zu kaufen und billig zu verkaufen</b>.</p>
+  </div>
+
+  <section class="card" aria-labelledby="h1s">
+    <h2 id="h1s">Kannst du deinen Gefühlen widerstehen? <span class="mode" id="mode">Verbinde …</span></h2>
+    <div class="idea">Du startest mit <b>1.000 $</b> und erlebst <b>8 echte Momente</b> der Bitcoin-Geschichte. Bei jedem entscheidest du: kaufen, nichts tun oder verkaufen. Am Ende vergleichen wir mit jemandem, der einfach gehalten hat.</div>
+    <div id="game"></div>
+    <svg class="ch" id="ch" viewBox="0 0 500 180" aria-hidden="true"></svg>
+  </section>
+
+  <section class="card" aria-labelledby="h2s">
+    <h2 id="h2s">Das solltest du dir merken</h2>
+    <div class="learn">
+      <div><b>FOMO</b><span>Wenn alle über Bitcoin reden und der Kurs steil steigt, ist er oft <b>schon teuer</b>.</span></div>
+      <div><b>FUD</b><span>„Bitcoin ist tot“ wurde schon <b>über 400-mal</b> geschrieben. Panik-Verkäufe machen Verluste endgültig.</span></div>
+      <div><b>Plan statt Gefühl</b><span>Ein <b>Sparplan</b> oder feste Regeln nehmen die Gefühle aus der Entscheidung.</span></div>
+      <div><b>Zurück ist nicht vorne</b><span>Die Geschichte zeigt Muster, aber <b>keine Garantie</b>. Investiere nur, was du lange entbehren kannst.</span></div>
+    </div>
+    <details class="qz"><summary>Teste dich: 3 Fragen</summary><div id="quiz"></div></details>
+  </section>
+
+  <section class="card next" id="next" aria-label="Weiter"></section>
+  <details class="foot"><summary>Quellen</summary><p>Kurse in US-Dollar, gerundete Monatswerte. Aktueller Kurs live von Coinbase. Schlagzeilen sinngemäß zusammengefasst. Die Zählung der „Bitcoin ist tot“-Artikel stammt von 99bitcoins.com. Ohne Gebühren und Steuern.</p></details>
+  <p class="foot">Lernen und Unterhaltung, keine Anlageberatung. Vergangene Entwicklungen sind kein Hinweis auf die Zukunft.</p>
+</div>
+
+<script src="../lern.js?v=3"></script>
+<script>
+/* =====================================================================
+   GEFÜHLS-ACHTERBAHN – Lernwelt von Satsland
+   8 historische Momente, Entscheidungen des Spielers vs. Halten vs. "Gefühls-Strategie".
+   ===================================================================== */
+(() => {
+const $ = id => document.getElementById(id);
+const usd = v => Math.round(v).toLocaleString("de-DE") + " $";
+// [Monat, Kurs in $, Schlagzeile, Stimmung: eu = Euphorie, pa = Panik, ne = neutral]
+const M = [
+  ["Juni 2017", 2500, "Bitcoin knackt erstmals 2.500 $. Ein paar Freunde fragen dich, ob du schon drin bist.", "ne"],
+  ["Dezember 2017", 19000, "Rekord! Fast 20.000 $. Sogar der Taxifahrer erzählt von seinen Bitcoin.", "eu"],
+  ["Dezember 2018", 3300, "Minus 80 %. Die Zeitungen schreiben: „Bitcoin ist tot.“", "pa"],
+  ["März 2020", 5000, "Corona-Crash: Alles stürzt ab, auch Bitcoin. Halbierung an einem Tag.", "pa"],
+  ["April 2021", 63000, "Neues Rekordhoch! Große Firmen kaufen. Alle reden von 100.000 $.", "eu"],
+  ["Juni 2022", 19000, "Krypto-Firmen gehen pleite, Bitcoin fällt um 70 %.", "pa"],
+  ["November 2022", 16000, "Die Börse FTX bricht zusammen. Viele schwören: nie wieder Krypto.", "pa"],
+  ["März 2024", 71000, "Bitcoin-ETFs sind erlaubt, neues Rekordhoch. Die Nachrichten sind voll davon.", "eu"],
+];
+const MOOD = {eu: "😍 Euphorie", pa: "😱 Panik", ne: "🤔 Neugier"};
+let now = 0, live = false, i = 0, cash = 1000, coins = 0, acts = [];
+
+function draw(){
+  if (i >= M.length) return end();
+  const [d, p, h, f] = M[i], val = cash + coins*p;
+  $("game").innerHTML = `<div class="mom"><div class="d">Moment ${i + 1} von ${M.length} · ${d}</div><div class="p num">${usd(p)}</div><div class="h">${h}</div><span class="f ${f}">${MOOD[f]}</span></div>
+    <div class="dec"><button class="btn" data-a="buy" type="button" ${cash < 1 ? "disabled" : ""}>🟢 Alles kaufen</button><button class="btn ghost" data-a="hold" type="button">😐 Nichts tun</button><button class="btn ghost" data-a="sell" type="button" ${coins <= 0 ? "disabled" : ""}>🔴 Alles verkaufen</button></div>
+    <div class="port"><div>Bargeld<b class="num">${usd(cash)}</b></div><div>Bitcoin<b class="num">${coins ? coins.toLocaleString("de-DE", {maximumFractionDigits: 4}) : "0"}</b></div><div>Gesamt<b class="num">${usd(val)}</b></div></div>`;
+  $("game").onclick = e => { const b = e.target.closest("button[data-a]"); if (!b || b.disabled) return; act(b.dataset.a); };
+  chart();
+}
+function act(a){
+  const p = M[i][1];
+  if (a === "buy"){ coins += cash/p; cash = 0; } if (a === "sell"){ cash += coins*p; coins = 0; }
+  acts.push(a); i++; draw();
+}
+// "Gefühls-Strategie": bei Euphorie kaufen, bei Panik verkaufen
+function feel(){ let c = 1000, b = 0; M.forEach(([, p, , f]) => { if (f === "eu" && c > 0){ b = c/p; c = 0; } if (f === "pa" && b > 0){ c = b*p; b = 0; } }); return c + b*now; }
+function end(){
+  const me = cash + coins*now, hodl = 1000/M[0][1]*now, fe = feel(), cls = v => v >= 1000 ? "up" : "dn";
+  const best = Math.max(me, hodl, fe);
+  $("game").innerHTML = `<div class="mom"><div class="d">Heute${live ? " (live)" : " (ca.)"}</div><div class="p num">${usd(now)}</div><div class="h">Und so ist es ausgegangen:</div></div>
+    <div class="end"><div class="me">Du<b class="num ${cls(me)}">${usd(me)}</b></div><div>Einfach gehalten seit 2017<b class="num ${cls(hodl)}">${usd(hodl)}</b></div><div>Nach Gefühl: bei Euphorie kaufen, bei Panik verkaufen<b class="num ${cls(fe)}">${usd(fe)}</b></div></div>
+    <p class="verdict">${me >= best ? "<b>Stark!</b> Du hast deinen Gefühlen widerstanden." : me >= hodl*0.9 ? "<b>Gut gemacht.</b> Fast so gut wie einfaches Halten." : "<b>Typisch Mensch.</b> Einfaches Halten hätte mehr gebracht."} Die Gefühls-Strategie zeigt, warum viele Anleger verlieren, obwohl der Kurs langfristig gestiegen ist: <b>Sie kaufen, wenn alle jubeln, und verkaufen, wenn alle Angst haben.</b></p>
+    <div class="acts" style="margin-top:10px"><button class="btn ghost" id="again" type="button">↺ Nochmal spielen</button></div>`;
+  $("again").onclick = () => { i = 0; cash = 1000; coins = 0; acts = []; draw(); };
+  chart();
+}
+// Kleine Kurve mit deinen Entscheidungen (log. Skala)
+function chart(){
+  const pts = [...M.map(m => m[1]), now], lo = Math.log(2000), hi = Math.log(Math.max(...pts)*1.1);
+  const X = k => 15 + k/(pts.length - 1)*470, Y = v => 165 - (Math.log(v) - lo)/(hi - lo)*150;
+  let s = `<polyline points="${pts.map((v, k) => X(k).toFixed(0) + "," + Y(v).toFixed(0)).join(" ")}" fill="none" stroke="#f7931a" stroke-width="3"/>`;
+  pts.forEach((v, k) => { const a = acts[k], c = a === "buy" ? "#2ecc71" : a === "sell" ? "#e74c3c" : k === i ? "#fff" : "#3a4170";
+    s += `<circle cx="${X(k).toFixed(0)}" cy="${Y(v).toFixed(0)}" r="${k === i ? 9 : 7}" fill="${c}" stroke="#0b0f2a" stroke-width="2"/>`; });
+  $("ch").innerHTML = s;
+}
+
+fetch("https://api.coinbase.com/v2/prices/BTC-USD/spot").then(r => r.json()).then(j => { const p = +j.data.amount; if (p > 0){ now = p; live = true; } }).catch(() => {})
+  .finally(() => { if (!now) now = 100000; $("mode").className = "mode " + (live ? "live" : "demo"); $("mode").textContent = live ? "Live-Kurs" : "Kurs geschätzt"; draw(); });
+
+const QUIZ = [
+  ["Was bedeutet FOMO?", ["Angst, etwas zu verpassen", "Ein Bitcoin-Upgrade", "Eine Börse"], 0, "Fear Of Missing Out: Man kauft, weil alle anderen schon reich zu werden scheinen. Oft ist der Kurs dann schon hoch."],
+  ["Die Nachrichten sind voller Panik, der Kurs ist 70 % gefallen. Was hat sich in der Vergangenheit oft als Fehler herausgestellt?", ["In Panik alles verkaufen", "Einen Plan haben", "Ruhig bleiben"], 0, "Wer in der Panik verkaufte, machte den Verlust endgültig. Wer durchhielt, kam in der Vergangenheit wieder heraus. Eine Garantie ist das nicht."],
+  ["Was hilft am besten gegen Gefühls-Entscheidungen?", ["Täglich den Kurs prüfen", "Ein fester Plan, zum Beispiel ein Sparplan", "Auf Tipps aus Social Media hören"], 1, "Feste Regeln, wie ein monatlicher Sparplan, nehmen Gefühle aus der Entscheidung."],
+];
+Lern.quiz($("quiz"), "fomo", QUIZ, "../"); Lern.visit("fomo"); Lern.renderNext("fomo", "../");
+})();
+</script>
+</body>
+</html>
