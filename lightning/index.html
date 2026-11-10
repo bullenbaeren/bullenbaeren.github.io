@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lightning-Rennen · Satsland</title>
+<meta name="description" content="Lernwelt: Warum Lightning-Zahlungen in Sekunden ankommen und fast nichts kosten. Mit Live-Gebühren und Live-Netzwerkdaten.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0b0f2a">
+<link rel="icon" href="../icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="stylesheet" href="../lern.css">
+<style>
+/* Lernwelt "Lightning": nur seitenspezifische Teile, der Rest kommt aus lern.css */
+.race{display:flex;flex-direction:column;gap:14px;margin-top:10px}
+.lane{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;padding:10px 12px}
+.lane .hd{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:14px}
+.lane .hd b{font:900 15px var(--f-display)}
+.track{position:relative;height:34px;margin-top:8px;border-radius:999px;background:rgba(255,255,255,.06);overflow:hidden}
+.track i{position:absolute;left:0;top:0;bottom:0;width:0;border-radius:999px;transition:width .15s linear}
+.track span{position:absolute;top:50%;transform:translate(-50%,-50%);font-size:22px;left:4%;transition:left .15s linear}
+.lane.ln .track i{background:linear-gradient(90deg,#ffe066,#ffc94d)} .lane.oc .track i{background:linear-gradient(90deg,#f7931a,#c46f0c)}
+.lane .st{margin-top:6px;font:600 13px var(--f-num);color:var(--muted)}
+.lane .st b{color:var(--ink)}
+.kv{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.kv div{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;padding:10px 12px}
+.kv small{display:block;font-size:12px;color:var(--muted)}
+.kv b{font:600 clamp(17px,3vw,22px) var(--f-num)}
+/* Kanal */
+.chan{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;margin-top:10px}
+.who{text-align:center;font-weight:800}
+.who span{display:block;font-size:30px}
+.pipe{height:26px;border-radius:999px;overflow:hidden;display:flex;border:2px solid var(--line)}
+.pipe i{display:block;height:100%;transition:width .3s}
+.pipe .a{background:var(--bull)} .pipe .b{background:var(--sky)}
+.bal{display:flex;justify-content:space-between;font:600 13px var(--f-num);color:var(--muted);margin-top:4px}
+.payrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.note{margin:10px 0 0;font-size:14px;color:var(--muted)} .note b{color:var(--ink)}
+@media (max-width:640px){ .kv{grid-template-columns:1fr 1fr 1fr;gap:6px} .kv div{padding:8px} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a class="back" href="../">← Satsland</a><a class="back" href="../spiel/">Zum Spiel</a></div>
+  <div>
+    <h1><span class="btc">Lightning</span>-Rennen</h1>
+    <p class="lead">Eine Zahlung direkt in der Blockchain dauert Minuten und kostet Gebühr. Über das Lightning-Netz geht sie in Sekunden und fast gratis. Wie das geht? Erst das Rennen, dann die Erklärung.</p>
+  </div>
+
+  <section class="card" aria-labelledby="h1s">
+    <h2 id="h1s">Kaffee bezahlen: 5 € <span class="mode" id="mode">Verbinde …</span></h2>
+    <div class="race">
+      <div class="lane oc"><div class="hd"><b>⛓ Direkt in der Blockchain</b><span id="ocCost">–</span></div><div class="track"><i id="ocBar"></i><span id="ocRun">☕</span></div><div class="st" id="ocSt">Wartet auf den Start</div></div>
+      <div class="lane ln"><div class="hd"><b>⚡ Lightning</b><span id="lnCost">–</span></div><div class="track"><i id="lnBar"></i><span id="lnRun">☕</span></div><div class="st" id="lnSt">Wartet auf den Start</div></div>
+    </div>
+    <div class="payrow"><button class="btn" id="go" type="button">Rennen starten</button></div>
+    <p class="note">Im Rennen sind <b>10 Minuten auf 10 Sekunden</b> verkürzt. Wie lange der nächste Block wirklich dauert, ist jedes Mal Zufall.</p>
+  </section>
+
+  <section class="card" aria-labelledby="h2s">
+    <h2 id="h2s">So funktioniert ein Kanal</h2>
+    <p class="muted" style="margin:0">Anna und Ben legen einmal in der Blockchain <b>100.000 sats</b> in einen gemeinsamen Kanal. Danach schieben sie sats beliebig oft hin und her, sofort und ohne Block.</p>
+    <div class="chan">
+      <div class="who"><span aria-hidden="true">👩</span>Anna</div>
+      <div><div class="pipe"><i class="a" id="pa"></i><i class="b" id="pb"></i></div><div class="bal"><span id="ba">–</span><span id="bb">–</span></div></div>
+      <div class="who"><span aria-hidden="true">👨</span>Ben</div>
+    </div>
+    <div class="payrow"><button class="btn" id="a2b" type="button">Anna zahlt Ben 10.000 sats</button><button class="btn ghost" id="b2a" type="button">Ben zahlt Anna 10.000 sats</button></div>
+    <p class="note" id="chNote">Erst wenn einer den Kanal schließt, landet der Endstand wieder in der Blockchain.</p>
+  </section>
+
+  <section class="card" aria-labelledby="h3s" id="netCard" hidden>
+    <h2 id="h3s">Das Lightning-Netz gerade</h2>
+    <div class="kv">
+      <div><small>Kapazität</small><b class="num" id="cap">–</b></div>
+      <div><small>Kanäle</small><b class="num" id="chs">–</b></div>
+      <div><small>Knoten</small><b class="num" id="nds">–</b></div>
+    </div>
+    <p class="note">Kanäle sind wie Straßen: Hat Anna keinen Kanal zu Carla, läuft die Zahlung über Ben, der mit beiden verbunden ist. Ben kann das Geld dabei <b>nicht abzweigen</b>.</p>
+  </section>
+
+  <section class="card" aria-labelledby="h4s">
+    <h2 id="h4s">Das solltest du dir merken</h2>
+    <div class="learn">
+      <div><b>Zweite Ebene</b><span>Lightning baut <b>auf Bitcoin auf</b>. Nur Öffnen und Schließen eines Kanals kommt in die Blockchain.</span></div>
+      <div><b>Schnell &amp; günstig</b><span>Zahlungen kommen in <b>Sekunden</b> an und kosten oft nur <b>wenige sats</b>, ideal für kleine Beträge.</span></div>
+      <div><b>Nicht für alles</b><span>Für große Summen oder langfristiges Sparen ist die <b>Blockchain direkt</b> die sicherere Wahl.</span></div>
+      <div><b>Wallet wählen</b><span>Es gibt Lightning-Wallets, die du <b>selbst verwahrst</b>, und solche, bei denen ein Anbieter dein Geld hält.</span></div>
+    </div>
+    <details class="qz"><summary>Teste dich: 3 Fragen</summary><div id="quiz"></div></details>
+  </section>
+
+  <section class="card next" id="next" aria-label="Weiter"></section>
+  <details class="foot"><summary>Quellen</summary><p>Gebühren, Euro-Kurs und Lightning-Statistik live von <a href="https://mempool.space/lightning">mempool.space</a>. Rechnung für eine typische Überweisung mit 140 vByte. Lightning-Gebühr als typischer Wert von wenigen sats angenommen.</p></details>
+  <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
+</div>
+
+<script src="../lern.js"></script>
+<script>
+/* =====================================================================
+   LIGHTNING-RENNEN – Lernwelt von Satsland
+   Live: empfohlene Gebühr (sat/vB), Euro-Kurs, Lightning-Statistik (mempool.space).
+   ===================================================================== */
+(() => {
+const $ = id => document.getElementById(id);
+const MP = "https://mempool.space/api/v1/";
+const fmt = n => Math.round(n).toLocaleString("de-DE");
+const eur2 = v => v.toLocaleString("de-DE", {minimumFractionDigits: 2, maximumFractionDigits: v < .1 ? 3 : 2}) + " €";
+let fee = 2, eur = 64000, live = false;
+const LN_SATS = 2;   // typische Lightning-Gebühr für 5 €
+
+function costs(){
+  const sats = Math.max(1, fee)*140;
+  $("ocCost").innerHTML = `Gebühr ca. <b>${fmt(sats)} sats</b> ≈ ${eur2(sats/1e8*eur)}`;
+  $("lnCost").innerHTML = `Gebühr ca. <b>${LN_SATS} sats</b> ≈ ${eur2(LN_SATS/1e8*eur)}`;
+}
+async function load(){
+  try { const f = await (await fetch(MP + "fees/recommended")).json(); if (f.fastestFee > 0){ fee = f.fastestFee; live = true; } } catch(e){}
+  try { const p = await (await fetch(MP + "prices")).json(); if (p.EUR > 0) eur = p.EUR; } catch(e){}
+  try {
+    const j = await (await fetch(MP + "lightning/statistics/latest")).json(), l = j.latest || j;
+    if (l.total_capacity > 0){ $("cap").textContent = fmt(l.total_capacity/1e8) + " BTC"; $("chs").textContent = fmt(l.channel_count); $("nds").textContent = fmt(l.node_count); $("netCard").hidden = false; live = true; }
+  } catch(e){}
+  $("mode").className = "mode " + (live ? "live" : "demo"); $("mode").textContent = live ? "Live" : "Beispielwerte";
+  costs();
+}
+
+// Rennen: Lightning ist nach ~1,5 s da, die Blockchain wartet auf einen zufälligen Block (im Schnitt 10 s statt 10 Min)
+let running = false;
+function setRun(k, f){ $(k + "Bar").style.width = (f*100) + "%"; $(k + "Run").style.left = (4 + f*90) + "%"; }
+$("go").addEventListener("click", () => {
+  if (running) return; running = true; $("go").disabled = true;
+  const t0 = performance.now(), block = Math.max(2, -Math.log(1 - Math.random())*10);   // Sekunden bis zum Block (zufällig)
+  $("ocSt").textContent = "Wartet im Mempool auf den nächsten Block …"; $("lnSt").textContent = "Unterwegs über den Kanal …";
+  let lnDone = false;
+  const tick = now => {
+    const s = (now - t0)/1000;
+    if (!lnDone){ const f = Math.min(1, s/1.5); setRun("ln", f); if (f >= 1){ lnDone = true; $("lnSt").innerHTML = `<b>Angekommen nach ca. 1 Sekunde!</b> Der Kaffee ist bezahlt.`; } }
+    const of = Math.min(1, s/block); setRun("oc", of*.97 + (of >= 1 ? .03 : 0));
+    if (of < 1) $("ocSt").textContent = `Wartet im Mempool … ${Math.round(s)} Min (Rennzeit)`;
+    if (of >= 1 && lnDone){ $("ocSt").innerHTML = `<b>Block gefunden nach ca. ${Math.round(block)} Minuten.</b> Für viele Händler sicher erst nach weiteren Bestätigungen.`; running = false; $("go").disabled = false; $("go").textContent = "Nochmal"; return; }
+    requestAnimationFrame(tick);
+  };
+  setRun("oc", 0); setRun("ln", 0); requestAnimationFrame(tick);
+});
+
+// Kanal zwischen Anna und Ben
+let a = 70000; const CAP = 100000;
+function chan(msg){
+  $("pa").style.width = (a/CAP*100) + "%"; $("pb").style.width = ((CAP - a)/CAP*100) + "%";
+  $("ba").textContent = fmt(a) + " sats"; $("bb").textContent = fmt(CAP - a) + " sats";
+  if (msg) $("chNote").innerHTML = msg;
+}
+$("a2b").addEventListener("click", () => { if (a < 10000) return chan("<b>Geht nicht:</b> Anna hat auf ihrer Seite nicht mehr genug. Man kann nur ausgeben, was auf der eigenen Seite des Kanals liegt."); a -= 10000; chan("Sofort angekommen, <b>ohne neuen Block</b>. Der Kanal hat sich nur anders aufgeteilt."); });
+$("b2a").addEventListener("click", () => { if (CAP - a < 10000) return chan("<b>Geht nicht:</b> Ben hat auf seiner Seite nicht mehr genug."); a += 10000; chan("Zurück zu Anna, wieder sofort. Insgesamt bleiben es immer <b>100.000 sats</b> im Kanal."); });
+chan();
+
+const QUIZ = [
+  ["Was kommt bei Lightning in die Blockchain?", ["Jede einzelne Zahlung", "Nur das Öffnen und Schließen eines Kanals", "Gar nichts"], 1, "Die vielen Zahlungen dazwischen laufen nur zwischen den Beteiligten. In die Blockchain kommt am Anfang und am Ende jeweils eine Transaktion."],
+  ["Anna hat 20.000 sats auf ihrer Seite des Kanals. Kann sie Ben 50.000 sats schicken?", ["Ja, der Kanal hat ja 100.000", "Nein, nur was auf ihrer Seite liegt", "Ja, wenn sie mehr Gebühr zahlt"], 1, "Man kann nur ausgeben, was auf der eigenen Seite des Kanals liegt. Der Rest gehört Ben."],
+  ["Wofür eignet sich Lightning besonders?", ["Kleine, schnelle Zahlungen wie einen Kaffee", "Das Lebensersparnis langfristig lagern", "Bitcoin schürfen"], 0, "Lightning ist stark bei kleinen, schnellen und günstigen Zahlungen. Für große Summen und langes Sparen ist die Blockchain direkt sicherer."],
+];
+Lern.quiz($("quiz"), "lightning", QUIZ, "../"); Lern.visit("lightning"); Lern.renderNext("lightning", "../");
+costs(); load();
+})();
+</script>
+</body>
+</html>
