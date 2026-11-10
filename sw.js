@@ -1,5 +1,5 @@
 // Bullen vs Bären: macht die Seite installierbar. Immer zuerst das Netz (für Updates), offline die letzte Version.
-const CACHE = "satsland-v16";
+const CACHE = "satsland-v17";
 self.addEventListener("install", e => {
   self.skipWaiting();
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(["./", "./index.html", "./icon-192.png", "./icon-512.png"])).catch(() => {}));
