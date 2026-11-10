@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Seed-Trainer · Satsland</title>
+<meta name="description" content="Lernwelt: Bitcoin sicher selbst verwahren. 12 Wörter merken, prüfen und richtig aufbewahren, nur mit Übungswörtern.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0b0f2a">
+<link rel="icon" href="../icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="stylesheet" href="../lern.css">
+<style>
+/* Lernwelt "Seed-Trainer": nur seitenspezifische Teile, der Rest kommt aus lern.css */
+.warn{border-color:rgba(255,92,115,.45);background:rgba(255,92,115,.07)}
+.warn b{color:var(--bear)}
+.words{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:12px 0}
+.words div{background:#0b0f2a;border:1px solid var(--line);border-radius:10px;padding:8px 10px;font:700 15px var(--f-body)}
+.words div i{font:600 12px var(--f-num);font-style:normal;color:var(--muted);margin-right:6px}
+.words.hide div span{filter:blur(6px)}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.ask{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:12px 0}
+.ask label{font-size:13px;color:var(--muted)}
+.ask input{width:100%;font:600 16px var(--f-body);padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:#0b0f2a;color:var(--ink)}
+.ask input.ok{border-color:var(--bull)} .ask input.no{border-color:var(--bear)}
+.msg{margin:8px 0 0;font-weight:700;min-height:1.5em}
+.msg.ok{color:var(--bull)} .msg.no{color:var(--bear)}
+.sort{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:10px}
+.it{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;padding:10px 12px}
+.it b{display:block;margin-bottom:6px}
+.it .row button{font:700 13px var(--f-body);padding:7px 12px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.05);color:var(--ink);cursor:pointer}
+.it.ok{border-color:rgba(52,217,130,.55)} .it.no{border-color:rgba(255,92,115,.6)}
+.it p{margin:6px 0 0;font-size:13px;color:var(--muted)}
+.score{margin:10px 0 0;font-weight:800;color:var(--gold)}
+@media (max-width:640px){ .words{grid-template-columns:repeat(3,minmax(0,1fr))} .ask{grid-template-columns:1fr} .sort{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a class="back" href="../lernen/">← Satsland</a><a class="back" href="../">Zum Spiel</a></div>
+  <div>
+    <h1><span class="btc">Seed</span>-Trainer</h1>
+    <p class="lead">Wer seine Bitcoin selbst verwahrt, bekommt 12 oder 24 Wörter, den <b>Seed</b>. Diese Wörter <b>sind</b> deine Bitcoin. Hier übst du den Umgang damit.</p>
+  </div>
+
+  <section class="card warn"><b>Wichtig:</b> Hier gibt es nur <b>Übungswörter</b>, die nicht zu echten Wallets passen. Gib deinen echten Seed <b>niemals</b> auf einer Webseite ein, auch nicht hier. Niemand Seriöses fragt jemals danach.</section>
+
+  <!-- 1 · Merken und prüfen -->
+  <section class="card" aria-labelledby="h1s">
+    <h2 id="h1s">1 · Aufschreiben und prüfen</h2>
+    <p class="muted" style="margin:0">So läuft es bei einer echten Wallet: Du bekommst die Wörter einmal angezeigt, schreibst sie auf Papier ab, und die Wallet prüft danach ein paar davon.</p>
+    <div class="words" id="words" aria-live="polite"></div>
+    <div class="row"><button class="btn" id="done" type="button">Hab ich aufgeschrieben</button><button class="btn ghost" id="newW" type="button">Neue Wörter</button></div>
+    <div id="check" hidden>
+      <div class="ask" id="ask"></div>
+      <div class="row"><button class="btn" id="test" type="button">Prüfen</button><button class="btn ghost" id="peek" type="button">Wörter nochmal zeigen</button></div>
+      <p class="msg" id="msg"></p>
+    </div>
+  </section>
+
+  <!-- 2 · Sicher oder unsicher? -->
+  <section class="card" aria-labelledby="h2s">
+    <h2 id="h2s">2 · Wo bewahrst du die Wörter auf?</h2>
+    <p class="muted" style="margin:0">Sicher oder unsicher? Tippe deine Einschätzung an.</p>
+    <div class="sort" id="sort"></div>
+    <p class="score" id="score"></p>
+  </section>
+
+  <!-- 3 · Merksätze und Quiz -->
+  <section class="card" aria-labelledby="h3s">
+    <h2 id="h3s">Das solltest du dir merken</h2>
+    <div class="learn">
+      <div><b>Seed = Bitcoin</b><span>Wer die Wörter hat, hat <b>alles</b>. Geht die Wallet kaputt, stellst du mit den Wörtern alles wieder her.</span></div>
+      <div><b>Nur offline</b><span>Auf <b>Papier oder Metall</b>, nie als Foto, Cloud-Notiz oder Nachricht. Alles Digitale kann gehackt werden.</span></div>
+      <div><b>Niemals verraten</b><span>Support, Börsen, Freunde: <b>Niemand</b> braucht deinen Seed. Wer danach fragt, will dich bestehlen.</span></div>
+      <div><b>Backup planen</b><span>Lieber an <b>zwei sicheren Orten</b>. Und überleg, wie deine Familie im Notfall drankommt.</span></div>
+    </div>
+    <details class="qz"><summary>Teste dich: 3 Fragen</summary><div id="quiz"></div></details>
+  </section>
+
+  <section class="card next" id="next" aria-label="Weiter"></section>
+  <p class="foot">Lernen und Unterhaltung, keine Anlage- oder Sicherheitsberatung. Die Übungswörter stammen nicht aus der echten Bitcoin-Wortliste.</p>
+</div>
+
+<script src="../lern.js"></script>
+<script>
+/* =====================================================================
+   SEED-TRAINER – Lernwelt von Satsland
+   Nur deutsche Übungswörter (absichtlich NICHT die echte BIP39-Liste), nichts wird gespeichert oder gesendet.
+   ===================================================================== */
+(() => {
+const $ = id => document.getElementById(id);
+const POOL = ("Apfel Anker Ampel Banane Berg Blitz Brücke Burg Dach Delfin Drache Eiche Eimer Esel Fackel Feder Fenster Fisch Flöte Frosch Gabel Garten Geige Gurke Hafen Hammer Hase Himmel Honig Hut Igel Insel Jacke Kaktus Kamel Kerze Kiste Koffer Krone Kuchen Lampe Leiter Löwe Mantel Mond Möwe Nebel Nuss Ofen Orgel Palme Pinsel Pirat Pilz Quelle Rabe Rakete Regen Ring Rose Säge Schaf Schiff Sonne Spiegel Stern Tiger Tisch Tomate Tulpe Turm Uhr Vogel Vulkan Wagen Wald Welle Wolke Zebra Zelt Zwerg").split(" ");
+let words = [], askIdx = [];
+const shuffle = a => { const b = a.slice(); for (let i = b.length - 1; i > 0; i--){ const j = crypto.getRandomValues(new Uint32Array(1))[0] % (i + 1); [b[i], b[j]] = [b[j], b[i]]; } return b; };
+function newWords(){
+  words = shuffle(POOL).slice(0, 12);
+  $("words").classList.remove("hide");
+  $("words").innerHTML = words.map((w, i) => `<div><i>${i + 1}</i><span>${w}</span></div>`).join("");
+  $("check").hidden = true; $("done").hidden = false; $("msg").textContent = "";
+}
+$("newW").addEventListener("click", newWords);
+$("done").addEventListener("click", () => {
+  $("words").classList.add("hide"); $("done").hidden = true; $("check").hidden = false;
+  askIdx = shuffle([...Array(12).keys()]).slice(0, 3).sort((a, b) => a - b);
+  $("ask").innerHTML = askIdx.map(i => `<div><label for="a${i}">Wort Nr. ${i + 1}</label><input id="a${i}" autocomplete="off" autocapitalize="off" spellcheck="false"></div>`).join("");
+  $("msg").textContent = ""; $("msg").className = "msg";
+});
+$("peek").addEventListener("click", () => $("words").classList.toggle("hide"));
+$("test").addEventListener("click", () => {
+  let right = 0;
+  askIdx.forEach(i => { const el = $("a" + i), ok = el.value.trim().toLowerCase() === words[i].toLowerCase(); el.className = ok ? "ok" : "no"; if (ok) right++; });
+  const m = $("msg");
+  if (right === 3){ m.className = "msg ok"; m.textContent = "Perfekt! Genau so prüft eine echte Wallet, ob dein Backup stimmt."; }
+  else { m.className = "msg no"; m.textContent = `${right} von 3 richtig. Bei echten Wörtern wäre das gefährlich: ein falsches Wort und die Wiederherstellung scheitert.`; }
+});
+
+// Sicher oder unsicher?
+const ITEMS = [
+  ["Auf Papier, im Tresor zu Hause", 1, "Offline und geschützt. Gut, am besten zusätzlich ein zweites Backup an einem anderen Ort."],
+  ["Screenshot in der Handy-Galerie", 0, "Galerien landen oft automatisch in der Cloud, und Apps können darauf zugreifen."],
+  ["In eine Metallplatte gestanzt", 1, "Übersteht Feuer und Wasser. Gilt als eine der sichersten Varianten."],
+  ["Als Notiz in Google Drive oder iCloud", 0, "Alles, was online liegt, kann gehackt oder ausgespäht werden."],
+  ["Per WhatsApp an dich selbst geschickt", 0, "Nachrichten liegen auf Servern und anderen Geräten. Nie digital verschicken."],
+  ["Einem „Support-Mitarbeiter“ diktiert, der dir helfen will", 0, "Das ist immer Betrug. Kein echter Support fragt jemals nach deinem Seed."],
+];
+let pts = 0, answered = 0;
+$("sort").innerHTML = ITEMS.map(([t], i) => `<div class="it" id="it${i}"><b>${t}</b><div class="row"><button type="button" data-i="${i}" data-v="1">✓ Sicher</button><button type="button" data-i="${i}" data-v="0">✗ Unsicher</button></div><p hidden></p></div>`).join("");
+$("sort").querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
+  const i = +b.dataset.i, el = $("it" + i); if (el.dataset.done) return;
+  const ok = +b.dataset.v === ITEMS[i][1]; el.dataset.done = 1; el.classList.add(ok ? "ok" : "no");
+  const p = el.querySelector("p"); p.hidden = false; p.textContent = (ok ? "Richtig. " : "Leider falsch. ") + ITEMS[i][2];
+  answered++; if (ok) pts++;
+  if (answered === ITEMS.length) $("score").textContent = `${pts} von ${ITEMS.length} richtig eingeschätzt.`;
+}));
+
+const QUIZ = [
+  ["Ein Mitarbeiter deiner Börse schreibt dir und braucht deine 12 Wörter, um dein Konto zu „retten“. Was tust du?", ["Ich gebe sie ihm, er will ja helfen", "Nichts verraten, das ist Betrug", "Ich schicke nur die Hälfte"], 1, "Niemand Seriöses fragt nach dem Seed. Wer ihn hat, kann sofort alles abziehen, auch mit der Hälfte der Wörter wird es gefährlich."],
+  ["Deine Hardware-Wallet ist kaputt. Wie kommst du an deine Bitcoin?", ["Gar nicht mehr", "Mit den 12 bzw. 24 Wörtern in einer neuen Wallet", "Nur über den Hersteller"], 1, "Die Bitcoin liegen nicht im Gerät, sondern in der Blockchain. Mit dem Seed stellst du alles in jeder kompatiblen Wallet wieder her."],
+  ["Welche Aufbewahrung ist am sichersten?", ["Foto in der Cloud", "Passwort-Manager im Browser", "Offline auf Papier oder Metall, an sicheren Orten"], 2, "Offline-Backups kann niemand aus der Ferne stehlen. Metall schützt zusätzlich vor Feuer und Wasser."],
+];
+Lern.quiz($("quiz"), "seed", QUIZ, "../"); Lern.visit("seed"); Lern.renderNext("seed", "../");
+newWords();
+})();
+</script>
+</body>
+</html>

@@ -10,6 +10,7 @@ const Lern = (() => {
     ["halving", "Knappheit & Halving", "halving/"],
     ["blockchain", "Blockchain", "blockchain/"],
     ["bahnhof", "Mempool-Bahnhof", "bahnhof/"],
+    ["seed", "Seed-Trainer", "seed/"],
   ];
   const load = () => { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch(e){ return {}; } };
   const save = s => { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch(e){} };
