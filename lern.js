@@ -14,7 +14,7 @@ const Lern = (() => {
     ["betrug", "Betrug erkennen", "betrug/"],
     ["sparplan", "Sparplan", "sparplan/"],
     ["lightning", "Lightning", "lightning/"],
-    ["mining", "Mining-Werkstatt", "mining/"], ["sicherheit", "Miner-Lohn", "sicherheit/"], ["nodes", "Node-Wache", "nodes/"], ["forks", "Upgrade-Werkstatt", "forks/"], ["schluessel", "Schlüssel-Labor", "schluessel/"], ["utxo", "Wechselgeld-Kasse", "utxo/"], ["wallets", "Wallet-Check", "wallets/"], ["erben", "Notfall-Plan", "erben/"], ["fomo", "Gefühls-Achterbahn", "fomo/"], ["hebel", "Hebel-Falle", "hebel/"], ["geschichte", "Zeitreise", "geschichte/"],
+    ["mining", "Mining-Werkstatt", "mining/"], ["sicherheit", "Miner-Lohn", "sicherheit/"], ["energie", "Strom-Check", "energie/"], ["nodes", "Node-Wache", "nodes/"], ["forks", "Upgrade-Werkstatt", "forks/"], ["schluessel", "Schlüssel-Labor", "schluessel/"], ["utxo", "Wechselgeld-Kasse", "utxo/"], ["wallets", "Wallet-Check", "wallets/"], ["erben", "Notfall-Plan", "erben/"], ["fomo", "Gefühls-Achterbahn", "fomo/"], ["hebel", "Hebel-Falle", "hebel/"], ["geschichte", "Zeitreise", "geschichte/"],
   ];
   const load = () => { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch(e){ return {}; } };
   const save = s => { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch(e){} };

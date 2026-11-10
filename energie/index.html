@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Strom-Check · Satsland</title>
+<meta name="description" content="Lernwelt: Wie viel Strom braucht Bitcoin, woher kommt er und was sagen Kritiker und Befürworter? Live aus der echten Rechenleistung berechnet.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0b0f2a">
+<link rel="icon" href="../icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="stylesheet" href="../lern.css?v=3">
+<style>
+/* Lernwelt "Energie": nur seitenspezifische Teile, der Rest kommt aus lern.css */
+.idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
+.calc{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}
+.calc div{border:1px solid var(--line);border-radius:12px;padding:8px 10px;font-size:12px;color:var(--muted)} .calc b{display:block;font:700 18px var(--f-num);color:var(--ink)} .calc .g{color:var(--gold)}
+.ctl{margin-top:12px} .ctl label{display:block;font-size:13px;color:var(--muted)} .ctl .row{display:flex;align-items:center;gap:10px} .ctl .row input{flex:1} .ctl .row b{font:800 18px var(--f-num);min-width:6.5ch;text-align:right}
+.bars{display:grid;gap:8px;margin-top:14px}
+.bars div{display:grid;grid-template-columns:10em 1fr 5.5em;align-items:center;gap:8px;font-size:13px}
+.bars i{height:14px;border-radius:7px;background:#3a4170;display:block;transition:width .4s} .bars .me i{background:var(--gold)} .bars b{font:700 13px var(--f-num);text-align:right}
+.mix{display:flex;height:34px;border-radius:10px;overflow:hidden;margin-top:12px}
+.mix div{display:grid;place-items:center;font:700 12px var(--f-num);color:#08130c;white-space:nowrap;overflow:hidden}
+.leg{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px;font-size:13px;color:var(--muted)} .leg i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.sides{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.side{border:2px solid var(--line);border-radius:14px;padding:12px;font-size:14px;line-height:1.5}
+.side h3{margin:0 0 6px;font-size:15px} .side ul{margin:0;padding-left:18px;display:grid;gap:6px} .side.c{border-color:rgba(231,76,60,.6)} .side.p{border-color:rgba(46,204,113,.6)}
+@media (max-width:620px){ .calc,.sides{grid-template-columns:1fr} .bars div{grid-template-columns:7.5em 1fr 4.8em} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a class="back" href="../">← Satsland</a><a class="back" href="../spiel/">Zum Spiel</a></div>
+  <div>
+    <h1><span class="btc">Strom</span>-Check</h1>
+    <p class="lead">Bitcoin braucht viel Strom, das ist Absicht: Der Strom macht das Netz sicher. Aber wie viel ist es wirklich, und ist das gut oder schlecht? Hier sind die <b>Fakten von beiden Seiten</b>.</p>
+  </div>
+
+  <section class="card" aria-labelledby="h1s">
+    <h2 id="h1s">Wie viel Strom gerade? <span class="mode" id="mode">Verbinde …</span></h2>
+    <div class="idea">Niemand misst den Strom aller Miner direkt. Man <b>schätzt</b> ihn so: echte Rechenleistung des Netzes × Strom, den ein durchschnittliches Gerät pro Rechenschritt braucht. Den zweiten Wert kannst du selbst einstellen.</div>
+    <div class="ctl"><label for="eff">Effizienz der Geräte im Schnitt (Joule pro Terahash, weniger = sparsamer)</label><div class="row"><input id="eff" type="range" min="12" max="40" value="22"><b id="effV" class="num">22 J/TH</b></div></div>
+    <div class="calc">
+      <div>Rechenleistung (live)<b class="num" id="cH">–</b></div>
+      <div>Leistung gerade<b class="num" id="cW">–</b></div>
+      <div>Aufs Jahr gerechnet<b class="num g" id="cY">–</b></div>
+    </div>
+    <div class="bars" id="bars"></div>
+    <p class="muted" style="font-size:13px;margin:8px 0 0" id="share"></p>
+  </section>
+
+  <section class="card" aria-labelledby="h2s">
+    <h2 id="h2s">Woher kommt der Strom?</h2>
+    <p class="muted" style="margin:0">Laut einer Umfrage der Universität Cambridge unter Mining-Firmen (2025):</p>
+    <div class="mix" id="mix"></div>
+    <div class="leg" id="leg"></div>
+    <p class="muted" style="font-size:13px;margin:8px 0 0">Wie genau solche Umfragen sind, ist umstritten. Andere Schätzungen liegen niedriger oder höher.</p>
+  </section>
+
+  <section class="card" aria-labelledby="h3s">
+    <h2 id="h3s">Die zwei Seiten</h2>
+    <div class="sides">
+      <div class="side c"><h3>👎 Das sagen Kritiker</h3><ul>
+        <li>So viel Strom wie ein ganzes Land, nur für ein Zahlungsnetz.</li>
+        <li>Ein großer Teil kommt noch aus <b>Gas und Kohle</b>, das verursacht CO₂.</li>
+        <li>Mining-Geräte veralten schnell und werden zu <b>Elektroschrott</b>.</li>
+        <li>Der Strom könnte woanders sinnvoller genutzt werden.</li></ul></div>
+      <div class="side p"><h3>👍 Das sagen Befürworter</h3><ul>
+        <li>Der Strom ist der Preis für ein Geld, das <b>niemand fälschen</b> oder einfrieren kann.</li>
+        <li>Miner suchen den <b>billigsten Strom</b>, oft überschüssige Wind-, Solar- oder Wasserkraft.</li>
+        <li>Miner können sich <b>sofort abschalten</b> und so Stromnetze stabilisieren.</li>
+        <li>Manche nutzen Gas, das sonst einfach <b>abgefackelt</b> würde.</li></ul></div>
+    </div>
+  </section>
+
+  <section class="card" aria-labelledby="h4s">
+    <h2 id="h4s">Das solltest du dir merken</h2>
+    <div class="learn">
+      <div><b>Strom = Sicherheit</b><span>Der Verbrauch ist <b>kein Fehler</b>, sondern das Prinzip von Proof of Work.</span></div>
+      <div><b>Nur Schätzungen</b><span>Alle Zahlen sind <b>Hochrechnungen</b>. Seriös ist, wer seine Annahmen offenlegt.</span></div>
+      <div><b>Mix entscheidet</b><span>Für die Umwelt zählt nicht nur wie viel, sondern <b>woher</b> der Strom kommt.</span></div>
+      <div><b>Bilde dir selbst ein Urteil</b><span>Beide Seiten haben Argumente. Schau auf <b>Zahlen</b>, nicht auf Schlagzeilen.</span></div>
+    </div>
+    <details class="qz"><summary>Teste dich: 3 Fragen</summary><div id="quiz"></div></details>
+  </section>
+
+  <section class="card next" id="next" aria-label="Weiter"></section>
+  <details class="foot"><summary>Quellen</summary><p>Rechenleistung live von <a href="https://mempool.space/mining">mempool.space</a>. Strommix: Cambridge Centre for Alternative Finance, Mining-Umfrage 2025 (<a href="https://jbs.cam.ac.uk/2025/cambridge-study-sustainable-energy-rising-in-bitcoin-mining/">jbs.cam.ac.uk</a>). Vergleichswerte gerundet: Deutschland rund 500 TWh Strom pro Jahr, Rechenzentren weltweit rund 415 TWh (IEA, 2024), Welt rund 30.000 TWh.</p></details>
+  <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
+</div>
+
+<script src="../lern.js?v=3"></script>
+<script>
+/* =====================================================================
+   STROM-CHECK – Lernwelt von Satsland
+   Stromschätzung = Live-Hashrate × einstellbare Effizienz; Strommix; beide Seiten.
+   ===================================================================== */
+(() => {
+const $ = id => document.getElementById(id);
+const f = (v, d = 0) => v.toLocaleString("de-DE", {maximumFractionDigits: d});
+let hash = 1e21, live = false;   // Hashrate in H/s, Beispielwert falls offline
+const CMP = [["Rechenzentren weltweit", 415], ["Deutschland, ganzes Land", 500], ["Norwegen", 130], ["Schweiz", 60]];
+function calc(){
+  const eff = +$("eff").value, gw = hash/1e12*eff/1e9, twh = gw*8.766;   // TH/s × J/TH = W; GW × 8.766 h/1000 = TWh
+  $("effV").textContent = eff + " J/TH"; $("cH").textContent = f(hash/1e18) + " EH/s";
+  $("cW").textContent = f(gw, 1) + " GW"; $("cY").textContent = "ca. " + f(twh) + " TWh";
+  const rows = [["₿ Bitcoin (Schätzung)", twh, 1], ...CMP.map(c => [c[0], c[1], 0])].sort((a, b) => b[1] - a[1]), max = rows[0][1];
+  $("bars").innerHTML = rows.map(([n, v, me]) => `<div class="${me ? "me" : ""}"><span>${n}</span><i style="width:${(v/max*100).toFixed(1)}%"></i><b>${f(v)} TWh</b></div>`).join("");
+  $("share").textContent = `Das wären etwa ${f(twh/30000*100, 1)} % des weltweiten Stroms. Bei ${eff} J/TH; sind die Geräte sparsamer, sinkt die Zahl.`;
+}
+// Strommix laut Cambridge 2025 (Anteile in %)
+const MIX = [["Wasser, Wind, Sonne", 42.6, "#2ecc71"], ["Kernkraft", 9.8, "#5dade2"], ["Gas", 38.2, "#f5b041"], ["Kohle", 8.9, "#7f8c8d"], ["Öl", 0.5, "#a04000"]];
+$("mix").innerHTML = MIX.map(([n, p, c]) => `<div style="flex-basis:${p}%;background:${c}">${p >= 8 ? f(p, 1) + " %" : ""}</div>`).join("");
+$("leg").innerHTML = MIX.map(([n, p, c]) => `<span><i style="background:${c}"></i>${n} ${f(p, 1)} %</span>`).join("");
+
+fetch("https://mempool.space/api/v1/mining/hashrate/3d").then(r => r.json()).then(j => { if (j.currentHashrate > 0){ hash = j.currentHashrate; live = true; } }).catch(() => {})
+  .finally(() => { $("mode").className = "mode " + (live ? "live" : "demo"); $("mode").textContent = live ? "Live-Rechenleistung" : "Beispielwert"; calc(); });
+$("eff").addEventListener("input", calc);
+calc();
+
+const QUIZ = [
+  ["Warum braucht Bitcoin so viel Strom?", ["Wegen schlechter Programmierung", "Weil Proof of Work das Netz durch echten Aufwand absichert", "Weil die Server-Räume gekühlt werden"], 1, "Der Strom ist der Aufwand, den ein Angreifer übertreffen müsste. Er ist Teil des Sicherheitskonzepts."],
+  ["Wie wird der Stromverbrauch von Bitcoin meistens berechnet?", ["Jeder Miner meldet ihn", "Aus der Rechenleistung des Netzes und der Effizienz der Geräte geschätzt", "Er wird vom Staat gemessen"], 1, "Es gibt keine zentrale Messung. Seriöse Schätzungen legen ihre Annahmen offen."],
+  ["Was ist für die Umweltbilanz besonders wichtig?", ["Nur die Menge des Stroms", "Woher der Strom kommt, zum Beispiel erneuerbar oder Kohle", "Die Farbe der Mining-Geräte"], 1, "Strom aus Wasser, Wind oder Sonne verursacht viel weniger CO₂ als Strom aus Kohle oder Gas."],
+];
+Lern.quiz($("quiz"), "energie", QUIZ, "../"); Lern.visit("energie"); Lern.renderNext("energie", "../");
+})();
+</script>
+</body>
+</html>
