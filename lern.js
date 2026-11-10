@@ -8,7 +8,7 @@ const Lern = (() => {
   const PATH = [
     ["inflation", "Geld & Inflation", "inflation/"],
     ["halving", "Knappheit & Halving", "halving/"],
-    ["blockchain", "Blockchain", "blockchain/"],
+    ["hashing", "Fingerabdruck-Maschine", "hashing/"], ["blockchain", "Blockchain", "blockchain/"],
     ["bahnhof", "Mempool-Bahnhof", "bahnhof/"],
     ["seed", "Seed-Trainer", "seed/"],
     ["betrug", "Betrug erkennen", "betrug/"],

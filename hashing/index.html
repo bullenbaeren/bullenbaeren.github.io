@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Fingerabdruck-Maschine · Satsland</title>
+<meta name="description" content="Lernwelt: Hashing, der digitale Fingerabdruck. Tippe Text ein und sieh, wie sich der SHA-256-Hash verändert.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0b0f2a">
+<link rel="icon" href="../icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="stylesheet" href="../lern.css?v=3">
+<style>
+/* Lernwelt "Hashing": nur seitenspezifische Teile, der Rest kommt aus lern.css */
+.idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
+.in{width:100%;box-sizing:border-box;margin-top:12px;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:#0b0f2a;color:var(--ink);font:16px inherit}
+.arrow{text-align:center;color:var(--muted);font-size:13px;margin:8px 0}
+.hash{padding:12px 14px;border-radius:12px;border:2px solid var(--gold);font:700 15px var(--f-num);word-break:break-all;line-height:1.6}
+.hash i{font-style:normal;color:var(--bear);background:rgba(231,76,60,.15);border-radius:3px}
+.pix{display:grid;grid-template-columns:repeat(16,1fr);gap:3px;margin-top:10px}
+.pix span{aspect-ratio:1;border-radius:3px;transition:background .25s}
+.acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.chg{margin-top:10px;font-size:15px;min-height:1.5em} .chg b{color:var(--bear)}
+.props{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px}
+.prop{border:1px solid var(--line);border-radius:14px;padding:12px;background:rgba(255,255,255,.03);font-size:14px;line-height:1.5}
+.prop b{display:block;font-size:15px;margin-bottom:4px} .prop .btn{margin-top:8px;width:100%} .prop .o{margin-top:8px;font:12px var(--f-num);word-break:break-all;color:var(--muted)} .prop .o b{display:inline;font:inherit;color:var(--bull)}
+.target{margin-top:10px;padding:10px 12px;border-radius:12px;border:2px dashed var(--gold);font:700 13px var(--f-num);word-break:break-all}
+.guess{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+.guess .btn{padding:10px 4px} .guess .btn.y{background:rgba(46,204,113,.25);border-color:var(--bull)} .guess .btn.n{opacity:.5;text-decoration:line-through}
+.gres{margin-top:8px;font-size:14px;color:var(--muted);min-height:1.4em}
+.blk{margin-top:10px;font:700 14px var(--f-num);word-break:break-all;padding:10px 12px;border-radius:12px;border:1px solid var(--line)} .blk em{font-style:normal;color:var(--gold)}
+@media (max-width:700px){ .props{grid-template-columns:1fr} .guess{grid-template-columns:1fr 1fr} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a class="back" href="../">← Satsland</a><a class="back" href="../spiel/">Zum Spiel</a></div>
+  <div>
+    <h1><span class="btc">Fingerabdruck</span>-Maschine</h1>
+    <p class="lead">Ein <b>Hash</b> ist der digitale Fingerabdruck von Daten. Bitcoin benutzt ihn überall: für Blöcke, Mining, Adressen und Signaturen.</p>
+  </div>
+
+  <section class="card" aria-labelledby="h1s">
+    <h2 id="h1s">Probier die Maschine aus</h2>
+    <div class="idea">Tippe irgendetwas ein. Die Maschine (sie heißt <b>SHA-256</b>) macht daraus sofort eine Zeichenkette aus 64 Zeichen. Ändere nur <b>ein</b> Zeichen und schau, was passiert.</div>
+    <input class="in" id="txt" value="Satsland" aria-label="Text für den Hash" autocomplete="off">
+    <p class="arrow">⬇ SHA-256 ⬇</p>
+    <div class="hash" id="hash"></div>
+    <div class="pix" id="pix" aria-hidden="true"></div>
+    <div class="acts">
+      <button class="btn ghost" type="button" id="aCase">Aa Ersten Buchstaben umschalten</button>
+      <button class="btn ghost" type="button" id="aDot">. Punkt anhängen</button>
+    </div>
+    <p class="chg" id="chg" aria-live="polite"></p>
+  </section>
+
+  <section class="card" aria-labelledby="h2s">
+    <h2 id="h2s">Drei Eigenschaften, die Bitcoin braucht</h2>
+    <div class="props">
+      <div class="prop"><b>1. Immer gleich</b>Derselbe Text ergibt <b style="display:inline">immer</b> denselben Hash, auf jedem Computer der Welt.<button class="btn ghost" type="button" id="p1">Nochmal berechnen</button><div class="o" id="o1"></div></div>
+      <div class="prop"><b>2. Immer 64 Zeichen</b>Ein Wort oder ein ganzes Buch: Der Fingerabdruck ist <b style="display:inline">immer gleich lang</b>.<button class="btn ghost" type="button" id="p2">📚 Ganzes Buch hashen</button><div class="o" id="o2"></div></div>
+      <div class="prop"><b>3. Nicht umkehrbar</b>Aus dem Hash kommst du <b style="display:inline">nie</b> zurück zum Text. Du kannst nur raten und vergleichen.<button class="btn ghost" type="button" onclick="document.getElementById('h3s').scrollIntoView({behavior:'smooth'})">Selbst probieren ↓</button></div>
+    </div>
+  </section>
+
+  <section class="card" aria-labelledby="h3s">
+    <h2 id="h3s">Welches Tier steckt dahinter?</h2>
+    <p class="muted" style="margin:0">Hier ist der Hash eines Tiernamens. Zurückrechnen geht nicht. Du kannst nur jeden Kandidaten hashen und vergleichen, genau wie ein Miner.</p>
+    <div class="target" id="target"></div>
+    <div class="guess" id="guess"></div>
+    <p class="gres" id="gres"></p>
+  </section>
+
+  <section class="card" aria-labelledby="h4s">
+    <h2 id="h4s">Echter Fingerabdruck: der neueste Block <span class="mode" id="mode">Verbinde …</span></h2>
+    <p class="muted" style="margin:0">Jeder Bitcoin-Block hat einen Hash. Die vielen <b>Nullen am Anfang</b> sind kein Zufall: Miner haben so lange probiert, bis ein Hash mit genug Nullen herauskam.</p>
+    <div class="blk" id="blk">–</div>
+  </section>
+
+  <section class="card" aria-labelledby="h5s">
+    <h2 id="h5s">Das solltest du dir merken</h2>
+    <div class="learn">
+      <div><b>Fingerabdruck</b><span>Ein Hash erkennt Daten <b>eindeutig</b> wieder, ohne die Daten selbst zu zeigen.</span></div>
+      <div><b>Lawinen-Effekt</b><span>Ein einziges geändertes Zeichen ergibt einen <b>komplett anderen</b> Hash. Fälschungen fallen sofort auf.</span></div>
+      <div><b>Einbahnstraße</b><span>Vom Hash zurück zum Text geht nicht. Man kann nur <b>raten</b>. Darauf beruht das Mining.</span></div>
+      <div><b>Überall in Bitcoin</b><span>Blöcke sind über Hashes <b>verkettet</b>, Adressen und Signaturen nutzen sie auch.</span></div>
+    </div>
+    <details class="qz"><summary>Teste dich: 3 Fragen</summary><div id="quiz"></div></details>
+  </section>
+
+  <section class="card next" id="next" aria-label="Weiter"></section>
+  <details class="foot"><summary>Quellen</summary><p>SHA-256 wird hier echt in deinem Browser berechnet. Neuester Block live von <a href="https://mempool.space">mempool.space</a>. Bitcoin hasht Blöcke zweimal hintereinander mit SHA-256.</p></details>
+  <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
+</div>
+
+<script src="../lern.js?v=3"></script>
+<script>
+/* =====================================================================
+   FINGERABDRUCK-MASCHINE – Lernwelt von Satsland
+   Live-SHA-256 (aus lern.js), Lawinen-Effekt, Eigenschaften, Rate-Spiel, echter Block-Hash.
+   ===================================================================== */
+(() => {
+const $ = id => document.getElementById(id);
+const H = Lern.sha256;
+let prev = "";
+
+// Hash anzeigen, geänderte Zeichen markieren, als Farbbild zeichnen
+function show(){
+  const h = H($("txt").value);
+  $("hash").innerHTML = prev ? [...h].map((c, i) => c === prev[i] ? c : `<i>${c}</i>`).join("") : h;
+  $("pix").innerHTML = h.match(/.{4}/g).map(q => `<span style="background:hsl(${parseInt(q, 16) % 360} 70% 55%)"></span>`).join("");
+  if (prev && prev !== h){ const n = [...h].filter((c, i) => c !== prev[i]).length; $("chg").innerHTML = `<b>${n} von 64</b> Zeichen haben sich geändert (rot markiert).<br><span class="muted" style="font:12px var(--f-num);word-break:break-all">vorher: ${prev}</span>`; }
+  else if (!prev) $("chg").textContent = "";
+  prev = h;
+}
+$("txt").addEventListener("input", show);
+$("aCase").onclick = () => { const t = $("txt").value; if (!t) return; const c = t[0]; $("txt").value = (c === c.toUpperCase() ? c.toLowerCase() : c.toUpperCase()) + t.slice(1); show(); };
+$("aDot").onclick = () => { $("txt").value += "."; show(); };
+show(); $("chg").textContent = "Tipp: Ändere ein Zeichen.";
+
+// Eigenschaften
+$("p1").onclick = () => { const t = $("txt").value, a = H(t), b = H(t); $("o1").innerHTML = `${a.slice(0, 20)}…<br>${b.slice(0, 20)}… <b>${a === b ? "✓ identisch" : "?"}</b>`; };
+$("p2").onclick = () => {
+  const book = "Es war einmal ein Bitcoin. ".repeat(20000), h = H(book);
+  $("o2").innerHTML = `${book.length.toLocaleString("de-DE")} Zeichen rein<br>${h.slice(0, 20)}… <b>${h.length} Zeichen raus</b>`;
+};
+
+// Rate-Spiel: Hash eines zufälligen Tiers, nur Ausprobieren hilft
+const ANIMALS = ["Bulle", "Bär", "Fuchs", "Wal", "Eule", "Hai", "Adler", "Wolf"];
+function game(){
+  const pool = [...ANIMALS].sort(() => Math.random() - .5).slice(0, 4), secret = pool[Math.floor(Math.random()*4)], target = H(secret);
+  $("target").textContent = target; $("gres").textContent = "Tippe ein Tier an, um seinen Hash zu berechnen."; let tries = 0;
+  $("guess").innerHTML = pool.map(a => `<button class="btn ghost" type="button" data-a="${a}">${a}</button>`).join("");
+  $("guess").onclick = e => {
+    const b = e.target.closest("button"); if (!b || b.disabled) return; tries++;
+    const h = H(b.dataset.a), ok = h === target; b.disabled = true; b.className = "btn ghost " + (ok ? "y" : "n");
+    $("gres").innerHTML = ok ? `✓ Treffer nach ${tries} Versuch${tries > 1 ? "en" : ""}: <b>${b.dataset.a}</b>. <button class="btn ghost" type="button" id="gAgain" style="margin-left:6px">Neues Rätsel</button>` : `✗ ${b.dataset.a} ergibt ${h.slice(0, 12)}…, passt nicht.`;
+    if (ok){ [...$("guess").children].forEach(x => x.disabled = true); $("gAgain").onclick = game; }
+  };
+}
+game();
+
+// Live: Hash des neuesten Blocks
+fetch("https://mempool.space/api/blocks/tip/hash").then(r => r.text()).then(h => {
+  h = h.trim(); if (!/^[0-9a-f]{64}$/.test(h)) throw 0;
+  const z = h.match(/^0*/)[0].length;
+  $("blk").innerHTML = `<em>${h.slice(0, z)}</em>${h.slice(z)}<br><span class="muted" style="font-weight:400">${z} Nullen am Anfang</span>`;
+  $("mode").className = "mode live"; $("mode").textContent = "Live";
+}).catch(() => { $("mode").className = "mode demo"; $("mode").textContent = "Keine Live-Daten"; });
+
+const QUIZ = [
+  ["Du änderst in einem Text ein einziges Komma. Was passiert mit dem Hash?", ["Ein Zeichen ändert sich", "Er sieht komplett anders aus", "Er bleibt gleich"], 1, "Das ist der Lawinen-Effekt: Schon eine winzige Änderung ergibt einen völlig anderen Hash."],
+  ["Wie lang ist ein SHA-256-Hash von einem ganzen Buch?", ["Viel länger als von einem Wort", "Immer 64 Zeichen", "Genauso lang wie das Buch"], 1, "SHA-256 liefert immer 256 Bit, also 64 Zeichen in Hex-Schreibweise, egal wie groß die Eingabe ist."],
+  ["Wie findet man heraus, welcher Text zu einem Hash gehört?", ["Man rechnet ihn zurück", "Nur durch Ausprobieren und Vergleichen", "Man fragt die Blockchain"], 1, "Hashes sind Einbahnstraßen. Man kann nur Kandidaten hashen und vergleichen. Genau das machen Miner milliardenfach."],
+];
+Lern.quiz($("quiz"), "hashing", QUIZ, "../"); Lern.visit("hashing"); Lern.renderNext("hashing", "../");
+})();
+</script>
+</body>
+</html>
