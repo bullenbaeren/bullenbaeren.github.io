@@ -21,6 +21,13 @@
 .msg{width:100%;box-sizing:border-box;margin-top:8px;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:#0b0f2a;color:var(--ink);font:15px inherit}
 .acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
 .sig{margin-top:10px}
+.idea{margin-top:4px;padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
+.tests{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.tests .btn{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 6px;font-size:15px;text-align:center}
+.tests .btn small{font-size:12px;font-weight:400;color:var(--muted)} .tests .btn:disabled{opacity:.45}
+.vd{padding:12px 14px;border-radius:14px;background:rgba(255,255,255,.03);border:1px solid var(--line);font-size:15px}
+.vd.ok{border-color:var(--bull)} .vd.bad{border-color:var(--bear)}
+@media (max-width:520px){ .tests{grid-template-columns:1fr} .tests .btn{flex-direction:row;justify-content:flex-start;gap:8px;text-align:left} }
 .vd{margin:10px 0 0;font-weight:700;min-height:1.4em} .ok{color:var(--bull)} .bad{color:var(--bear)}
 .big{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
 .big div{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;padding:10px 12px;font-size:14px;color:var(--muted)}
@@ -37,26 +44,27 @@
   </div>
 
   <section class="card" aria-labelledby="h1s">
-    <h2 id="h1s">Unterschreiben und prüfen</h2>
-    <p class="step"><span>1.</span> Dein Schlüsselpaar</p>
+    <h2 id="h1s">Dein digitaler Stempel</h2>
+    <div class="idea">Stell dir vor, du hast einen <b>Stempel</b>, den nur du besitzt. Alle anderen haben ein <b>Foto</b> davon. Mit dem Foto kann jeder prüfen, ob ein Zettel wirklich von dir gestempelt ist. Nachmachen kann den Stempel aber niemand. Genau so funktioniert Bitcoin.</div>
+
+    <p class="step"><span>1.</span> Das ist dein Stempel und das Foto davon</p>
     <div class="keys">
-      <div class="priv"><small>🔒 Privater Schlüssel · geheim halten</small><code id="kPriv">…</code></div>
-      <div class="pub"><small>🔓 Öffentlicher Schlüssel · darf jeder sehen</small><code id="kPub">…</code></div>
+      <div class="priv"><small>🔒 Dein Stempel · <b>privater Schlüssel</b>, nur du hast ihn</small><code id="kPriv">…</code></div>
+      <div class="pub"><small>📷 Das Foto · <b>öffentlicher Schlüssel</b>, jeder darf ihn sehen</small><code id="kPub">…</code></div>
     </div>
-    <div class="acts"><button class="btn ghost" id="newKey" type="button">🎲 Neues Schlüsselpaar</button></div>
 
-    <p class="step"><span>2.</span> Nachricht unterschreiben</p>
-    <input class="msg" id="msg" value="Zahle 0,01 BTC an Anna" aria-label="Nachricht">
-    <div class="acts"><button class="btn" id="sign" type="button">✍️ Mit privatem Schlüssel unterschreiben</button></div>
-    <div class="sig"><small>Signatur</small><code id="sig">noch keine</code></div>
+    <p class="step"><span>2.</span> Stempel deine Zahlung</p>
+    <input class="msg" id="msg" value="Zahle 0,01 BTC an Anna" aria-label="Zahlung">
+    <div class="acts"><button class="btn" id="sign" type="button">✍️ Stempeln</button></div>
+    <div class="sig" id="sigBox" hidden><small>Dein Stempel-Abdruck (Signatur), passt nur zu genau diesem Text</small><code id="sig"></code></div>
 
-    <p class="step"><span>3.</span> Jemand prüft mit deinem öffentlichen Schlüssel</p>
-    <div class="acts">
-      <button class="btn ghost" id="vOk" type="button">✅ Prüfen</button>
-      <button class="btn ghost" id="vTamper" type="button">✏️ Betrag fälschen</button>
-      <button class="btn ghost" id="vThief" type="button">🦹 Dieb unterschreibt</button>
+    <p class="step"><span>3.</span> Kann man betrügen? Probier es aus</p>
+    <div class="tests">
+      <button class="btn ghost" id="vOk" type="button" disabled>✅ <b>Echt prüfen</b><small>Anna prüft mit dem Foto</small></button>
+      <button class="btn ghost" id="vTamper" type="button" disabled>✏️ <b>Betrag ändern</b><small>jemand macht 100 BTC daraus</small></button>
+      <button class="btn ghost" id="vThief" type="button" disabled>🦹 <b>Dieb stempelt</b><small>mit seinem eigenen Stempel</small></button>
     </div>
-    <p class="vd" id="vd" aria-live="polite"></p>
+    <p class="vd" id="vd" aria-live="polite">Erst bei Schritt 2 stempeln.</p>
   </section>
 
   <section class="card" aria-labelledby="h2s">
@@ -106,30 +114,31 @@ async function newKey(){
   const jwk = await C.exportKey("jwk", pair.privateKey);
   $("kPriv").textContent = short(b64u(jwk.d));
   $("kPub").textContent = short(hex(await C.exportKey("raw", pair.publicKey)));
-  sig = null; $("sig").textContent = "noch keine"; say("", "");
+  sig = null; $("sigBox").hidden = true;
 }
 function say(cls, t){ $("vd").className = "vd " + cls; $("vd").textContent = t; }
 async function check(msg, s){ return C.verify(SIG, pair.publicKey, s, enc(msg)); }
 
-$("newKey").onclick = newKey;
 $("sign").onclick = async () => {
   signedMsg = $("msg").value; sig = await C.sign(SIG, pair.privateKey, enc(signedMsg));
-  $("sig").textContent = short(hex(sig)); say("", "Unterschrieben. Jetzt kann jeder prüfen.");
+  $("sig").textContent = short(hex(sig)); $("sigBox").hidden = false;
+  ["vOk", "vTamper", "vThief"].forEach(id => $(id).disabled = false);
+  say("", "Gestempelt. Jetzt probier unten aus, ob man betrügen kann.");
 };
 const need = () => { if (!sig){ say("bad", "Erst bei Schritt 2 unterschreiben."); return false; } return true; };
 $("vOk").onclick = async () => { if (!need()) return;
-  const m = $("msg").value, ok = await check(m, sig);
-  say(ok ? "ok" : "bad", ok ? "✓ Gültig: Die Nachricht stammt von deinem Schlüssel und ist unverändert." : "✗ Ungültig: Die Nachricht wurde nach dem Unterschreiben geändert.");
+  $("msg").value = signedMsg; const m = signedMsg, ok = await check(m, sig);
+  say(ok ? "ok" : "bad", ok ? "✓ Echt. Der Abdruck passt zum Foto, die Zahlung kommt wirklich von dir. Die Nodes nehmen sie an." : "✗ Abgelehnt. Der Text wurde nach dem Stempeln geändert, der Abdruck passt nicht mehr.");
 };
 $("vTamper").onclick = async () => { if (!need()) return;
   const fake = signedMsg.replace(/\d+([,.]\d+)?/, "100") === signedMsg ? signedMsg + "!" : signedMsg.replace(/\d+([,.]\d+)?/, "100");
   $("msg").value = fake; const ok = await check(fake, sig);
-  say(ok ? "ok" : "bad", ok ? "?" : `✗ Ungültig: „${fake}“ passt nicht zur Signatur. Schon ein geändertes Zeichen fliegt auf.`);
+  say(ok ? "ok" : "bad", ok ? "?" : `✗ Abgelehnt. „${fake}“ wurde nie gestempelt. Schon ein geändertes Zeichen fliegt auf.`);
 };
 $("vThief").onclick = async () => { if (!need()) return;
   const thief = await C.generateKey(ALG, false, ["sign", "verify"]), m = "Zahle alles an den Dieb";
   const s = await C.sign(SIG, thief.privateKey, enc(m)), ok = await check(m, s);
-  say(ok ? "ok" : "bad", ok ? "?" : "✗ Ungültig: „Zahle alles an den Dieb“ ist mit dem Schlüssel des Diebs unterschrieben. Er hat nur seinen eigenen Schlüssel, deine Coins kann nur dein privater Schlüssel bewegen.");
+  say(ok ? "ok" : "bad", ok ? "?" : "✗ Abgelehnt. Der Dieb hat nur seinen eigenen Stempel, und der passt nicht zu deinem Foto. Deine Coins bewegt nur dein Stempel.");
 };
 
 // Wie schnell rät dieses Gerät Schlüssel? (Zufallszahlen erzeugen, 300 ms lang)
