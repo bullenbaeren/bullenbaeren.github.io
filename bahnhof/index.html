@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mempool-Bahnhof · Bullen vs Bären</title>
+<meta name="description" content="Lernwelt: So kommt deine Bitcoin-Überweisung in einen Block. Der echte Mempool als Bahnhof, live.">
+<meta name="theme-color" content="#0b0f2a">
+<link rel="icon" href="../icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<meta property="og:title" content="Mempool-Bahnhof · Bullen vs Bären">
+<meta property="og:description" content="So kommt deine Bitcoin-Überweisung in einen Block. Der echte Mempool als Bahnhof, live.">
+<meta property="og:image" content="https://bullenbaeren.github.io/og.png">
+<meta property="og:url" content="https://bullenbaeren.github.io/bahnhof/">
+<style>
+/* Lernwelt "Mempool-Bahnhof": gleiche Farben und Schriften wie das Spiel. Nur Systemschriften, keine Cookies, kein Tracking. */
+:root{
+  --night:#0b0f2a; --night2:#151c4d; --card:#141a42; --line:rgba(255,255,255,.07);
+  --ink:#eef0ff; --muted:#9aa2d6; --bull:#34d982; --bear:#ff5c73; --gold:#ffc94d; --sky:#7cc4ff; --btc:#f7931a;
+  --f-display:"Arial Black","Segoe UI Black","Helvetica Neue",Roboto,system-ui,sans-serif;
+  --f-body:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --f-num:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,Consolas,"Liberation Mono",monospace;
+  color-scheme:dark;
+}
+[hidden]{display:none!important}
+*{box-sizing:border-box}
+body{margin:0;background:var(--night) radial-gradient(1100px 520px at 50% -180px, var(--night2), transparent 70%) no-repeat;color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5}
+.wrap{max-width:1060px;margin:0 auto;padding-block:20px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:16px}
+a{color:var(--sky)}
+.top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px}
+.back{font:700 14px var(--f-body);color:var(--muted);text-decoration:none;display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 14px;border:1px solid var(--line);border-radius:999px;background:var(--card)}
+.back:hover{color:var(--ink)}
+h1{font-family:var(--f-display);font-weight:900;font-size:clamp(26px,5.5vw,40px);line-height:1.05;margin:0}
+h1 span{color:var(--btc)}
+.lead{margin:4px 0 0;color:var(--muted);max-width:60ch}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px 18px}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.stat small{display:block;font-size:12px;color:var(--muted)}
+.stat b{font:600 clamp(18px,3.2vw,24px) var(--f-num);font-variant-numeric:tabular-nums}
+.mode{font:500 10px var(--f-num);letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--line);border-radius:999px;padding:3px 9px;white-space:nowrap;display:inline-block;margin-bottom:8px;color:var(--muted)}
+.mode.live{color:var(--bull);border-color:rgba(52,217,130,.45)}
+.mode.live::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--bull);margin-right:6px;vertical-align:1px;animation:blink 1.2s infinite}
+.mode.demo{color:var(--gold);border-color:rgba(255,201,77,.45)}
+@keyframes blink{50%{opacity:.2}}
+.stage{position:relative;border-radius:22px;overflow:hidden;border:1px solid var(--line);background:#0a0e26}
+canvas{display:block;width:100%;height:clamp(300px,52vw,430px)}
+.news{margin:0;font-size:15px;min-height:1.5em}
+.news b{font-family:var(--f-display);font-weight:900}
+.you{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:18px;align-items:center}
+.you h2,.how h2{margin:0 0 6px;font:900 18px var(--f-display)}
+.you p{margin:0;color:var(--muted);font-size:14px}
+.ctrl{display:flex;flex-direction:column;gap:10px}
+.feeRow{display:flex;align-items:center;gap:12px}
+input[type=range]{flex:1;accent-color:var(--btc);height:28px}
+.feeVal{font:600 20px var(--f-num);min-width:7.5ch;text-align:right}
+.feeVal small{font-size:12px;color:var(--muted)}
+.btn{font:800 15px var(--f-body);height:46px;padding:0 20px;border-radius:999px;border:0;background:var(--btc);color:#2a1400;cursor:pointer}
+.btn:disabled{opacity:.5;cursor:default}
+.btn:focus-visible,input:focus-visible,.back:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.out{font-size:14px;line-height:1.45}
+.out b{color:var(--ink)}
+.out .z1{color:var(--bull)} .out .z2{color:var(--gold)} .out .z3{color:var(--bear)}
+.conf{display:flex;gap:6px;margin-top:8px}
+.conf i{width:22px;height:8px;border-radius:4px;background:rgba(255,255,255,.12)}
+.conf i.on{background:var(--bull)}
+.steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:10px}
+.step{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;padding:12px}
+.step > b{display:block;font:900 14px var(--f-display);margin-bottom:4px;color:var(--gold)}
+.step span b{color:var(--ink)}
+.step span{font-size:14px;color:var(--muted)}
+.foot{font-size:12px;color:var(--muted);margin:0;max-width:75ch}
+.priv summary{cursor:pointer;display:inline-block;text-decoration:underline;text-underline-offset:3px}
+.priv p{margin:8px 0 0}
+@media (max-width:760px){ .stats{grid-template-columns:repeat(2,minmax(0,1fr))} .you{grid-template-columns:1fr} .steps{grid-template-columns:repeat(2,minmax(0,1fr))} }
+@media (max-width:420px){ .steps{grid-template-columns:1fr} }
+@media (prefers-reduced-motion:reduce){ .mode.live::before{animation:none} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <a class="back" href="../lernen/">← Lernwelten</a>
+    <a class="back" href="../">Zum Spiel</a>
+  </div>
+  <div>
+    <h1>Mempool-<span>Bahnhof</span></h1>
+    <p class="lead">So kommt eine Bitcoin-Überweisung in einen Block: Jede Transaktion ist ein Fahrgast, jeder Block ein Zug. Wer mehr Gebühr zahlt, darf zuerst einsteigen. Alles mit echten Daten.</p>
+  </div>
+
+  <section class="card" aria-label="Live-Werte">
+    <span class="mode" id="mode">Verbinde …</span>
+    <div class="stats">
+      <div class="stat"><small>Wartende Transaktionen</small><b id="sWait">–</b></div>
+      <div class="stat"><small>Nächster Zug nimmt mit ab</small><b id="sMin">–</b></div>
+      <div class="stat"><small>Letzter Zug fuhr vor</small><b id="sAgo">–</b></div>
+      <div class="stat"><small>Nächster Zug ist Block</small><b id="sNext">–</b></div>
+    </div>
+  </section>
+
+  <section class="stage"><canvas id="cv" role="img" aria-label="Bahnhof: Fahrgäste (Transaktionen) warten auf Züge (Blöcke). Vorne die mit der höchsten Gebühr."></canvas></section>
+  <p class="news" id="news" aria-live="polite">Der Bahnhof öffnet …</p>
+
+  <section class="card you" aria-label="Deine Übungs-Überweisung">
+    <div>
+      <h2>Deine Übungs-Überweisung</h2>
+      <p>Wähle eine Gebühr und schick einen Übungs-Fahrgast los. Es wird <b>kein echtes Bitcoin</b> bewegt. Der Bahnhof prüft mit den echten Blöcken, wann du mitgekommen wärst.</p>
+    </div>
+    <div class="ctrl">
+      <div class="feeRow"><input id="fee" type="range" min="0" max="100" value="40" aria-label="Gebühr in sat pro vByte"><span class="feeVal" id="feeVal">–</span></div>
+      <div class="out" id="out">–</div>
+      <div><button class="btn" id="send" type="button">Fahrgast losschicken</button></div>
+      <div class="conf" id="conf" hidden aria-label="Bestätigungen"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    </div>
+  </section>
+
+  <section class="card how" aria-label="So funktioniert es">
+    <h2>So funktioniert's</h2>
+    <div class="steps">
+      <div class="step"><b>1 · Abschicken</b><span>Deine Überweisung landet erst im <b>Mempool</b>, dem Wartesaal aller unbestätigten Transaktionen.</span></div>
+      <div class="step"><b>2 · Gebühr bieten</b><span>Miner nehmen zuerst die mit der höchsten Gebühr pro Platz (<b>sat/vB</b>). Ein Block hat nur begrenzt Platz.</span></div>
+      <div class="step"><b>3 · Zug fährt ab</b><span>Im Schnitt alle <b>10 Minuten</b> findet ein Miner einen Block. Das ist Zufall, manchmal 1 Minute, manchmal 40.</span></div>
+      <div class="step"><b>4 · Bestätigt</b><span>Jeder weitere Block obendrauf ist eine <b>Bestätigung</b>. Nach 6 gilt eine Zahlung als praktisch unumkehrbar.</span></div>
+    </div>
+  </section>
+
+  <p class="foot">Live-Daten von mempool.space. Unterhaltung und Lernen, keine Anlageberatung.</p>
+  <details class="foot priv"><summary>Datenschutz</summary>
+    <p>Keine Cookies, kein Tracking, keine Werbung. Für die Live-Daten verbindet sich dein Browser direkt mit mempool.space, das dabei, wie bei jedem Seitenaufruf, deine IP-Adresse sieht. Die Seite liegt bei GitHub Pages (GitHub Inc.).</p>
+  </details>
+</div>
+
+<script>
+/* =====================================================================
+   MEMPOOL-BAHNHOF – Lernwelt von Bullen vs Bären
+   ---------------------------------------------------------------------
+   Bild:   Transaktionen = Fahrgäste, Blöcke = Züge, Gebühr = Platz in der Schlange.
+   Daten:  mempool.space (WebSocket): vorausberechnete nächste Blöcke ("mempool-blocks"),
+           Mempool-Größe, neue Blöcke; Preise per REST für die Gebühr in Euro.
+   Ohne Verbindung: nach 8 Sekunden Testdaten (klar gekennzeichnet).
+   ===================================================================== */
+(() => {
+const $ = id => document.getElementById(id);
+const cv = $("cv"), ctx = cv.getContext("2d");
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const INK = "#0d1230", TAU = Math.PI*2;
+const fmt = n => Math.round(n).toLocaleString("de-DE");
+const fmtFee = v => v.toLocaleString("de-DE", {maximumFractionDigits: v < 10 ? 1 : 0});
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const rnd = (a, b) => a + Math.random()*(b - a);
+const VBYTES = 140;   // Größe einer typischen Überweisung (1 Eingang, 2 Ausgänge)
+
+// ---------- Zustand ----------
+let mode = "connecting", W = 0, H = 0, dpr = 1, t = 0;
+let mblocks = null;          // vorausberechnete Blöcke: [{nTx, feeRange:[min..max], medianFee}]
+let waiting = 0, tip = {h: 0, ts: 0}, eur = 0;
+let anim = null;             // Zugabfahrt {t0, h, pool}
+let mine = null;             // Übungs-Fahrgast {fee, state:"wait"|"in", h, conf}
+let crowd = [];              // gezeichnete Fahrgäste je Bahnsteig-Abschnitt
+
+// ---------- Größe ----------
+function resize(){
+  dpr = Math.min(2, devicePixelRatio || 1);
+  const r = cv.getBoundingClientRect(); W = r.width; H = r.height;
+  cv.width = Math.round(W*dpr); cv.height = Math.round(H*dpr);
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  layoutCrowd();
+}
+addEventListener("resize", resize);
+
+// ---------- Live-Daten ----------
+function connect(){
+  let ws;
+  try { ws = new WebSocket("wss://mempool.space/api/v1/ws"); } catch(e){ return; }
+  ws.onopen = () => ws.send(JSON.stringify({action: "want", data: ["blocks", "stats", "mempool-blocks"]}));
+  ws.onmessage = ev => {
+    let m; try { m = JSON.parse(ev.data); } catch(e){ return; }
+    if (m.mempoolInfo && m.mempoolInfo.size) waiting = m.mempoolInfo.size;
+    if (m.blocks && m.blocks.length){ const b = m.blocks.reduce((a, c) => c.height > a.height ? c : a); tip = {h: b.height, ts: b.timestamp}; }
+    if (m["mempool-blocks"]){ mblocks = m["mempool-blocks"]; if (mode !== "live") goLive(); layoutCrowd(); renderYou(); }
+    if (m.block) newBlock(m.block);
+  };
+  ws.onclose = () => setTimeout(connect, 5000);
+}
+async function loadPrice(){ try { const j = await (await fetch("https://mempool.space/api/v1/prices")).json(); if (j.EUR > 0) eur = j.EUR; } catch(e){} }
+function goLive(){ mode = "live"; $("mode").className = "mode live"; $("mode").textContent = "Live"; say("<b>Live!</b> Das sind die echten Fahrgäste, die gerade auf einen Bitcoin-Block warten."); }
+
+// ---------- Testdaten, falls keine Verbindung ----------
+let demoIn = 40;
+function startDemo(){
+  mode = "demo"; $("mode").className = "mode demo"; $("mode").textContent = "Testdaten – Live nicht erreichbar";
+  tip = {h: 925500, ts: Date.now()/1000 - 300}; waiting = 42000; eur = 64000;
+  demoBlocks();
+  say("<b>Keine Live-Verbindung.</b> Du siehst Testdaten. Sobald mempool.space erreichbar ist, wird es echt.");
+}
+function demoBlocks(){
+  const base = rnd(2, 8); mblocks = [];
+  for (let i = 0; i < 8; i++){ const lo = Math.max(1, base/(1 + i*.7)); mblocks.push({nTx: Math.round(rnd(2800, 4200)), feeRange: [lo, lo*1.4, lo*2, lo*4, lo*12], medianFee: lo*1.6}); }
+  mblocks[7].nTx = Math.round(rnd(8000, 30000));
+  layoutCrowd(); renderYou();
+}
+function demoStep(dt){
+  if (mode !== "demo") return;
+  if ((demoIn -= dt) <= 0){ demoIn = rnd(25, 60); newBlock({height: tip.h + 1, timestamp: Date.now()/1000, tx_count: mblocks[0].nTx, extras: {feeRange: mblocks[0].feeRange, pool: {name: ["Foundry USA", "AntPool", "ViaBTC", "F2Pool"][Math.floor(Math.random()*4)]}}}); setTimeout(demoBlocks, 2600); }
+}
+
+// ---------- Neuer Block = Zug fährt ab ----------
+function newBlock(b){
+  if (!(b.height > tip.h)) return;
+  const minFee = (b.extras && b.extras.feeRange && b.extras.feeRange[0]) || (mblocks && mblocks[0] && mblocks[0].feeRange[0]) || 1;
+  tip = {h: b.height, ts: b.timestamp || Date.now()/1000};
+  anim = {t0: t, h: b.height, pool: (b.extras && b.extras.pool && b.extras.pool.name) || "", n: b.tx_count || 0};
+  const pool = anim.pool ? ` von ${anim.pool}` : "";
+  say(`<b>Zug ${fmt(b.height)} fährt ab!</b> ${fmt(anim.n)} Fahrgäste an Bord, gefunden${pool}. Mitgenommen wurde ab ca. ${fmtFee(minFee)} sat/vB.`);
+  // Übungs-Fahrgast: mitgekommen? Bestätigungen zählen
+  if (mine){
+    if (mine.state === "wait" && mine.fee >= minFee){ mine.state = "in"; mine.h = b.height; mine.conf = 1; say(`<b>Du bist eingestiegen!</b> Deine Übungs-Überweisung ist in Block ${fmt(b.height)}: 1 Bestätigung.`); }
+    else if (mine.state === "in"){ mine.conf = b.height - mine.h + 1; if (mine.conf === 6) say("<b>6 Bestätigungen!</b> Deine Übungs-Überweisung gilt jetzt als praktisch unumkehrbar."); }
+    else if (mine.state === "wait") say(`Dein Fahrgast mit ${fmtFee(mine.fee)} sat/vB musste leider draußen bleiben. Andere haben mehr geboten.`);
+  }
+  renderYou();
+}
+
+// ---------- Fahrgäste auf dem Bahnsteig ----------
+// Abschnitt 1 = nächster Block, 2 = übernächster, 3 = alle weiteren. 1 Figur steht für mehrere Transaktionen.
+let perFig = 100;
+function layoutCrowd(){
+  if (!mblocks || !W) return;
+  const z = [mblocks[0] ? mblocks[0].nTx : 0, mblocks[1] ? mblocks[1].nTx : 0, mblocks.slice(2).reduce((a, b) => a + b.nTx, 0)];
+  perFig = Math.max(25, Math.ceil(z[0]/34/25)*25);
+  crowd = z.map((n, zi) => Array.from({length: Math.min(zi === 2 ? 60 : 40, Math.ceil(n/perFig))}, (_, i) => ({i, ph: Math.random()*TAU, hue: zi})));
+}
+function zoneRect(zi){
+  const pl = W < 560 ? 4 : W*.34, w = (W - pl - 12)/3;   // Handy: Bahnsteig über die ganze Breite
+  return {x: pl + zi*w + 6, w: w - 12};
+}
+
+// ---------- Übungs-Überweisung ----------
+const feeFromSlider = v => Math.round(Math.exp(Math.log(1) + (Math.log(200) - Math.log(1))*v/100)*10)/10;
+function zoneFor(fee){
+  if (!mblocks || !mblocks.length) return null;
+  for (let i = 0; i < mblocks.length; i++) if (fee >= mblocks[i].feeRange[0]) return i;
+  return mblocks.length;
+}
+function renderYou(){
+  const fee = feeFromSlider(+$("fee").value);
+  $("feeVal").innerHTML = `${fmtFee(fee)} <small>sat/vB</small>`;
+  const sats = fee*VBYTES, euro = eur ? sats/1e8*eur : 0;
+  const zi = zoneFor(fee);
+  let place = "–";
+  if (zi !== null){
+    if (zi === 0) place = `<b class="z1">Nächster Zug</b>, in ca. 10 Minuten bestätigt`;
+    else if (zi < mblocks.length - 1) place = `<b class="z2">Zug ${zi + 1}</b>, in ca. ${(zi + 1)*10} Minuten bestätigt`;
+    else place = `<b class="z3">Ganz hinten</b>, eher Stunden. Vielleicht wartet er sogar, bis der Andrang nachlässt`;
+  }
+  const cost = `Kosten: <b>${fmt(sats)} sats</b>${euro ? ` ≈ <b>${euro.toLocaleString("de-DE", {maximumFractionDigits: 2, minimumFractionDigits: 2})} €</b>` : ""} für eine typische Überweisung`;
+  let st = "";
+  if (mine){
+    st = mine.state === "wait" ? `<br>Dein Fahrgast (${fmtFee(mine.fee)} sat/vB) <b>wartet</b> auf den nächsten Zug …`
+       : `<br>Dein Fahrgast ist <b>in Block ${fmt(mine.h)}</b>: ${Math.min(6, mine.conf)} von 6 Bestätigungen${mine.conf >= 6 ? " – final!" : ""}`;
+  }
+  $("out").innerHTML = `${cost}<br>Platz: ${place}${st}`;
+  $("conf").hidden = !mine || mine.state !== "in";
+  [...$("conf").children].forEach((c, i) => c.classList.toggle("on", !!mine && mine.state === "in" && i < mine.conf));
+  $("send").textContent = mine ? "Neuen Fahrgast losschicken" : "Fahrgast losschicken";
+}
+$("fee").addEventListener("input", renderYou);
+$("send").addEventListener("click", () => {
+  const fee = feeFromSlider(+$("fee").value);
+  mine = {fee, state: "wait", h: 0, conf: 0, t0: t};
+  const zi = zoneFor(fee);
+  say(zi === 0 ? `<b>Fahrgast unterwegs!</b> Mit ${fmtFee(fee)} sat/vB stehst du ganz vorne und kommst sehr wahrscheinlich mit dem nächsten Zug mit.`
+               : `<b>Fahrgast unterwegs!</b> Mit ${fmtFee(fee)} sat/vB stellst du dich weiter hinten an. Mal sehen, wann du dran bist.`);
+  renderYou();
+});
+
+// ---------- Kommentar ----------
+function say(html){ $("news").innerHTML = html; }
+
+// ---------- Zeichnen ----------
+function rr(x, y, w, h, r){ ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+const ZCOL = ["#34d982", "#ffc94d", "#8a93c9"];
+// Ein Fahrgast im Sticker-Stil
+function passenger(x, y, s, col, ph, gold){
+  const bob = reduce ? 0 : Math.abs(Math.sin(t*3 + ph))*-1.5*s;
+  ctx.save(); ctx.translate(x, y + bob); ctx.scale(s, s);
+  ctx.fillStyle = "rgba(0,0,0,.25)"; ctx.beginPath(); ctx.ellipse(0, 1, 6, 1.6, 0, 0, TAU); ctx.fill();
+  ctx.strokeStyle = INK; ctx.lineWidth = 1.6;
+  ctx.beginPath(); ctx.ellipse(0, -7, 5.5, 7, 0, 0, TAU); ctx.fillStyle = col; ctx.fill(); ctx.stroke();
+  ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(-1.8, -9, 1.6, 0, TAU); ctx.arc(1.8, -9, 1.6, 0, TAU); ctx.fill();
+  ctx.fillStyle = INK; ctx.beginPath(); ctx.arc(-2.4, -9, .8, 0, TAU); ctx.arc(1.2, -9, .8, 0, TAU); ctx.fill();
+  if (gold){ ctx.fillStyle = "#f7931a"; ctx.beginPath(); ctx.moveTo(-4.5, -13); ctx.lineTo(0, -21); ctx.lineTo(4.5, -13); ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = "#fff"; ctx.font = "900 5px Arial"; ctx.textAlign = "center"; ctx.fillText("₿", 0, -14.5); }
+  ctx.restore();
+}
+// Zug im Sticker-Stil: Lok mit ₿ und zwei Wagen
+function train(x, y, s, label){
+  ctx.save(); ctx.translate(x, y); ctx.scale(s, s);
+  ctx.strokeStyle = INK; ctx.lineWidth = 2;
+  for (let i = 0; i < 2; i++){ rr(46 + i*58, -34, 54, 30, 5); ctx.fillStyle = i ? "#e8780e" : "#f7931a"; ctx.fill(); ctx.stroke();
+    ctx.fillStyle = "#cfe8ff"; for (let w = 0; w < 3; w++){ rr(52 + i*58 + w*16, -28, 11, 10, 2); ctx.fill(); ctx.lineWidth = 1.2; ctx.stroke(); ctx.lineWidth = 2; } }
+  rr(0, -40, 44, 36, 7); ctx.fillStyle = "#ffb347"; ctx.fill(); ctx.stroke();
+  rr(4, -52, 14, 14, 3); ctx.fillStyle = "#2c3258"; ctx.fill(); ctx.stroke();
+  ctx.fillStyle = "#fff"; ctx.font = "900 20px Arial"; ctx.textAlign = "center"; ctx.fillText("₿", 26, -14);
+  ctx.fillStyle = INK; for (const wx of [10, 34, 60, 88, 118, 146]){ ctx.beginPath(); ctx.arc(wx, -2, 5, 0, TAU); ctx.fill(); }
+  if (label){ ctx.font = "900 9px Arial"; ctx.fillStyle = "#fff"; ctx.textAlign = "left"; ctx.fillText(label, 50, -38); }
+  ctx.restore();
+}
+function draw(){
+  const narrow = W < 560, k = narrow ? clamp(H/400, .7, .9) : clamp(Math.min(W/900, H/400), .55, 1.2);
+  // Halle
+  const g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, "#151c4d"); g.addColorStop(1, "#0b0f2a"); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  ctx.strokeStyle = "rgba(124,196,255,.12)"; ctx.lineWidth = 3;
+  for (let i = 0; i < 6; i++){ const cx = (i + .5)*W/5.5; ctx.beginPath(); ctx.arc(cx, H*.62, W/5.5*.75, Math.PI*1.08, Math.PI*1.92); ctx.stroke(); }
+  // Uhr: Minuten seit dem letzten Block
+  const ago = tip.ts ? Math.max(0, Date.now()/1000 - tip.ts) : 0, cx = W - 46*k, cy = 46*k, r = 28*k;
+  ctx.beginPath(); ctx.arc(cx, cy, r, 0, TAU); ctx.fillStyle = "#eef0ff"; ctx.fill(); ctx.strokeStyle = INK; ctx.lineWidth = 3; ctx.stroke();
+  const am = (ago/60 % 60)/60*TAU - Math.PI/2; ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + Math.cos(am)*r*.75, cy + Math.sin(am)*r*.75); ctx.lineWidth = 2.5; ctx.stroke();
+  ctx.fillStyle = INK; ctx.beginPath(); ctx.arc(cx, cy, 2.5, 0, TAU); ctx.fill();
+  ctx.fillStyle = "#9aa2d6"; ctx.font = `600 ${Math.round(10*k + 2)}px ui-monospace,monospace`; ctx.textAlign = "center"; ctx.fillText(`${Math.floor(ago/60)} Min`, cx, cy + r + 14*k);
+  // Abfahrtstafel: die nächsten Züge (= vorausberechnete Blöcke)
+  if (mblocks && !narrow){
+    const bx = 14*k, by = 16*k, bw = Math.min(W*.3, 300*k), rows = Math.min(4, mblocks.length), lh = 17*k;
+    rr(bx, by, bw, 30*k + rows*lh, 8); ctx.fillStyle = "#06081c"; ctx.fill(); ctx.strokeStyle = "rgba(255,201,77,.35)"; ctx.lineWidth = 1.5; ctx.stroke();
+    ctx.textAlign = "left"; ctx.fillStyle = "#ffc94d"; ctx.font = `900 ${Math.round(9*k + 3)}px "Arial Black",Arial,sans-serif`; ctx.fillText("ABFAHRT", bx + 10*k, by + 19*k);
+    ctx.font = `600 ${Math.round(8*k + 3)}px ui-monospace,monospace`;
+    for (let i = 0; i < rows; i++){
+      const mb = mblocks[i], y = by + 30*k + i*lh + 11*k;
+      ctx.fillStyle = i === 0 ? "#34d982" : "#cfd4ff";
+      ctx.fillText(`${i < 3 ? "~" + (i + 1)*10 + " Min" : "später"}`, bx + 10*k, y);
+      ctx.fillText(`ab ${fmtFee(mb.feeRange[0])} sat/vB`, bx + bw*.36, y);
+      ctx.textAlign = "right"; ctx.fillText(`${fmt(mb.nTx)} Tx`, bx + bw - 10*k, y); ctx.textAlign = "left";
+    }
+  }
+  // Bahnsteig und Gleis
+  const plY = H*.78, trY = H*.92;
+  ctx.fillStyle = "#3a3f5e"; ctx.fillRect(0, plY, W, H*.06); ctx.fillStyle = "#ffc94d"; ctx.fillRect(0, plY + H*.06 - 3, W, 3);
+  ctx.fillStyle = "#20233a"; ctx.fillRect(0, plY + H*.06, W, H);
+  ctx.strokeStyle = "#5b6079"; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(0, trY - 3); ctx.lineTo(W, trY - 3); ctx.moveTo(0, trY + 4); ctx.lineTo(W, trY + 4); ctx.stroke();
+  // Zug: steht links; bei neuem Block steigen Abschnitt-1-Fahrgäste ein, Zug fährt nach links, neuer kommt von rechts
+  let tx = 14*k, boarding = 0;
+  if (anim){
+    const a = t - anim.t0;
+    if (a < 1.4) boarding = a/1.4;
+    else if (a < 3.2) tx = 14*k - Math.pow((a - 1.4)/1.8, 2)*(W*.6);
+    else if (a < 5.2) tx = 14*k + (1 - easeOut((a - 3.2)/2))*W;
+    else anim = null;
+    if (a >= 1.4 && a < 3.2 && !reduce && Math.random() < .4) puffs.push({x: tx + 11*k*1.2, y: trY - 64*k, life: 1});
+  }
+  for (const p of puffs){ p.life -= .016; p.y -= .5; p.x += .4; ctx.fillStyle = `rgba(220,225,240,${Math.max(0, p.life)*.45})`; ctx.beginPath(); ctx.arc(p.x, p.y, (1.2 - p.life)*14 + 4, 0, TAU); ctx.fill(); }
+  puffs = puffs.filter(p => p.life > 0);
+  const nextH = tip.h ? (anim && t - anim.t0 < 3.2 ? anim.h : tip.h + 1) : 0;
+  train(tx, trY, k*1.2, nextH ? "BLOCK " + fmt(nextH) : "");
+  // Abschnitte mit Schild und Fahrgästen
+  if (mblocks){
+    const labels = narrow ? [`Zug 1 · ab ${fmtFee(mblocks[0].feeRange[0])}`, mblocks[1] ? `Zug 2 · ab ${fmtFee(mblocks[1].feeRange[0])}` : "Zug 2", "Später"]
+                          : [`Zug 1 · ab ${fmtFee(mblocks[0].feeRange[0])} sat/vB`, mblocks[1] ? `Zug 2 · ab ${fmtFee(mblocks[1].feeRange[0])}` : "Zug 2", "Weitere Züge"];
+    for (let zi = 0; zi < 3; zi++){
+      const zr = zoneRect(zi), list = crowd[zi] || [];
+      ctx.fillStyle = "rgba(255,255,255,.05)"; rr(zr.x, plY - 118*k, zr.w, 118*k, 10); ctx.fill();
+      ctx.fillStyle = ZCOL[zi]; ctx.font = `900 ${Math.max(11, Math.round(9*k + 3))}px "Arial Black",Arial,sans-serif`; ctx.textAlign = "center"; ctx.fillText(labels[zi], zr.x + zr.w/2, plY - 124*k);
+      const cols = Math.max(4, Math.floor(zr.w/(15*k))), sp = zr.w/cols;
+      list.forEach((p, i) => {
+        let px = zr.x + sp*(i % cols + .5) + ((Math.floor(i/cols)) % 2 ? sp*.3 : 0), py = plY - 6*k - Math.floor(i/cols)*15*k;
+        if (py < plY - 112*k) return;
+        if (zi === 0 && boarding){ px += (tx + 110*k - px)*easeOut(boarding); py += (trY - 40*k - py)*easeOut(boarding); if (boarding > .85) return; }
+        passenger(px, py, k*1.05, ZCOL[zi], p.ph, false);
+      });
+    }
+    // Übungs-Fahrgast
+    if (mine && mine.state === "wait" && !(anim && t - anim.t0 < 3.2)){
+      const zi = Math.min(2, zoneFor(mine.fee)), zr = zoneRect(zi);
+      // steht vorne an der Bahnsteigkante, gut sichtbar
+      const yx = zr.x + 16*k, yy = plY + H*.05;
+      passenger(yx, yy, k*1.7, "#ffc94d", 0, true);
+      ctx.font = `900 ${Math.round(9*k + 3)}px Arial`; ctx.textAlign = "center"; ctx.lineWidth = 3; ctx.strokeStyle = INK; ctx.strokeText("DU", yx, yy - 40*k); ctx.fillStyle = "#ffc94d"; ctx.fillText("DU", yx, yy - 40*k);
+    }
+    ctx.fillStyle = "#9aa2d6"; ctx.font = `600 ${Math.round(9*k + 2)}px ui-monospace,monospace`; ctx.textAlign = "right"; ctx.fillText(`1 Figur ≈ ${perFig} Tx`, W - 10, H - 8);
+  } else {
+    ctx.fillStyle = "#9aa2d6"; ctx.font = "600 14px system-ui"; ctx.textAlign = "center"; ctx.fillText("Verbinde mit dem Mempool …", W*.62, H*.5);
+  }
+}
+let puffs = [];
+const easeOut = x => 1 - Math.pow(1 - clamp(x, 0, 1), 3);
+
+// ---------- Werte oben ----------
+function renderStats(){
+  $("sWait").textContent = waiting ? fmt(waiting) : "–";
+  $("sMin").innerHTML = mblocks && mblocks[0] ? `${fmtFee(mblocks[0].feeRange[0])} <small style="font-size:.55em;color:var(--muted)">sat/vB</small>` : "–";
+  $("sAgo").textContent = tip.ts ? `${Math.floor(Math.max(0, Date.now()/1000 - tip.ts)/60)} Min` : "–";
+  $("sNext").textContent = tip.h ? fmt(tip.h + 1) : "–";
+}
+
+// ---------- Schleife ----------
+let last = performance.now(), statT = 0;
+function frame(now){
+  const dt = clamp((now - last)/1000, 0, .05); last = now; t += dt;
+  if (mode === "connecting" && t > 8) startDemo();
+  demoStep(dt);
+  if ((statT -= dt) <= 0){ statT = 1; renderStats(); }
+  draw();
+  requestAnimationFrame(frame);
+}
+resize(); renderYou(); connect(); loadPrice(); setInterval(loadPrice, 5*60*1000);
+setInterval(renderYou, 30000);
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

@@ -58,6 +58,7 @@ h1 .b{color:var(--bull)} h1 .r{color:var(--bear)} h1 .v{color:var(--muted);font-
 .ib[aria-pressed=true]{background:var(--gold);color:#2a1a00}
 .ib:focus-visible,.pill:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 .pill{font:700 14px var(--f-body);height:44px;padding:0 18px;border-radius:999px;cursor:pointer;border:1px solid var(--line);background:var(--card);color:var(--ink);display:inline-flex;align-items:center;gap:8px}
+.pill.learn{text-decoration:none;background:linear-gradient(180deg,#5a3a0e,#3d2708);border-color:rgba(247,147,26,.45);color:#ffe2b8}
 .pill.time{background:linear-gradient(180deg,#2a4f8f,#1d3a70);border-color:rgba(124,196,255,.35);color:#dff0ff}
 .pill.time.on{background:var(--sky);color:#04203a}
 .pill.back{height:28px;padding:0 12px;font-size:12px;background:var(--bull);color:#04240f;border-color:var(--bull)}
@@ -207,6 +208,7 @@ body.stream .welcome{display:none}
   <div class="top">
     <h1><span class="b">Bullen</span><span class="v">vs</span><span class="r">Bären</span></h1>
     <div class="tools">
+      <a class="pill learn" href="lernen/" title="Bitcoin spielerisch verstehen">🎓 Lernwelten</a>
       <button class="pill time" id="timeBtn" type="button">Zeitreise</button>
       <div class="tgroup" role="group" aria-label="Einstellungen">
         <button class="ib" id="snd" type="button" aria-pressed="false" aria-label="Ton" title="Ton"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg></button>
