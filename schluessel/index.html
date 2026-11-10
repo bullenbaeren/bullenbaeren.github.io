@@ -23,6 +23,12 @@
 .sig{margin-top:10px}
 .ex{margin:4px 0 0;font-size:14px;line-height:1.55;color:var(--muted)} .ex b{color:var(--ink)}
 .vd{line-height:1.5}
+.chk{margin-top:12px;display:grid;gap:8px}
+.row2{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.03)}
+.row2 .ic{flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-weight:800}
+.row2.y{border-color:var(--bull)} .row2.y .ic{background:rgba(46,204,113,.25);color:var(--bull)} .row2.n{border-color:var(--bear)} .row2.n .ic{background:rgba(231,76,60,.25);color:var(--bear)}
+.row2 b{font-size:14px} .row2 small{display:block;font-size:13px;color:var(--muted);margin-top:2px;line-height:1.45}
+.row2 code{display:block;font:12px var(--f-num);margin-top:6px;line-height:1.6} .row2 code i{font-style:normal;color:var(--bear)} .row2 code em{font-style:normal;color:var(--bull)}
 .vd{margin:10px 0 0;font-weight:700;min-height:1.4em} .ok{color:var(--bull)} .bad{color:var(--bear)}
 .big{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
 .big div{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;padding:10px 12px;font-size:14px;color:var(--muted)}
@@ -60,6 +66,11 @@
       <button class="btn ghost" id="vOk" type="button">✅ Prüfen</button>
       <button class="btn ghost" id="vTamper" type="button">✏️ Betrag fälschen</button>
       <button class="btn ghost" id="vThief" type="button">🦹 Dieb unterschreibt</button>
+    </div>
+    <div class="chk" id="chk" hidden>
+      <p class="ex" style="margin:0 0 8px">Eine Node prüft immer <b>zwei Dinge</b>. Nur wenn <b>beide</b> stimmen, ist die Zahlung gültig:</p>
+      <div class="row2" id="cA"><span class="ic"></span><div><b>Frage 1: Wurde mit deinem privaten Schlüssel unterschrieben?</b><small id="cAt"></small></div></div>
+      <div class="row2" id="cB"><span class="ic"></span><div><b>Frage 2: Ist der Text noch genau der unterschriebene?</b><small id="cBt"></small><code id="cBf"></code></div></div>
     </div>
     <p class="vd" id="vd" aria-live="polite"></p>
   </section>
@@ -111,7 +122,7 @@ async function newKey(){
   const jwk = await C.exportKey("jwk", pair.privateKey);
   $("kPriv").textContent = short(b64u(jwk.d));
   $("kPub").textContent = short(hex(await C.exportKey("raw", pair.publicKey)));
-  sig = null; $("sig").textContent = "noch keine"; say("", "");
+  sig = null; $("sig").textContent = "noch keine"; say("", ""); $("chk").hidden = true;
 }
 function say(cls, t){ $("vd").className = "vd " + cls; $("vd").textContent = t; }
 async function check(msg, s){ return C.verify(SIG, pair.publicKey, s, enc(msg)); }
@@ -122,19 +133,30 @@ $("sign").onclick = async () => {
   $("sig").textContent = short(hex(sig)); say("", "Unterschrieben. Jetzt prüfe unten, ob die Signatur passt und ob man sie fälschen kann.");
 };
 const need = () => { if (!sig){ say("bad", "Erst bei Schritt 2 unterschreiben."); return false; } return true; };
+const fp = t => Lern.sha256(t).slice(0, 16);   // Fingerabdruck (Hash) des Textes; signiert wird genau dieser Hash
+// Zeigt die zwei Prüffragen. keyOk: Signatur stammt von deinem Schlüssel; signedText: Text, für den die Signatur erstellt wurde
+function explain(valid, keyOk, text, signedText){
+  const same = text === signedText, A = $("cA"), B = $("cB");
+  $("chk").hidden = false;
+  A.className = "row2 " + (keyOk ? "y" : "n"); A.querySelector(".ic").textContent = keyOk ? "✓" : "✗";
+  $("cAt").textContent = keyOk ? "Ja. Rechnet man die Signatur mit deinem öffentlichen Schlüssel nach, geht die Rechnung auf." : "Nein. Die Signatur kommt von einem anderen privaten Schlüssel. Mit deinem öffentlichen Schlüssel geht die Rechnung nicht auf.";
+  B.className = "row2 " + (same ? "y" : "n"); B.querySelector(".ic").textContent = same ? "✓" : "✗";
+  $("cBt").textContent = same ? "Ja. Der Fingerabdruck des Textes ist derselbe wie beim Unterschreiben." : "Nein. Neuer Text ergibt einen ganz anderen Fingerabdruck. Die Signatur gilt aber nur für den alten.";
+  const f1 = fp(signedText), f2 = fp(text), tag = same ? "em" : "i";
+  $("cBf").innerHTML = `unterschrieben: ${f1}<br>jetzt im Text:&nbsp; <${tag}>${f2}</${tag}>`;
+  say(valid ? "ok" : "bad", valid ? "✓ Gültig: Beide Fragen mit Ja beantwortet. Die Nodes akzeptieren die Zahlung." : "✗ Ungültig: Mindestens eine Frage ist mit Nein beantwortet. Die Nodes lehnen ab.");
+}
 $("vOk").onclick = async () => { if (!need()) return;
-  const m = $("msg").value, ok = await check(m, sig);
-  say(ok ? "ok" : "bad", ok ? "✓ Gültig. Nachricht, Signatur und öffentlicher Schlüssel passen zusammen. Also hat der Besitzer des privaten Schlüssels genau diesen Text unterschrieben. Die Nodes akzeptieren die Zahlung." : "✗ Ungültig. Der Text ist nicht mehr der, der unterschrieben wurde. Die Signatur passt nur zum Original, deshalb lehnen die Nodes ab.");
+  $("msg").value = signedMsg; explain(await check(signedMsg, sig), true, signedMsg, signedMsg);
 };
 $("vTamper").onclick = async () => { if (!need()) return;
-  const fake = signedMsg.replace(/\d+([,.]\d+)?/, "100") === signedMsg ? signedMsg + "!" : signedMsg.replace(/\d+([,.]\d+)?/, "100");
-  $("msg").value = fake; const ok = await check(fake, sig);
-  say(ok ? "ok" : "bad", ok ? "?" : `✗ Ungültig. „${fake}“ wurde nie unterschrieben. Die Signatur gehört zum alten Text, und schon ein geändertes Zeichen ergibt eine ganz andere Rechnung. Ohne deinen privaten Schlüssel kann niemand eine neue passende Signatur erzeugen.`);
+  const r = signedMsg.replace(/\d+([,.]\d+)?/, "100"), fake = r === signedMsg ? signedMsg + "!" : r;
+  $("msg").value = fake; explain(await check(fake, sig), true, fake, signedMsg);
 };
 $("vThief").onclick = async () => { if (!need()) return;
   const thief = await C.generateKey(ALG, false, ["sign", "verify"]), m = "Zahle alles an den Dieb";
-  const s = await C.sign(SIG, thief.privateKey, enc(m)), ok = await check(m, s);
-  say(ok ? "ok" : "bad", ok ? "?" : "✗ Ungültig. Der Dieb hat „Zahle alles an den Dieb“ mit seinem eigenen privaten Schlüssel unterschrieben. Geprüft wird aber mit deinem öffentlichen Schlüssel, und der passt nur zu deinem privaten. Deine Coins kann nur dein Schlüssel bewegen.");
+  const s = await C.sign(SIG, thief.privateKey, enc(m));
+  $("msg").value = m; explain(await check(m, s), false, m, m);
 };
 
 // Wie schnell rät dieses Gerät Schlüssel? (Zufallszahlen erzeugen, 300 ms lang)
