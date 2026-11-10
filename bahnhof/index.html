@@ -12,36 +12,13 @@
 <meta property="og:description" content="So kommt deine Bitcoin-Überweisung in einen Block. Der echte Mempool als Bahnhof, live.">
 <meta property="og:image" content="https://bullenbaeren.github.io/og.png">
 <meta property="og:url" content="https://bullenbaeren.github.io/bahnhof/">
+<link rel="stylesheet" href="../lern.css">
 <style>
 /* Lernwelt "Mempool-Bahnhof": gleiche Farben und Schriften wie das Spiel. Nur Systemschriften, keine Cookies, kein Tracking. */
-:root{
-  --night:#0b0f2a; --night2:#151c4d; --card:#141a42; --line:rgba(255,255,255,.07);
-  --ink:#eef0ff; --muted:#9aa2d6; --bull:#34d982; --bear:#ff5c73; --gold:#ffc94d; --sky:#7cc4ff; --btc:#f7931a;
-  --f-display:"Arial Black","Segoe UI Black","Helvetica Neue",Roboto,system-ui,sans-serif;
-  --f-body:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
-  --f-num:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,Consolas,"Liberation Mono",monospace;
-  color-scheme:dark;
-}
-[hidden]{display:none!important}
-*{box-sizing:border-box}
-body{margin:0;background:var(--night) radial-gradient(1100px 520px at 50% -180px, var(--night2), transparent 70%) no-repeat;color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5}
-.wrap{max-width:1060px;margin:0 auto;padding-block:20px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:16px}
-a{color:var(--sky)}
-.top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px}
-.back{font:700 14px var(--f-body);color:var(--muted);text-decoration:none;display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 14px;border:1px solid var(--line);border-radius:999px;background:var(--card)}
-.back:hover{color:var(--ink)}
-h1{font-family:var(--f-display);font-weight:900;font-size:clamp(26px,5.5vw,40px);line-height:1.05;margin:0}
-h1 span{color:var(--btc)}
-.lead{margin:4px 0 0;color:var(--muted);max-width:60ch}
-.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px 18px}
+.card > .mode{margin-bottom:8px}
 .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
 .stat small{display:block;font-size:12px;color:var(--muted)}
 .stat b{font:600 clamp(18px,3.2vw,24px) var(--f-num);font-variant-numeric:tabular-nums}
-.mode{font:500 10px var(--f-num);letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--line);border-radius:999px;padding:3px 9px;white-space:nowrap;display:inline-block;margin-bottom:8px;color:var(--muted)}
-.mode.live{color:var(--bull);border-color:rgba(52,217,130,.45)}
-.mode.live::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--bull);margin-right:6px;vertical-align:1px;animation:blink 1.2s infinite}
-.mode.demo{color:var(--gold);border-color:rgba(255,201,77,.45)}
-@keyframes blink{50%{opacity:.2}}
 .stage{position:relative;border-radius:22px;overflow:hidden;border:1px solid var(--line);background:#0a0e26}
 canvas{display:block;width:100%;height:clamp(300px,52vw,430px)}
 .news{margin:0;font-size:15px;min-height:1.5em}
@@ -51,12 +28,8 @@ canvas{display:block;width:100%;height:clamp(300px,52vw,430px)}
 .you p{margin:0;color:var(--muted);font-size:14px}
 .ctrl{display:flex;flex-direction:column;gap:10px}
 .feeRow{display:flex;align-items:center;gap:12px}
-input[type=range]{flex:1;accent-color:var(--btc);height:28px}
 .feeVal{font:600 20px var(--f-num);min-width:7.5ch;text-align:right}
 .feeVal small{font-size:12px;color:var(--muted)}
-.btn{font:800 15px var(--f-body);height:46px;padding:0 20px;border-radius:999px;border:0;background:var(--btc);color:#2a1400;cursor:pointer}
-.btn:disabled{opacity:.5;cursor:default}
-.btn:focus-visible,input:focus-visible,.back:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 .out{font-size:14px;line-height:1.45}
 .out b{color:var(--ink)}
 .out .z1{color:var(--bull)} .out .z2{color:var(--gold)} .out .z3{color:var(--bear)}
@@ -68,9 +41,6 @@ input[type=range]{flex:1;accent-color:var(--btc);height:28px}
 .step > b{display:block;font:900 14px var(--f-display);margin-bottom:4px;color:var(--gold)}
 .step span b{color:var(--ink)}
 .step span{font-size:14px;color:var(--muted)}
-.foot{font-size:12px;color:var(--muted);margin:0;max-width:75ch}
-.priv summary{cursor:pointer;display:inline-block;text-decoration:underline;text-underline-offset:3px}
-.priv p{margin:8px 0 0}
 @media (max-width:760px){ .stats{grid-template-columns:repeat(2,minmax(0,1fr))} .you{grid-template-columns:1fr} .steps{grid-template-columns:repeat(2,minmax(0,1fr))} }
 @media (max-width:420px){ .steps{grid-template-columns:1fr} }
 @media (prefers-reduced-motion:reduce){ .mode.live::before{animation:none} }
@@ -83,7 +53,7 @@ input[type=range]{flex:1;accent-color:var(--btc);height:28px}
     <a class="back" href="../">Zum Spiel</a>
   </div>
   <div>
-    <h1>Mempool-<span>Bahnhof</span></h1>
+    <h1>Mempool-<span class="btc">Bahnhof</span></h1>
     <p class="lead">So kommt eine Bitcoin-Überweisung in einen Block: Jede Transaktion ist ein Fahrgast, jeder Block ein Zug. Wer mehr Gebühr zahlt, darf zuerst einsteigen. Alles mit echten Daten.</p>
   </div>
 
@@ -121,14 +91,17 @@ input[type=range]{flex:1;accent-color:var(--btc);height:28px}
       <div class="step"><b>3 · Zug fährt ab</b><span>Im Schnitt alle <b>10 Minuten</b> findet ein Miner einen Block. Das ist Zufall, manchmal 1 Minute, manchmal 40.</span></div>
       <div class="step"><b>4 · Bestätigt</b><span>Jeder weitere Block obendrauf ist eine <b>Bestätigung</b>. Nach 6 gilt eine Zahlung als praktisch unumkehrbar.</span></div>
     </div>
+    <details class="qz"><summary>Teste dich: 3 Fragen</summary><div id="quiz"></div></details>
   </section>
 
+  <section class="card next" id="next" aria-label="Weiter"></section>
   <p class="foot">Live-Daten von mempool.space. Unterhaltung und Lernen, keine Anlageberatung.</p>
   <details class="foot priv"><summary>Datenschutz</summary>
     <p>Keine Cookies, kein Tracking, keine Werbung. Für die Live-Daten verbindet sich dein Browser direkt mit mempool.space, das dabei, wie bei jedem Seitenaufruf, deine IP-Adresse sieht. Die Seite liegt bei GitHub Pages (GitHub Inc.).</p>
   </details>
 </div>
 
+<script src="../lern.js"></script>
 <script>
 /* =====================================================================
    MEMPOOL-BAHNHOF – Lernwelt von Bullen vs Bären
@@ -418,6 +391,12 @@ function frame(now){
   draw();
   requestAnimationFrame(frame);
 }
+const QUIZ = [
+  ["Wovon hängt ab, wie schnell deine Überweisung bestätigt wird?", ["Von der Höhe des Betrags", "Von der Gebühr pro Platz (sat/vB), wenn viel los ist", "Von der Uhrzeit"], 1, "Miner füllen jeden Block zuerst mit den Transaktionen, die pro vByte am meisten zahlen. Der Betrag selbst spielt keine Rolle."],
+  ["Wie oft kommt im Schnitt ein neuer Block?", ["Jede Minute", "Etwa alle 10 Minuten", "Einmal pro Stunde"], 1, "Im Schnitt alle 10 Minuten, aber das ist Zufall: Manchmal kommen zwei Blöcke in einer Minute, manchmal dauert es eine halbe Stunde."],
+  ["Ab wann gilt eine Bitcoin-Zahlung als praktisch unumkehrbar?", ["Sofort beim Abschicken", "Nach etwa 6 Bestätigungen", "Nach 30 Tagen"], 1, "Mit jedem weiteren Block obendrauf wird es schwerer, die Zahlung rückgängig zu machen. Nach 6 Blöcken gilt sie als sicher."],
+];
+Lern.quiz($("quiz"), "bahnhof", QUIZ, "../"); Lern.visit("bahnhof"); Lern.renderNext("bahnhof", "../");
 resize(); renderYou(); connect(); loadPrice(); setInterval(loadPrice, 5*60*1000);
 setInterval(renderYou, 30000);
 requestAnimationFrame(frame);

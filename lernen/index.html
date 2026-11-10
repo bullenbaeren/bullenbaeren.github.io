@@ -12,23 +12,9 @@
 <meta property="og:description" content="Bitcoin spielerisch verstehen, mit echten Live-Daten.">
 <meta property="og:image" content="https://bullenbaeren.github.io/og.png">
 <meta property="og:url" content="https://bullenbaeren.github.io/lernen/">
+<link rel="stylesheet" href="../lern.css">
 <style>
 /* Übersicht der Lernwelten: gleiche Farben und Schriften wie das Spiel. */
-:root{
-  --night:#0b0f2a; --night2:#151c4d; --card:#141a42; --line:rgba(255,255,255,.07);
-  --ink:#eef0ff; --muted:#9aa2d6; --bull:#34d982; --bear:#ff5c73; --gold:#ffc94d; --sky:#7cc4ff; --btc:#f7931a;
-  --f-display:"Arial Black","Segoe UI Black","Helvetica Neue",Roboto,system-ui,sans-serif;
-  --f-body:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
-  color-scheme:dark;
-}
-*{box-sizing:border-box}
-body{margin:0;background:var(--night) radial-gradient(1100px 520px at 50% -180px, var(--night2), transparent 70%) no-repeat;color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5}
-.wrap{max-width:1060px;margin:0 auto;padding-block:20px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:18px}
-.back{font:700 14px var(--f-body);color:var(--muted);text-decoration:none;display:inline-flex;align-items:center;height:40px;padding:0 14px;border:1px solid var(--line);border-radius:999px;background:var(--card);align-self:flex-start}
-.back:hover{color:var(--ink)}
-h1{font-family:var(--f-display);font-weight:900;font-size:clamp(28px,6vw,44px);line-height:1.05;margin:0}
-h1 span{color:var(--gold)}
-.lead{margin:6px 0 0;color:var(--muted);max-width:60ch}
 .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
 .w{position:relative;display:flex;flex-direction:column;gap:6px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;text-decoration:none;color:inherit;min-height:170px}
 a.w:hover{border-color:rgba(255,201,77,.45);transform:translateY(-2px)}
@@ -41,7 +27,6 @@ a.w{transition:transform .15s, border-color .15s}
 .w .tag.soon{border:1px solid var(--line);color:var(--muted)}
 .w.off{opacity:.6}
 .w .go{margin-top:auto;font-weight:800;color:var(--gold)}
-.foot{font-size:12px;color:var(--muted);margin:0}
 .grp{display:flex;flex-direction:column;gap:10px}
 .grp h2{margin:8px 0 0;font:900 20px var(--f-display)}
 .gsub{margin:-6px 0 2px;color:var(--muted);font-size:14px}
@@ -51,6 +36,16 @@ a.w{transition:transform .15s, border-color .15s}
 .w{min-height:150px;padding:14px}
 .w b{font-size:16px}
 .w .ic{font-size:26px}
+.wrap > .back{align-self:flex-start}
+.path .ph{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.steps{list-style:none;margin:6px 0 12px;padding:0;display:flex;flex-wrap:wrap;gap:8px;counter-reset:s}
+.steps li{counter-increment:s}
+.steps a{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.03);color:var(--ink);text-decoration:none;font-weight:700;font-size:14px}
+.steps a::before{content:counter(s);display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,.1);font-size:12px}
+.steps li.done a{border-color:rgba(52,217,130,.5)}
+.steps li.done a::before{content:"✓";background:var(--bull);color:#04240f}
+.steps li.seen a::before{background:rgba(255,201,77,.35)}
+.w .st8{position:absolute;bottom:14px;right:14px;font-size:12px;font-weight:800;color:var(--bull)}
 .plan h3{margin:10px 0 6px;font:900 14px var(--f-display);color:var(--muted);letter-spacing:.03em}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
 .pc{background:var(--card);border:1px solid var(--line);border-radius:14px;max-width:100%}
@@ -72,22 +67,41 @@ a:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
     <h1>Lern<span>welten</span></h1>
     <p class="lead">Bitcoin spielerisch verstehen. Jede Welt erklärt ein Thema mit echten Live-Daten, ohne Anmeldung und ohne Tracking.</p>
   </div>
-  <p class="count"><b>4 von 26</b> Themen schon spielbar.</p>
+  <p class="count"><b>5 von 26</b> Themen schon spielbar.</p>
+  <section class="card path" aria-label="Dein Lernpfad"><div class="ph"><h2>Dein Lernpfad</h2><span class="muted" id="pathCount"></span></div><ol class="steps" id="steps"></ol><div class="next" id="next"></div></section>
   <section class="grp"><h2>Jetzt spielbar</h2>
   <div class="grid big">
-    <a class="w" href="../halving/"><span class="tag live">Live</span><span class="ic" aria-hidden="true">⏳</span><b>Knappheit &amp; Halving</b><span>Warum es nur 21 Millionen Bitcoin gibt, mit Live-Countdown zum Halving.</span><span class="go">Halving-Uhr →</span></a>
     <a class="w" href="../inflation/"><span class="tag live">Live</span><span class="ic" aria-hidden="true">💶</span><b>Geld &amp; Inflation</b><span>Warum verliert der Euro an Wert, und was ist bei Bitcoin anders?</span><span class="go">Kaufkraft-Supermarkt →</span></a>
+    <a class="w" href="../halving/"><span class="tag live">Live</span><span class="ic" aria-hidden="true">⏳</span><b>Knappheit &amp; Halving</b><span>Warum es nur 21 Millionen Bitcoin gibt, mit Live-Countdown zum Halving.</span><span class="go">Halving-Uhr →</span></a>
+    <a class="w" href="../blockchain/"><span class="tag live">Live</span><span class="ic" aria-hidden="true">🔗</span><b>Blockchain</b><span>Fälsch einen Block und sieh, wie die Kette bricht. Mit der echten Kette live.</span><span class="go">Block-Kette →</span></a>
     <a class="w" href="../bahnhof/"><span class="tag live">Live</span><span class="ic" aria-hidden="true">🚉</span><b>Transaktionen &amp; Gebühren</b><span>Wie eine Überweisung in einen Block kommt.</span><span class="go">Mempool-Bahnhof →</span></a>
     <a class="w" href="../"><span class="tag live">Live</span><span class="ic" aria-hidden="true">📈</span><b>Volatilität &amp; Zyklen</b><span>Warum der Kurs so stark schwankt.</span><span class="go">Bullen vs Bären →</span></a>
   </div></section>
-  <section class="grp"><h2>Bald</h2><p class="gsub">22 weitere Themen sind in Arbeit. Tippe eins an für die Kernfrage.</p>
+  <section class="grp"><h2>Bald</h2><p class="gsub">21 weitere Themen sind in Arbeit. Tippe eins an für die Kernfrage.</p>
   <div class="plan"><h3>Grundlagen</h3><div class="chips"><details class="pc"><summary><span aria-hidden="true">🌍</span> Dezentralität</summary><p>Warum niemand Bitcoin abschalten kann.</p></details><details class="pc"><summary><span aria-hidden="true">📜</span> Geschichte</summary><p>Satoshi, Pizza-Tag, Mt. Gox, ETFs: die wichtigsten Momente.</p></details></div></div>
-  <div class="plan"><h3>Technik</h3><div class="chips"><details class="pc"><summary><span aria-hidden="true">🔗</span> Blockchain</summary><p>Was ist ein Block, und warum kann man nichts nachträglich ändern?</p></details><details class="pc"><summary><span aria-hidden="true">🧬</span> Hashing</summary><p>Der digitale Fingerabdruck, auf dem alles aufbaut.</p></details><details class="pc"><summary><span aria-hidden="true">🔐</span> Schlüssel &amp; Signaturen</summary><p>Privater und öffentlicher Schlüssel, einfach erklärt.</p></details><details class="pc"><summary><span aria-hidden="true">👛</span> Adressen &amp; UTXO</summary><p>Wie Bitcoin in einer Wallet „liegt“ und woher das Wechselgeld kommt.</p></details><details class="pc"><summary><span aria-hidden="true">⛏</span> Mining &amp; Proof of Work</summary><p>Was Miner tun und warum Bitcoin Strom braucht.</p></details><details class="pc"><summary><span aria-hidden="true">🎚</span> Difficulty</summary><p>Warum im Schnitt alle 10 Minuten ein Block kommt.</p></details><details class="pc"><summary><span aria-hidden="true">🖥</span> Nodes</summary><p>Warum eine eigene Node die beste Kontrolle gibt.</p></details></div></div>
+  <div class="plan"><h3>Technik</h3><div class="chips"><details class="pc"><summary><span aria-hidden="true">🧬</span> Hashing</summary><p>Der digitale Fingerabdruck, auf dem alles aufbaut.</p></details><details class="pc"><summary><span aria-hidden="true">🔐</span> Schlüssel &amp; Signaturen</summary><p>Privater und öffentlicher Schlüssel, einfach erklärt.</p></details><details class="pc"><summary><span aria-hidden="true">👛</span> Adressen &amp; UTXO</summary><p>Wie Bitcoin in einer Wallet „liegt“ und woher das Wechselgeld kommt.</p></details><details class="pc"><summary><span aria-hidden="true">⛏</span> Mining &amp; Proof of Work</summary><p>Was Miner tun und warum Bitcoin Strom braucht.</p></details><details class="pc"><summary><span aria-hidden="true">🎚</span> Difficulty</summary><p>Warum im Schnitt alle 10 Minuten ein Block kommt.</p></details><details class="pc"><summary><span aria-hidden="true">🖥</span> Nodes</summary><p>Warum eine eigene Node die beste Kontrolle gibt.</p></details></div></div>
   <div class="plan"><h3>Sicherheit</h3><div class="chips"><details class="pc"><summary><span aria-hidden="true">🔑</span> Selbstverwahrung</summary><p>„Not your keys, not your coins“: 12 Wörter, die alles sind. Nur mit Übungswörtern.</p></details><details class="pc"><summary><span aria-hidden="true">🗄</span> Wallet-Arten</summary><p>Hot, Cold, Hardware, Multisig: welche wofür?</p></details><details class="pc"><summary><span aria-hidden="true">🕵</span> Betrug erkennen</summary><p>Phishing, falscher Support, „Verdopplung“: echt oder Fake?</p></details><details class="pc"><summary><span aria-hidden="true">🧾</span> Erben &amp; Backup</summary><p>Was passiert mit meinen Bitcoin, wenn mir etwas passiert?</p></details></div></div>
   <div class="plan"><h3>Netzwerk &amp; Zukunft</h3><div class="chips"><details class="pc"><summary><span aria-hidden="true">⚡</span> Lightning</summary><p>Warum manche Zahlungen in Sekunden ankommen und fast nichts kosten.</p></details><details class="pc"><summary><span aria-hidden="true">🛡</span> Sicherheitsbudget</summary><p>Wer bezahlt die Miner, wenn es keine neuen Bitcoin mehr gibt?</p></details><details class="pc"><summary><span aria-hidden="true">🍴</span> Forks &amp; Upgrades</summary><p>Wie sich Bitcoin ändert und wer darüber entscheidet.</p></details><details class="pc"><summary><span aria-hidden="true">🔋</span> Energie &amp; Umwelt</summary><p>Verschwendet Bitcoin Strom? Fakten von beiden Seiten.</p></details></div></div>
   <div class="plan"><h3>Markt &amp; Psyche</h3><div class="chips"><details class="pc"><summary><span aria-hidden="true">🗓</span> Sparplan (DCA)</summary><p>Regelmäßig kaufen statt den perfekten Moment suchen.</p></details><details class="pc"><summary><span aria-hidden="true">🎢</span> FOMO &amp; FUD</summary><p>Warum viele oben kaufen und unten verkaufen.</p></details><details class="pc"><summary><span aria-hidden="true">💥</span> Hebel &amp; Liquidationen</summary><p>Warum gehebelte Wetten so oft alles verlieren.</p></details><details class="pc"><summary><span aria-hidden="true">🟠</span> Bitcoin vs. „Krypto“</summary><p>Was Bitcoin von Tausenden anderen Coins unterscheidet.</p></details><details class="pc"><summary><span aria-hidden="true">🧮</span> Steuern in Deutschland</summary><p>Haltefrist und Freigrenze, allgemein erklärt, keine Steuerberatung.</p></details></div></div>
   </section>
   <p class="foot">Unterhaltung und Lernen, keine Anlageberatung. Keine Cookies, kein Tracking.</p>
 </div>
+<script src="../lern.js"></script>
+<script>
+// Lernpfad: Fortschritt aus dem eigenen Browser, Häkchen an den Karten, Empfehlung als Nächstes
+(() => {
+  const s = Lern.load(), box = document.getElementById("steps");
+  let n = 0;
+  Lern.PATH.forEach(([id, title, path]) => {
+    const li = document.createElement("li"), d = Lern.done(s, id); if (d) n++;
+    li.className = d ? "done" : s[id] ? "seen" : "";
+    li.innerHTML = `<a href="../${path}">${title}</a>`; box.appendChild(li);
+    const card = document.querySelector(`a.w[href="../${path}"]`);
+    if (card && (d || s[id])){ const t = document.createElement("span"); t.className = "st8"; t.textContent = d ? "✓ geschafft" : "besucht"; card.appendChild(t); }
+  });
+  document.getElementById("pathCount").textContent = `${n} von ${Lern.PATH.length} geschafft`;
+  Lern.renderNext("", "../");
+})();
+</script>
 </body>
 </html>

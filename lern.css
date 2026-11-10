@@ -1,0 +1,75 @@
+/* =====================================================================
+   Gemeinsamer Stil aller Lernwelten von Bullen vs Bären
+   Farben und Schriften wie im Spiel. Nur Systemschriften: nichts wird von
+   fremden Servern geladen. Seitenspezifisches steht in der jeweiligen Seite.
+   ===================================================================== */
+:root{
+  --night:#0b0f2a; --night2:#151c4d; --card:#141a42; --line:rgba(255,255,255,.07);
+  --ink:#eef0ff; --muted:#9aa2d6; --bull:#34d982; --bear:#ff5c73; --gold:#ffc94d; --sky:#7cc4ff; --btc:#f7931a; --eur:#5b8cff;
+  --f-display:"Arial Black","Segoe UI Black","Helvetica Neue",Roboto,system-ui,sans-serif;
+  --f-body:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --f-num:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,Consolas,"Liberation Mono",monospace;
+  color-scheme:dark;
+}
+[hidden]{display:none!important}
+*{box-sizing:border-box}
+body{margin:0;background:var(--night) radial-gradient(1100px 520px at 50% -180px, var(--night2), transparent 70%) no-repeat;color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5}
+.wrap{max-width:1060px;margin:0 auto;padding-block:20px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:16px}
+a{color:var(--sky)}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+
+/* Kopf */
+.top{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px}
+.back{font:700 14px var(--f-body);color:var(--muted);text-decoration:none;display:inline-flex;align-items:center;height:40px;padding:0 14px;border:1px solid var(--line);border-radius:999px;background:var(--card)}
+.back:hover{color:var(--ink)}
+h1{font-family:var(--f-display);font-weight:900;font-size:clamp(26px,5.5vw,40px);line-height:1.05;margin:0}
+h1 span{color:var(--gold)}
+h1 span.btc{color:var(--btc)}
+h2{margin:0 0 8px;font:900 19px var(--f-display)}
+.lead{margin:4px 0 0;color:var(--muted);max-width:62ch}
+
+/* Bausteine */
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px 18px}
+.muted{color:var(--muted)}
+.num{font-family:var(--f-num);font-variant-numeric:tabular-nums}
+.mode{font:500 10px var(--f-num);letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--line);border-radius:999px;padding:3px 9px;white-space:nowrap;display:inline-block;color:var(--muted)}
+.mode.live{color:var(--bull);border-color:rgba(52,217,130,.45)}
+.mode.live::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--bull);margin-right:6px;vertical-align:1px;animation:blink 1.2s infinite}
+.mode.demo{color:var(--gold);border-color:rgba(255,201,77,.45)}
+@keyframes blink{50%{opacity:.2}}
+input[type=range]{flex:1;accent-color:var(--gold);height:28px}
+.btn{font:800 15px var(--f-body);height:44px;padding:0 18px;border-radius:999px;border:0;background:var(--btc);color:#2a1400;cursor:pointer}
+.btn.ghost{background:rgba(255,255,255,.06);color:var(--ink);border:1px solid var(--line)}
+.btn:disabled{opacity:.5;cursor:default}
+
+/* Merksätze */
+.learn{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.learn div{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;padding:12px}
+.learn div > b{display:block;font:900 14px var(--f-display);color:var(--gold);margin-bottom:4px}
+.learn span{font-size:14px;color:var(--muted)}
+.learn span b{color:var(--ink)}
+
+/* Quiz (aufklappbar) */
+.qz{margin-top:14px;border-top:1px solid var(--line);padding-top:12px}
+.qz summary{cursor:pointer;font:900 15px var(--f-display);color:var(--gold)}
+.qz .res{margin:12px 0 0;font-weight:800;color:var(--bull)}
+.q{margin-top:12px} .q p{margin:0 0 8px;font-weight:700}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opts button{font:700 14px var(--f-body);padding:9px 14px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--ink);cursor:pointer;text-align:left}
+.opts button.ok{background:var(--bull);color:#04240f;border-color:var(--bull)}
+.opts button.no{background:rgba(255,92,115,.2);border-color:var(--bear)}
+.q .why{margin:8px 0 0;font-size:14px;color:var(--muted)}
+
+/* Fuß: Quellen aufklappbar */
+.foot{font-size:12px;color:var(--muted);margin:0;max-width:80ch}
+.foot a{color:var(--muted)}
+.foot summary{cursor:pointer;display:inline-block;text-decoration:underline;text-underline-offset:3px;font-weight:800}
+.foot p{margin:6px 0 0}
+/* Weiter zur nächsten Welt */
+.next{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.next b{font:900 16px var(--f-display)}
+.next a{font-weight:800;color:var(--gold);text-decoration:none}
+
+@media (max-width:760px){ .learn{grid-template-columns:repeat(2,minmax(0,1fr))} .learn span{font-size:13px} }
+@media (max-width:340px){ .learn{grid-template-columns:1fr} }
+@media (prefers-reduced-motion:reduce){ .mode.live::before{animation:none} *{scroll-behavior:auto} }

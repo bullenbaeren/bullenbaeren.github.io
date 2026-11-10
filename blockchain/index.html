@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Blockchain · Bullen vs Bären</title>
+<meta name="description" content="Lernwelt: Was ist eine Blockchain und warum kann man nichts nachträglich ändern? Mit der echten Bitcoin-Kette live und einer Kette zum Selbst-Manipulieren.">
+<meta name="theme-color" content="#0b0f2a">
+<link rel="icon" href="../icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<meta property="og:title" content="Blockchain · Bullen vs Bären">
+<meta property="og:description" content="Fälsch einen Block und sieh, wie die Kette bricht.">
+<meta property="og:image" content="https://bullenbaeren.github.io/og.png">
+<meta property="og:url" content="https://bullenbaeren.github.io/blockchain/">
+<link rel="stylesheet" href="../lern.css">
+<style>
+/* Lernwelt "Blockchain": nur seitenspezifische Teile, der Rest kommt aus lern.css */
+/* 1 · Echte Kette */
+.chain{display:flex;gap:0;overflow-x:auto;padding:6px 2px 10px;scrollbar-width:thin}
+.blk{flex:none;width:200px;background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;padding:10px 12px;font-size:13px}
+.blk h3{margin:0 0 4px;font:900 15px var(--f-display);color:var(--btc)}
+.blk .r{display:flex;justify-content:space-between;gap:8px;color:var(--muted)}
+.blk .r b{color:var(--ink);font-weight:700}
+.blk .h{margin-top:6px;font:600 11px var(--f-num);word-break:break-all;color:var(--muted)}
+.blk .h i{font-style:normal;color:var(--gold)}
+.blk .h u{text-decoration:none;color:var(--bull);font-weight:800}
+.link{flex:none;width:34px;display:flex;align-items:center;justify-content:center;color:var(--btc);font-size:20px}
+.hint{margin:6px 0 0;font-size:14px;color:var(--muted)}
+.hint b{color:var(--ink)}
+/* 2 · Manipulier-mich-Kette */
+.toy{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:10px}
+.tb{position:relative;border:2px solid rgba(52,217,130,.5);border-radius:14px;padding:10px 12px 12px;background:rgba(52,217,130,.05);transition:border-color .2s, background .2s}
+.tb.bad{border-color:rgba(255,92,115,.7);background:rgba(255,92,115,.08)}
+.tb h3{margin:0 0 6px;font:900 15px var(--f-display);display:flex;justify-content:space-between;align-items:center}
+.tb h3 em{font-style:normal;font:800 12px var(--f-body);color:var(--bull)}
+.tb.bad h3 em{color:var(--bear)}
+.tb label{display:block;font-size:11px;color:var(--muted);margin-top:6px}
+.tb input{width:100%;font:600 14px var(--f-body);padding:8px 10px;border-radius:10px;border:1px solid var(--line);background:#0b0f2a;color:var(--ink)}
+.tb .hx{font:600 11px var(--f-num);word-break:break-all;color:var(--muted);min-height:2.6em}
+.tb .hx i{font-style:normal;color:var(--gold);font-weight:800}
+.tb .hx.bad{color:var(--bear)}
+.tb .btn{width:100%;margin-top:10px;height:40px;font-size:14px}
+.tb .tries{display:block;margin-top:6px;font:600 11px var(--f-num);color:var(--muted);text-align:center;min-height:1.4em}
+.toy + .hint{margin-top:12px}
+/* 3 · Hash-Probierfeld */
+.hash{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:14px;align-items:center}
+.hash input{width:100%;font:600 16px var(--f-body);padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:#0b0f2a;color:var(--ink)}
+.hash .out{font:600 13px var(--f-num);word-break:break-all;background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:12px;padding:10px 12px;color:var(--gold)}
+@media (max-width:860px){ .toy{grid-template-columns:repeat(2,minmax(0,1fr))} }
+@media (max-width:560px){ .toy{grid-template-columns:1fr} .hash{grid-template-columns:1fr} .blk{width:170px} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a class="back" href="../lernen/">← Lernwelten</a><a class="back" href="../">Zum Spiel</a></div>
+  <div>
+    <h1><span class="btc">Block</span>chain</h1>
+    <p class="lead">Eine Kette aus Blöcken, in der jeder Block den Fingerabdruck seines Vorgängers trägt. Ändert jemand etwas Altes, bricht alles danach. Probier es selbst aus.</p>
+  </div>
+
+  <!-- 1 · Die echte Kette -->
+  <section class="card" aria-labelledby="h1s">
+    <h2 id="h1s">Die echte Bitcoin-Kette <span class="mode" id="mode">Verbinde …</span></h2>
+    <div class="chain" id="chain"></div>
+    <p class="hint">Jeder Block nennt den <b>Fingerabdruck (Hash)</b> seines Vorgängers, <span style="color:var(--bull);font-weight:800">grün</span> markiert. Die vielen <span style="color:var(--gold);font-weight:800">Nullen</span> am Anfang sind der Beweis für die Rechenarbeit der Miner.</p>
+  </section>
+
+  <!-- 2 · Manipulier mich -->
+  <section class="card" aria-labelledby="h2s">
+    <h2 id="h2s">Fälsch einen Block!</h2>
+    <p class="muted" style="margin:0">Ändere die Überweisung in Block 2, zum Beispiel auf „Anna → Ben: <b>200</b> BTC“. Ein Block ist nur gültig, wenn sein Hash mit <b style="color:var(--gold)">000</b> beginnt und er auf den Vorgänger passt.</p>
+    <div class="toy" id="toy"></div>
+    <p class="hint" id="toyHint">Alle Blöcke sind gültig.</p>
+  </section>
+
+  <!-- 3 · Hash-Probierfeld -->
+  <section class="card" aria-labelledby="h3s">
+    <h2 id="h3s">Der digitale Fingerabdruck</h2>
+    <div class="hash">
+      <div><p class="muted" style="margin:0 0 8px">Tipp etwas ein. Schon ein Buchstabe mehr ergibt einen komplett anderen Hash (SHA-256, wie bei Bitcoin).</p><input id="hin" value="Bullen vs Bären" aria-label="Text für den Hash"></div>
+      <div class="out" id="hout" aria-live="polite">–</div>
+    </div>
+  </section>
+
+  <!-- 4 · Merksätze und Quiz -->
+  <section class="card" aria-labelledby="h4s">
+    <h2 id="h4s">Das solltest du dir merken</h2>
+    <div class="learn">
+      <div><b>Kette aus Blöcken</b><span>Jeder Block enthält Transaktionen und den <b>Hash des vorherigen Blocks</b>. So hängen alle zusammen, zurück bis zum ersten Block 2009.</span></div>
+      <div><b>Hash</b><span>Ein Fingerabdruck aus Daten. Gleiche Daten ergeben immer denselben Hash, <b>die kleinste Änderung</b> einen völlig anderen.</span></div>
+      <div><b>Proof of Work</b><span>Ein gültiger Block braucht einen Hash mit vielen Nullen. Den findet man nur durch <b>Milliarden Versuche</b>. Das ist die Arbeit der Miner.</span></div>
+      <div><b>Warum fälschungssicher?</b><span>Wer einen alten Block ändert, muss ihn und <b>alle danach</b> neu minen und dabei schneller sein als alle Miner der Welt zusammen.</span></div>
+    </div>
+    <details class="qz"><summary>Teste dich: 3 Fragen</summary><div id="quiz"></div></details>
+  </section>
+
+  <section class="card next" id="next" aria-label="Weiter"></section>
+  <details class="foot"><summary>Quellen</summary><p>Echte Blöcke live von <a href="https://mempool.space">mempool.space</a>. Die Übungskette rechnet echtes SHA-256 direkt in deinem Browser, mit viel leichterer Schwierigkeit (3 Nullen statt rund 19 bei Bitcoin).</p></details>
+  <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
+</div>
+
+<script src="../lern.js"></script>
+<script>
+/* =====================================================================
+   BLOCKCHAIN – Lernwelt von Bullen vs Bären
+   1) Die letzten echten Blöcke von mempool.space als Kette.
+   2) Übungskette mit echtem SHA-256: Daten ändern, Kette bricht, neu minen.
+   3) Hash-Probierfeld.
+   ===================================================================== */
+(() => {
+const $ = id => document.getElementById(id);
+const fmt = n => Math.round(n).toLocaleString("de-DE");
+
+// ---------- SHA-256 (synchron, damit das Minen flüssig in Schritten läuft) ----------
+const K = new Uint32Array([0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2]);
+const enc = new TextEncoder(), W = new Uint32Array(64);
+function sha256(str){
+  const msg = enc.encode(str), len = msg.length, n = ((len + 9 + 63) >> 6) << 6, buf = new Uint8Array(n);
+  buf.set(msg); buf[len] = 0x80; const bits = len*8; buf[n - 4] = bits >>> 24; buf[n - 3] = bits >>> 16; buf[n - 2] = bits >>> 8; buf[n - 1] = bits;
+  let h0=0x6a09e667,h1=0xbb67ae85,h2=0x3c6ef372,h3=0xa54ff53a,h4=0x510e527f,h5=0x9b05688c,h6=0x1f83d9ab,h7=0x5be0cd19;
+  for (let o = 0; o < n; o += 64){
+    for (let i = 0; i < 16; i++) W[i] = (buf[o+4*i] << 24) | (buf[o+4*i+1] << 16) | (buf[o+4*i+2] << 8) | buf[o+4*i+3];
+    for (let i = 16; i < 64; i++){ const a = W[i-15], b = W[i-2]; const s0 = ((a>>>7)|(a<<25)) ^ ((a>>>18)|(a<<14)) ^ (a>>>3), s1 = ((b>>>17)|(b<<15)) ^ ((b>>>19)|(b<<13)) ^ (b>>>10); W[i] = (W[i-16] + s0 + W[i-7] + s1) | 0; }
+    let a=h0,b=h1,c=h2,d=h3,e=h4,f=h5,g=h6,h=h7;
+    for (let i = 0; i < 64; i++){
+      const S1 = ((e>>>6)|(e<<26)) ^ ((e>>>11)|(e<<21)) ^ ((e>>>25)|(e<<7)), ch = (e & f) ^ (~e & g), t1 = (h + S1 + ch + K[i] + W[i]) | 0;
+      const S0 = ((a>>>2)|(a<<30)) ^ ((a>>>13)|(a<<19)) ^ ((a>>>22)|(a<<10)), mj = (a & b) ^ (a & c) ^ (b & c), t2 = (S0 + mj) | 0;
+      h = g; g = f; f = e; e = (d + t1) | 0; d = c; c = b; b = a; a = (t1 + t2) | 0;
+    }
+    h0=(h0+a)|0; h1=(h1+b)|0; h2=(h2+c)|0; h3=(h3+d)|0; h4=(h4+e)|0; h5=(h5+f)|0; h6=(h6+g)|0; h7=(h7+h)|0;
+  }
+  return [h0,h1,h2,h3,h4,h5,h6,h7].map(v => (v >>> 0).toString(16).padStart(8, "0")).join("");
+}
+// Hash mit hervorgehobenen führenden Nullen
+const zeros = hx => { const m = hx.match(/^0*/)[0].length; return `<i>${hx.slice(0, m)}</i>${hx.slice(m)}`; };
+
+// ---------- 1 · Echte Kette ----------
+async function loadChain(){
+  try {
+    const bl = (await (await fetch("https://mempool.space/api/v1/blocks")).json()).slice(0, 6).reverse();
+    if (!bl.length) throw 0;
+    $("mode").className = "mode live"; $("mode").textContent = "Live";
+    $("chain").innerHTML = bl.map((b, i) => {
+      const ago = Math.max(0, Math.round((Date.now()/1000 - b.timestamp)/60));
+      const prev = b.previousblockhash || "", tail = s => s.slice(-6);
+      const prevHtml = i ? `${prev.slice(0, 6)}…<u>${tail(prev)}</u>` : `${prev.slice(0, 6)}…${tail(prev)}`;
+      const own = `${zeros(b.id.slice(0, 22))}…<u>${tail(b.id)}</u>`;
+      return (i ? `<div class="link" aria-hidden="true">⛓</div>` : "") + `<div class="blk"><h3>Block ${fmt(b.height)}</h3>
+        <div class="r"><span>vor</span><b>${ago} Min</b></div><div class="r"><span>Transaktionen</span><b>${fmt(b.tx_count)}</b></div>
+        <div class="h">Vorgänger: ${prevHtml}</div><div class="h">Hash: ${own}</div></div>`;
+    }).join("");
+    const c = $("chain"); c.scrollLeft = c.scrollWidth;
+  } catch(e){
+    $("mode").className = "mode demo"; $("mode").textContent = "Keine Live-Daten";
+    $("chain").innerHTML = `<p class="muted" style="margin:0">Die echten Blöcke sind gerade nicht erreichbar. Unten kannst du trotzdem eine eigene Kette ausprobieren.</p>`;
+  }
+}
+
+// ---------- 2 · Übungskette ----------
+const DIFF = "000";
+const toy = [
+  {data: "Anna → Ben: 2 BTC"}, {data: "Ben → Cem: 1 BTC"}, {data: "Cem → Dana: 0,5 BTC"}, {data: "Dana → Emil: 0,2 BTC"},
+].map((b, i) => Object.assign(b, {nr: i + 1, nonce: 0, prev: "", hash: ""}));
+const blockHash = b => sha256(b.nr + "|" + b.prev + "|" + b.data + "|" + b.nonce);
+function relink(){
+  // Vorgänger-Hashes durchreichen und Gültigkeit prüfen
+  let ok = true, firstBad = 0;
+  toy.forEach((b, i) => {
+    b.prev = i ? toy[i - 1].hash : "0".repeat(64);
+    b.hash = blockHash(b);
+    b.valid = ok && b.hash.startsWith(DIFF);
+    if (!b.valid && ok){ ok = false; firstBad = b.nr; }
+  });
+  return firstBad;
+}
+function mineSync(b){ b.nonce = 0; b.prev = b.nr > 1 ? toy[b.nr - 2].hash : "0".repeat(64); while (!(b.hash = blockHash(b)).startsWith(DIFF)) b.nonce++; }
+toy.forEach(mineSync);   // Startkette ist gültig
+let totalTries = 0;
+function renderToy(){
+  const bad = relink();
+  toy.forEach(b => {
+    const el = $("tb" + b.nr);
+    el.classList.toggle("bad", !b.valid);
+    el.querySelector("em").textContent = b.valid ? "✓ gültig" : "✗ ungültig";
+    el.querySelector(".pv").innerHTML = `Vorgänger: ${b.prev.slice(0, 10)}…`;
+    const hx = el.querySelector(".hx"); hx.innerHTML = "Hash: " + zeros(b.hash.slice(0, 22)) + "…"; hx.classList.toggle("bad", !b.hash.startsWith(DIFF));
+    el.querySelector(".nc").textContent = "Nonce: " + fmt(b.nonce);
+  });
+  $("toyHint").innerHTML = !bad ? (totalTries ? `<b>Geschafft!</b> Die Kette ist wieder gültig. Du hast dafür <b>${fmt(totalTries)} Versuche</b> gebraucht, das echte Netzwerk schafft über <b>eine Trilliarde pro Sekunde</b>, und jeder echte Block braucht viel mehr Nullen.` : "Alle Blöcke sind gültig.")
+    : `<b style="color:var(--bear)">Ab Block ${bad} ist die Kette kaputt.</b> Dein geänderter Block hat einen neuen Hash, darum passen alle Blöcke danach nicht mehr. Drück bei jedem roten Block auf „Neu minen“, um die Fälschung zu reparieren.`;
+}
+// Minen in Schritten, damit die Seite flüssig bleibt und man die Versuche hochzählen sieht
+function mine(b, btn){
+  btn.disabled = true; b.nonce = 0; b.prev = b.nr > 1 ? toy[b.nr - 2].hash : "0".repeat(64);
+  const tr = $("tb" + b.nr).querySelector(".tries");
+  const step = () => {
+    for (let i = 0; i < 1500; i++){ b.hash = blockHash(b); totalTries++; if (b.hash.startsWith(DIFF)){ btn.disabled = false; tr.textContent = `gefunden nach ${fmt(b.nonce + 1)} Versuchen`; renderToy(); return; } b.nonce++; }
+    tr.textContent = `${fmt(b.nonce)} Versuche …`; $("tb" + b.nr).querySelector(".nc").textContent = "Nonce: " + fmt(b.nonce);
+    requestAnimationFrame(step);
+  };
+  step();
+}
+$("toy").innerHTML = toy.map(b => `<div class="tb" id="tb${b.nr}"><h3>Block ${b.nr} <em></em></h3>
+  <label for="d${b.nr}">Überweisung</label><input id="d${b.nr}" value="${b.data}">
+  <label>Beweis</label><div class="hx"></div><div class="hx pv"></div><div class="hx nc"></div>
+  <button class="btn" type="button" id="m${b.nr}">⛏ Neu minen</button><span class="tries"></span></div>`).join("");
+toy.forEach(b => {
+  $("d" + b.nr).addEventListener("input", e => { b.data = e.target.value; $("tb" + b.nr).querySelector(".tries").textContent = ""; renderToy(); });
+  $("m" + b.nr).addEventListener("click", e => mine(b, e.target));
+});
+
+// ---------- 3 · Hash-Probierfeld ----------
+const showHash = () => { $("hout").innerHTML = zeros(sha256($("hin").value)); };
+$("hin").addEventListener("input", showHash);
+
+// ---------- Quiz ----------
+const QUIZ = [
+  ["Was steht in jedem Bitcoin-Block, das ihn mit der Kette verbindet?", ["Der Name des Miners", "Der Hash des vorherigen Blocks", "Das Datum der Halving-Uhr"], 1, "Jeder Block enthält den Fingerabdruck (Hash) seines Vorgängers. Ändert sich der Vorgänger, passt der Verweis nicht mehr."],
+  ["Du änderst in einem Text nur einen einzigen Buchstaben. Was passiert mit dem SHA-256-Hash?", ["Er ändert sich an einer Stelle", "Er bleibt gleich", "Er sieht komplett anders aus"], 2, "Das ist die wichtigste Eigenschaft einer Hash-Funktion: Die kleinste Änderung ergibt einen völlig anderen Fingerabdruck."],
+  ["Warum kann man einen alten Bitcoin-Block praktisch nicht fälschen?", ["Weil er verschlüsselt ist", "Weil man ihn und alle folgenden Blöcke neu minen und schneller als alle Miner sein müsste", "Weil die Regierung ihn schützt"], 1, "Jede Fälschung verlangt das Neu-Minen der ganzen Kette ab diesem Block, gegen die Rechenleistung des gesamten Netzwerks. Das ist nicht zu schaffen."],
+];
+Lern.quiz($("quiz"), "blockchain", QUIZ, "../"); Lern.visit("blockchain"); Lern.renderNext("blockchain", "../");
+
+renderToy(); showHash(); loadChain(); setInterval(loadChain, 60000);
+})();
+</script>
+</body>
+</html>
