@@ -28,6 +28,10 @@
 .bars i{height:10px;border-radius:5px;background:rgba(255,255,255,.06);overflow:hidden} .bars u{display:block;height:100%;width:0;transition:width .4s}
 #bM{background:var(--gold)} #bN{background:var(--bull)} .bars b{font:600 15px var(--f-num);color:var(--ink);text-align:right}
 .res{margin:10px 0 0;font-size:15px}
+.miners{display:grid;grid-template-columns:repeat(10,1fr);gap:6px;margin-top:10px}
+.miners span{text-align:center;font-size:18px;padding:4px 0;border-radius:8px;background:rgba(46,204,113,.12);transition:background .2s} .miners span.c{background:rgba(247,147,26,.3)}
+.cons{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px} .cons:empty{display:none}
+.cons div{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;padding:10px 12px} .cons small{display:block;font-size:12px;color:var(--muted)} .cons b{font:600 19px var(--f-num)}
 </style>
 </head>
 <body>
@@ -52,11 +56,13 @@
     <h2 id="h2s">Können Miner schummeln?</h2>
     <p class="muted" style="margin:0">Wähle einen Block. Die Punkte darunter sind Nodes, jede prüft ihn selbst.</p>
     <div class="picks" id="picks"></div>
-    <div class="row" id="mpRow"><label for="mp">Miner, die den Schummel-Block wollen</label><input id="mp" type="range" min="0" max="100" step="5" value="90"><b id="mpV" class="num">90 %</b></div>
+    <div class="row" id="mpRow"><label for="mp">Wie viele Miner schummeln mit? <span style="color:var(--gold)">orange</span> = Schummler</label><input id="mp" type="range" min="0" max="100" step="5" value="90"><b id="mpV" class="num">90 %</b></div>
+    <div class="miners" id="miners" aria-hidden="true"></div>
     <div class="blk" id="blk"></div>
     <div class="nodes" id="nodes" aria-hidden="true"></div>
     <div class="bars"><div><small>Miner dafür</small><i><u id="bM"></u></i><b class="num" id="vM">–</b></div><div><small>Nodes nehmen an</small><i><u id="bN"></u></i><b class="num" id="vN">–</b></div></div>
     <p class="res" id="res" aria-live="polite"></p>
+    <div class="cons" id="cons"></div>
     <details class="foot" style="margin-top:10px"><summary>Und was können Miner doch?</summary><p>Mit mehr als der Hälfte der Rechenleistung (51 %-Angriff) könnten Miner <b>Transaktionen blockieren</b> oder eine eigene, frische Zahlung zurückdrehen. Das wäre extrem teuer. <b>Regeln ändern</b>, also mehr Coins erzeugen oder fremde Coins nehmen, können sie trotzdem nicht.</p></details>
   </section>
 
@@ -113,16 +119,17 @@ const CASES = [
   ["🖨 22 Mio. Bitcoin", "Neue Regel: mehr als 21 Mio. Bitcoin", false, "Die Grenze steht in jeder Node. Mehr Coins? Block weg."],
 ];
 const N = 20, nodes = $("nodes"); let pick = 1, timer = 0;
+for (let i = 0; i < 10; i++){ const m = document.createElement("span"); m.textContent = "⛏"; $("miners").appendChild(m); }
 for (let i = 0; i < N; i++) nodes.appendChild(document.createElement("span"));
 CASES.forEach((c, i) => { const b = document.createElement("button"); b.type = "button"; b.className = "btn ghost"; b.textContent = c[0]; b.onclick = () => { pick = i; run(); }; $("picks").appendChild(b); });
 
 function run(){
   clearInterval(timer);
-  const c = CASES[pick], ok = c[2], mp = ok ? 100 : +$("mp").value, dots = [...nodes.children];
+  const c = CASES[pick], ok = c[2], dots = [...nodes.children];
   $("mpRow").style.display = ok ? "none" : "";   // beim ehrlichen Block gibt es nichts einzustellen
-  $("mpV").textContent = mp + " %"; $("blk").textContent = "📦 " + c[1];
+  $("blk").textContent = "📦 " + c[1];
   [...$("picks").children].forEach((b, i) => b.setAttribute("aria-pressed", i === pick));
-  $("bM").style.width = mp + "%"; $("vM").textContent = mp + " %";
+  miners();
   $("bN").style.width = "0"; $("vN").textContent = "…"; $("res").textContent = "";
   dots.forEach(d => { d.className = ""; d.textContent = ""; });
   let i = 0;
@@ -131,11 +138,21 @@ function run(){
     if (++i >= N){ clearInterval(timer);
       $("bN").style.width = ok ? "100%" : "0"; $("vN").textContent = ok ? "100 %" : "0 %";
       $("res").innerHTML = ok ? `<b class="ok">Angenommen.</b> ${c[3]}`
-        : `<b class="bad">Abgelehnt, obwohl ${mp} % der Miner ihn wollen.</b> ${c[3]} Die Miner haben umsonst Strom verbraucht. <span class="muted">Merke: Nodes stimmen nicht ab, sie prüfen.</span>`;
+        : `<b class="bad">Abgelehnt, egal wie viele Miner ihn wollen.</b> ${c[3]} Die Miner haben umsonst Strom verbraucht. <span class="muted">Merke: Nodes stimmen nicht ab, sie prüfen.</span>`;
     }
   }, 50);
 }
-$("mp").addEventListener("input", run);
+// Folgen, die der Regler sichtbar ändert: Wer schummelt, fällt fürs ehrliche Netz aus
+function miners(){
+  const c = CASES[pick], ok = c[2], mp = ok ? 0 : +$("mp").value, honest = 100 - mp;
+  [...$("miners").children].forEach((m, i) => m.className = i < Math.round(mp/10) ? "c" : "");
+  $("mpV").textContent = mp + " %"; $("bM").style.width = (ok ? 100 : mp) + "%"; $("vM").textContent = (ok ? 100 : mp) + " %";
+  if (ok){ $("cons").innerHTML = ""; return; }
+  const t = honest > 0 ? 10*100/honest : Infinity, lost = 144*mp/100*3.125;
+  $("cons").innerHTML = `<div><small>Gültige Blöcke kommen jetzt alle</small><b class="num">${isFinite(t) ? Math.round(t).toLocaleString("de-DE") + " Min." : "gar nicht"}</b></div><div><small>Schummler verlieren pro Tag ca.</small><b class="num bad">${Math.round(lost).toLocaleString("de-DE")} BTC</b></div>`
+    + `<p class="muted" style="grid-column:1/-1;margin:0;font-size:13px">${honest > 0 ? `Nur die ${honest} % ehrlichen Miner bauen weiter an der echten Kette. Sie wird langsamer, bis sich die Schwierigkeit anpasst, aber sie bleibt gültig.` : "Ohne ehrliche Miner steht die echte Kette still. Die Schummel-Kette nimmt trotzdem keine Node an, also verdienen die Miner nichts, bis sie aufgeben."}</p>`;
+}
+$("mp").addEventListener("input", miners);
 run();
 
 const QUIZ = [
