@@ -5,18 +5,18 @@
 const Lern = (() => {
   const KEY = "bvb-lernen";
   // Empfohlene Reihenfolge für Einsteiger: [id, Titel, Pfad]
-  const PATH = [
-    ["eigenschaften", "Geld-Duell", "eigenschaften/"],
-    ["inflation", "Geld & Inflation", "inflation/"],
-    ["halving", "Knappheit & Halving", "halving/"],
-    ["hashing", "Fingerabdruck-Maschine", "hashing/"], ["blockchain", "Blockchain", "blockchain/"],
-    ["bahnhof", "Mempool-Bahnhof", "bahnhof/"],
-    ["seed", "Seed-Trainer", "seed/"],
-    ["betrug", "Betrug erkennen", "betrug/"],
-    ["sparplan", "Sparplan", "sparplan/"],
-    ["lightning", "Lightning", "lightning/"],
-    ["mining", "Mining-Werkstatt", "mining/"], ["nodes", "Node-Wache", "nodes/"], ["schluessel", "Schlüssel-Labor", "schluessel/"], ["utxo", "Wechselgeld-Kasse", "utxo/"], ["wallets", "Wallet-Check", "wallets/"], ["fomo", "Gefühls-Achterbahn", "fomo/"], ["hebel", "Hebel-Falle", "hebel/"], ["geschichte", "Zeitreise", "geschichte/"], ["krypto", "Coin-Check", "krypto/"],
+  // Kapitel für Einsteiger: [Symbol, Titel, Kurzbeschreibung, Welten in Reihenfolge]
+  const CHAPTERS = [
+    ["🌱", "Warum Bitcoin?", "Was gutes Geld ausmacht und warum Bitcoin anders ist.", ["eigenschaften", "inflation", "halving", "geschichte"]],
+    ["🛡️", "Sicher starten", "Bevor du Bitcoin kaufst: Wallet, Seed und Betrug.", ["wallets", "seed", "betrug", "krypto"]],
+    ["🧠", "Klug investieren", "Sparplan statt Bauchgefühl, und Finger weg vom Hebel.", ["sparplan", "fomo", "hebel"]],
+    ["💸", "Bezahlen & Senden", "Wie eine Zahlung wirklich abläuft, schnell und günstig.", ["utxo", "bahnhof", "lightning"]],
+    ["⚙️", "Unter der Haube", "Für Neugierige: die Technik hinter Bitcoin.", ["hashing", "schluessel", "blockchain", "mining", "nodes"]]
   ];
+  // Lernpfad = alle Welten in Kapitel-Reihenfolge: [id, Titel, Pfad]
+  const TITLES = {eigenschaften: ["Geld-Duell", "eigenschaften/"], inflation: ["Geld & Inflation", "inflation/"], halving: ["Knappheit & Halving", "halving/"], geschichte: ["Zeitreise", "geschichte/"], wallets: ["Wallet-Check", "wallets/"], seed: ["Seed-Trainer", "seed/"], betrug: ["Betrug erkennen", "betrug/"], krypto: ["Coin-Check", "krypto/"], sparplan: ["Sparplan", "sparplan/"], fomo: ["Gefühls-Achterbahn", "fomo/"], hebel: ["Hebel-Falle", "hebel/"], utxo: ["Wechselgeld-Kasse", "utxo/"], bahnhof: ["Mempool-Bahnhof", "bahnhof/"], lightning: ["Lightning", "lightning/"], hashing: ["Fingerabdruck-Maschine", "hashing/"], schluessel: ["Schlüssel-Labor", "schluessel/"], blockchain: ["Blockchain", "blockchain/"], mining: ["Mining-Werkstatt", "mining/"], nodes: ["Node-Wache", "nodes/"]};
+  const PATH = CHAPTERS.flatMap(c => c[3].map(id => [id, ...TITLES[id]]));
+  const chapterOf = id => CHAPTERS.findIndex(c => c[3].includes(id));
   const load = () => { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch(e){ return {}; } };
   const save = s => { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch(e){} };
   const done = (s, id) => !!(s[id] && s[id].quiz);
@@ -99,7 +99,8 @@ const Lern = (() => {
   const seg = location.pathname.split("/").filter(Boolean), here = PATH.some(([id]) => id === seg[seg.length - 1]) ? seg[seg.length - 1] : "";
   function init(){
     badge(); reveal();
-    if (here && ICON[here]){ const h = document.querySelector("h1"); if (h && !h.previousElementSibling){ const i = document.createElement("span"); i.className = "wico"; i.setAttribute("aria-hidden", "true"); i.textContent = ICON[here]; h.before(i); } }
+    if (here && ICON[here]){ const h = document.querySelector("h1"); if (h && !h.previousElementSibling){ const i = document.createElement("span"); i.className = "wico"; i.setAttribute("aria-hidden", "true"); i.textContent = ICON[here]; h.before(i);
+      const k = chapterOf(here), c = CHAPTERS[k], p = document.createElement("p"); p.className = "chap"; p.innerHTML = `Kapitel ${k + 1} · ${c[0]} ${c[1]} · Welt ${c[3].indexOf(here) + 1} von ${c[3].length}`; i.after(p); } }
   }
 
   // SHA-256, synchron (für Blockchain und Mining: schnell genug für viele Versuche pro Bild)
@@ -124,5 +125,5 @@ const Lern = (() => {
   }
 
   init();
-  return {PATH, LEVELS, level, count, load, done, visit, quiz, renderNext, nextAfter, sha256, confetti, toast};
+  return {PATH, CHAPTERS, chapterOf, LEVELS, level, count, load, done, visit, quiz, renderNext, nextAfter, sha256, confetti, toast};
 })();

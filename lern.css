@@ -97,6 +97,7 @@ h1 span.btc{background:linear-gradient(90deg,#ffb347,#f7931a 40%,#ffd36b 60%,#f7
 .lvl b{display:block;font:900 13px var(--f-display);color:var(--gold)} .lvl small{color:var(--muted);font-size:11px}
 .lvl i{display:block;width:54px;height:6px;border-radius:3px;background:rgba(255,255,255,.1);overflow:hidden} .lvl u{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--bull));transition:width .6s}
 .wrap > .lvl{align-self:flex-start}
+.chap{margin:0 0 6px;font:800 12px var(--f-body);letter-spacing:.04em;text-transform:uppercase;color:var(--gold)}
 /* Merksätze: Akzent und Anheben */
 .learn div{box-shadow:inset 0 3px 0 rgba(255,201,77,.45);transition:transform .15s,border-color .15s}
 .learn div:hover{transform:translateY(-3px);border-color:rgba(255,201,77,.35)}
