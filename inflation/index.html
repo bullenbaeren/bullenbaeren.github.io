@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Geld &amp; Inflation · Bullen vs Bären</title>
+<meta name="description" content="Lernwelt: Wie Inflation dein Geld schrumpfen lässt, mit den offiziellen Zahlen für Deutschland, und warum Bitcoin eine feste Menge hat.">
+<meta name="theme-color" content="#0b0f2a">
+<link rel="icon" href="../icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<meta property="og:title" content="Geld &amp; Inflation · Bullen vs Bären">
+<meta property="og:description" content="Der schrumpfende Einkaufswagen: Was 100 € von früher heute noch wert sind.">
+<meta property="og:image" content="https://bullenbaeren.github.io/og.png">
+<meta property="og:url" content="https://bullenbaeren.github.io/inflation/">
+<style>
+/* Lernwelt "Geld & Inflation": gleiche Farben und Schriften wie das Spiel. Nur Systemschriften, keine Cookies, kein Tracking. */
+:root{
+  --night:#0b0f2a; --night2:#151c4d; --card:#141a42; --line:rgba(255,255,255,.07);
+  --ink:#eef0ff; --muted:#9aa2d6; --bull:#34d982; --bear:#ff5c73; --gold:#ffc94d; --sky:#7cc4ff; --btc:#f7931a; --eur:#5b8cff;
+  --f-display:"Arial Black","Segoe UI Black","Helvetica Neue",Roboto,system-ui,sans-serif;
+  --f-body:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --f-num:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,Consolas,"Liberation Mono",monospace;
+  color-scheme:dark;
+}
+[hidden]{display:none!important}
+*{box-sizing:border-box}
+body{margin:0;background:var(--night) radial-gradient(1100px 520px at 50% -180px, var(--night2), transparent 70%) no-repeat;color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5}
+.wrap{max-width:1060px;margin:0 auto;padding-block:20px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:16px}
+a{color:var(--sky)}
+.top{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px}
+.back{font:700 14px var(--f-body);color:var(--muted);text-decoration:none;display:inline-flex;align-items:center;height:40px;padding:0 14px;border:1px solid var(--line);border-radius:999px;background:var(--card)}
+.back:hover{color:var(--ink)}
+h1{font-family:var(--f-display);font-weight:900;font-size:clamp(26px,5.5vw,40px);line-height:1.05;margin:0}
+h1 span{color:var(--gold)}
+h2{margin:0 0 8px;font:900 19px var(--f-display)}
+.lead{margin:4px 0 0;color:var(--muted);max-width:62ch}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px 18px}
+.muted{color:var(--muted)}
+.num{font-family:var(--f-num);font-variant-numeric:tabular-nums}
+
+/* 1 · Einkaufswagen */
+.shop{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:20px;align-items:center}
+.yearRow{display:flex;align-items:center;gap:12px;margin:6px 0 14px}
+.yearRow b{font:600 28px var(--f-num);min-width:4ch}
+input[type=range]{flex:1;accent-color:var(--gold);height:28px}
+input:focus-visible,.back:focus-visible,button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.big{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.big div{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;padding:10px 12px}
+.big small{display:block;font-size:12px;color:var(--muted)}
+.big b{font:600 clamp(20px,3.6vw,28px) var(--f-num)}
+.big .bad{color:var(--bear)}
+.say{margin:12px 0 0;font-size:15px}
+.cartBox{position:relative;background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:18px;padding:18px 16px 14px}
+.cart{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;padding:12px 12px 16px;border:4px solid #8a93c9;border-top:0;border-radius:0 0 22px 22px;background:rgba(124,196,255,.05);min-height:180px;align-content:end}
+.cart span{font-size:clamp(22px,4.5vw,32px);text-align:center;transition:transform .5s, opacity .5s}
+.cart span.gone{opacity:0;transform:translateY(40px) rotate(25deg) scale(.6)}
+.wheels{display:flex;justify-content:space-between;padding:0 30px;margin-top:-4px}
+.wheels i{width:18px;height:18px;border-radius:50%;background:#8a93c9;border:3px solid #0b0f2a}
+.note{display:flex;align-items:center;justify-content:center;margin:0 auto 10px;height:58px}
+.bill{width:120px;height:58px;border-radius:6px;background:linear-gradient(135deg,#7fb7ff,#3b6fd8);border:2px solid #0d1230;display:flex;align-items:center;justify-content:center;font:900 22px var(--f-display);color:#fff;transition:transform .5s;transform-origin:center;box-shadow:0 6px 14px -6px rgba(0,0,0,.6)}
+.cartCap{text-align:center;font-size:13px;color:var(--muted);margin-top:8px}
+
+/* 2 · Inflation aktuell */
+.now{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.now div{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;padding:12px}
+.now small{display:block;font-size:12px;color:var(--muted)}
+.now b{font:600 26px var(--f-num)}
+.now p{margin:4px 0 0;font-size:13px;color:var(--muted)}
+
+/* 3 · Euro vs Bitcoin */
+.vs{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.col{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;padding:14px}
+.col h3{margin:0 0 6px;font:900 16px var(--f-display)}
+.col.eur h3{color:var(--eur)} .col.btc h3{color:var(--btc)}
+.bars{display:flex;align-items:flex-end;gap:14px;height:150px;margin:10px 0 6px;border-bottom:1px solid var(--line)}
+.bar{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%}
+.bar i{display:block;width:100%;max-width:70px;border-radius:8px 8px 0 0}
+.bar span{font:600 12px var(--f-num);margin-bottom:4px}
+.bar em{font-style:normal;font-size:12px;color:var(--muted);margin-top:4px}
+.col p{margin:6px 0 0;font-size:14px;color:var(--muted)}
+.col p b{color:var(--ink)}
+
+/* 4 · Merksätze und Quiz */
+.learn{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.learn div{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;padding:12px}
+.learn div > b{display:block;font:900 14px var(--f-display);color:var(--gold);margin-bottom:4px}
+.learn span{font-size:14px;color:var(--muted)}
+.learn span b{color:var(--ink)}
+.q{margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+.q p{margin:0 0 8px;font-weight:700}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opts button{font:700 14px var(--f-body);padding:9px 14px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--ink);cursor:pointer}
+.opts button.ok{background:var(--bull);color:#04240f;border-color:var(--bull)}
+.opts button.no{background:rgba(255,92,115,.2);border-color:var(--bear)}
+.q .why{margin:8px 0 0;font-size:14px;color:var(--muted)}
+.foot{font-size:12px;color:var(--muted);margin:0;max-width:80ch}
+.foot a{color:var(--muted)}
+@media (max-width:760px){ .shop,.vs{grid-template-columns:1fr} .now{grid-template-columns:1fr} .learn{grid-template-columns:repeat(2,minmax(0,1fr))} }
+@media (max-width:420px){ .learn{grid-template-columns:1fr} }
+@media (prefers-reduced-motion:reduce){ .cart span,.bill{transition:none} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a class="back" href="../lernen/">← Lernwelten</a><a class="back" href="../">Zum Spiel</a></div>
+  <div>
+    <h1>Geld &amp; <span>Inflation</span></h1>
+    <p class="lead">Warum dein Geld mit der Zeit weniger wert wird und was das mit Bitcoin zu tun hat. Mit den offiziellen Zahlen des Statistischen Bundesamts.</p>
+  </div>
+
+  <!-- 1 · Der schrumpfende Einkaufswagen -->
+  <section class="card shop" aria-labelledby="h1s">
+    <div>
+      <h2 id="h1s">Der schrumpfende Einkaufswagen</h2>
+      <p class="muted" style="margin:0">Wähle ein Jahr: Was du damals für 100 € bekommen hast, kostet heute mehr. Oder anders herum: Dein Hunderter von damals kauft heute weniger.</p>
+      <div class="yearRow"><input id="year" type="range" min="1991" max="2025" value="2002" aria-label="Jahr"><b id="yearVal" class="num">2002</b></div>
+      <div class="big">
+        <div><small>100 € von <span id="yA">2002</span> kaufen heute so viel wie</small><b class="bad num" id="power">–</b></div>
+        <div><small>Preise seit <span id="yB">2002</span></small><b class="bad num" id="rise">–</b></div>
+      </div>
+      <p class="say" id="say">–</p>
+    </div>
+    <div class="cartBox" aria-hidden="true">
+      <div class="note"><div class="bill" id="bill">100 €</div></div>
+      <div class="cart" id="cart"></div>
+      <div class="wheels"><i></i><i></i></div>
+      <div class="cartCap" id="cartCap">–</div>
+    </div>
+  </section>
+
+  <!-- 2 · Inflation aktuell -->
+  <section class="card" aria-labelledby="h2s">
+    <h2 id="h2s">Inflation gerade</h2>
+    <div class="now">
+      <div><small>Inflationsrate Deutschland</small><b class="num" id="rate">2,8 %</b><p>Oktober 2026 gegenüber dem Vorjahresmonat (vorläufig)</p></div>
+      <div><small>Ziel der Europäischen Zentralbank</small><b class="num">2 %</b><p>pro Jahr. Die EZB will also, dass Preise langsam, aber stetig steigen.</p></div>
+      <div><small>So schnell halbiert sich dein Geld</small><b class="num" id="half">–</b><p>wenn die Inflation dauerhaft so hoch bliebe und es keine Zinsen gäbe</p></div>
+    </div>
+  </section>
+
+  <!-- 3 · Euro vs Bitcoin -->
+  <section class="card" aria-labelledby="h3s">
+    <h2 id="h3s">Euro gegen Bitcoin: Wer kann einfach mehr machen?</h2>
+    <div class="vs">
+      <div class="col eur">
+        <h3>€ Euro</h3>
+        <div class="bars">
+          <div class="bar"><span>4,7 Bio. €</span><i style="height:26.7%;background:#5b8cff"></i><em>Ende 1999</em></div>
+          <div class="bar"><span>17,6 Bio. €</span><i style="height:100%;background:#5b8cff"></i><em>Juli 2026</em></div>
+        </div>
+        <p>Die Geldmenge M3 im Euroraum ist auf fast das <b>3,7-Fache</b> gewachsen. Wie viel Euro es gibt, steuern Zentralbank und Geschäftsbanken.</p>
+      </div>
+      <div class="col btc">
+        <h3>₿ Bitcoin</h3>
+        <div class="bars">
+          <div class="bar"><span id="minedTxt">– Mio.</span><i id="minedBar" style="height:95%;background:#f7931a"></i><em>schon geschürft</em></div>
+          <div class="bar"><span>21 Mio.</span><i style="height:100%;background:repeating-linear-gradient(45deg,#f7931a 0 6px,#c46f0c 6px 12px)"></i><em>Höchstmenge, für immer</em></div>
+        </div>
+        <p>Es wird <b>nie mehr als 21 Millionen</b> Bitcoin geben. Das steht im Programmcode, den Tausende Computer weltweit prüfen. Niemand kann einfach mehr davon herstellen.</p>
+      </div>
+    </div>
+    <p class="muted" style="margin:12px 0 0;font-size:14px"><b style="color:var(--ink)">Aber ehrlich:</b> Eine feste Menge heißt nicht, dass der Kurs nur steigt. Bitcoin schwankt stark, schon innerhalb eines Jahres sind −70 % passiert. Das kannst du im <a href="../">Spiel</a> live beobachten.</p>
+  </section>
+
+  <!-- 4 · Merksätze und Quiz -->
+  <section class="card" aria-labelledby="h4s">
+    <h2 id="h4s">Das solltest du dir merken</h2>
+    <div class="learn">
+      <div><b>Was ist Inflation?</b><span>Preise steigen im Durchschnitt, dein Geld kauft dadurch <b>weniger</b>. 2 % klingen wenig, über 30 Jahre sind das fast <b>−45 % Kaufkraft</b>.</span></div>
+      <div><b>Woher kommt sie?</b><span>Zum Beispiel, wenn es <b>mehr Geld</b> gibt als Waren, wenn Energie teurer wird oder wenn viele gleichzeitig kaufen wollen.</span></div>
+      <div><b>Sparen &amp; Zinsen</b><span>Zählt nur, was nach der Inflation übrig bleibt: 1 % Zinsen bei 2,8 % Inflation sind <b>−1,8 %</b> pro Jahr (Realzins).</span></div>
+      <div><b>Bitcoin</b><span>Feste Menge, niemand kann mehr drucken. Dafür <b>starke Kursschwankungen</b>. Deshalb setzen viele auf kleine, regelmäßige Beträge statt auf einen großen Kauf.</span></div>
+    </div>
+    <div id="quiz"></div>
+  </section>
+
+  <p class="foot">Quellen: Verbraucherpreisindex Deutschland, Jahresdurchschnitte 2020 = 100 (<a href="https://www.destatis.de/DE/Themen/Wirtschaft/Preise/Verbraucherpreisindex/_inhalt.html">Statistisches Bundesamt</a>, Werte über <a href="https://www.nunc.immo/rechner/verbraucherpreisindex">nunc.immo</a>); Inflationsrate Oktober 2026: <a href="https://www.destatis.de/DE/Presse/Pressemitteilungen/2026/10/PD26_382_611.html">Destatis-Pressemitteilung</a>; Geldmenge M3: <a href="https://www.infina.at/trends/geldmengen-euroraum/">EZB-Daten über infina.at</a>; geschürfte Bitcoin live aus der Blockhöhe (mempool.space). Lernen und Unterhaltung, keine Anlageberatung.</p>
+</div>
+
+<script>
+/* =====================================================================
+   GELD & INFLATION – Lernwelt von Bullen vs Bären
+   Daten: VPI Deutschland (Jahresdurchschnitte, 2020 = 100), fest eingebaut aus den
+   offiziellen Werten des Statistischen Bundesamts. Geschürfte Bitcoin live aus der Blockhöhe.
+   ===================================================================== */
+(() => {
+const $ = id => document.getElementById(id);
+// Verbraucherpreisindex Deutschland, Jahresdurchschnitt (2020 = 100)
+const VPI = {1991:61.9,1992:65.0,1993:67.9,1994:69.7,1995:71.0,1996:72.0,1997:73.4,1998:74.0,1999:74.5,2000:75.5,2001:77.0,2002:78.1,2003:78.9,2004:80.2,2005:81.5,2006:82.8,2007:84.7,2008:86.9,2009:87.2,2010:88.1,2011:90.0,2012:91.7,2013:93.1,2014:94.0,2015:94.5,2016:95.0,2017:96.4,2018:98.1,2019:99.5,2020:100.0,2021:103.1,2022:110.2,2023:116.7,2024:119.3,2025:121.9};
+const NOW_VPI = 126.6, NOW_LABEL = "September 2026";   // neuester veröffentlichter Monatswert
+const RATE = 2.8;                                        // Inflationsrate Oktober 2026 (vorläufig)
+const ITEMS = ["🍞","🥛","🧀","🍎","🍌","🥚","🧈","☕","🍫","🥕","🍅","🥔","🍝","🧃","🍕","🥨","🧻","🍗","🥫","🍪"];
+const eur = v => v.toLocaleString("de-DE", {minimumFractionDigits: 2, maximumFractionDigits: 2}) + " €";
+
+// Einkaufswagen füllen
+const cart = $("cart");
+ITEMS.forEach(e => { const s = document.createElement("span"); s.textContent = e; cart.appendChild(s); });
+
+function update(){
+  const y = +$("year").value, ratio = VPI[y]/NOW_VPI, rise = (NOW_VPI/VPI[y] - 1)*100;
+  $("yearVal").textContent = y; $("yA").textContent = y; $("yB").textContent = y;
+  $("power").textContent = eur(100*ratio).replace(" €", " €");
+  $("rise").textContent = "+" + Math.round(rise).toLocaleString("de-DE") + " %";
+  const keep = Math.round(ITEMS.length*ratio);
+  [...cart.children].forEach((s, i) => s.classList.toggle("gone", i >= keep));
+  $("bill").style.transform = `scale(${Math.sqrt(ratio).toFixed(3)})`;
+  $("cartCap").textContent = `Von 20 Sachen, die 100 € ${y} kauften, bekommst du heute noch ${keep}.`;
+  const back = 100/ratio;
+  $("say").innerHTML = `Was ${y} genau <b>100 €</b> gekostet hat, kostet heute im Schnitt <b>${eur(back)}</b> (Stand ${NOW_LABEL}).`;
+}
+$("year").addEventListener("input", update);
+
+// Halbierungszeit bei der aktuellen Inflationsrate
+$("half").textContent = "ca. " + Math.round(Math.log(2)/Math.log(1 + RATE/100)) + " Jahre";
+
+// Geschürfte Bitcoin live (Blockhöhe von mempool.space), sonst letzter bekannter Näherungswert
+function mined(h){ let sat = 0, n = h + 1, r = 50e8; while (n > 0 && r >= 1){ const k = Math.min(n, 210000); sat += k*r; n -= k; r = Math.floor(r/2); } return sat/1e8; }
+function showMined(h, live){
+  const m = mined(h), pct = m/21e6*100;
+  $("minedTxt").textContent = (m/1e6).toLocaleString("de-DE", {minimumFractionDigits: 2, maximumFractionDigits: 2}) + " Mio." + (live ? "" : " (ca.)");
+  $("minedBar").style.height = pct.toFixed(2) + "%";
+}
+showMined(975000, false);
+fetch("https://mempool.space/api/blocks/tip/height").then(r => r.text()).then(t => { const h = parseInt(t, 10); if (h > 0) showMined(h, true); }).catch(() => {});
+
+// Mini-Quiz
+const QUIZ = [
+  ["Inflation liegt bei 2 % pro Jahr. Was passiert mit 1.000 € unter dem Kopfkissen nach 10 Jahren?", ["Sie kaufen genauso viel", "Sie kaufen etwa 18 % weniger", "Sie werden mehr wert"], 1, "Jedes Jahr 2 % weniger Kaufkraft summiert sich: 1,02 hoch 10 ergibt 1,22, deine 1.000 € kaufen nur noch so viel wie heute 820 €."],
+  ["Du bekommst 1 % Zinsen, die Inflation liegt bei 2,8 %. Wie viel gewinnst du wirklich?", ["+1 %", "+3,8 %", "−1,8 %"], 2, "Real zählt Zins minus Inflation. 1 % − 2,8 % = −1,8 %: Dein Geld verliert trotz Zinsen an Kaufkraft."],
+  ["Wer kann neue Bitcoin einfach herstellen, wenn mehr gebraucht werden?", ["Niemand, die Menge ist auf 21 Mio. begrenzt", "Die Zentralbank", "Die Börsen"], 0, "Neue Bitcoin entstehen nur nach festen Regeln beim Mining, und bei 21 Millionen ist Schluss. Das kann keine Bank und keine Regierung ändern."],
+];
+const qz = $("quiz");
+QUIZ.forEach(([q, opts, ok, why], qi) => {
+  const d = document.createElement("div"); d.className = "q";
+  d.innerHTML = `<p>${qi + 1}. ${q}</p><div class="opts">${opts.map((o, i) => `<button type="button" data-i="${i}">${o}</button>`).join("")}</div><p class="why" hidden></p>`;
+  d.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
+    const i = +b.dataset.i;
+    d.querySelectorAll("button").forEach(x => { x.classList.remove("ok", "no"); if (+x.dataset.i === ok) x.classList.add("ok"); });
+    if (i !== ok) b.classList.add("no");
+    const w = d.querySelector(".why"); w.hidden = false; w.textContent = (i === ok ? "Richtig! " : "Nicht ganz. ") + why;
+  }));
+  qz.appendChild(d);
+});
+
+update();
+})();
+</script>
+</body>
+</html>
