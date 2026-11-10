@@ -72,4 +72,51 @@ input[type=range]{flex:1;accent-color:var(--gold);height:28px}
 
 @media (max-width:760px){ .learn{grid-template-columns:repeat(2,minmax(0,1fr))} .learn span{font-size:13px} }
 @media (max-width:340px){ .learn{grid-template-columns:1fr} }
-@media (prefers-reduced-motion:reduce){ .mode.live::before{animation:none} *{scroll-behavior:auto} }
+
+/* =====================================================================
+   Spaß-Schicht: Hintergrund, Glanz, Bewegung, Level, Konfetti
+   ===================================================================== */
+body::before{content:"";position:fixed;inset:-40px;z-index:-1;pointer-events:none;
+  background:radial-gradient(520px 380px at 88% 8%,rgba(247,147,26,.13),transparent 70%),radial-gradient(520px 420px at 4% 55%,rgba(91,140,255,.12),transparent 70%),radial-gradient(460px 360px at 70% 95%,rgba(52,217,130,.07),transparent 70%),
+  radial-gradient(1.6px 1.6px at 12% 18%,#fff8,transparent),radial-gradient(1.4px 1.4px at 32% 72%,#fff6,transparent),radial-gradient(1.8px 1.8px at 58% 28%,#fff7,transparent),radial-gradient(1.3px 1.3px at 78% 62%,#fff6,transparent),radial-gradient(1.5px 1.5px at 92% 38%,#fff5,transparent),radial-gradient(1.2px 1.2px at 45% 88%,#fff5,transparent);
+  animation:drift 26s ease-in-out infinite alternate}
+@keyframes drift{to{transform:translate3d(0,-30px,0)}}
+.card{background:linear-gradient(var(--card),var(--card)) padding-box,linear-gradient(155deg,rgba(255,255,255,.16),rgba(255,255,255,.03) 38%,rgba(247,147,26,.22)) border-box;border:1px solid transparent;box-shadow:0 18px 40px -28px rgba(0,0,0,.8)}
+h1 span.btc{background:linear-gradient(90deg,#ffb347,#f7931a 40%,#ffd36b 60%,#f7931a);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 6s linear infinite}
+@keyframes shine{to{background-position:-220% 0}}
+.wico{display:inline-grid;place-items:center;width:60px;height:60px;font-size:32px;border-radius:20px;margin-bottom:10px;background:radial-gradient(circle at 30% 25%,rgba(255,255,255,.2),rgba(247,147,26,.16) 70%);border:1px solid rgba(247,147,26,.4);box-shadow:0 10px 24px -12px rgba(247,147,26,.7);animation:bob 3.2s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-5px) rotate(-4deg)}}
+/* Knöpfe: Glanz, Anheben, Drücken */
+.btn{background:linear-gradient(180deg,#ffb04a,#f7931a);box-shadow:0 8px 20px -10px rgba(247,147,26,.9),inset 0 1px 0 rgba(255,255,255,.35);transition:transform .12s,filter .2s,box-shadow .2s}
+.btn.ghost{box-shadow:none;transition:transform .12s,border-color .2s,background .2s}
+.btn:hover:not(:disabled){transform:translateY(-2px);filter:brightness(1.07)} .btn.ghost:hover:not(:disabled){border-color:rgba(255,201,77,.5)}
+.btn:active:not(:disabled),.opts button:active{transform:translateY(1px) scale(.96)}
+/* Level-Anzeige im Kopf */
+.lvl{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 12px 0 6px;border-radius:999px;border:1px solid rgba(255,201,77,.35);background:linear-gradient(90deg,rgba(255,201,77,.12),rgba(255,255,255,.03));color:var(--ink);text-decoration:none;font-size:13px;line-height:1.1}
+.lvl .li{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.08);font-size:18px}
+.lvl b{display:block;font:900 13px var(--f-display);color:var(--gold)} .lvl small{color:var(--muted);font-size:11px}
+.lvl i{display:block;width:54px;height:6px;border-radius:3px;background:rgba(255,255,255,.1);overflow:hidden} .lvl u{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--bull));transition:width .6s}
+.wrap > .lvl{align-self:flex-start}
+/* Merksätze: Akzent und Anheben */
+.learn div{box-shadow:inset 0 3px 0 rgba(255,201,77,.45);transition:transform .15s,border-color .15s}
+.learn div:hover{transform:translateY(-3px);border-color:rgba(255,201,77,.35)}
+/* Quiz */
+.qz summary{display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:999px;background:rgba(255,201,77,.1);border:1px solid rgba(255,201,77,.4);list-style:none}
+.qz summary::-webkit-details-marker{display:none} .qz summary::before{content:"🎯"}
+.opts button{transition:transform .12s,border-color .15s,background .15s} .opts button:hover{border-color:rgba(255,201,77,.5)}
+.opts button.ok{animation:pop .35s}
+@keyframes pop{40%{transform:scale(1.08)}}
+.qz .res{font-size:16px}
+/* Weiter-Karte */
+.card.next{background:linear-gradient(120deg,rgba(247,147,26,.2),rgba(91,140,255,.12)) padding-box,linear-gradient(120deg,rgba(247,147,26,.6),rgba(91,140,255,.4)) border-box}
+.next a{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:999px;background:var(--gold);color:#2a1600}
+.next a:hover{filter:brightness(1.08)}
+/* Einblenden beim Scrollen */
+.rv{opacity:0;transform:translateY(16px)} .rv.in{opacity:1;transform:none;transition:opacity .55s ease var(--d,0ms),transform .55s cubic-bezier(.2,.8,.2,1) var(--d,0ms)}
+/* Meldung und Konfetti */
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:50;padding:12px 18px;border-radius:16px;background:#1d2560;border:1px solid rgba(255,201,77,.5);box-shadow:0 18px 40px -16px #000;font-weight:700;max-width:calc(100vw - 32px);animation:up .4s cubic-bezier(.2,.8,.2,1)}
+.toast.out{opacity:0;transform:translate(-50%,10px);transition:.4s}
+@keyframes up{from{opacity:0;transform:translate(-50%,20px)}}
+.confetti{position:fixed;inset:0;z-index:49;pointer-events:none}
+@media (max-width:520px){ .lvl i{display:none} .lvl small{display:none} }
+@media (prefers-reduced-motion:reduce){ .mode.live::before,body::before,h1 span.btc,.wico{animation:none} *{scroll-behavior:auto} .rv{opacity:1;transform:none} }
