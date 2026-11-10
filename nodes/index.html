@@ -17,13 +17,16 @@
 .src small{display:block;font-size:12px;color:var(--muted)}
 .src b{font:600 21px var(--f-num)} .src code{display:block;font:12px var(--f-num);color:var(--muted);word-break:break-all;margin-top:4px}
 .verdict{margin-top:10px;font-weight:700} .ok{color:var(--bull)} .bad{color:var(--bear)}
-.picks{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
-.picks .btn[aria-pressed="true"]{outline:2px solid var(--gold)}
-.ring{position:relative;width:min(320px,100%);aspect-ratio:1;margin:8px auto}
-.ring span{position:absolute;width:26px;height:26px;margin:-13px;border-radius:50%;display:grid;place-items:center;font-size:13px;background:#1b2150;border:2px solid var(--line);transition:background .25s,border-color .25s}
-.ring span.y{background:rgba(46,204,113,.25);border-color:var(--bull)} .ring span.n{background:rgba(231,76,60,.25);border-color:var(--bear)}
-.ring .blk{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:auto;height:auto;margin:0;border-radius:12px;padding:8px 10px;font-size:13px;text-align:center;max-width:46%;background:#0b0f2a;border-color:var(--gold)}
-.row{display:flex;align-items:center;gap:12px;font-size:14px;color:var(--muted)} .row b{font:600 18px var(--f-num);color:var(--ink);min-width:4.5ch}
+.picks{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}
+.picks .btn{width:100%;padding:10px 8px;font-size:14px} .picks .btn[aria-pressed="true"]{outline:2px solid var(--gold);background:rgba(247,147,26,.15)}
+.row{display:flex;align-items:center;gap:12px;font-size:14px;color:var(--muted);flex-wrap:wrap} .row input{flex:1;min-width:120px} .row b{font:600 18px var(--f-num);color:var(--ink);min-width:4.5ch}
+.blk{margin:12px 0 8px;padding:10px 12px;border:1px solid var(--gold);border-radius:12px;font-size:14px;text-align:center}
+.nodes{display:grid;grid-template-columns:repeat(10,1fr);gap:6px}
+.nodes span{aspect-ratio:1;border-radius:50%;display:grid;place-items:center;font-size:11px;background:#1b2150;border:2px solid var(--line);transition:background .2s,border-color .2s}
+.nodes span.y{background:rgba(46,204,113,.25);border-color:var(--bull)} .nodes span.n{background:rgba(231,76,60,.25);border-color:var(--bear)}
+.bars{display:grid;gap:8px;margin-top:12px} .bars div{display:grid;grid-template-columns:8.5em 1fr 3.5em;align-items:center;gap:10px;font-size:13px;color:var(--muted)}
+.bars i{height:10px;border-radius:5px;background:rgba(255,255,255,.06);overflow:hidden} .bars u{display:block;height:100%;width:0;transition:width .4s}
+#bM{background:var(--gold)} #bN{background:var(--bull)} .bars b{font:600 15px var(--f-num);color:var(--ink);text-align:right}
 .res{margin:10px 0 0;font-size:15px}
 </style>
 </head>
@@ -46,13 +49,15 @@
   </section>
 
   <section class="card" aria-labelledby="h2s">
-    <h2 id="h2s">Versuch, die Regeln zu brechen</h2>
-    <p class="muted" style="margin:0">Stell dir vor, ein paar Miner wollen schummeln. Probier es aus:</p>
-    <ol class="muted" style="margin:6px 0 0;padding-left:20px;font-size:14px;line-height:1.6"><li><b>Wähle</b> unten, was im Block steht, z. B. „Belohnung 100 BTC“ statt der erlaubten Menge.</li><li><b>Stell ein</b>, wie viele Miner beim Schummeln mitmachen.</li><li><b>Schau zu:</b> Die Kreise sind Nodes. Jede prüft den Block. ✓ heißt angenommen, ✗ heißt weggeworfen.</li></ol>
+    <h2 id="h2s">Können Miner schummeln?</h2>
+    <p class="muted" style="margin:0">Wähle einen Block. Die Punkte darunter sind Nodes, jede prüft ihn selbst.</p>
     <div class="picks" id="picks"></div>
-    <div class="row"><label for="mp">Miner, die mitmachen</label><input id="mp" type="range" min="1" max="100" value="60"><b id="mpV" class="num">60 %</b></div>
-    <div class="ring" id="ring" aria-hidden="true"></div>
+    <div class="row" id="mpRow"><label for="mp">Miner, die den Schummel-Block wollen</label><input id="mp" type="range" min="0" max="100" step="5" value="90"><b id="mpV" class="num">90 %</b></div>
+    <div class="blk" id="blk"></div>
+    <div class="nodes" id="nodes" aria-hidden="true"></div>
+    <div class="bars"><div><small>Miner dafür</small><i><u id="bM"></u></i><b class="num" id="vM">–</b></div><div><small>Nodes nehmen an</small><i><u id="bN"></u></i><b class="num" id="vN">–</b></div></div>
     <p class="res" id="res" aria-live="polite"></p>
+    <details class="foot" style="margin-top:10px"><summary>Und was können Miner doch?</summary><p>Mit mehr als der Hälfte der Rechenleistung (51 %-Angriff) könnten Miner <b>Transaktionen blockieren</b> oder eine eigene, frische Zahlung zurückdrehen. Das wäre extrem teuer. <b>Regeln ändern</b>, also mehr Coins erzeugen oder fremde Coins nehmen, können sie trotzdem nicht.</p></details>
   </section>
 
   <section class="card" aria-labelledby="h3s">
@@ -99,33 +104,36 @@ async function compare(){
 }
 compare(); setInterval(compare, 60000);
 
-// ---------- 2) Regel-Simulation ----------
-// [Knopf, Text im Block, gültig?, Erklärung]
+// ---------- 2) Können Miner schummeln? ----------
+// [Knopf, was im Block steht, gültig?, Erklärung]
 const CASES = [
-  ["Normaler Block", "Belohnung + Gebühren korrekt", true, "Alles nach Regeln: Jede Node akzeptiert den Block und hängt ihn an ihre Kette."],
-  ["Belohnung 100 BTC", "Miner zahlt sich 100 BTC", false, "Die Belohnung ist festgelegt. Jede Node rechnet nach und wirft den Block weg, egal wie viele Miner ihn wollen."],
-  ["Fremde Coins", "Ausgabe ohne Signatur", false, "Ohne passende Signatur darf niemand Coins bewegen. Die Nodes lehnen den Block ab."],
-  ["Doppelt ausgeben", "Gleiche Coins zweimal", false, "Coins, die schon ausgegeben wurden, gibt es nicht mehr. Jede Node merkt das sofort."],
-  ["22 Mio. Bitcoin", "Neue Regel: mehr Coins", false, "Die Obergrenze steht im Code jeder Node. Ein Block mit zu vielen Coins ist für sie einfach ungültig."],
+  ["✅ Ehrlicher Block", "Belohnung und Gebühren genau nach Regel", true, "Alles korrekt: Jede Node nimmt den Block an."],
+  ["💰 100 BTC Belohnung", "Miner schreibt sich 100 BTC gut (erlaubt: 3,125 + Gebühren)", false, "Jede Node rechnet die Belohnung nach. Zu viel? Block weg."],
+  ["🔓 Fremde Coins", "Miner nimmt Coins von dir, ohne deine Signatur", false, "Ohne deinen Schlüssel kann niemand deine Coins bewegen. Block weg."],
+  ["🖨 22 Mio. Bitcoin", "Neue Regel: mehr als 21 Mio. Bitcoin", false, "Die Grenze steht in jeder Node. Mehr Coins? Block weg."],
 ];
-const N = 24, ring = $("ring"); let pick = 0, timer = 0;
-for (let i = 0; i < N; i++){ const s = document.createElement("span"), a = i/N*2*Math.PI - Math.PI/2; s.style.left = 50 + 44*Math.cos(a) + "%"; s.style.top = 50 + 44*Math.sin(a) + "%"; ring.appendChild(s); }
-const blk = document.createElement("span"); blk.className = "blk"; ring.appendChild(blk);
+const N = 20, nodes = $("nodes"); let pick = 1, timer = 0;
+for (let i = 0; i < N; i++) nodes.appendChild(document.createElement("span"));
 CASES.forEach((c, i) => { const b = document.createElement("button"); b.type = "button"; b.className = "btn ghost"; b.textContent = c[0]; b.onclick = () => { pick = i; run(); }; $("picks").appendChild(b); });
 
 function run(){
   clearInterval(timer);
-  const c = CASES[pick], mp = +$("mp").value, dots = [...ring.querySelectorAll("span:not(.blk)")];
-  $("mpV").textContent = mp + " %"; blk.textContent = "📦 " + c[1];
+  const c = CASES[pick], ok = c[2], mp = ok ? 100 : +$("mp").value, dots = [...nodes.children];
+  $("mpRow").style.display = ok ? "none" : "";   // beim ehrlichen Block gibt es nichts einzustellen
+  $("mpV").textContent = mp + " %"; $("blk").textContent = "📦 " + c[1];
   [...$("picks").children].forEach((b, i) => b.setAttribute("aria-pressed", i === pick));
-  dots.forEach(d => { d.className = ""; d.textContent = ""; }); $("res").textContent = "Nodes prüfen …";
+  $("bM").style.width = mp + "%"; $("vM").textContent = mp + " %";
+  $("bN").style.width = "0"; $("vN").textContent = "…"; $("res").textContent = "";
+  dots.forEach(d => { d.className = ""; d.textContent = ""; });
   let i = 0;
   timer = setInterval(() => {   // eine Node nach der anderen prüft
-    const d = dots[i]; d.className = c[2] ? "y" : "n"; d.textContent = c[2] ? "✓" : "✗";
+    dots[i].className = ok ? "y" : "n"; dots[i].textContent = ok ? "✓" : "✗";
     if (++i >= N){ clearInterval(timer);
-      $("res").innerHTML = `<b class="${c[2] ? "ok" : "bad"}">${c[2] ? `${N} von ${N} Nodes akzeptieren.` : `0 von ${N} Nodes akzeptieren, obwohl ${mp} % der Miner dahinterstehen.`}</b> ${c[3]}${c[2] ? "" : " Die Miner haben nur Strom verschwendet."}`;
+      $("bN").style.width = ok ? "100%" : "0"; $("vN").textContent = ok ? "100 %" : "0 %";
+      $("res").innerHTML = ok ? `<b class="ok">Angenommen.</b> ${c[3]}`
+        : `<b class="bad">Abgelehnt, obwohl ${mp} % der Miner ihn wollen.</b> ${c[3]} Die Miner haben umsonst Strom verbraucht. <span class="muted">Merke: Nodes stimmen nicht ab, sie prüfen.</span>`;
     }
-  }, 60);
+  }, 50);
 }
 $("mp").addEventListener("input", run);
 run();
