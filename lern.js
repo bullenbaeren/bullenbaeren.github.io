@@ -12,6 +12,7 @@ const Lern = (() => {
     ["bahnhof", "Mempool-Bahnhof", "bahnhof/"],
     ["seed", "Seed-Trainer", "seed/"],
     ["betrug", "Betrug erkennen", "betrug/"],
+    ["sparplan", "Sparplan", "sparplan/"],
   ];
   const load = () => { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch(e){ return {}; } };
   const save = s => { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch(e){} };

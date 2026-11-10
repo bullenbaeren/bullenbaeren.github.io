@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sparplan-Simulator · Satsland</title>
+<meta name="description" content="Lernwelt: Was wäre aus einem monatlichen Bitcoin-Sparplan geworden? Mit ungefährer Kurshistorie, inklusive der Durststrecken.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0b0f2a">
+<link rel="icon" href="../icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="stylesheet" href="../lern.css">
+<style>
+/* Lernwelt "Sparplan": nur seitenspezifische Teile, der Rest kommt aus lern.css */
+.ctl{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.ctl label{display:block;font-size:13px;color:var(--muted)}
+.ctl .row{display:flex;align-items:center;gap:12px}
+.ctl .row b{font:600 22px var(--f-num);min-width:5.5ch;text-align:right}
+.kpi{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:14px 0}
+.kpi div{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;padding:10px 12px}
+.kpi small{display:block;font-size:12px;color:var(--muted)}
+.kpi b{font:600 clamp(17px,3vw,22px) var(--f-num)}
+.kpi .up{color:var(--bull)} .kpi .dn{color:var(--bear)}
+svg.ch{width:100%;height:220px;display:block}
+.leg{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--muted);margin-top:6px}
+.leg i{display:inline-block;width:14px;height:4px;border-radius:2px;margin-right:6px;vertical-align:middle}
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.cmp div{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;padding:10px 12px;font-size:14px;color:var(--muted)}
+.cmp b{color:var(--ink)}
+@media (max-width:700px){ .ctl,.cmp{grid-template-columns:1fr} .kpi{grid-template-columns:1fr 1fr} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a class="back" href="../">← Satsland</a><a class="back" href="../spiel/">Zum Spiel</a></div>
+  <div>
+    <h1><span class="btc">Spar</span>plan</h1>
+    <p class="lead">Jeden Monat den gleichen Betrag, egal ob der Kurs hoch oder tief steht. Was wäre daraus geworden, und wie holprig war der Weg?</p>
+  </div>
+
+  <section class="card" aria-labelledby="h1s">
+    <h2 id="h1s">Dein Sparplan in der Vergangenheit</h2>
+    <div class="ctl">
+      <div><label for="amt">Betrag pro Monat</label><div class="row"><input id="amt" type="range" min="10" max="500" step="10" value="50"><b id="amtV" class="num">50 $</b></div></div>
+      <div><label for="yr">Start im Januar</label><div class="row"><input id="yr" type="range" min="2014" max="2025" value="2018"><b id="yrV" class="num">2018</b></div></div>
+    </div>
+    <div class="kpi">
+      <div><small>Eingezahlt</small><b class="num" id="kIn">–</b></div>
+      <div><small>Heute wert (ca.)</small><b class="num" id="kNow">–</b></div>
+      <div><small>Gesammelt</small><b class="num" id="kBtc">–</b></div>
+      <div><small>Tiefster Punkt</small><b class="num dn" id="kLow">–</b></div>
+    </div>
+    <svg class="ch" id="ch" viewBox="0 0 1000 220" preserveAspectRatio="none" aria-hidden="true"></svg>
+    <div class="leg"><span><i style="background:#f7931a"></i>Wert des Sparplans</span><span><i style="background:#9aa2d6"></i>Eingezahlt</span></div>
+    <div class="cmp" id="cmp"></div>
+  </section>
+
+  <section class="card" aria-labelledby="h2s">
+    <h2 id="h2s">Das solltest du dir merken</h2>
+    <div class="learn">
+      <div><b>Kein Timing nötig</b><span>Beim Sparplan kaufst du <b>mal teuer, mal günstig</b>. Du musst nicht den perfekten Moment erwischen.</span></div>
+      <div><b>Durststrecken</b><span>Auch ein Sparplan kann <b>lange im Minus</b> liegen. Wer dann aufhört oder verkauft, macht Verluste fest.</span></div>
+      <div><b>Vergangenheit ≠ Zukunft</b><span>Die Zahlen zeigen, was <b>gewesen wäre</b>. Ob es so weitergeht, weiß niemand.</span></div>
+      <div><b>Nur was du entbehren kannst</b><span>Spare nur Geld, das du <b>lange nicht brauchst</b>, und achte auf niedrige Gebühren beim Kauf.</span></div>
+    </div>
+    <details class="qz"><summary>Teste dich: 3 Fragen</summary><div id="quiz"></div></details>
+  </section>
+
+  <section class="card next" id="next" aria-label="Weiter"></section>
+  <details class="foot"><summary>Quellen</summary><p>Ungefähre Bitcoin-Kurse in US-Dollar aus gerundeten Monatswerten (zwischen den Stützpunkten geglättet), aktueller Kurs live von Coinbase. Ohne Gebühren und Steuern. Ergebnisse sind Näherungen.</p></details>
+  <p class="foot">Lernen und Unterhaltung, keine Anlageberatung. Vergangene Entwicklungen sind kein Hinweis auf die Zukunft.</p>
+</div>
+
+<script src="../lern.js"></script>
+<script>
+/* =====================================================================
+   SPARPLAN – Lernwelt von Satsland
+   Rechnet einen monatlichen Kauf mit ungefähren historischen Kursen nach.
+   ===================================================================== */
+(() => {
+const $ = id => document.getElementById(id);
+// Gerundete Kurs-Stützpunkte (US-Dollar), dazwischen logarithmisch verbunden
+const HIST = [["2013-04",200],["2013-07",80],["2013-12",1000],["2014-06",600],["2015-01",200],["2015-12",430],["2016-07",650],["2016-12",960],["2017-06",2500],["2017-09",4300],["2017-12",19000],["2018-02",7000],["2018-12",3300],["2019-06",12000],["2019-12",7200],["2020-03",5000],["2020-10",13000],["2020-12",29000],["2021-04",63000],["2021-07",31000],["2021-11",67000],["2022-06",19000],["2022-11",16000],["2023-06",30000],["2023-12",42000],["2024-03",71000],["2024-08",55000],["2024-12",100000],["2025-04",78000],["2025-07",118000],["2025-10",124000]];
+const ym = s => { const [y, m] = s.split("-").map(Number); return y*12 + m - 1; };
+const NOW = new Date().getFullYear()*12 + new Date().getMonth();
+let live = 0;
+function priceAt(m){
+  const pts = HIST.map(([d, p]) => [ym(d), p]);
+  if (live > 0) pts.push([NOW, live]);
+  if (m <= pts[0][0]) return pts[0][1];
+  for (let i = 1; i < pts.length; i++) if (m <= pts[i][0]){ const [a, pa] = pts[i - 1], [b, pb] = pts[i]; return pa*Math.pow(pb/pa, (m - a)/(b - a)); }
+  return pts[pts.length - 1][1];
+}
+const usd = v => Math.round(v).toLocaleString("de-DE") + " $";
+const MON = ["Jan.","Feb.","März","Apr.","Mai","Juni","Juli","Aug.","Sep.","Okt.","Nov.","Dez."];
+const mLabel = m => `${MON[m % 12]} ${Math.floor(m/12)}`;
+
+function calc(amt, y0){
+  let btc = 0, paid = 0, worst = 0, worstM = 0; const pts = [];
+  for (let m = y0*12; m <= NOW; m++){
+    const p = priceAt(m); btc += amt/p; paid += amt;
+    const val = btc*p; pts.push([m, val, paid]);
+    const dd = val/paid - 1; if (dd < worst){ worst = dd; worstM = m; }
+  }
+  return {btc, paid, now: btc*priceAt(NOW), worst, worstM, pts};
+}
+function draw(r){
+  const max = Math.max(...r.pts.map(p => Math.max(p[1], p[2]))), n = r.pts.length;
+  const X = i => i/(n - 1)*1000, Y = v => 212 - v/max*200;
+  const line = k => r.pts.map((p, i) => `${X(i).toFixed(1)},${Y(p[k]).toFixed(1)}`).join(" ");
+  const area = `0,212 ${line(1)} 1000,212`;
+  $("ch").innerHTML = `<polygon points="${area}" fill="rgba(247,147,26,.12)"/><polyline points="${line(2)}" fill="none" stroke="#9aa2d6" stroke-width="2" stroke-dasharray="6 5"/><polyline points="${line(1)}" fill="none" stroke="#f7931a" stroke-width="3"/>`;
+}
+function update(){
+  const amt = +$("amt").value, y0 = +$("yr").value;
+  $("amtV").textContent = amt + " $"; $("yrV").textContent = y0;
+  const r = calc(amt, y0), gain = r.now/r.paid - 1;
+  $("kIn").textContent = usd(r.paid);
+  $("kNow").textContent = usd(r.now); $("kNow").className = "num " + (gain >= 0 ? "up" : "dn");
+  $("kBtc").textContent = r.btc >= .1 ? r.btc.toLocaleString("de-DE", {maximumFractionDigits: 3}) + " BTC" : Math.round(r.btc*1e8).toLocaleString("de-DE") + " sats";
+  $("kLow").textContent = r.worst < 0 ? Math.round(r.worst*100) + " %" : "nie im Minus";
+  draw(r);
+  // Vergleich: alles auf einmal am Anfang
+  const lump = r.paid/priceAt(y0*12)*priceAt(NOW);
+  $("cmp").innerHTML = `<div><b>Sparplan:</b> ${usd(r.paid)} eingezahlt, heute ca. <b>${usd(r.now)}</b> (${gain >= 0 ? "+" : ""}${Math.round(gain*100).toLocaleString("de-DE")} %).${r.worst < 0 ? ` Am schlechtesten stand er im <b>${mLabel(r.worstM)}</b> mit ${Math.round(r.worst*100)} %.` : ""}</div>
+    <div><b>Alles auf einmal</b> im Januar ${y0} wäre heute ca. <b>${usd(lump)}</b>. Dafür hättest du das ganze Geld sofort gebraucht und den Startzeitpunkt richtig treffen müssen.</div>`;
+}
+$("amt").addEventListener("input", update); $("yr").addEventListener("input", update);
+fetch("https://api.coinbase.com/v2/prices/BTC-USD/spot").then(r => r.json()).then(j => { const p = +j.data.amount; if (p > 0){ live = p; update(); } }).catch(() => {});
+update();
+
+const QUIZ = [
+  ["Was ist der größte Vorteil eines Sparplans?", ["Er garantiert Gewinn", "Man muss nicht den perfekten Kaufzeitpunkt treffen", "Er ist steuerfrei"], 1, "Man kauft regelmäßig, mal teuer, mal günstig. Das nimmt den Druck, den richtigen Moment zu erwischen. Gewinn ist damit nicht garantiert."],
+  ["Dein Sparplan liegt seit einem Jahr 40 % im Minus. Was zeigt die Vergangenheit?", ["Solche Phasen gab es oft", "Das passiert nie", "Dann ist alles verloren"], 0, "Bitcoin hatte mehrere lange Minus-Phasen, etwa 2018 und 2022. Wer durchhielt, kam in der Vergangenheit wieder heraus. Eine Garantie für die Zukunft ist das nicht."],
+  ["Welches Geld gehört in einen Bitcoin-Sparplan?", ["Der Notgroschen", "Geld, das du lange nicht brauchst", "Ein Kredit"], 1, "Nur Geld, auf das du jahrelang verzichten kannst. Sonst musst du womöglich genau im Minus verkaufen."],
+];
+Lern.quiz($("quiz"), "sparplan", QUIZ, "../"); Lern.visit("sparplan"); Lern.renderNext("sparplan", "../");
+})();
+</script>
+</body>
+</html>
