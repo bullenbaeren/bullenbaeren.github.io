@@ -83,7 +83,7 @@ table.stab{width:100%;border-collapse:collapse;margin-top:12px;font-size:14px}
         <div class="in"><b id="left">–</b><small>Blöcke bis zum Halving</small></div>
       </div>
       <div class="kv">
-        <div><small>Nächstes Halving bei Block</small><b class="num" id="next">–</b></div>
+        <div><small>Nächstes Halving bei Block</small><b class="num" id="nextH">–</b></div>
         <div><small>Voraussichtlich</small><b class="num g" id="eta">–</b></div>
         <div><small>Belohnung jetzt</small><b class="num" id="rNow">–</b></div>
         <div><small>Danach</small><b class="num" id="rNext">–</b></div>
@@ -174,7 +174,7 @@ function renderClock(){
   if (!tip) return;
   const e = Math.floor(tip/EPOCH), next = (e + 1)*EPOCH, left = next - tip, done = (tip - e*EPOCH)/EPOCH;
   $("left").textContent = fmt(left);
-  $("next").textContent = fmt(next);
+  $("nextH").textContent = fmt(next);
   $("tip").textContent = fmt(tip);
   $("pct").textContent = (done*100).toLocaleString("de-DE", {maximumFractionDigits: 1}) + " %";
   $("rNow").textContent = btc(rewardSat(e)/1e8);
