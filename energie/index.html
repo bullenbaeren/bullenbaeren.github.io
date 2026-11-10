@@ -38,12 +38,11 @@
 
   <section class="card" aria-labelledby="h1s">
     <h2 id="h1s">Wie viel Strom gerade? <span class="mode" id="mode">Verbinde …</span></h2>
-    <div class="idea">Niemand misst den Strom aller Miner direkt. Man <b>schätzt</b> ihn so: echte Rechenleistung des Netzes × Strom, den ein durchschnittliches Gerät pro Rechenschritt braucht. Den zweiten Wert kannst du selbst einstellen.</div>
-    <div class="ctl"><label for="eff">Effizienz der Geräte im Schnitt (Joule pro Terahash, weniger = sparsamer)</label><div class="row"><input id="eff" type="range" min="12" max="40" value="22"><b id="effV" class="num">22 J/TH</b></div></div>
+    <div class="idea">Niemand misst den Strom aller Miner direkt. Man <b>schätzt</b> ihn aus der echten Rechenleistung des Netzes und davon, wie sparsam die Geräte sind. Weil das niemand genau weiß, zeigen wir eine <b>Spanne</b>: von „nur neue, sparsame Geräte“ bis „viele ältere Geräte“.</div>
     <div class="calc">
-      <div>Rechenleistung (live)<b class="num" id="cH">–</b></div>
-      <div>Leistung gerade<b class="num" id="cW">–</b></div>
-      <div>Aufs Jahr gerechnet<b class="num g" id="cY">–</b></div>
+      <div>Strom pro Jahr (Schätzung)<b class="num g" id="cY">–</b></div>
+      <div>So viel wie deutsche Haushalte<b class="num" id="cHh">–</b></div>
+      <div>1 Stunde Bitcoin-Strom reicht deinem Haushalt<b class="num" id="cHour">–</b></div>
     </div>
     <div class="bars" id="bars"></div>
     <p class="muted" style="font-size:13px;margin:8px 0 0" id="share"></p>
@@ -85,7 +84,7 @@
   </section>
 
   <section class="card next" id="next" aria-label="Weiter"></section>
-  <details class="foot"><summary>Quellen</summary><p>Rechenleistung live von <a href="https://mempool.space/mining">mempool.space</a>. Strommix: Cambridge Centre for Alternative Finance, Mining-Umfrage 2025 (<a href="https://jbs.cam.ac.uk/2025/cambridge-study-sustainable-energy-rising-in-bitcoin-mining/">jbs.cam.ac.uk</a>). Vergleichswerte gerundet: Deutschland rund 500 TWh Strom pro Jahr, Rechenzentren weltweit rund 415 TWh (IEA, 2024), Welt rund 30.000 TWh.</p></details>
+  <details class="foot"><summary>Quellen</summary><p>Rechenleistung live von <a href="https://mempool.space/mining">mempool.space</a>. Strommix: Cambridge Centre for Alternative Finance, Mining-Umfrage 2025 (<a href="https://jbs.cam.ac.uk/2025/cambridge-study-sustainable-energy-rising-in-bitcoin-mining/">jbs.cam.ac.uk</a>). Vergleichswerte gerundet: Deutschland rund 500 TWh Strom pro Jahr, ein Haushalt rund 3.500 kWh, Geräte-Effizienz 15 bis 30 J/TH, Rechenzentren weltweit rund 415 TWh (IEA, 2024), Welt rund 30.000 TWh.</p></details>
   <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
 </div>
 
@@ -100,13 +99,16 @@ const $ = id => document.getElementById(id);
 const f = (v, d = 0) => v.toLocaleString("de-DE", {maximumFractionDigits: d});
 let hash = 1e21, live = false;   // Hashrate in H/s, Beispielwert falls offline
 const CMP = [["Rechenzentren weltweit", 415], ["Deutschland, ganzes Land", 500], ["Norwegen", 130], ["Schweiz", 60]];
+// Spanne: 15 J/TH (nur neue Geräte) bis 30 J/TH (viele ältere), Mitte 22
+const HH = 3500;   // kWh, ungefähr Jahresverbrauch eines deutschen Haushalts
 function calc(){
-  const eff = +$("eff").value, gw = hash/1e12*eff/1e9, twh = gw*8.766;   // TH/s × J/TH = W; GW × 8.766 h/1000 = TWh
-  $("effV").textContent = eff + " J/TH"; $("cH").textContent = f(hash/1e18) + " EH/s";
-  $("cW").textContent = f(gw, 1) + " GW"; $("cY").textContent = "ca. " + f(twh) + " TWh";
-  const rows = [["₿ Bitcoin (Schätzung)", twh, 1], ...CMP.map(c => [c[0], c[1], 0])].sort((a, b) => b[1] - a[1]), max = rows[0][1];
+  const tw = e => hash/1e12*e/1e9*8.766, lo = tw(15), mid = tw(22), hi = tw(30), gw = hash/1e12*22/1e9;
+  $("cY").textContent = `${f(lo)} bis ${f(hi)} TWh`;
+  $("cHh").textContent = `ca. ${f(mid*1e9/HH/1e6)} Mio.`;
+  $("cHour").textContent = `ca. ${f(gw*1e6/HH)} Jahre`;
+  const rows = [["₿ Bitcoin (Mitte)", mid, 1], ...CMP.map(c => [c[0], c[1], 0])].sort((a, b) => b[1] - a[1]), max = rows[0][1];
   $("bars").innerHTML = rows.map(([n, v, me]) => `<div class="${me ? "me" : ""}"><span>${n}</span><i style="width:${(v/max*100).toFixed(1)}%"></i><b>${f(v)} TWh</b></div>`).join("");
-  $("share").textContent = `Das wären etwa ${f(twh/30000*100, 1)} % des weltweiten Stroms. Bei ${eff} J/TH; sind die Geräte sparsamer, sinkt die Zahl.`;
+  $("share").textContent = `Das sind etwa ${f(mid/30000*100, 1)} % des weltweiten Stroms. Grundlage: echte Rechenleistung von gerade (${f(hash/1e18)} EH/s).`;
 }
 // Strommix laut Cambridge 2025 (Anteile in %)
 const MIX = [["Wasser, Wind, Sonne", 42.6, "#2ecc71"], ["Kernkraft", 9.8, "#5dade2"], ["Gas", 38.2, "#f5b041"], ["Kohle", 8.9, "#7f8c8d"], ["Öl", 0.5, "#a04000"]];
@@ -115,7 +117,6 @@ $("leg").innerHTML = MIX.map(([n, p, c]) => `<span><i style="background:${c}"></
 
 fetch("https://mempool.space/api/v1/mining/hashrate/3d").then(r => r.json()).then(j => { if (j.currentHashrate > 0){ hash = j.currentHashrate; live = true; } }).catch(() => {})
   .finally(() => { $("mode").className = "mode " + (live ? "live" : "demo"); $("mode").textContent = live ? "Live-Rechenleistung" : "Beispielwert"; calc(); });
-$("eff").addEventListener("input", calc);
 calc();
 
 const QUIZ = [
