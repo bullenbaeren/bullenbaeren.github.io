@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Notfall-Plan · Satsland</title>
+<meta name="description" content="Lernwelt: Backup und Erbe bei Bitcoin. Stell deinen Plan zusammen und teste ihn gegen fünf Notfälle.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0b0f2a">
+<link rel="icon" href="../icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="stylesheet" href="../lern.css?v=3">
+<style>
+/* Lernwelt "Erben & Backup": nur seitenspezifische Teile, der Rest kommt aus lern.css */
+.idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
+.lbl{margin:16px 0 0;font-weight:700}
+.opts2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.opt{display:flex;gap:10px;align-items:flex-start;text-align:left;padding:10px 12px;border-radius:14px;border:2px solid var(--line);background:rgba(255,255,255,.03);color:var(--ink);font:inherit;font-size:14px;cursor:pointer}
+.opt .ic{font-size:20px;line-height:1} .opt small{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+.opt[aria-pressed="true"]{border-color:var(--gold);background:rgba(247,147,26,.14)} .opt[aria-pressed="true"]::after{content:"✓";margin-left:auto;color:var(--gold);font-weight:800}
+.score{display:flex;align-items:center;gap:12px;margin-top:16px} .score b{font:800 30px var(--f-num)}
+.score .bar{flex:1;height:12px;border-radius:6px;background:rgba(255,255,255,.07);overflow:hidden} .score .bar i{display:block;height:100%;width:0;background:var(--bull);transition:width .4s}
+.sc{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:8px}
+.sc li{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:14px;border:2px solid var(--line);font-size:14px;line-height:1.45}
+.sc li .r{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-weight:800}
+.sc li.y{border-color:var(--bull)} .sc li.y .r{background:rgba(46,204,113,.25);color:var(--bull)} .sc li.n{border-color:var(--bear)} .sc li.n .r{background:rgba(231,76,60,.25);color:var(--bear)}
+.sc li b{display:block} .sc li span{color:var(--muted)}
+.letter{display:grid;gap:6px;margin-top:10px;font-size:14px} .letter div{padding:8px 12px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.03)}
+.letter .no{border-color:var(--bear);color:#ffb3aa}
+@media (max-width:620px){ .opts2{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a class="back" href="../">← Satsland</a><a class="back" href="../spiel/">Zum Spiel</a></div>
+  <div>
+    <h1><span class="btc">Notfall</span>-Plan</h1>
+    <p class="lead">Bei Bitcoin gibt es keine Bank, die dir hilft. Ohne Backup sind die Coins nach einem Unglück weg, für dich und für deine Familie.</p>
+  </div>
+
+  <section class="card" aria-labelledby="h1s">
+    <h2 id="h1s">Bau deinen Backup-Plan</h2>
+    <div class="idea">Tippe an, was du machen würdest. Darunter siehst du sofort, ob dein Plan <b>fünf Notfälle</b> übersteht.</div>
+    <div class="opts2" id="opts"></div>
+    <div class="score"><b class="num" id="pts">0/5</b><div class="bar"><i id="bar"></i></div></div>
+    <ul class="sc" id="sc"></ul>
+  </section>
+
+  <section class="card" aria-labelledby="h2s">
+    <h2 id="h2s">Der Brief an deine Erben</h2>
+    <p class="muted" style="margin:0">Deine Familie muss wissen, <b>dass</b> es Bitcoin gibt und <b>wie</b> sie herankommt. Ein Brief, sicher verwahrt, sollte enthalten:</p>
+    <div class="letter">
+      <div>✅ Dass du Bitcoin besitzt und ungefähr wie viel</div>
+      <div>✅ Welche Wallet du nutzt und wo das Gerät liegt</div>
+      <div>✅ Wo die Seed-Wörter liegen (der Ort, nicht die Wörter selbst)</div>
+      <div>✅ Eine Vertrauensperson, die sich mit Bitcoin auskennt</div>
+      <div>✅ Eine Warnung: Seed niemals in ein Handy tippen oder jemandem online geben</div>
+      <div class="no">❌ Nicht ins Testament schreiben: Das Nachlassgericht eröffnet es, und alle Beteiligten können es lesen</div>
+    </div>
+  </section>
+
+  <section class="card" aria-labelledby="h3s">
+    <h2 id="h3s">Das solltest du dir merken</h2>
+    <div class="learn">
+      <div><b>Seed = alles</b><span>Wer die Seed-Wörter hat, hat die Bitcoin. Sie sind <b>Backup und Risiko</b> zugleich.</span></div>
+      <div><b>Zwei Orte</b><span>Eine Kopie zu Hause reicht nicht. Feuer oder Wasser treffen sonst <b>alles auf einmal</b>.</span></div>
+      <div><b>Nie digital</b><span>Kein Foto, keine Cloud, keine Notiz-App. <b>Papier oder Metall</b>, offline.</span></div>
+      <div><b>Erben brauchen Hinweise</b><span>Ohne Brief weiß deine Familie oft nicht einmal, <b>dass es Bitcoin gibt</b>. Dann sind sie für immer verloren.</span></div>
+    </div>
+    <details class="qz"><summary>Teste dich: 3 Fragen</summary><div id="quiz"></div></details>
+  </section>
+
+  <section class="card next" id="next" aria-label="Weiter"></section>
+  <details class="foot"><summary>Quellen</summary><p>Allgemeine Sicherheitsregeln für Seed-Backups. Testamente werden in Deutschland vom Nachlassgericht eröffnet, die Beteiligten erhalten davon Kenntnis (§ 348 FamFG). Für die rechtliche Gestaltung eines Erbes bitte Notar oder Fachanwalt fragen.</p></details>
+  <p class="foot">Lernen und Unterhaltung, keine Rechts- oder Anlageberatung.</p>
+</div>
+
+<script src="../lern.js?v=3"></script>
+<script>
+/* =====================================================================
+   NOTFALL-PLAN – Lernwelt von Satsland
+   Backup-Bausteine wählen, Plan gegen fünf Notfälle testen.
+   ===================================================================== */
+(() => {
+const $ = id => document.getElementById(id);
+// Bausteine: [Schlüssel, Symbol, Titel, Hinweis]
+const O = [
+  ["paper", "📝", "Seed auf Papier", "zu Hause aufbewahrt"],
+  ["metal", "🔩", "Seed in Metall", "übersteht Feuer und Wasser"],
+  ["second", "🏠", "Zweite Kopie woanders", "z. B. bei Familie oder im Schließfach"],
+  ["pass", "🔑", "Zusätzliche Passphrase", "ein 25. Wort, getrennt vom Seed"],
+  ["letter", "✉️", "Brief für die Erben", "wo was liegt und wie es geht"],
+  ["cloud", "☁️", "Foto vom Seed in der Cloud", "praktisch, oder?"],
+];
+let on = new Set(["paper"]);
+// Notfälle: Titel und Prüfung -> [überstanden?, Grund]
+const S = [
+  ["📵 Wallet geht kaputt", p => (p.paper || p.metal || p.second || p.cloud) ? [1, "Mit den Seed-Wörtern stellst du alles auf einem neuen Gerät wieder her."] : [0, "Ohne aufgeschriebene Seed-Wörter sind die Bitcoin für immer weg."]],
+  ["🔥 Feuer zu Hause", p => p.metal ? [1, "Das Metall übersteht den Brand."] : p.second ? [1, "Die zweite Kopie an einem anderen Ort rettet dich."] : p.cloud ? [1, "Das Cloud-Foto überlebt. Aber es ist ein großes Risiko, siehe unten."] : [0, (p.paper ? "Der Papier-Zettel verbrennt mit dem Gerät." : "Es gibt kein Backup.") + " Alles weg."]],
+  ["🦹 Einbrecher findet den Seed", p => !(p.paper || p.metal) ? [1, "Zu Hause liegt kein Seed, also nichts zu finden."] : p.pass ? [1, "Ohne die Passphrase nützen ihm die Wörter nichts."] : [0, "Mit den Wörtern räumt er deine Wallet in Minuten leer."]],
+  ["☁️ Dein Cloud-Konto wird gehackt", p => !p.cloud ? [1, "Kein Seed online, also nichts zu holen."] : p.pass ? [0, "Die Passphrase bremst den Hacker noch, aber er hat schon die Hälfte. Seed gehört nie online."] : [0, "Hacker suchen gezielt nach Seed-Fotos. Alles weg."]],
+  ["🕯 Dir passiert etwas", p => !p.letter ? [0, "Deine Familie weiß nicht, dass es Bitcoin gibt oder was die Wörter bedeuten."] : !(p.paper || p.metal || p.second || p.cloud) ? [0, "Der Brief nützt nichts, es gibt keine Seed-Wörter zu finden."] : [1, "Dein Brief erklärt, wo alles liegt" + (p.pass ? " und wo die Passphrase steht." : ".")]],
+];
+function draw(){
+  $("opts").innerHTML = O.map(([k, ic, t, h]) => `<button class="opt" type="button" data-k="${k}" aria-pressed="${on.has(k)}"><span class="ic">${ic}</span><span>${t}<small>${h}</small></span></button>`).join("");
+  const p = Object.fromEntries(O.map(o => [o[0], on.has(o[0])])), res = S.map(([t, f]) => [t, ...f(p)]), n = res.filter(r => r[1]).length;
+  $("pts").textContent = n + "/5"; $("bar").style.width = n*20 + "%"; $("bar").style.background = n === 5 ? "var(--bull)" : n >= 3 ? "var(--gold)" : "var(--bear)";
+  $("sc").innerHTML = res.map(([t, ok, why]) => `<li class="${ok ? "y" : "n"}"><span class="r">${ok ? "✓" : "✗"}</span><div><b>${t}</b><span>${why}</span></div></li>`).join("")
+    + (n === 5 ? `<li class="y"><span class="r">★</span><div><b>Starker Plan!</b><span>Dein Plan übersteht alle fünf Notfälle.</span></div></li>` : "");
+}
+$("opts").onclick = e => { const b = e.target.closest(".opt"); if (!b) return; const k = b.dataset.k; on.has(k) ? on.delete(k) : on.add(k); draw(); };
+draw();
+
+const QUIZ = [
+  ["Wo sollten die Seed-Wörter auf keinen Fall gespeichert werden?", ["Auf Papier im Tresor", "Als Foto in der Cloud", "In Metall gestanzt"], 1, "Alles Digitale kann gehackt werden. Seed-Wörter gehören offline auf Papier oder Metall."],
+  ["Warum reicht eine einzige Seed-Kopie zu Hause nicht?", ["Weil sie verblassen könnte", "Weil Feuer oder Wasser sie zusammen mit der Wallet zerstören können", "Weil man sie jährlich erneuern muss"], 1, "Ein Unglück trifft dann alles auf einmal. Eine zweite Kopie an einem anderen Ort oder Metall schützt davor."],
+  ["Gehören die Seed-Wörter ins Testament?", ["Ja, dort sind sie am sichersten", "Nein, das Testament wird eröffnet und von mehreren gelesen", "Nur bei kleinen Beträgen"], 1, "Ein Testament wird vom Nachlassgericht eröffnet. Besser: im Testament auf einen sicher verwahrten Brief verweisen."],
+];
+Lern.quiz($("quiz"), "erben", QUIZ, "../"); Lern.visit("erben"); Lern.renderNext("erben", "../");
+})();
+</script>
+</body>
+</html>
