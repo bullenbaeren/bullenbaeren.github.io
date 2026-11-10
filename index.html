@@ -127,8 +127,16 @@ canvas.drag{cursor:grabbing}
 .stats{display:flex;flex-wrap:wrap;gap:6px 20px;margin-top:14px;font-size:13px;color:var(--muted)}
 .stats b{color:var(--ink);font-family:var(--f-num);font-weight:500}
 .foot{font-size:12px;color:var(--muted);margin:0;max-width:75ch}
+.priv summary{cursor:pointer;display:inline-block;text-decoration:underline;text-underline-offset:3px}
+.priv p{margin:8px 0 0}
+.priv b{color:var(--ink)}
 /* Status-Leiste unter dem Kommentar: drei Chips statt drei Textzeilen */
 .sbar{display:flex;flex-wrap:wrap;gap:8px;padding:0 2px}
+@media (max-width:640px){
+  .sbar{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;-webkit-mask-image:linear-gradient(90deg,#000 88%,transparent);mask-image:linear-gradient(90deg,#000 88%,transparent);padding-right:24px}
+  .sbar::-webkit-scrollbar{display:none}
+  .sbar .chip{flex:none}
+}
 .chip{display:inline-flex;align-items:center;gap:7px;font:500 12px var(--f-num);color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:999px;padding:6px 12px;white-space:nowrap;min-width:0}
 .chip i{width:7px;height:7px;border-radius:50%;background:#56609a;flex:none}
 .chip.ok i{background:var(--bull)} .chip.err i{background:var(--bear)} .chip.wait i{background:var(--gold)}
@@ -152,6 +160,9 @@ button.mode{cursor:pointer}
 .legend summary::after{content:"+";font-family:var(--f-num);color:var(--muted);font-size:20px}
 .legend[open] summary::after{content:"–"}
 .legend summary:focus-visible{outline:2px solid var(--gold);outline-offset:4px;border-radius:6px}
+.lgroup{border-top:1px solid var(--line);padding:12px 0 4px}
+.lgroup:first-child{border-top:0;padding-top:0}
+.lgroup summary{font-size:15px;padding:2px 0 8px}
 .lgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 22px}
 .lrow{display:grid;grid-template-columns:132px minmax(0,1fr);gap:10px;align-items:baseline;padding:8px 0;border-top:1px solid var(--line);font-size:14px}
 .lrow b{font-weight:700;white-space:nowrap}
@@ -253,6 +264,7 @@ body.stream .welcome{display:none}
     <div class="stats" id="stats"></div>
     </div>
     <div role="tabpanel" id="pane-hilfe" aria-labelledby="tab-hilfe" hidden>
+      <details class="legend lgroup" open><summary>Der Kampf</summary>
       <div class="lgrid">
       <div class="lrow"><b class="g">Bullen</b><span>Käufer. Ihre Zahl zeigt das echte Kaufvolumen der letzten 3 Minuten.</span></div>
       <div class="lrow"><b class="r">Bären</b><span>Verkäufer. Ihre Zahl zeigt das echte Verkaufsvolumen der letzten 3 Minuten.</span></div>
@@ -264,27 +276,40 @@ body.stream .welcome{display:none}
       <div class="lrow"><b>Meteor, Grabstein</b><span>Liquidation: Eine gehebelte Wette wurde zwangsgeschlossen, je 100.000 $ ein Meteor.</span></div>
       <div class="lrow"><b class="g">Laser-Bulle</b><span>Käufer dominieren seit Sekunden klar.</span></div>
       <div class="lrow"><b class="s">Eis-Bär</b><span>Verkäufer dominieren seit Sekunden klar.</span></div>
+      <div class="lrow"><b class="y">Zeitlupe</b><span>Bei einem Trade oder einer Liquidation ab 1 Mio. $ hält die Zeit kurz an und die Kamera fährt heran.</span></div>
+      </div></details>
+      <details class="legend lgroup"><summary>Karte &amp; Welten</summary>
+      <div class="lgrid">
       <div class="lrow"><b>Fahnen</b><span>Alle paar Dutzend Dollar. Wer den Kurs darüber treibt, erobert sie.</span></div>
       <div class="lrow"><b class="y">Münzen, Statuen</b><span>Goldene Denkmäler alle 10 Fahnen, Statuen alle 50.</span></div>
       <div class="lrow"><b>Zonen</b><span>Etwa alle 5 % Kursänderung wechselt die Landschaft.</span></div>
+      <div class="lrow"><b class="y">Portal</b><span>Neue Größenordnung, vom Mikrokosmos bis ins Universum. Bewacht von einem Riesen.</span></div>
+      <div class="lrow"><b class="y">Goldenes Tor</b><span>Das Allzeithoch, der höchste Kurs aller Zeiten. Unter dem Kurs steht, wie weit es noch ist.</span></div>
+      <div class="lrow"><b>24-Std.-Linien</b><span>Gestrichelte Linien markieren Hoch und Tief der letzten 24 Stunden.</span></div>
+      <div class="lrow"><b>Wetter</b><span>Zeigt, wie stark der Kurs in den letzten 2 Minuten schwankt: Sonne, Wolken, Regen, Gewitter. Im Weltall: Sternenstaub, Meteorschauer, Sonnensturm.</span></div>
+      </div></details>
+      <details class="legend lgroup"><summary>Bitcoin-Netzwerk</summary>
+      <div class="lgrid">
       <div class="lrow"><b class="y">Rollender Block</b><span>Ein neuer Bitcoin-Block wurde gefunden, im Schnitt alle 10 Minuten. Mit Nummer, Transaktionen und Miner.</span></div>
       <div class="lrow"><b>Halving</b><span>Alle 210.000 Blöcke halbiert sich die Belohnung der Miner. Unten läuft der Countdown.</span></div>
-      <div class="lrow"><b>Fear &amp; Greed</b><span>Tagesstimmung am Markt von 0 (Panik) bis 100 (Gier). Bei Panik schwitzen die Bullen, bei Gier die Bären.</span></div>
-      <div class="lrow"><b class="y">Goldenes Tor</b><span>Das Allzeithoch, der höchste Kurs aller Zeiten. Unter dem Kurs steht, wie weit es noch ist.</span></div>
-      <div class="lrow"><b>Wetter</b><span>Zeigt, wie stark der Kurs in den letzten 2 Minuten schwankt: Sonne, Wolken, Regen, Gewitter. Im Weltall: Sternenstaub, Meteorschauer, Sonnensturm.</span></div>
-      <div class="lrow"><b class="y">Zeitlupe</b><span>Bei einem Trade oder einer Liquidation ab 1 Mio. $ hält die Zeit kurz an und die Kamera fährt heran.</span></div>
       <div class="lrow"><b>Gebühren</b><span>Was eine schnelle Bitcoin-Überweisung gerade kostet (sat/vB). Bei Stau rollt der nächste Block überladen mit Kisten vorbei.</span></div>
       <div class="lrow"><b class="y">21 Mio.</b><span>Es wird nie mehr als 21 Millionen Bitcoin geben. Der orange Balken zeigt, wie viele schon geschürft sind.</span></div>
       <div class="lrow"><b>sats</b><span>Den Kurs antippen: zeigt, wie viele Satoshi (0,00000001 BTC) du für 1 € bzw. 1 $ bekommst.</span></div>
+      <div class="lrow"><b>Fear &amp; Greed</b><span>Tagesstimmung am Markt von 0 (Panik) bis 100 (Gier). Bei Panik schwitzen die Bullen, bei Gier die Bären.</span></div>
+      </div></details>
+      <details class="legend lgroup"><summary>Extras</summary>
+      <div class="lgrid">
       <div class="lrow"><b>Krabben</b><span>Bewegt sich der Kurs 8 Minuten lang kaum, übernehmen die Krabben: Krabbenmarkt, es geht seitwärts.</span></div>
       <div class="lrow"><b class="y">Feiertage</b><span>Am Pizza Day (22.5.), Bitcoins Geburtstag (3.1.), Halloween (Skelette steigen aus den Gräbern), in der Weihnachtszeit und an Silvester ist das Schlachtfeld geschmückt.</span></div>
-      <div class="lrow"><b>24-Std.-Linien</b><span>Gestrichelte Linien markieren Hoch und Tief der letzten 24 Stunden.</span></div>
-      <div class="lrow"><b class="y">Portal</b><span>Neue Größenordnung, vom Mikrokosmos bis ins Universum. Bewacht von einem Riesen.</span></div>
-    </div>
+      </div></details>
     </div>
   </section>
 
-  <p class="foot">Echte Daten von Coinbase, Kraken, Binance, mempool.space und alternative.me. Unterhaltung, keine Anlageberatung. Kursdaten ohne Gewähr.</p>
+  <p class="foot">Echte Daten von Coinbase, Kraken, Binance, mempool.space, CoinGecko und alternative.me. Unterhaltung, keine Anlageberatung. Kursdaten ohne Gewähr.</p>
+  <details class="foot priv"><summary>Datenschutz</summary>
+    <p><b>Keine Cookies, kein Tracking, keine Analyse-Tools, keine Werbung.</b> Deine Einstellungen (Ton, Album, Besuchsserie) speichert nur dein eigener Browser.</p>
+    <p>Für die Live-Daten verbindet sich dein Browser direkt mit Coinbase, Kraken, Binance, mempool.space, CoinGecko und alternative.me. Diese Dienste sehen dabei, wie bei jedem Seitenaufruf, deine IP-Adresse. Die Seite liegt bei GitHub Pages (GitHub Inc.), das technisch nötige Zugriffsdaten protokollieren kann. Schriften werden nicht nachgeladen.</p>
+  </details>
 </div>
 
 <script>
@@ -1718,10 +1743,11 @@ function checkMarkets(){
 }
 
 // ---------- Live-Kurs ----------
+let lastTradeAt = 0, demoBecause = "";
 function onTrade(src, p, qty, takerBuy){
   if (!(p > 0) || !(qty > 0)) return;
   if (src === "Coinbase") usdCb = p;
-  feeds[src] = {p, at: performance.now()};
+  feeds[src] = {p, at: performance.now()}; lastTradeAt = performance.now();
   // Ein fester Referenzkurs (Coinbase, sonst Kraken, sonst Binance): kein Hin- und Herspringen zwischen Börsen
   const fresh = n => feeds[n] && performance.now() - feeds[n].at < 15000;
   const ref = fresh("Coinbase") ? "Coinbase" : fresh("Kraken") ? "Kraken" : "Binance";
@@ -1752,6 +1778,7 @@ function seedCandles(p){
 }
 // Live-Modus starten, sobald der Referenzkurs feststeht
 function startLive(p){
+  if (demoBecause){ news("<b>Live-Daten sind wieder da!</b> Ab jetzt wieder der echte Kurs.", true); demoBecause = ""; }
   const was = mode;
   mode = "live"; liveSince = modeSince = t; vel = 0; frontV = 0;
   resetWorld(p); candles = [];
@@ -1804,12 +1831,16 @@ function startFeeds(){
 }
 
 // ---------- Testkurs ----------
-function startDemo(){
-  mode = "demo"; modeSince = t; frontV = 0;
-  resetWorld(99780);
+// why: "start" = beim Laden kam nichts an, "stall" = Live-Daten sind unterwegs ausgefallen
+function startDemo(why){
+  const wasLive = mode === "live";
+  mode = "demo"; modeSince = t; frontV = 0; demoBecause = why || "start";
+  resetWorld(wasLive && livePrice > 0 ? livePrice : 99780);
   seedCandles(price);
-  $("mode").className = "mode demo"; $("mode").textContent = "Testkurs – nicht live";
-  news("Kein Live-Kurs erreichbar, du siehst einen <b>Testkurs</b>. Zieh das Schlachtfeld oder spring über die Weltkarte in andere Welten.", true);
+  $("mode").className = "mode demo"; $("mode").textContent = why === "stall" ? "Testkurs – Live unterbrochen" : "Testkurs – Live-Daten blockiert";
+  news(why === "stall"
+    ? "<b>Live-Daten unterbrochen.</b> Seit über 25 Sekunden kommt nichts an, du siehst solange einen <b>Testkurs</b>. Sobald wieder Daten da sind, geht es automatisch live weiter."
+    : "<b>Live-Daten kommen nicht durch.</b> Vielleicht blockiert dein Netzwerk (z. B. Firmen-WLAN) oder ein Werbeblocker die Börsen. Du siehst einen <b>Testkurs</b>. Sobald Daten ankommen, geht es automatisch live.", true);
 }
 // Testkurs: Zufallskurs mit simulierten Trades und Liquidationen
 function demoStep(){
@@ -1824,7 +1855,9 @@ function demoStep(){
 // ---------- Update ----------
 function update(dt){
   t += dt;
-  if (mode === "connecting" && t > 8) startDemo();
+  // Kommt beim Start nichts an: nach 8 Sekunden Testkurs. Fallen Live-Daten unterwegs 25 Sekunden aus: ebenfalls.
+  if (mode === "connecting" && t > 8) startDemo("start");
+  if (mode === "live" && lastTradeAt && performance.now() - lastTradeAt > 25000) startDemo("stall");
   frameAvg += (dt - frameAvg)*.05;
   if (!lowPerf && t > 6 && frameAvg > 1/32){ lowPerf = true; resize(); }
   if (!store.intro && mode !== "connecting" && !introUntil){ introUntil = t + 5.5; store.intro = true; save(); }
