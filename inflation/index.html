@@ -93,10 +93,16 @@ input:focus-visible,.back:focus-visible,button:focus-visible{outline:2px solid v
 .opts button.ok{background:var(--bull);color:#04240f;border-color:var(--bull)}
 .opts button.no{background:rgba(255,92,115,.2);border-color:var(--bear)}
 .q .why{margin:8px 0 0;font-size:14px;color:var(--muted)}
+.qz{margin-top:14px;border-top:1px solid var(--line);padding-top:12px}
+.qz summary,.foot summary{cursor:pointer;font-weight:800}
+.qz summary{font:900 15px var(--f-display);color:var(--gold)}
+.foot summary{display:inline-block;text-decoration:underline;text-underline-offset:3px}
+.foot p{margin:6px 0 0}
 .foot{font-size:12px;color:var(--muted);margin:0;max-width:80ch}
 .foot a{color:var(--muted)}
-@media (max-width:760px){ .shop,.vs{grid-template-columns:1fr} .now{grid-template-columns:1fr} .learn{grid-template-columns:repeat(2,minmax(0,1fr))} }
-@media (max-width:420px){ .learn{grid-template-columns:1fr} }
+@media (max-width:760px){ .shop,.vs{grid-template-columns:1fr} .learn{grid-template-columns:repeat(2,minmax(0,1fr))} .learn span{font-size:13px}
+  .now{gap:8px} .now div{padding:10px} .now b{font-size:20px} .now p{display:none} .now small{font-size:11px;line-height:1.3;min-height:2.6em} }
+@media (max-width:340px){ .learn{grid-template-columns:1fr} }
 @media (prefers-reduced-motion:reduce){ .cart span,.bill{transition:none} }
 </style>
 </head>
@@ -105,14 +111,14 @@ input:focus-visible,.back:focus-visible,button:focus-visible{outline:2px solid v
   <div class="top"><a class="back" href="../lernen/">← Lernwelten</a><a class="back" href="../">Zum Spiel</a></div>
   <div>
     <h1>Geld &amp; <span>Inflation</span></h1>
-    <p class="lead">Warum dein Geld mit der Zeit weniger wert wird und was das mit Bitcoin zu tun hat. Mit den offiziellen Zahlen des Statistischen Bundesamts.</p>
+    <p class="lead">Warum dein Geld mit der Zeit weniger wert wird, mit den offiziellen Zahlen für Deutschland.</p>
   </div>
 
   <!-- 1 · Der schrumpfende Einkaufswagen -->
   <section class="card shop" aria-labelledby="h1s">
     <div>
       <h2 id="h1s">Der schrumpfende Einkaufswagen</h2>
-      <p class="muted" style="margin:0">Wähle ein Jahr: Was du damals für 100 € bekommen hast, kostet heute mehr. Oder anders herum: Dein Hunderter von damals kauft heute weniger.</p>
+      <p class="muted" style="margin:0">Wähle ein Jahr und sieh, wie viel weniger 100 € von damals heute kaufen.</p>
       <div class="yearRow"><input id="year" type="range" min="1991" max="2025" value="2002" aria-label="Jahr"><b id="yearVal" class="num">2002</b></div>
       <div class="big">
         <div><small>100 € von <span id="yA">2002</span> kaufen heute so viel wie</small><b class="bad num" id="power">–</b></div>
@@ -148,7 +154,7 @@ input:focus-visible,.back:focus-visible,button:focus-visible{outline:2px solid v
           <div class="bar"><span>4,7 Bio. €</span><i style="height:26.7%;background:#5b8cff"></i><em>Ende 1999</em></div>
           <div class="bar"><span>17,6 Bio. €</span><i style="height:100%;background:#5b8cff"></i><em>Juli 2026</em></div>
         </div>
-        <p>Die Geldmenge M3 im Euroraum ist auf fast das <b>3,7-Fache</b> gewachsen. Wie viel Euro es gibt, steuern Zentralbank und Geschäftsbanken.</p>
+        <p>Die Geldmenge im Euroraum ist auf das <b>3,7-Fache</b> gewachsen.</p>
       </div>
       <div class="col btc">
         <h3>₿ Bitcoin</h3>
@@ -156,10 +162,10 @@ input:focus-visible,.back:focus-visible,button:focus-visible{outline:2px solid v
           <div class="bar"><span id="minedTxt">– Mio.</span><i id="minedBar" style="height:95%;background:#f7931a"></i><em>schon geschürft</em></div>
           <div class="bar"><span>21 Mio.</span><i style="height:100%;background:repeating-linear-gradient(45deg,#f7931a 0 6px,#c46f0c 6px 12px)"></i><em>Höchstmenge, für immer</em></div>
         </div>
-        <p>Es wird <b>nie mehr als 21 Millionen</b> Bitcoin geben. Das steht im Programmcode, den Tausende Computer weltweit prüfen. Niemand kann einfach mehr davon herstellen.</p>
+        <p><b>Nie mehr als 21 Millionen</b>, festgelegt im Code. Niemand kann mehr herstellen.</p>
       </div>
     </div>
-    <p class="muted" style="margin:12px 0 0;font-size:14px"><b style="color:var(--ink)">Aber ehrlich:</b> Eine feste Menge heißt nicht, dass der Kurs nur steigt. Bitcoin schwankt stark, schon innerhalb eines Jahres sind −70 % passiert. Das kannst du im <a href="../">Spiel</a> live beobachten.</p>
+    <p class="muted" style="margin:12px 0 0;font-size:14px"><b style="color:var(--ink)">Aber ehrlich:</b> Feste Menge heißt nicht, dass der Kurs nur steigt. −70 % in einem Jahr gab es schon, siehe <a href="../">Spiel</a>.</p>
   </section>
 
   <!-- 4 · Merksätze und Quiz -->
@@ -171,10 +177,11 @@ input:focus-visible,.back:focus-visible,button:focus-visible{outline:2px solid v
       <div><b>Sparen &amp; Zinsen</b><span>Zählt nur, was nach der Inflation übrig bleibt: 1 % Zinsen bei 2,8 % Inflation sind <b>−1,8 %</b> pro Jahr (Realzins).</span></div>
       <div><b>Bitcoin</b><span>Feste Menge, niemand kann mehr drucken. Dafür <b>starke Kursschwankungen</b>. Deshalb setzen viele auf kleine, regelmäßige Beträge statt auf einen großen Kauf.</span></div>
     </div>
-    <div id="quiz"></div>
+    <details class="qz"><summary>Teste dich: 3 Fragen</summary><div id="quiz"></div></details>
   </section>
 
-  <p class="foot">Quellen: Verbraucherpreisindex Deutschland, Jahresdurchschnitte 2020 = 100 (<a href="https://www.destatis.de/DE/Themen/Wirtschaft/Preise/Verbraucherpreisindex/_inhalt.html">Statistisches Bundesamt</a>, Werte über <a href="https://www.nunc.immo/rechner/verbraucherpreisindex">nunc.immo</a>); Inflationsrate Oktober 2026: <a href="https://www.destatis.de/DE/Presse/Pressemitteilungen/2026/10/PD26_382_611.html">Destatis-Pressemitteilung</a>; Geldmenge M3: <a href="https://www.infina.at/trends/geldmengen-euroraum/">EZB-Daten über infina.at</a>; geschürfte Bitcoin live aus der Blockhöhe (mempool.space). Lernen und Unterhaltung, keine Anlageberatung.</p>
+  <details class="foot"><summary>Quellen</summary><p> Verbraucherpreisindex Deutschland, Jahresdurchschnitte 2020 = 100 (<a href="https://www.destatis.de/DE/Themen/Wirtschaft/Preise/Verbraucherpreisindex/_inhalt.html">Statistisches Bundesamt</a>, Werte über <a href="https://www.nunc.immo/rechner/verbraucherpreisindex">nunc.immo</a>); Inflationsrate Oktober 2026: <a href="https://www.destatis.de/DE/Presse/Pressemitteilungen/2026/10/PD26_382_611.html">Destatis-Pressemitteilung</a>; Geldmenge M3: <a href="https://www.infina.at/trends/geldmengen-euroraum/">EZB-Daten über infina.at</a>; geschürfte Bitcoin live aus der Blockhöhe (mempool.space). </p></details>
+  <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
 </div>
 
 <script>
