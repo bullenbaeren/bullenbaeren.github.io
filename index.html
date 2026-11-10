@@ -800,30 +800,50 @@ const FONT_B = getComputedStyle(document.documentElement).getPropertyValue("--f-
 // Höchstens zwei Blasen gleichzeitig, damit es übersichtlich bleibt.
 let bubbles = [], bubbleCd = 0, talkIn = 5, epitaphCd = 0;
 const SAY = {
-  bullHit:  ["Mein Hebel!", "Autsch!", "Nur ein Rücksetzer …", "Mama?!", "Ich HODL trotzdem!", "Das war geplant!"],
-  bearHit:  ["Mein Short!", "Aua!", "Das war Glück!", "Mein Honig!", "Short gequetscht!", "Unfair!"],
-  bullAtk:  ["HODL!", "Kauf den Dip!", "To the moon!", "Grüne Kerze!", "Muuuh!", "Diamanthufe!"],
-  bearAtk:  ["Ausverkauf!", "Gewinne mitnehmen!", "Bärenmarkt!", "Alles muss raus!", "Brumm!", "Blase!"],
-  bullWin:  ["Zu einfach!", "Wer kauft, gewinnt!", "Neues Hoch?", "Ab zum Mond!"],
-  bullLose: ["Rückzug!?", "Wo ist der Boden?", "Nur ein Test …", "Ich kauf nach!"],
-  bearWin:  ["Winter is coming!", "Honig für alle!", "Ab nach unten!", "Gute Nacht, Bullen!"],
-  bearLose: ["Wer kauft da?!", "Das hält nicht!", "Ich short nach!", "Das ist eine Falle!"],
-  whaleBuy: ["Danke, Wal!", "WAL!!", "Was für ein Brocken!"],
-  whaleSell:["Amboss!!", "Danke, Amboss!", "Kopf einziehen!"],
-  liqLong:  ["Deckung!", "Meteor!", "Wer hat 100x?!"],
-  liqShort: ["Deckung!", "Meteor!", "Mein Short-Hebel!"],
-  yawn:     ["Gääähn …", "Langweilig …", "Weckt mich beim Pump."],
-  scrape:   ["Komm doch!", "Na los!", "Traust dich nicht!"],
+  bullHit:  ["Mein Hebel!", "Autsch!", "Nur ein Rücksetzer …", "Mama?!", "Ich HODL trotzdem!", "Das war geplant!", "Ist nur Volatilität!", "Gesunde Korrektur!",
+             "Rabatt!", "Shakeout!", "Schwache Hände raus!", "Ich zoom raus!", "Wo ist mein Seed?!", "Nicht mein Cold Wallet!", "Hätte ich mal DCA gemacht …", "Zeit im Markt, nicht Timing!"],
+  bearHit:  ["Mein Short!", "Aua!", "Das war Glück!", "Mein Honig!", "Short gequetscht!", "Unfair!", "Short Squeeze?!", "Manipulation!",
+             "Das ist eine Bullenfalle!", "Wale!", "Das ist irrational!", "Hatte ich Stop-Loss?", "Wer kauft so was?!", "Liquidiert?! Ich?!"],
+  bullAtk:  ["HODL!", "Kauf den Dip!", "To the moon!", "Grüne Kerze!", "Muuuh!", "Diamanthufe!", "Stack sats!", "Number go up!", "Wir sind früh!",
+             "Tick Tack, nächster Block!", "Fix the money!", "21 Millionen. Punkt.", "Laser-Augen an!", "Bitcoin, nicht Krypto!", "Not your keys …",
+             "Sparplan läuft!", "WAGMI!", "Fiat ist Papier!", "1 BTC = 1 BTC", "Orange Pill gefällig?", "Kein Verkaufsknopf!", "Stapeln, nicht zocken!",
+             "Ich bin Plankton … noch!", "Ab in die Cold Wallet!", "Verkaufen? Nie gehört."],
+  bearAtk:  ["Ausverkauf!", "Gewinne mitnehmen!", "Bärenmarkt!", "Alles muss raus!", "Brumm!", "Blase!", "Tulpen!", "Bitcoin ist tot!", "Zurück auf 10k!",
+             "Sell the news!", "Death Cross!", "Sell in May!", "Exit-Liquidität!", "Schwache Hände!", "Gold ist besser!", "Short it!",
+             "Ist doch nur Spekulation!", "Verbot kommt bestimmt!", "Wer braucht schon Sats?"],
+  bullWin:  ["Zu einfach!", "Wer kauft, gewinnt!", "Neues Hoch?", "Ab zum Mond!", "Number go up!", "Ciao, Bären!", "Wir sind so früh!", "Up only!",
+             "Hab ich doch gesagt!", "Dip gekauft!", "Supercycle!", "Lambo bestellt!", "Wer nicht HODLt, verliert!"],
+  bullLose: ["Rückzug!?", "Wo ist der Boden?", "Nur ein Test …", "Ich kauf nach!", "Ist das der Boden?", "Ich zoom raus …", "Bärenfalle!",
+             "Nicht verkaufen!", "Kapitulation? Niemals!", "Ist nur Rauschen!", "Sparplan läuft, egal!", "Seitwärts wär auch okay …"],
+  bearWin:  ["Winter is coming!", "Honig für alle!", "Ab nach unten!", "Gute Nacht, Bullen!", "Krypto-Winter!", "Hab's ja gesagt!",
+             "Bitcoin ist tot! Zum 400. Mal!", "Rekt!", "Kapitulation!", "Wer zuletzt shortet …"],
+  bearLose: ["Wer kauft da?!", "Das hält nicht!", "Ich short nach!", "Das ist eine Falle!", "Gegen den Trend …", "Ich warte auf 20k …",
+             "Irgendwann fällt's!", "Mein Short blutet", "Okay, vielleicht doch Sats …", "Das ist irrational!"],
+  whaleBuy: ["Danke, Wal!", "WAL!!", "Was für ein Brocken!", "Ein ETF kauft!", "Institutionen sind da!", "Der Wal frisst Sats!", "Wal-Alarm!"],
+  whaleSell:["Amboss!!", "Danke, Amboss!", "Kopf einziehen!", "Wer dumpt da?!", "Ein Wal verkauft!", "Satoshi verkauft?!"],
+  liqLong:  ["Deckung!", "Meteor!", "Wer hat 100x?!", "Hebel-Regen!", "Long-Squeeze!", "Die Börse jagt Stops!", "Margin Call!"],
+  liqShort: ["Deckung!", "Meteor!", "Mein Short-Hebel!", "Short-Squeeze!", "Shorts rekt!", "Margin Call!"],
+  yawn:     ["Gääähn …", "Langweilig …", "Weckt mich beim Pump.", "Seitwärts …", "Weckt mich beim Halving.", "Zzz … 21 Mio … Zzz", "Nächster Block, bitte."],
+  scrape:   ["Komm doch!", "Na los!", "Traust dich nicht!", "Laser-Augen an!", "Lass die Kerzen sprechen!", "Wer ist hier der Wal?"],
 };
 // Grabsprüche für liquidierte Figuren
 const EPITAPH = {
-  bull: ["100x war zu viel", "Kaufte das Top", "Stop-Loss? Nie gehört", "Hebel war mein Hobby", "War doch erst der Anfang …", "Nur kurz Long gegangen"],
-  bear: ["Wollte nur kurz shorten", "Shortete den Boden", "„Das muss fallen“", "Hebel 50x. Leider.", "Gegen den Trend", "Hielt es für eine Blase"],
+  bull: ["100x war zu viel", "Kaufte das Top", "Stop-Loss? Nie gehört", "Hebel war mein Hobby", "War doch erst der Anfang …", "Nur kurz Long gegangen",
+         "Ging All-in am Top", "Vertraute einem Influencer", "Lieh Geld für den Long", "Hätte einfach HODLn sollen", "Long auf Tipp vom Taxifahrer"],
+  bear: ["Wollte nur kurz shorten", "Shortete den Boden", "„Das muss fallen“", "Hebel 50x. Leider.", "Gegen den Trend", "Hielt es für eine Blase",
+         "Shortete das Halving", "„Bitcoin ist tot“ – er zuerst", "Wartete auf 10k", "Shortete einen Wal"],
 };
+// Jeder Spruch kommt erst wieder, wenn alle anderen seiner Sorte dran waren (gemischter Stapel)
+const lineBags = {};
+function nextLine(key, list){
+  let bag = lineBags[key];
+  if (!bag || !bag.length){ bag = lineBags[key] = list.slice(); for (let i = bag.length - 1; i > 0; i--){ const j = Math.floor(Math.random()*(i + 1)); [bag[i], bag[j]] = [bag[j], bag[i]]; } }
+  return bag.pop();
+}
 function say(u, key, force){
   if (!u || mode === "zeit" || mode === "connecting" || (!force && t < bubbleCd) || bubbles.length >= 2 || bubbles.some(b => b.u === u)) return;
   bubbleCd = t + rnd(2.5, 4);
-  bubbles.push({u, text: pick(SAY[key]), t0: t, until: t + 2.2});
+  bubbles.push({u, text: nextLine(key, SAY[key]), t0: t, until: t + 2.2});
 }
 const sayAt = (x, y, text) => { if (bubbles.length < 3) bubbles.push({x, y, text, t0: t, until: t + 3, stone: true}); };
 function bubbleStep(dt){
@@ -1116,7 +1136,7 @@ function ko(u, kind, val){
   if (kind === "flat"){ c.life = 1.6; burst(u.x, u.y - 4, ["#c9cde8","#ffffff"], 6, 60); }
   else if (kind === "launch"){ c.life = 2.2; c.vx = rnd(-60, 60); c.vy = -rnd(620, 820); c.vr = reduce ? 0 : rnd(-14, 14); c.rot = 0; c.sc = 1; }
   else if (kind === "grave"){ c.life = .01; graves.push({x:u.x, y:u.y, side:u.side, label: val ? "R.I.P. " + usdK(val) : "R.I.P.", life:6}); if (Math.random() < .6) spawnSkel(u.side, u.x, u.y);
-    if (mode !== "zeit" && t > epitaphCd && Math.random() < .35){ epitaphCd = t + 3; sayAt(u.x, u.y - 34*KS, pick(EPITAPH[u.side])); } burst(u.x, u.y - 8, ["#ff9a3a","#ffd76a","#ffffff"], 10, 110); }
+    if (mode !== "zeit" && t > epitaphCd && Math.random() < .35){ epitaphCd = t + 3; sayAt(u.x, u.y - 34*KS, nextLine("ep_" + u.side, EPITAPH[u.side])); } burst(u.x, u.y - 8, ["#ff9a3a","#ffd76a","#ffffff"], 10, 110); }
   corpses.push(c);
 }
 // Figur verschwindet in einer Staubwolke
