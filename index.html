@@ -241,6 +241,9 @@ body.stream .welcome{display:none}
     <span class="chip" id="chipFee" hidden><i></i>Gebühren –</span>
     <span class="chip" id="chipSupply" hidden><span class="supbar"><b></b></span>–</span>
     <span class="chip" id="chipFng" hidden><i></i>Fear &amp; Greed –</span>
+    <span class="chip" id="chipPool" hidden>⛏</span>
+    <span class="chip" id="chipHash" hidden>⚙</span>
+    <span class="chip" id="chipLn" hidden>⚡</span>
     <span class="chip" id="chipMkt"><i></i>Börsen –</span>
   </div>
 
@@ -295,10 +298,15 @@ body.stream .welcome{display:none}
       <div class="lrow"><b>Gebühren</b><span>Was eine schnelle Bitcoin-Überweisung gerade kostet (sat/vB). Bei Stau rollt der nächste Block überladen mit Kisten vorbei.</span></div>
       <div class="lrow"><b class="y">21 Mio.</b><span>Es wird nie mehr als 21 Millionen Bitcoin geben. Der orange Balken zeigt, wie viele schon geschürft sind.</span></div>
       <div class="lrow"><b>sats</b><span>Den Kurs antippen: zeigt, wie viele Satoshi (0,00000001 BTC) du für 1 € bzw. 1 $ bekommst.</span></div>
+      <div class="lrow"><b>⛏ Miner-Liga</b><span>Welcher Mining-Pool in den letzten 24 Std. die meisten Blöcke gefunden hat. Sein Maskottchen schiebt jeden neuen Block.</span></div>
+      <div class="lrow"><b class="y">⚙ Hashrate</b><span>Die Rechenleistung aller Miner. Die Fabrik bzw. Station links dampft stärker, je höher sie ist. Dazu: wann die Schwierigkeit das nächste Mal angepasst wird.</span></div>
+      <div class="lrow"><b>⚡ Lightning</b><span>Das Netz für schnelle Bitcoin-Zahlungen: wie viele BTC in wie vielen Kanälen stecken. Die gelben Blitze am Himmel stehen dafür.</span></div>
       <div class="lrow"><b>Fear &amp; Greed</b><span>Tagesstimmung am Markt von 0 (Panik) bis 100 (Gier). Bei Panik schwitzen die Bullen, bei Gier die Bären.</span></div>
       </div></details>
       <details class="legend lgroup"><summary>Extras</summary>
       <div class="lgrid">
+      <div class="lrow"><b class="y">Geschichte</b><span>Einmal pro Besuch: wo der Kurs heute vor ein paar Jahren stand, und was ein 10-$-Sparplan heute wert wäre (ungefähre Werte).</span></div>
+      <div class="lrow"><b>Satoshi</b><span>Satoshis Geist zitiert manchmal echte Sätze des Bitcoin-Erfinders. Am Allzeithoch-Tor steht die Botschaft aus dem allerersten Block.</span></div>
       <div class="lrow"><b>Krabben</b><span>Bewegt sich der Kurs 8 Minuten lang kaum, übernehmen die Krabben: Krabbenmarkt, es geht seitwärts.</span></div>
       <div class="lrow"><b class="y">Feiertage</b><span>Am Pizza Day (22.5.), Bitcoins Geburtstag (3.1.), Halloween (Skelette steigen aus den Gräbern), in der Weihnachtszeit und an Silvester ist das Schlachtfeld geschmückt.</span></div>
       </div></details>
@@ -900,19 +908,183 @@ function drawBubbles(){
     else { x = b.x; y = b.y; }
     const age = t - b.t0, e = reduce ? 1 : Math.min(1, age/.15), a = Math.min(1, (b.until - t)/.3);
     ctx.save(); ctx.globalAlpha = a;
-    ctx.font = `${b.stone ? "italic 700" : "800"} ${Math.round(8*KS + 5)}px ${FONT_B}`;
-    const w = ctx.measureText(b.text).width + 14, h = 8*KS + 12;
+    ctx.font = `${b.stone || b.quote ? "italic 700" : "800"} ${Math.round(8*KS + 5)}px ${FONT_B}`;
+    // Zeilenumbruch für lange Texte (Satoshi-Zitate)
+    const maxW = Math.min(W*.82, 360), lines = [];
+    for (const word of b.text.split(" ")){ const cur = lines.length ? lines[lines.length - 1] : null; if (cur !== null && ctx.measureText(cur + " " + word).width <= maxW) lines[lines.length - 1] = cur + " " + word; else lines.push(word); }
+    const lh = 8*KS + 7, w = Math.max(...lines.map(l => ctx.measureText(l).width)) + 16, h = lines.length*lh + 5;
     const bx = clamp(x, w/2 + 6, W - w/2 - 6);
     ctx.translate(bx, y); ctx.scale(.6 + .4*e, .6 + .4*e);
-    ctx.fillStyle = b.stone ? "#c9cbe0" : "#ffffff"; ctx.strokeStyle = C.ink; ctx.lineWidth = 2;
+    ctx.fillStyle = b.stone ? "#c9cbe0" : b.quote ? "#f2f4ff" : "#ffffff"; ctx.strokeStyle = C.ink; ctx.lineWidth = 2;
     rr(-w/2, -h, w, h, b.stone ? 4 : h/2); ctx.fill(); ctx.stroke();
     // Spitze zur Figur bzw. zum Grab
     const tx = clamp(x - bx, -w/2 + 8, w/2 - 8);
     ctx.beginPath(); ctx.moveTo(tx - 5, -1); ctx.lineTo(tx, 7); ctx.lineTo(tx + 5, -1); ctx.fill(); ctx.stroke();
     ctx.fillRect(tx - 4, -3, 8, 3);
-    ctx.fillStyle = b.stone ? "#2a2d45" : C.ink; ctx.textAlign = "center"; ctx.fillText(b.text, 0, -h/2 + 4*KS + 1);
+    ctx.fillStyle = b.stone ? "#2a2d45" : C.ink; ctx.textAlign = "center";
+    lines.forEach((l, i) => ctx.fillText(l, 0, -h + 3 + lh*(i + .5) + 4*KS - 1));
     ctx.restore();
   }
+}
+
+// ---------- Bitcoin-Netzwerk für Fans: Miner-Liga, Hashrate, Lightning ----------
+// Alles live von mempool.space: Blöcke je Mining-Pool (24 Std.), Rechenleistung (1 Jahr),
+// nächste Schwierigkeits-Anpassung und Lightning-Statistik.
+const MP = "https://mempool.space/api/v1/";
+let pools = null, hashNet = null, diffAdj = null, lnStats = null, zapAt = 0, zap = null;
+const getJ = async url => (await fetch(url)).json();
+async function loadPools(){ try { const j = await getJ(MP + "mining/pools/24h"); if (j.pools && j.pools.length) pools = j.pools.map(p => ({n: p.name, c: p.blockCount})).sort((a,b) => b.c - a.c); renderChain(); } catch(e){} }
+async function loadHash(){
+  try {
+    const j = await getJ(MP + "mining/hashrate/1y"), hs = (j.hashrates || []).map(h => h.avgHashrate).filter(v => v > 0);
+    if (!(j.currentHashrate > 0) || !hs.length) return;
+    const max = Math.max(...hs), min = Math.min(...hs);
+    hashNet = {cur: j.currentHashrate, max, min, lvl: clamp((j.currentHashrate - min)/Math.max(1, max - min), 0, 1)};
+    // Rekord: einmal pro Tag feiern
+    const day = new Date().toDateString();
+    if (j.currentHashrate >= max && store.hashRec !== day){ store.hashRec = day; save(); setTimeout(() => { news(`<b>Hashrate-Rekord!</b> Das Netzwerk rechnet mit ${fmtEH(j.currentHashrate)} EH/s so stark wie noch nie im letzten Jahr.`, true); confetti(50); }, 6000); }
+    renderChain();
+  } catch(e){}
+}
+async function loadDiff(){ try { const j = await getJ(MP + "difficulty-adjustment"); if (isFinite(j.difficultyChange)) diffAdj = j; renderChain(); } catch(e){} }
+async function loadLn(){ try { const j = await getJ(MP + "lightning/statistics/latest"), l = j.latest || j; if (l.total_capacity > 0) lnStats = {cap: l.total_capacity/1e8, ch: l.channel_count, nodes: l.node_count}; renderChain(); } catch(e){} }
+function startNetStats(){
+  loadPools(); loadHash(); loadDiff(); loadLn();
+  setInterval(loadPools, 10*60*1000); setInterval(loadHash, 30*60*1000); setInterval(loadDiff, 10*60*1000); setInterval(loadLn, 60*60*1000);
+}
+const fmtEH = h => Math.round(h/1e18).toLocaleString("de-DE");
+const pct1 = v => (v > 0 ? "+" : "−") + Math.abs(v).toLocaleString("de-DE", {maximumFractionDigits: 1}) + " %";
+// Neuer echter Block: Liga mitzählen, Schwierigkeits-Anpassung alle 2016 Blöcke melden
+function netOnBlock(b){
+  const pn = b.extras && b.extras.pool && b.extras.pool.name;
+  if (pools && pn){ const p = pools.find(x => x.n === pn); if (p) p.c++; else pools.push({n: pn, c: 1}); pools.sort((a,b) => b.c - a.c); }
+  if (b.height % 2016 === 0) setTimeout(async () => {
+    await loadDiff();
+    if (diffAdj && isFinite(diffAdj.previousRetarget)) news(`<b>Schwierigkeits-Anpassung!</b> Mining ist ab jetzt ${pct1(diffAdj.previousRetarget)} ${diffAdj.previousRetarget >= 0 ? "schwerer" : "leichter"}. Das passiert alle 2016 Blöcke, etwa alle zwei Wochen.`, true);
+  }, 20000);
+}
+// Chips in der Status-Leiste
+function renderNet(){
+  const cp = $("chipPool"), ch = $("chipHash"), cl = $("chipLn");
+  if (pools && cp){
+    const tot = pools.reduce((a,p) => a + p.c, 0);
+    cp.hidden = false;
+    cp.innerHTML = `⛏ <small>Heute:</small> ${pools.slice(0, 3).map(p => `${p.n.replace(/ Pool$/,"")} <small>${p.c}</small>`).join(" · ")}`;
+    cp.title = "Miner-Liga, Blöcke der letzten 24 Std.:\n" + pools.slice(0, 8).map(p => `${p.n}: ${p.c} (${Math.round(p.c/tot*100)} %)`).join("\n");
+  }
+  if (hashNet && ch){
+    let s = `⚙ ${fmtEH(hashNet.cur)} <small>EH/s</small>`;
+    if (diffAdj){ const days = Math.max(0, Math.round((diffAdj.estimatedRetargetDate - Date.now())/864e5)); s += ` <small>· Anpassung in ${days ? days + " T." : "< 1 T."} ${pct1(diffAdj.difficultyChange)}</small>`; }
+    ch.hidden = false; ch.innerHTML = s;
+    ch.title = `Rechenleistung aller Miner (Hashrate). Im letzten Jahr zwischen ${fmtEH(hashNet.min)} und ${fmtEH(hashNet.max)} EH/s.` + (diffAdj ? `\nNächste Schwierigkeits-Anpassung in ${fmtInt(diffAdj.remainingBlocks)} Blöcken, geschätzt ${pct1(diffAdj.difficultyChange)}.` : "");
+  }
+  if (lnStats && cl){
+    cl.hidden = false; cl.innerHTML = `⚡ ${fmtInt(lnStats.cap)} <small>BTC · ${fmtInt(lnStats.ch)} Kanäle</small>`;
+    cl.title = `Lightning-Netz: schnelle Bitcoin-Zahlungen über ${fmtInt(lnStats.nodes)} Knoten und ${fmtInt(lnStats.ch)} Kanäle`;
+  }
+}
+// Hintergrund: Mining-Fabrik (Erde) bzw. Mining-Station (Weltall), raucht je nach echter Hashrate; dazu Lightning-Blitze
+function drawNetSky(wi){
+  if (mode === "zeit") return;
+  if (hashNet){
+    const k = KS, x = W*.1, y = groundY - 34*k, L = hashNet.lvl;
+    ctx.save(); ctx.globalAlpha = .85;
+    if (wi >= 7){
+      // Station mit Solarflügeln, Triebwerk glüht stärker bei hoher Hashrate
+      const by = y - 40*k + Math.sin(t*.8)*3*k;
+      ctx.fillStyle = "#3d4778"; ctx.fillRect(x - 34*k, by - 4*k, 20*k, 8*k); ctx.fillRect(x + 14*k, by - 4*k, 20*k, 8*k);
+      ctx.strokeStyle = "rgba(160,190,255,.5)"; ctx.lineWidth = 1; for (let i=0;i<4;i++){ ctx.beginPath(); ctx.moveTo(x - 34*k + i*5*k, by - 4*k); ctx.lineTo(x - 34*k + i*5*k, by + 4*k); ctx.moveTo(x + 14*k + i*5*k, by - 4*k); ctx.lineTo(x + 14*k + i*5*k, by + 4*k); ctx.stroke(); }
+      rr(x - 12*k, by - 9*k, 24*k, 18*k, 4*k); ctx.fillStyle = "#59639a"; ctx.fill();
+      ctx.fillStyle = "#f7931a"; ctx.font = `900 ${Math.round(11*k)}px ${FONT_D}`; ctx.textAlign = "center"; ctx.fillText("₿", x, by + 4*k);
+      const g = ctx.createRadialGradient(x, by + 13*k, 1, x, by + 13*k, (8 + L*16)*k); g.addColorStop(0, `rgba(255,170,80,${.5 + L*.4})`); g.addColorStop(1, "rgba(255,120,40,0)");
+      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, by + 13*k, (8 + L*16)*k, 0, TAU); ctx.fill();
+    } else {
+      // Fabrik mit zwei Schornsteinen, Dampf je nach Hashrate
+      ctx.fillStyle = "#2c3258"; ctx.fillRect(x - 26*k, y - 16*k, 52*k, 18*k); ctx.fillRect(x - 18*k, y - 40*k, 8*k, 26*k); ctx.fillRect(x + 4*k, y - 34*k, 8*k, 20*k);
+      ctx.fillStyle = "#f7931a"; for (let i=0;i<4;i++) ctx.fillRect(x - 21*k + i*12*k, y - 10*k, 6*k, 5*k);
+      const puffs = 2 + Math.round(L*5);
+      for (let i=0;i<puffs;i++){ const ph = ((t*.35 + i/puffs) % 1), sx2 = i % 2 ? x + 8*k : x - 14*k; ctx.fillStyle = `rgba(210,215,235,${.35*(1 - ph)})`; ctx.beginPath(); ctx.arc(sx2 + ph*14*k, y - (40 + ph*40)*k + (i % 2 ? 6*k : 0), (3 + ph*8)*k, 0, TAU); ctx.fill(); }
+    }
+    ctx.restore();
+  }
+  // Lightning-Blitz: kleine gelbe Zickzacks am Himmel (stehen für Zahlungen im Lightning-Netz)
+  if (lnStats && !reduce){
+    if (t > zapAt){ zapAt = t + rnd(5, 12); const x1 = rnd(W*.15, W*.85), y1 = rnd(H*.08, groundY*.5); zap = {t0: t, x1, y1, x2: x1 + rnd(-90, 90)*KS, y2: y1 + rnd(-30, 30)*KS, seed: Math.random()*99}; }
+    if (zap && t - zap.t0 < .3){
+      const a = 1 - (t - zap.t0)/.3; ctx.save(); ctx.globalAlpha = a; ctx.strokeStyle = "#ffe066"; ctx.lineWidth = 2; ctx.shadowColor = "#ffe066"; ctx.shadowBlur = 8;
+      ctx.beginPath(); ctx.moveTo(zap.x1, zap.y1);
+      for (let i=1;i<=5;i++){ const f = i/5; ctx.lineTo(zap.x1 + (zap.x2 - zap.x1)*f + (i < 5 ? (wxRnd(zap.seed + i) - .5)*16*KS : 0), zap.y1 + (zap.y2 - zap.y1)*f + (i < 5 ? (wxRnd(zap.seed + i + 9) - .5)*16*KS : 0)); }
+      ctx.stroke(); ctx.restore();
+    }
+  }
+}
+// Mining-Pool-Maskottchen, das den rollenden Block schiebt (Helmfarbe je Pool)
+function drawMiner(x, y, pool){
+  const k = KS*1.5, ph = t*10;
+  let hsh = 0; for (const ch of pool || "?") hsh = (hsh*31 + ch.charCodeAt(0)) % 360;
+  ctx.save(); ctx.translate(x, y); ctx.scale(k, k);
+  ctx.strokeStyle = C.ink; ctx.lineWidth = 1.6; ctx.lineCap = "round";
+  // Beine (laufen)
+  for (const d of [-1, 1]){ ctx.beginPath(); ctx.moveTo(d*2, -8); ctx.lineTo(d*2 + Math.sin(ph + (d > 0 ? Math.PI : 0))*3, 0); ctx.stroke(); }
+  // Körper, nach vorn gelehnt
+  ctx.beginPath(); ctx.ellipse(-2, -13, 6, 7, -.35, 0, TAU); ctx.fillStyle = "#5865a8"; ctx.fill(); ctx.stroke();
+  // Arme zum Block
+  ctx.beginPath(); ctx.moveTo(-5, -15); ctx.lineTo(-11, -16); ctx.moveTo(-5, -12); ctx.lineTo(-11, -11); ctx.stroke();
+  // Kopf mit Helm und Lampe
+  ctx.beginPath(); ctx.arc(-5, -23, 4.5, 0, TAU); ctx.fillStyle = "#ffd9b0"; ctx.fill(); ctx.stroke();
+  ctx.beginPath(); ctx.arc(-5, -24, 5.2, Math.PI, 0); ctx.closePath(); ctx.fillStyle = `hsl(${hsh},75%,55%)`; ctx.fill(); ctx.stroke();
+  ctx.fillStyle = "#fff6b0"; ctx.beginPath(); ctx.arc(-9.5, -25.5, 1.4, 0, TAU); ctx.fill();
+  ctx.fillStyle = C.ink; ctx.beginPath(); ctx.arc(-7, -22.5, .8, 0, TAU); ctx.fill();
+  // Spitzhacke auf dem Rücken
+  ctx.strokeStyle = "#8a5a2a"; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.moveTo(2, -20); ctx.lineTo(6, -8); ctx.stroke();
+  ctx.strokeStyle = "#c9cbe0"; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(-1, -20); ctx.quadraticCurveTo(2.5, -22.5, 6, -19.5); ctx.stroke();
+  ctx.restore();
+}
+
+// ---------- Kurs-Geschichte: "Heute vor X Jahren" und Sparplan-Rechner ----------
+// Aus der eingebauten Kurshistorie (Stützpunkte, dazwischen logarithmisch verbunden, daher "ca.").
+function histPrice(m){
+  if (m < ym(HIST[0][0])) return HIST[0][1];
+  const last = ym(HIST[HIST.length - 1][0]), nowM = new Date().getFullYear()*12 + new Date().getMonth();
+  if (m > last){ if (!(livePrice > 0) || nowM <= last) return HIST[HIST.length - 1][1]; const f = clamp((m - last)/(nowM - last), 0, 1); return HIST[HIST.length - 1][1]*Math.pow(livePrice/HIST[HIST.length - 1][1], f); }
+  let i = 0; while (i < HIST.length - 2 && ym(HIST[i + 1][0]) <= m) i++;
+  const a = HIST[i], b = HIST[i + 1], f = clamp((m - ym(a[0]))/(ym(b[0]) - ym(a[0])), 0, 1);
+  return a[1]*Math.pow(b[1]/a[1], f);
+}
+const roundNice = v => { const e = Math.pow(10, Math.max(0, Math.floor(Math.log10(v)) - 1)); return Math.round(v/e)*e; };
+let histShown = false;
+function histStep(){
+  if (histShown || mode !== "live" || !(livePrice > 0) || t - liveSince < 25) return;
+  histShown = true;
+  const d = new Date(), nowM = d.getFullYear()*12 + d.getMonth();
+  const n = pick([2, 3, 4, 5, 6, 8, 10]), p0 = histPrice(nowM - 12*n), ch = (livePrice/p0 - 1)*100;
+  news(`<b>Heute vor ${n} Jahren</b> (${MONTHS[d.getMonth()]} ${d.getFullYear() - n}) stand Bitcoin bei ca. ${usd(roundNice(p0))}. Seitdem ${ch >= 0 ? "+" : "−"}${fmtInt(Math.abs(ch))} %.`);
+  // Etwas später: Sparplan-Fakt (DCA)
+  setTimeout(() => {
+    if (mode !== "live") return;
+    const y0 = pick([2015, 2016, 2017, 2018, 2019, 2020, 2021]); let btc = 0, paid = 0;
+    for (let m = y0*12; m < nowM; m++){ btc += 10/histPrice(m); paid += 10; }
+    news(`<b>Sparplan-Fakt:</b> Wer seit Januar ${y0} jeden Monat 10 $ in Bitcoin gesteckt hätte (zusammen ${fmtInt(paid)} $), hätte heute ca. ${usd(roundNice(btc*livePrice))}.`);
+  }, 40000);
+}
+
+// ---------- Satoshi-Zitate ----------
+// Echte, bekannte Sätze von Satoshi Nakamoto (Originalwortlaut mit Jahr)
+const SATOSHI_Q = [
+  ["Lost coins only make everyone else's coins worth slightly more. Think of it as a donation to everyone.", 2010],
+  ["It might make sense just to get some in case it catches on.", 2009],
+  ["If you don't believe me or don't get it, I don't have time to try to convince you, sorry.", 2010],
+  ["The root problem with conventional currency is all the trust that's required to make it work.", 2009],
+  ["I'm sure that in 20 years there will either be very large transaction volume or no volume.", 2010],
+  ["Writing a description for this thing for general audiences is bloody hard.", 2010],
+];
+let satQCd = 0;
+function satoshiQuote(x, y){
+  if (mode === "zeit" || t < satQCd || Math.random() > .6) return;
+  satQCd = t + 45;
+  const [q, yr] = nextLine("satq", SATOSHI_Q.map(a => a.join("|"))).split("|");
+  bubbles.push({x, y, text: "„" + q + "“", t0: t, until: t + 6, quote: true});
+  news(`<b>Satoshis Geist</b> flüstert: „${q}“ – Satoshi Nakamoto, ${yr}`);
 }
 
 // ---------- Seitwärts-Krabben ----------
@@ -1009,7 +1181,7 @@ function festStep(dt){
     const y = new Date().getFullYear();
     const B = {
       pizza:       ["BITCOIN PIZZA DAY", `22.5.2010: 2 Pizzen für 10.000 BTC – heute wären das ${usdK(price*10000)}`],
-      geburtstag:  ["HAPPY BIRTHDAY, BITCOIN!", `Der erste Block wurde am 3.1.2009 geschürft – vor ${y - 2009} Jahren`],
+      geburtstag:  ["HAPPY BIRTHDAY, BITCOIN!", `Block 0 vom 3.1.2009, vor ${y - 2009} Jahren: „Chancellor on brink of second bailout for banks“`],
       halloween:   ["HALLOWEEN", `Heute vor ${y - 2008} Jahren erschien das Bitcoin-Whitepaper`],
       weihnachten: ["HO HO HODL!", "Weihnachtszeit auf dem Schlachtfeld"],
       silvester:   ["SILVESTER", "Um Mitternacht gibt es Feuerwerk"],
@@ -1308,7 +1480,7 @@ function checkFlags(prev, cur){
     const L = n*st, key = fk(L);
     if (L === lo && up) continue;
     // Denkmal überquert (alle 10 Fahnen)
-    if (n % 10 === 0 && t > ghostCd && mode !== "zeit"){ ghostCd = t + 10; ghosts.push({x: sx(L), y: groundY - 20, life: 4}); if (isLive()){ news(`<b>Satoshis Geist</b> schwebt vorbei: ${usd(L)} ${up ? "geknackt!" : "verloren!"}`, true); unlock("satoshi"); } sfx("sparkle"); }
+    if (n % 10 === 0 && t > ghostCd && mode !== "zeit"){ ghostCd = t + 10; ghosts.push({x: sx(L), y: groundY - 20, life: 4}); satoshiQuote(sx(L), groundY - 80*KS); if (isLive()){ news(`<b>Satoshis Geist</b> schwebt vorbei: ${usd(L)} ${up ? "geknackt!" : "verloren!"}`, true); unlock("satoshi"); } sfx("sparkle"); }
     const side = up ? "bull" : "bear";
     if (flags[key] === side) continue;
     flags[key] = side;
@@ -1558,6 +1730,7 @@ function renderChain(){
     cs.title = `${pct.toLocaleString("de-DE", {maximumFractionDigits: 3})} % aller Bitcoin sind geschürft · noch ${fmtInt(21e6 - m)} BTC übrig${chain.real ? "" : " (Testwerte)"}`;
     cs.innerHTML = `<span class="supbar"><b style="width:${pct.toFixed(2)}%"></b></span>${(m/1e6).toLocaleString("de-DE", {minimumFractionDigits: 2, maximumFractionDigits: 2})} <small>von 21 Mio. BTC</small>`;
   }
+  renderNet();
   if (fees){
     const ce = $("chipFee"), l = feeLevel(fees.fast);
     ce.hidden = false; ce.className = "chip " + (l <= 1 ? "ok" : l === 2 ? "wait" : "err");
@@ -1609,7 +1782,7 @@ function startChain(){
     m => {
       if (m.fees) onFees(m.fees);
       if (m.blocks && m.blocks.length) onBlock(m.blocks.reduce((a,b) => b.height > a.height ? b : a), true, true);
-      if (m.block) onBlock(m.block, false, true);
+      if (m.block){ onBlock(m.block, false, true); netOnBlock(m.block); }
     });
   loadFng(); setInterval(loadFng, 30*60*1000);
   loadFees(); setInterval(loadFees, 2*60*1000);
@@ -1701,6 +1874,10 @@ function drawAthGate(){
   ctx.fillStyle = C.ink; rr(x - w1/2, top + 40*k, w1, 18*k + 4, 6); ctx.fill();
   ctx.fillStyle = C.gold; ctx.fillText(t1, x, top + 40*k + 13*k + 2);
   ctx.font = `600 ${W<560?9:10}px ${FONT_N}`; ctx.fillStyle = "#ffffff"; ctx.fillText(money(ath), x, top + 72*k);
+  // Easter Egg: die Botschaft aus dem allerersten Block (Genesis-Block, 3.1.2009)
+  ctx.font = `italic 600 ${Math.round(7*k + 3)}px ${FONT_B}`; ctx.fillStyle = "rgba(255,236,170,.85)";
+  ctx.fillText("„Chancellor on brink of second bailout for banks“", x, groundY + 16*k);
+  ctx.font = `600 ${Math.round(6*k + 3)}px ${FONT_N}`; ctx.fillStyle = "rgba(255,255,255,.55)"; ctx.fillText("Block 0 · The Times, 03/Jan/2009", x, groundY + 28*k);
   // Funkeln
   if (!reduce && Math.random() < .15) fx.push({k:"dot", x: x + rnd(-hw, hw), y: top + rnd(0, h*.6), vx: 0, vy: -20, life: .7, max: .7, c: "#fff3c4", r: rnd(1, 2.2)});
 }
@@ -1862,7 +2039,7 @@ function update(dt){
   if (!lowPerf && t > 6 && frameAvg > 1/32){ lowPerf = true; resize(); }
   if (!store.intro && mode !== "connecting" && !introUntil){ introUntil = t + 5.5; store.intro = true; save(); }
   if (store.visit.streak >= 7 && t > 6) unlock("treue");
-  welcomeStep(dt); weatherStep(dt); introStep(dt); bubbleStep(dt); crabStep(dt); festStep(dt);
+  welcomeStep(dt); histStep(); weatherStep(dt); introStep(dt); bubbleStep(dt); crabStep(dt); festStep(dt);
   if (mode === "zeit") zeitStep(dt);
   else if (isTest()){
     simAcc += dt; while (simAcc >= .2){ simAcc -= .2; demoStep(); }
@@ -2477,6 +2654,7 @@ function draw(){
     if (night > 0){ ctx.fillStyle = `rgba(5,8,35,${night})`; ctx.fillRect(-20,-20,W+40,groundY+20); ctx.fillStyle = `rgba(255,244,214,${night*1.6})`; ctx.beginPath(); ctx.arc(W*.85, H*.12, H*.035, 0, Math.PI*2); ctx.fill(); }
   }
   drawWeatherSky(wiNow);
+  drawNetSky(wiNow);
 
   const fp = camP*ppu*.15, far = [0,1,2].map(i => hillC[i]*.55 + skyB[i]*.45);
   ctx.fillStyle = rgb(far); ctx.beginPath(); ctx.moveTo(0, groundY);
@@ -2547,6 +2725,7 @@ function draw(){
         }
         if (!reduce && Math.random() < .15) fx.push({k:"dot", x: x - sz*.4, y: y - sz*.3, vx: rnd(-40, -10), vy: rnd(-60, -20), life: .6, max: .6, c: "#9fd8ff", r: rnd(1.5, 2.5)});
       }
+      if (blockAnim.pool) drawMiner(x + sz*.5 + 15*KS, groundY - 2, blockAnim.pool);
       ctx.save(); ctx.translate(x, y); ctx.rotate(ang);
       const gr = ctx.createLinearGradient(-sz/2, -sz/2, sz/2, sz/2); gr.addColorStop(0, "#ffb347"); gr.addColorStop(1, "#e8780e");
       ctx.fillStyle = gr; rr(-sz/2, -sz/2, sz, sz, 8*KS); ctx.fill();
@@ -2747,6 +2926,7 @@ let last = performance.now(), hudAcc = 0;
 startFeeds();
 startChain();
 startMarketStats();
+startNetStats();
 if ("serviceWorker" in navigator && /github\.io$/.test(location.hostname)){ try { navigator.serviceWorker.register("sw.js").catch(() => {}); } catch(e){} }
 })();
 </script>
