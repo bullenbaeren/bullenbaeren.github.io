@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Wallet-Check · Satsland</title>
+<meta name="description" content="Lernwelt: Börse, Handy-Wallet, Hardware-Wallet und Multisig im Vergleich. Welche Wallet schützt wovor?">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0b0f2a">
+<link rel="icon" href="../icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="stylesheet" href="../lern.css?v=3">
+<style>
+/* Lernwelt "Wallets": nur seitenspezifische Teile, der Rest kommt aus lern.css */
+.idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
+.pick{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.pick .btn{padding:9px 12px;font-size:14px} .pick .btn[aria-pressed="true"]{outline:2px solid var(--gold);background:rgba(247,147,26,.15)}
+.lbl{margin:16px 0 0;font-weight:700}
+.wl{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:12px}
+.w{border:2px solid var(--line);border-radius:16px;padding:12px;background:rgba(255,255,255,.03);transition:border-color .2s,background .2s}
+.w .ic{font-size:28px} .w b{display:block;margin-top:4px} .w small{display:block;font-size:12px;color:var(--muted);margin-top:2px;line-height:1.4}
+.w .v{margin-top:10px;padding-top:8px;border-top:1px solid var(--line);font-size:13px;line-height:1.45;min-height:3.2em}
+.w .v strong{display:block;font-size:15px}
+.w.y{border-color:var(--bull)} .w.y .v strong{color:var(--bull)} .w.n{border-color:var(--bear);background:rgba(231,76,60,.08)} .w.n .v strong{color:var(--bear)}
+.w.rec{border-color:var(--gold);background:rgba(247,147,26,.1)}
+.rec-box{margin-top:12px;padding:12px 14px;border-radius:14px;border:2px solid var(--gold);font-size:15px;line-height:1.5} .rec-box strong{display:block;font-size:18px;color:var(--gold)}
+@media (max-width:760px){ .wl{grid-template-columns:1fr 1fr} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a class="back" href="../">← Satsland</a><a class="back" href="../spiel/">Zum Spiel</a></div>
+  <div>
+    <h1><span class="btc">Wallet</span>-Check</h1>
+    <p class="lead">Eine Wallet speichert keine Bitcoin, sondern deine <b>Schlüssel</b>. Die entscheidende Frage ist: <b>Wer hat sie, und was kann ihnen passieren?</b></p>
+  </div>
+
+  <section class="card" aria-labelledby="h1s">
+    <h2 id="h1s">Was passiert, wenn …?</h2>
+    <div class="idea">Wähle eine Gefahr. Die vier Wallet-Arten zeigen dann, ob dein Geld <b style="color:var(--bull)">sicher</b> ist oder <b style="color:var(--bear)">in Gefahr</b>.</div>
+    <div class="pick" id="threats"></div>
+    <div class="wl" id="wl1"></div>
+  </section>
+
+  <section class="card" aria-labelledby="h2s">
+    <h2 id="h2s">Welche Wallet passt zu dir?</h2>
+    <p class="lbl">Wie viel willst du aufbewahren?</p>
+    <div class="pick" id="amt"></div>
+    <p class="lbl">Wofür?</p>
+    <div class="pick" id="use"></div>
+    <div class="rec-box" id="rec"></div>
+    <div class="wl" id="wl2"></div>
+  </section>
+
+  <section class="card" aria-labelledby="h3s">
+    <h2 id="h3s">Das solltest du dir merken</h2>
+    <div class="learn">
+      <div><b>Nicht deine Schlüssel …</b><span>… nicht deine Bitcoin. Auf einer Börse gehören die Schlüssel <b>der Börse</b>, du hast nur ein Versprechen.</span></div>
+      <div><b>Hot vs. Cold</b><span>Handy-Wallets sind <b>online</b> und praktisch. Hardware-Wallets halten den Schlüssel <b>offline</b>, Viren kommen nicht ran.</span></div>
+      <div><b>Seed ist das Backup</b><span>Gerät weg? Mit den <b>12 oder 24 Wörtern</b> holst du alles zurück. Ohne sie ist alles verloren.</span></div>
+      <div><b>Wie Geldbörse und Tresor</b><span>Kleingeld fürs Bezahlen aufs Handy, <b>Erspartes auf die Hardware-Wallet</b>. Viele nutzen beides.</span></div>
+    </div>
+    <details class="qz"><summary>Teste dich: 3 Fragen</summary><div id="quiz"></div></details>
+  </section>
+
+  <section class="card next" id="next" aria-label="Weiter"></section>
+  <details class="foot"><summary>Quellen</summary><p>Allgemeine Einordnung der Wallet-Arten, keine Produktempfehlung. Bekannte Fälle von Börsen-Pleiten: Mt. Gox (2014), FTX (2022). Beträge als grobe Orientierung, jeder sollte selbst abwägen.</p></details>
+  <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
+</div>
+
+<script src="../lern.js?v=3"></script>
+<script>
+/* =====================================================================
+   WALLET-CHECK – Lernwelt von Satsland
+   1) Gefahren-Test: Welche Wallet-Art schützt wovor?
+   2) Wallet-Finder: Empfehlung nach Betrag und Zweck.
+   ===================================================================== */
+(() => {
+const $ = id => document.getElementById(id);
+// Wallet-Arten: [Symbol, Name, Kurzbeschreibung]
+const W = [["🏦", "Börse", "Die Börse hat deine Schlüssel"], ["📱", "Handy-Wallet", "Schlüssel auf dem Handy, online"], ["🔐", "Hardware-Wallet", "Schlüssel auf eigenem Gerät, offline"], ["🗝", "Multisig 2 von 3", "3 Schlüssel an 3 Orten, 2 nötig"]];
+// Gefahren: [Knopf, je Wallet: [sicher?, Grund]]
+const T = [
+  ["🏚 Börse geht pleite", [[0, "Geld weg oder jahrelang eingefroren, wie bei FTX 2022."], [1, "Nicht betroffen, du hast die Schlüssel selbst."], [1, "Nicht betroffen, du hast die Schlüssel selbst."], [1, "Nicht betroffen, du hast die Schlüssel selbst."]]],
+  ["🦠 Virus auf dem Handy", [[0, "Kann deine Login-Daten abgreifen, wenn keine gute 2-Faktor-Sicherung aktiv ist."], [0, "Ein Virus kann den Schlüssel stehlen, weil er auf dem Handy liegt."], [1, "Der Schlüssel verlässt nie das Gerät. Jede Zahlung bestätigst du am Gerät selbst."], [1, "Selbst mit einem gestohlenen Schlüssel fehlt noch der zweite."]]],
+  ["📵 Gerät verloren", [[1, "Neu einloggen, das Geld liegt bei der Börse."], [1, "Sicher, wenn du die Seed-Wörter notiert hast. Damit holst du alles zurück."], [1, "Sicher dank PIN und Seed-Wörtern. Der Finder kommt nicht rein."], [1, "Ein Schlüssel weg? Die anderen zwei reichen."]]],
+  ["📝 Jemand findet den Seed-Zettel", [[1, "Nicht betroffen, es gibt keinen eigenen Seed."], [0, "Mit den Wörtern kann er alles sofort abräumen."], [0, "Mit den Wörtern kann er alles sofort abräumen, außer du nutzt zusätzlich eine Passphrase."], [1, "Ein Zettel allein reicht nicht, er braucht 2 von 3."]]],
+  ["🔥 Feuer zu Hause", [[1, "Nicht betroffen, alles liegt bei der Börse."], [0, "Brennen Handy und Seed-Zettel zusammen, ist alles weg."], [0, "Brennen Gerät und Seed-Zettel zusammen, ist alles weg. Tipp: Seed in Metall stanzen oder woanders lagern."], [1, "Die anderen zwei Schlüssel liegen an anderen Orten."]]],
+];
+const card = (i, cls, head, txt) => `<div class="w ${cls}"><span class="ic">${W[i][0]}</span><b>${W[i][1]}</b><small>${W[i][2]}</small><div class="v">${head ? `<strong>${head}</strong>` : ""}${txt}</div></div>`;
+function buttons(box, list, onPick, sel){
+  $(box).innerHTML = list.map((l, i) => `<button class="btn ghost" type="button" data-i="${i}" aria-pressed="${i === sel}">${l}</button>`).join("");
+  $(box).onclick = e => { const b = e.target.closest("button"); if (!b) return; [...$(box).children].forEach(x => x.setAttribute("aria-pressed", x === b)); onPick(+b.dataset.i); };
+}
+
+// 1) Gefahren-Test
+function threat(t){ $("wl1").innerHTML = T[t][1].map(([ok, why], i) => card(i, ok ? "y" : "n", ok ? "✓ Sicher" : "✗ In Gefahr", why)).join(""); }
+buttons("threats", T.map(t => t[0]), threat, 0); threat(0);
+
+// 2) Wallet-Finder: Empfehlung nach Betrag und Zweck
+const AMT = ["bis 100 €", "bis 2.000 €", "bis 20.000 €", "mehr"], USE = ["🛒 Bezahlen", "🐷 Langfristig sparen"];
+let a = 1, u = 1;
+function rec(){
+  let r, why;
+  if (u === 0 && a <= 1){ r = 1; why = "Für kleine Beträge zum Bezahlen ist eine Handy-Wallet ideal, gerne mit Lightning. Seed-Wörter trotzdem notieren."; }
+  else if (u === 0){ r = 1; why = "Zum Bezahlen eine Handy-Wallet, aber nur mit dem, was du bald ausgibst. Den Rest besser auf eine Hardware-Wallet."; }
+  else if (a === 0){ r = 1; why = "Für den Anfang reicht eine Handy-Wallet. Wichtig: Seed-Wörter auf Papier notieren und sicher aufbewahren."; }
+  else if (a <= 2){ r = 2; why = "Fürs Sparen ist eine Hardware-Wallet der Standard. Sie kostet etwa 60 bis 200 € und hält den Schlüssel offline."; }
+  else { r = 3; why = "Bei großen Beträgen lohnt sich Multisig oder eine Hardware-Wallet mit Passphrase. So gibt es keinen einzelnen Schwachpunkt. Lass dir beim Einrichten Zeit."; }
+  $("rec").innerHTML = `<strong>${W[r][0]} Empfehlung: ${W[r][1]}</strong>${why} <span class="muted">Die Börse nur zum Kaufen, danach abheben.</span>`;
+  $("wl2").innerHTML = W.map((w, i) => card(i, i === r ? "rec" : "", "", ["Bequem, aber du vertraust der Börse.", "Bequem und kostenlos, aber online.", "Sehr sicher, etwas Aufwand.", "Am sichersten, aber kompliziert."][i])).join("");
+}
+buttons("amt", AMT, i => { a = i; rec(); }, a); buttons("use", USE, i => { u = i; rec(); }, u); rec();
+
+const QUIZ = [
+  ["Was speichert eine Wallet eigentlich?", ["Die Bitcoin selbst", "Die Schlüssel, mit denen du deine Bitcoin bewegen kannst", "Deinen Kontostand bei der Bank"], 1, "Die Bitcoin liegen in der Blockchain. Die Wallet verwahrt nur die Schlüssel, die beweisen, dass sie dir gehören."],
+  ["Deine Börse geht pleite. Wer ist sicher?", ["Nur wer seine Bitcoin auf der Börse lässt", "Wer seine Bitcoin in einer eigenen Wallet hat", "Niemand"], 1, "Wer die Schlüssel selbst hat, ist von einer Börsenpleite nicht betroffen. Auf der Börse hast du nur ein Versprechen."],
+  ["Deine Hardware-Wallet geht kaputt. Was brauchst du?", ["Nichts, die Bitcoin sind weg", "Deine Seed-Wörter, damit stellst du alles wieder her", "Den Kaufbeleg"], 1, "Mit den 12 oder 24 Seed-Wörtern stellst du die Schlüssel auf einem neuen Gerät wieder her."],
+];
+Lern.quiz($("quiz"), "wallets", QUIZ, "../"); Lern.visit("wallets"); Lern.renderNext("wallets", "../");
+})();
+</script>
+</body>
+</html>
