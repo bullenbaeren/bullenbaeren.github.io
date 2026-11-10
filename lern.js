@@ -6,6 +6,7 @@ const Lern = (() => {
   const KEY = "bvb-lernen";
   // Empfohlene Reihenfolge für Einsteiger: [id, Titel, Pfad]
   const PATH = [
+    ["eigenschaften", "Geld-Duell", "eigenschaften/"],
     ["inflation", "Geld & Inflation", "inflation/"],
     ["halving", "Knappheit & Halving", "halving/"],
     ["hashing", "Fingerabdruck-Maschine", "hashing/"], ["blockchain", "Blockchain", "blockchain/"],
@@ -61,9 +62,9 @@ const Lern = (() => {
   }
 
   // ---------- Spaß-Schicht: Level, Konfetti, Einblenden ----------
-  const ICON = {inflation: "🛒", halving: "⏳", hashing: "🧬", blockchain: "🔗", bahnhof: "🚉", seed: "🔑", betrug: "🕵️", sparplan: "🐷", lightning: "⚡", mining: "⛏", nodes: "🖥", schluessel: "🔐", utxo: "👛", wallets: "🗄", fomo: "🎢", hebel: "💥", geschichte: "📜", krypto: "🟠"};
+  const ICON = {eigenschaften: "⚔️", inflation: "🛒", halving: "⏳", hashing: "🧬", blockchain: "🔗", bahnhof: "🚉", seed: "🔑", betrug: "🕵️", sparplan: "🐷", lightning: "⚡", mining: "⛏", nodes: "🖥", schluessel: "🔐", utxo: "👛", wallets: "🗄", fomo: "🎢", hebel: "💥", geschichte: "📜", krypto: "🟠"};
   // Sats-Level nach geschafften Welten (angelehnt an die Bitcoin-Tierwelt von Garnele bis Wal)
-  const LEVELS = [[0, "🦠", "Plankton"], [1, "🦐", "Garnele"], [3, "🦀", "Krabbe"], [6, "🐟", "Fisch"], [9, "🐬", "Delfin"], [12, "🦈", "Hai"], [15, "🐳", "Buckelwal"], [18, "🐋", "Wal"]];
+  const LEVELS = [[0, "🦠", "Plankton"], [1, "🦐", "Garnele"], [3, "🦀", "Krabbe"], [6, "🐟", "Fisch"], [9, "🐬", "Delfin"], [12, "🦈", "Hai"], [15, "🐳", "Buckelwal"], [19, "🐋", "Wal"]];
   const count = s => PATH.filter(([id]) => done(s, id)).length;
   function level(n){ let L = LEVELS[0]; for (const l of LEVELS) if (n >= l[0]) L = l; return {n, ico: L[1], name: L[2]}; }
   const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;

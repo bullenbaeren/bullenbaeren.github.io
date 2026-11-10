@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Geld-Duell · Satsland</title>
+<meta name="description" content="Lernwelt: Was macht Bitcoin aus? Euro, Gold und Bitcoin im Duell um zehn Eigenschaften von gutem Geld.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0b0f2a">
+<link rel="icon" href="../icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="stylesheet" href="../lern.css?v=4">
+<style>
+/* Lernwelt "Eigenschaften": nur seitenspezifische Teile, der Rest kommt aus lern.css */
+.idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
+.score{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.score div{border:1px solid var(--line);border-radius:14px;padding:8px 10px;text-align:center;font-size:13px;color:var(--muted)}
+.score b{display:block;font:900 22px var(--f-num);color:var(--ink)} .score .me{border-color:rgba(255,201,77,.45)} .score .me b{color:var(--gold)}
+.round{margin-top:12px;padding:16px;border-radius:18px;border:2px solid var(--gold);background:rgba(247,147,26,.06);animation:rin .35s}
+.round .k{font-size:13px;color:var(--muted)} .round h3{margin:2px 0 6px;font:900 22px var(--f-display)} .round p{margin:0;font-size:16px;line-height:1.5}
+.ask{margin:14px 0 6px;font-weight:700}
+.three{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.m{border:2px solid var(--line);border-radius:16px;padding:12px 10px;background:rgba(255,255,255,.03);color:var(--ink);font:inherit;text-align:center;cursor:pointer;transition:transform .12s,border-color .2s}
+.m:hover:not(:disabled){transform:translateY(-3px);border-color:rgba(255,201,77,.5)} .m:disabled{cursor:default}
+.m .ic{display:block;font-size:30px;line-height:1.1} .m b{display:block;font:900 15px var(--f-display);margin-top:4px}
+.m .v{display:none;margin-top:8px;font-size:13px;line-height:1.4;color:var(--muted);text-align:left} .m .r{display:none;font:900 20px var(--f-num);margin-top:4px}
+.shown .m .v,.shown .m .r{display:block}
+.m.y{border-color:var(--bull);background:rgba(52,217,130,.1)} .m.y .r{color:var(--bull)} .m.h{border-color:var(--gold)} .m.h .r{color:var(--gold)} .m.n{border-color:rgba(255,92,115,.6)} .m.n .r{color:var(--bear)}
+.m.pick{box-shadow:0 0 0 3px #fff}
+.m[data-i="2"] .ic{color:var(--btc);font-weight:900}
+.out{margin-top:12px;font-size:15px;line-height:1.5;min-height:1.4em} .out a{font-weight:800;color:var(--gold)}
+.nav{display:flex;justify-content:flex-end;margin-top:10px}
+.prog{display:flex;gap:4px;margin-top:12px} .prog i{flex:1;height:6px;border-radius:3px;background:rgba(255,255,255,.08)} .prog i.d{background:var(--gold)} .prog i.c{background:#fff}
+table.sum{width:100%;border-collapse:collapse;margin-top:12px;font-size:14px}
+.sum th,.sum td{padding:8px 6px;border-bottom:1px solid var(--line);text-align:center} .sum th:first-child,.sum td:first-child{text-align:left} .sum th{font-size:12px;color:var(--muted);font-weight:600}
+.sum td a{color:var(--ink);text-decoration:none;font-weight:700} .sum td a:hover{color:var(--gold)}
+@keyframes rin{from{opacity:0;transform:translateY(8px)}}
+@media (max-width:520px){ .m{padding:10px 6px} .m .ic{font-size:26px} .m b{font-size:13px} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a class="back" href="../">← Satsland</a><a class="back" href="../spiel/">Zum Spiel</a></div>
+  <div>
+    <h1>Geld-<span class="btc">Duell</span></h1>
+    <p class="lead">Was macht gutes Geld aus? <b>Euro</b>, <b>Gold</b> und <b>Bitcoin</b> treten in <b>10 Runden</b> gegeneinander an. Rate jeweils, wer gewinnt. Ehrlich: Bitcoin gewinnt nicht jede Runde.</p>
+  </div>
+
+  <section class="card" aria-labelledby="h1s">
+    <h2 id="h1s">Das Duell <span class="mode" id="mode">Verbinde …</span></h2>
+    <div class="idea">Lies die Aufgabe und tippe auf das Geld, das sie <b>am besten</b> schafft. Danach siehst du, wie alle drei abschneiden: <b style="color:var(--bull)">✓ gut</b>, <b style="color:var(--gold)">~ geht so</b>, <b style="color:var(--bear)">✗ schlecht</b>.</div>
+    <div class="score"><div class="me">Deine Treffer<b class="num" id="sMe">0</b></div><div>Runde<b class="num" id="sR">1/10</b></div><div>Bitcoin-Punkte<b class="num" id="sB">0</b></div></div>
+    <div class="prog" id="prog"></div>
+    <div id="game"></div>
+  </section>
+
+  <section class="card" aria-labelledby="h2s">
+    <h2 id="h2s">Das solltest du dir merken</h2>
+    <div class="learn">
+      <div><b>Knapp</b><span>Es wird nie mehr als <b>21 Millionen</b> Bitcoin geben. Niemand kann mehr drucken.</span></div>
+      <div><b>Dezentral</b><span>Kein Chef, keine Bank: <b>Tausende Nodes</b> prüfen die Regeln gemeinsam.</span></div>
+      <div><b>Digital und grenzenlos</b><span>Teilbar in <b>100 Millionen Sats</b>, rund um die Uhr in die ganze Welt.</span></div>
+      <div><b>Aber jung und schwankend</b><span>Bitcoin gibt es erst <b>seit 2009</b>, und der Preis schwankt stark.</span></div>
+    </div>
+    <details class="qz"><summary>Teste dich: 3 Fragen</summary><div id="quiz"></div></details>
+  </section>
+
+  <section class="card next" id="next" aria-label="Weiter"></section>
+  <details class="foot"><summary>Quellen</summary><p>Euro-Kurs von Bitcoin live von Coinbase. Gold-Förderung jährlich rund 1,5 bis 2 % des Bestands (World Gold Council, gerundet). Die Bewertungen sind vereinfacht und als Diskussionsgrundlage gedacht.</p></details>
+  <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
+</div>
+
+<script src="../lern.js?v=4"></script>
+<script>
+/* =====================================================================
+   GELD-DUELL – Lernwelt von Satsland
+   10 Runden: Euro vs. Gold vs. Bitcoin. Bewertung 2 = gut, 1 = geht so, 0 = schlecht.
+   ===================================================================== */
+(() => {
+const $ = id => document.getElementById(id);
+let eurPrice = 0, r = 0, hits = 0, btcPts = 0, log = [];
+const M = [["💶", "Euro"], ["🥇", "Gold"], ["₿", "Bitcoin"]];
+// [Eigenschaft, Aufgabe, [[Wert, Text] je Euro/Gold/Bitcoin], Link zur Welt, Name der Welt]
+const R = [
+  ["Knapp", "Kann jemand einfach mehr davon herstellen?", [[0, "Die Zentralbank kann neues Geld schaffen."], [1, "Jedes Jahr wird etwas mehr geschürft, etwa 1,5 bis 2 %."], [2, "Nie mehr als 21 Millionen. Fest im Code."]], "halving/", "Knappheit & Halving"],
+  ["Teilbar", () => `Du willst etwas für 2 Cent kaufen.${eurPrice ? ` (2 Cent sind gerade ${Math.round(0.02/eurPrice*1e8).toLocaleString("de-DE")} Sats.)` : ""}`, [[2, "Cent-Münzen gibt es."], [0, "Ein Krümel Gold für 2 Cent? Kaum machbar."], [2, "1 Bitcoin = 100 Millionen Sats."]], "utxo/", "Wechselgeld-Kasse"],
+  ["Grenzenlos", "Sonntagnacht 10.000 € an einen Freund in Japan schicken.", [[1, "Auslandsüberweisung dauert Tage und kostet Gebühren."], [0, "Gold verschicken? Teuer, langsam, Zoll."], [2, "Rund um die Uhr, weltweit, oft in Minuten."]], "lightning/", "Lightning"],
+  ["Dezentral", "Wer bestimmt die Regeln?", [[0, "Zentralbank und Politik."], [2, "Niemand, Gold ist einfach ein Metall."], [2, "Keiner allein. Tausende Nodes prüfen gemeinsam."]], "nodes/", "Node-Wache"],
+  ["Nicht sperrbar", "Jemand will dein Geld einfrieren.", [[0, "Ein Konto kann gesperrt werden."], [2, "Gold in deiner Hand kann niemand per Knopfdruck sperren."], [2, "Mit eigenen Schlüsseln kann niemand deine Zahlung verbieten."]], "wallets/", "Wallet-Check"],
+  ["Fälschungssicher", "Kann man es fälschen?", [[1, "Falschgeld gibt es, aber Scheine sind gut geschützt."], [1, "Vergoldetes Metall fällt nicht immer sofort auf."], [2, "Jede Node prüft jede Münze und Signatur."]], "schluessel/", "Schlüssel-Labor"],
+  ["Selbst verwahrbar", "Du willst es ganz ohne Bank aufbewahren.", [[1, "Bargeld ja, aber das meiste Geld liegt auf Konten."], [2, "Im Tresor zu Hause."], [2, "Mit Seed-Wörtern, ohne Bank."]], "seed/", "Seed-Trainer"],
+  ["Prüfbar", "Kannst du selbst nachzählen, wie viel es davon gibt?", [[0, "Nein, das weiß nur die Zentralbank."], [0, "Nein, niemand weiß es genau."], [2, "Ja, jede Node zählt jede Münze nach."]], "blockchain/", "Blockchain"],
+  ["Stabiler Preis", "Morgen Brötchen kaufen, ohne dass sich der Wert stark ändert.", [[2, "Kurzfristig sehr stabil."], [1, "Schwankt etwas."], [0, "Kann an einem Tag 10 % schwanken."]], "fomo/", "Gefühls-Achterbahn"],
+  ["Bewährt", "Wie lange gibt es das schon?", [[1, "Seit 1999, als Bargeld seit 2002."], [2, "Seit über 5.000 Jahren."], [0, "Erst seit 2009. Noch jung."]], "geschichte/", "Zeitreise"],
+];
+const SYM = ["✗", "~", "✓"], CLS = ["n", "h", "y"];
+function prog(){ $("prog").innerHTML = R.map((_, i) => `<i class="${i < r ? "d" : i === r ? "c" : ""}"></i>`).join(""); }
+function round(){
+  prog(); $("sR").textContent = Math.min(r + 1, R.length) + "/" + R.length;
+  if (r >= R.length) return end();
+  const [p, task] = R[r], t = typeof task === "function" ? task() : task;
+  $("game").innerHTML = `<div class="round" id="rd"><span class="k">Runde ${r + 1}: Eigenschaft</span><h3>${p}</h3><p>${t}</p>
+    <p class="ask">Wer schafft das am besten?</p>
+    <div class="three">${M.map(([ic, n], i) => `<button class="m" type="button" data-i="${i}"><span class="ic">${ic}</span><b>${n}</b><span class="r"></span><span class="v"></span></button>`).join("")}</div>
+    <p class="out" id="out" aria-live="polite"></p></div>`;
+  $("rd").onclick = e => { const b = e.target.closest(".m"); if (b && !b.disabled) pick(+b.dataset.i); };
+}
+function pick(i){
+  const [p, , v, link, name] = R[r], best = Math.max(...v.map(x => x[0])), ok = v[i][0] === best;
+  if (ok) hits++; btcPts += v[2][0]; log.push(v.map(x => x[0]));
+  $("rd").classList.add("shown");
+  [...$("rd").querySelectorAll(".m")].forEach((b, k) => { b.disabled = true; b.classList.add(CLS[v[k][0]]); if (k === i) b.classList.add("pick");
+    b.querySelector(".r").textContent = SYM[v[k][0]]; b.querySelector(".v").textContent = v[k][1]; });
+  const winners = M.filter((_, k) => v[k][0] === best).map(m => m[1]).join(" und ");
+  $("out").innerHTML = `${ok ? "✓ <b>Richtig!</b>" : "✗ <b>Daneben.</b>"} Am besten: ${winners}. <a href="../${link}">Mehr dazu: ${name} →</a>
+    <div class="nav"><button class="btn" id="go" type="button">${r === R.length - 1 ? "Ergebnis ansehen" : "Nächste Runde →"}</button></div>`;
+  $("sMe").textContent = hits; $("sB").textContent = btcPts;
+  $("go").onclick = () => { r++; round(); };
+}
+function end(){
+  const tot = k => log.reduce((a, x) => a + x[k], 0), T = M.map((_, k) => tot(k));
+  $("game").innerHTML = `<div class="round"><span class="k">Ergebnis</span><h3>${hits} von ${R.length} richtig geraten</h3>
+    <p>Punkte: 💶 Euro <b>${T[0]}</b> · 🥇 Gold <b>${T[1]}</b> · ₿ Bitcoin <b>${T[2]}</b> von 20.</p>
+    <p style="margin-top:8px">Bitcoin vereint vieles, was Gold und Euro jeweils <b>nur einzeln</b> können: knapp wie Gold, digital wie Kontogeld, dazu prüfbar und ohne Chef. Seine Schwächen sind ehrlich: <b>jung</b> und <b>schwankend</b>.</p>
+    <table class="sum"><tr><th>Eigenschaft</th><th>💶</th><th>🥇</th><th>₿</th></tr>${R.map((x, k) => `<tr><td><a href="../${x[3]}">${x[0]} →</a></td>${x[2].map(y => `<td class="${CLS[y[0]]}" style="color:var(--${["bear", "gold", "bull"][y[0]]})">${SYM[y[0]]}</td>`).join("")}</tr>`).join("")}</table>
+    <div class="nav"><button class="btn ghost" id="again" type="button">↺ Nochmal spielen</button></div></div>`;
+  $("again").onclick = () => { r = 0; hits = 0; btcPts = 0; log = []; $("sMe").textContent = 0; $("sB").textContent = 0; round(); };
+  if (hits >= 8) Lern.confetti();
+}
+
+fetch("https://api.coinbase.com/v2/prices/BTC-EUR/spot").then(x => x.json()).then(j => { eurPrice = +j.data.amount || 0; }).catch(() => {})
+  .finally(() => { $("mode").className = "mode " + (eurPrice ? "live" : "demo"); $("mode").textContent = eurPrice ? "Live-Kurs" : "Ohne Live-Daten"; });
+
+const QUIZ = [
+  ["Welche Eigenschaft hat Bitcoin, die Euro nicht hat?", ["Einen stabilen Preis", "Eine feste Obergrenze, die niemand ändern kann", "Er ist älter"], 1, "Die Menge von 21 Millionen steht fest. Eine Zentralbank kann dagegen neues Geld schaffen."],
+  ["Wo ist Gold besser als Bitcoin?", ["Es ist viel länger bewährt", "Es ist leichter zu verschicken", "Es ist besser teilbar"], 0, "Gold ist seit Jahrtausenden Geld. Bitcoin gibt es erst seit 2009."],
+  ["Was heißt „dezentral“ bei Bitcoin?", ["Es gibt einen Chef pro Land", "Kein Einzelner bestimmt, tausende Nodes prüfen gemeinsam", "Bitcoin liegt auf einem großen Server"], 1, "Es gibt keine Firma und keine Zentralbank. Die Regeln werden von allen Nodes gemeinsam durchgesetzt."],
+];
+Lern.quiz($("quiz"), "eigenschaften", QUIZ, "../"); Lern.visit("eigenschaften"); Lern.renderNext("eigenschaften", "../");
+round();
+})();
+</script>
+</body>
+</html>
