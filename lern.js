@@ -28,8 +28,9 @@ const Lern = (() => {
   function quiz(box, id, QUIZ, root){
     const answered = {};
     QUIZ.forEach(([q, opts, ok, why], qi) => {
+      // Antworten in zufälliger Reihenfolge, damit die richtige nicht immer an derselben Stelle steht
       const d = document.createElement("div"); d.className = "q";
-      d.innerHTML = `<p>${qi + 1}. ${q}</p><div class="opts">${opts.map((o, i) => `<button type="button" data-i="${i}">${o}</button>`).join("")}</div><p class="why" hidden></p>`;
+      d.innerHTML = `<p>${qi + 1}. ${q}</p><div class="opts">${opts.map((o, i) => [Math.random(), i, o]).sort((a, b) => a[0] - b[0]).map(([, i, o]) => `<button type="button" data-i="${i}">${o}</button>`).join("")}</div><p class="why" hidden></p>`;
       d.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
         const i = +b.dataset.i;
         d.querySelectorAll("button").forEach(x => { x.classList.remove("ok", "no"); if (+x.dataset.i === ok) x.classList.add("ok"); });

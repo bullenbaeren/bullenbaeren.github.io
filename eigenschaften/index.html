@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Geld-Duell · Satsland</title>
-<meta name="description" content="Lernwelt: Was macht Bitcoin aus? Euro, Gold und Bitcoin im Duell um zehn Eigenschaften von gutem Geld.">
+<meta name="description" content="Lernwelt: Was macht Bitcoin aus? Muscheln, Gold, Euro und Bitcoin im Punkte-Duell um zehn Eigenschaften von gutem Geld.">
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#0b0f2a">
 <link rel="icon" href="../icon.svg" type="image/svg+xml">
@@ -13,27 +13,32 @@
 <style>
 /* Lernwelt "Eigenschaften": nur seitenspezifische Teile, der Rest kommt aus lern.css */
 .idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
-.score{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.score{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
 .score div{border:1px solid var(--line);border-radius:14px;padding:8px 10px;text-align:center;font-size:13px;color:var(--muted)}
-.score b{display:block;font:900 22px var(--f-num);color:var(--ink)} .score .me{border-color:rgba(255,201,77,.45)} .score .me b{color:var(--gold)}
+.score b{display:block;font:900 22px var(--f-num);color:var(--ink)} .score .me b{color:var(--gold)}
 .round{margin-top:12px;padding:16px;border-radius:18px;border:2px solid var(--gold);background:rgba(247,147,26,.06);animation:rin .35s}
-.round .k{font-size:13px;color:var(--muted)} .round h3{margin:2px 0 6px;font:900 22px var(--f-display)} .round p{margin:0;font-size:16px;line-height:1.5}
-.ask{margin:14px 0 6px;font-weight:700}
-.three{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.m{border:2px solid var(--line);border-radius:16px;padding:12px 10px;background:rgba(255,255,255,.03);color:var(--ink);font:inherit;text-align:center;cursor:pointer;transition:transform .12s,border-color .2s}
+.round .k{font-size:13px;color:var(--muted)} .round h3{margin:2px 0 4px;font:900 22px var(--f-display)} .round .what{margin:0;font-size:15px;color:var(--muted);line-height:1.5}
+.ask{margin:12px 0 8px;font-size:17px;font-weight:800} .ask em{font-style:normal;padding:1px 8px;border-radius:8px} .ask em.lo{background:rgba(255,92,115,.2);color:#ff9aa8} .ask em.hi{background:rgba(52,217,130,.2);color:#7ff0b2}
+.four{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.m{border:2px solid var(--line);border-radius:16px;padding:10px 6px;background:rgba(255,255,255,.03);color:var(--ink);font:inherit;text-align:center;cursor:pointer;transition:transform .12s,border-color .2s}
 .m:hover:not(:disabled){transform:translateY(-3px);border-color:rgba(255,201,77,.5)} .m:disabled{cursor:default}
-.m .ic{display:block;font-size:30px;line-height:1.1} .m b{display:block;font:900 15px var(--f-display);margin-top:4px}
-.m .v{display:none;margin-top:8px;font-size:13px;line-height:1.4;color:var(--muted);text-align:left} .m .r{display:none;font:900 20px var(--f-num);margin-top:4px}
-.shown .m .v,.shown .m .r{display:block}
-.m.y{border-color:var(--bull);background:rgba(52,217,130,.1)} .m.y .r{color:var(--bull)} .m.h{border-color:var(--gold)} .m.h .r{color:var(--gold)} .m.n{border-color:rgba(255,92,115,.6)} .m.n .r{color:var(--bear)}
-.m.pick{box-shadow:0 0 0 3px #fff}
-.m[data-i="2"] .ic{color:var(--btc);font-weight:900}
-.out{margin-top:12px;font-size:15px;line-height:1.5;min-height:1.4em} .out a{font-weight:800;color:var(--gold)}
+.m .ic{display:block;font-size:28px;line-height:1.1} .m b{display:block;font:900 13px var(--f-display);margin-top:4px}
+.m .pt{display:none;margin-top:6px;font:900 18px var(--f-num)} .shown .m .pt{display:block}
+.m.win{border-color:var(--bull);background:rgba(52,217,130,.12)} .m.pick{box-shadow:0 0 0 3px #fff} .m.wrong{border-color:var(--bear)}
+.m[data-i="3"] .ic{color:var(--btc);font-weight:900}
+.why{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:4px;font-size:14px;color:var(--muted)} .why b{color:var(--ink)}
+.out{margin-top:10px;font-size:15px;line-height:1.5} .out a{font-weight:800;color:var(--gold)}
 .nav{display:flex;justify-content:flex-end;margin-top:10px}
-.prog{display:flex;gap:4px;margin-top:12px} .prog i{flex:1;height:6px;border-radius:3px;background:rgba(255,255,255,.08)} .prog i.d{background:var(--gold)} .prog i.c{background:#fff}
-table.sum{width:100%;border-collapse:collapse;margin-top:12px;font-size:14px}
-.sum th,.sum td{padding:8px 6px;border-bottom:1px solid var(--line);text-align:center} .sum th:first-child,.sum td:first-child{text-align:left} .sum th{font-size:12px;color:var(--muted);font-weight:600}
-.sum td a{color:var(--ink);text-decoration:none;font-weight:700} .sum td a:hover{color:var(--gold)}
+/* Punktetabelle */
+table.pts{width:100%;border-collapse:separate;border-spacing:0 4px;margin-top:6px;font-size:14px}
+.pts th{font-size:20px;font-weight:400;padding:4px 2px} .pts th:first-child{text-align:left;font-size:12px;color:var(--muted);font-weight:600}
+.pts td{text-align:center;padding:6px 2px;background:rgba(255,255,255,.03)} .pts td:first-child{text-align:left;padding-left:10px;border-radius:10px 0 0 10px;font-weight:700} .pts td:last-child{border-radius:0 10px 10px 0}
+.pts td i{display:inline-block;width:8px;height:8px;border-radius:50%;margin:0 1px;background:rgba(255,255,255,.12)} .pts td i.on{background:var(--gold)}
+.pts tr.q td{color:rgba(255,255,255,.25)} .pts tr.cur td{background:rgba(255,201,77,.1)} .pts tr.new td{animation:rin .5s}
+.pts tr.tot td{background:rgba(255,201,77,.12);font:900 18px var(--f-num);color:var(--gold)}
+.race{display:grid;gap:6px;margin-top:10px} .race div{display:grid;grid-template-columns:2em 1fr 3.2em;align-items:center;gap:8px;font-size:18px}
+.race i{display:block;height:14px;border-radius:7px;background:linear-gradient(90deg,var(--gold),var(--btc));transition:width .6s cubic-bezier(.2,.8,.2,1)} .race b{font:800 14px var(--f-num);text-align:right}
+@media (max-width:520px){ .m .ic{font-size:24px} .m b{font-size:11px} .pts td i{width:6px;height:6px} .pts{font-size:12px} }
 @keyframes rin{from{opacity:0;transform:translateY(8px)}}
 @media (max-width:520px){ .m{padding:10px 6px} .m .ic{font-size:26px} .m b{font-size:13px} }
 </style>
@@ -43,15 +48,17 @@ table.sum{width:100%;border-collapse:collapse;margin-top:12px;font-size:14px}
   <div class="top"><a class="back" href="../">← Satsland</a><a class="back" href="../spiel/">Zum Spiel</a></div>
   <div>
     <h1>Geld-<span class="btc">Duell</span></h1>
-    <p class="lead">Was macht gutes Geld aus? <b>Euro</b>, <b>Gold</b> und <b>Bitcoin</b> treten in <b>10 Runden</b> gegeneinander an. Rate jeweils, wer gewinnt. Ehrlich: Bitcoin gewinnt nicht jede Runde.</p>
+    <p class="lead">Was macht gutes Geld aus? <b>Muscheln</b>, <b>Gold</b>, <b>Euro</b> und <b>Bitcoin</b> treten in <b>10 Runden</b> gegeneinander an. Jede Runde gibt Punkte. Wer gewinnt am Ende?</p>
   </div>
 
   <section class="card" aria-labelledby="h1s">
     <h2 id="h1s">Das Duell <span class="mode" id="mode">Verbinde …</span></h2>
-    <div class="idea">Lies die Aufgabe und tippe auf das Geld, das sie <b>am besten</b> schafft. Danach siehst du, wie alle drei abschneiden: <b style="color:var(--bull)">✓ gut</b>, <b style="color:var(--gold)">~ geht so</b>, <b style="color:var(--bear)">✗ schlecht</b>.</div>
-    <div class="score"><div class="me">Deine Treffer<b class="num" id="sMe">0</b></div><div>Runde<b class="num" id="sR">1/10</b></div><div>Bitcoin-Punkte<b class="num" id="sB">0</b></div></div>
-    <div class="prog" id="prog"></div>
+    <div class="idea">Gutes Geld braucht bestimmte <b>Eigenschaften</b>. In jeder Runde gibt es <b>0 bis 3 Punkte</b> pro Geld. Rate, wer die <b>meisten</b> oder die <b>wenigsten</b> bekommt, und sieh zu, wie sich die Punktetabelle füllt.</div>
+    <div class="score"><div class="me">Deine Treffer<b class="num" id="sMe">0</b></div><div>Runde<b class="num" id="sR">1/10</b></div></div>
     <div id="game"></div>
+    <h3 style="margin:18px 0 0;font:900 16px var(--f-display)">Punktetabelle</h3>
+    <table class="pts" id="pts"></table>
+    <div class="race" id="race"></div>
   </section>
 
   <section class="card" aria-labelledby="h2s">
@@ -66,11 +73,11 @@ table.sum{width:100%;border-collapse:collapse;margin-top:12px;font-size:14px}
   </section>
 
   <section class="card next" id="next" aria-label="Weiter"></section>
-  <details class="foot"><summary>Quellen</summary><p>Euro-Kurs von Bitcoin live von Coinbase. Gold-Förderung jährlich rund 1,5 bis 2 % des Bestands (World Gold Council, gerundet). Die Bewertungen sind vereinfacht und als Diskussionsgrundlage gedacht.</p></details>
+  <details class="foot"><summary>Quellen</summary><p>Euro-Kurs von Bitcoin live von Coinbase. Gold-Förderung jährlich rund 1,5 bis 2 % des Bestands (gerundet). Die Punkte sind vereinfacht und als Diskussionsgrundlage gedacht.</p></details>
   <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
 </div>
 
-<script src="../lern.js?v=4"></script>
+<script src="../lern.js?v=5"></script>
 <script>
 /* =====================================================================
    GELD-DUELL – Lernwelt von Satsland
@@ -78,54 +85,63 @@ table.sum{width:100%;border-collapse:collapse;margin-top:12px;font-size:14px}
    ===================================================================== */
 (() => {
 const $ = id => document.getElementById(id);
-let eurPrice = 0, r = 0, hits = 0, btcPts = 0, log = [];
-const M = [["💶", "Euro"], ["🥇", "Gold"], ["₿", "Bitcoin"]];
-// [Eigenschaft, Aufgabe, [[Wert, Text] je Euro/Gold/Bitcoin], Link zur Welt, Name der Welt]
+let eurPrice = 0, r = 0, hits = 0, got = [];
+const M = [["🐚", "Muscheln"], ["🥇", "Gold"], ["💶", "Euro"], ["₿", "Bitcoin"]];
+// [Eigenschaft, Was heißt das?, Frage (lo = wenigste, hi = meiste Punkte), [[Punkte 0–3, Grund] je Geld], Link, Welt]
 const R = [
-  ["Knapp", "Kann jemand einfach mehr davon herstellen?", [[0, "Die Zentralbank kann neues Geld schaffen."], [1, "Jedes Jahr wird etwas mehr geschürft, etwa 1,5 bis 2 %."], [2, "Nie mehr als 21 Millionen. Fest im Code."]], "halving/", "Knappheit & Halving"],
-  ["Teilbar", () => `Du willst etwas für 2 Cent kaufen.${eurPrice ? ` (2 Cent sind gerade ${Math.round(0.02/eurPrice*1e8).toLocaleString("de-DE")} Sats.)` : ""}`, [[2, "Cent-Münzen gibt es."], [0, "Ein Krümel Gold für 2 Cent? Kaum machbar."], [2, "1 Bitcoin = 100 Millionen Sats."]], "utxo/", "Wechselgeld-Kasse"],
-  ["Grenzenlos", "Sonntagnacht 10.000 € an einen Freund in Japan schicken.", [[1, "Auslandsüberweisung dauert Tage und kostet Gebühren."], [0, "Gold verschicken? Teuer, langsam, Zoll."], [2, "Rund um die Uhr, weltweit, oft in Minuten."]], "lightning/", "Lightning"],
-  ["Dezentral", "Wer bestimmt die Regeln?", [[0, "Zentralbank und Politik."], [2, "Niemand, Gold ist einfach ein Metall."], [2, "Keiner allein. Tausende Nodes prüfen gemeinsam."]], "nodes/", "Node-Wache"],
-  ["Nicht sperrbar", "Jemand will dein Geld einfrieren.", [[0, "Ein Konto kann gesperrt werden."], [2, "Gold in deiner Hand kann niemand per Knopfdruck sperren."], [2, "Mit eigenen Schlüsseln kann niemand deine Zahlung verbieten."]], "wallets/", "Wallet-Check"],
-  ["Fälschungssicher", "Kann man es fälschen?", [[1, "Falschgeld gibt es, aber Scheine sind gut geschützt."], [1, "Vergoldetes Metall fällt nicht immer sofort auf."], [2, "Jede Node prüft jede Münze und Signatur."]], "schluessel/", "Schlüssel-Labor"],
-  ["Selbst verwahrbar", "Du willst es ganz ohne Bank aufbewahren.", [[1, "Bargeld ja, aber das meiste Geld liegt auf Konten."], [2, "Im Tresor zu Hause."], [2, "Mit Seed-Wörtern, ohne Bank."]], "seed/", "Seed-Trainer"],
-  ["Prüfbar", "Kannst du selbst nachzählen, wie viel es davon gibt?", [[0, "Nein, das weiß nur die Zentralbank."], [0, "Nein, niemand weiß es genau."], [2, "Ja, jede Node zählt jede Münze nach."]], "blockchain/", "Blockchain"],
-  ["Stabiler Preis", "Morgen Brötchen kaufen, ohne dass sich der Wert stark ändert.", [[2, "Kurzfristig sehr stabil."], [1, "Schwankt etwas."], [0, "Kann an einem Tag 10 % schwanken."]], "fomo/", "Gefühls-Achterbahn"],
-  ["Bewährt", "Wie lange gibt es das schon?", [[1, "Seit 1999, als Bargeld seit 2002."], [2, "Seit über 5.000 Jahren."], [0, "Erst seit 2009. Noch jung."]], "geschichte/", "Zeitreise"],
+  ["Knappheit", "Kann jemand einfach mehr davon herstellen?", "lo", [[1, "Am Strand sammelbar"], [2, "Wird langsam mehr geschürft"], [0, "Zentralbank kann unbegrenzt schaffen"], [3, "Nie mehr als 21 Millionen"]], "halving/", "Knappheit & Halving"],
+  ["Teilbarkeit", () => "Kann man es in winzige Stücke teilen?" + (eurPrice ? ` (1 Cent sind gerade ${Math.round(0.01/eurPrice*1e8).toLocaleString("de-DE")} Sats.)` : ""), "hi", [[1, "Eine Muschel ist eine Muschel"], [1, "Teilen braucht Werkzeug und Waage"], [2, "Bis zum Cent"], [3, "Bis zum Satoshi, 100 Millionen pro Bitcoin"]], "utxo/", "Wechselgeld-Kasse"],
+  ["Transportierbarkeit", "Kann man 1 Million schnell ans andere Ende der Welt bringen?", "lo", [[0, "Ein ganzer LKW voll Muscheln"], [1, "Rund 10 kg Gold, Zoll, Versicherung"], [2, "Überweisung, aber Tage und Gebühren"], [3, "In Minuten, rund um die Uhr"]], "lightning/", "Lightning"],
+  ["Haltbarkeit", "Bleibt es über Jahrhunderte erhalten?", "hi", [[2, "Kann zerbrechen"], [3, "Rostet nie, hält ewig"], [1, "Scheine verschleißen nach wenigen Jahren"], [2, "Hält, solange das Netz läuft und du den Seed hast"]], "seed/", "Seed-Trainer"],
+  ["Fälschungssicherheit", "Wie schwer ist es, Falschgeld herzustellen?", "lo", [[1, "Glas- und Porzellan-Kopien gab es oft"], [2, "Vergoldetes Metall fällt nicht immer auf"], [2, "Gut geschützt, Falschgeld gibt es trotzdem"], [3, "Unmöglich ohne Schlüssel, jede Node prüft"]], "schluessel/", "Schlüssel-Labor"],
+  ["Prüfbarkeit", "Kann jeder schnell prüfen, ob es echt ist?", "lo", [[2, "Sieht man meistens"], [1, "Braucht Säuretest oder Prüfgerät"], [2, "Sicherheitsmerkmale fühlen und sehen"], [3, "Jede Node prüft in Sekunden"]], "blockchain/", "Blockchain"],
+  ["Unabhängigkeit", "Kann eine Bank oder ein Staat es sperren oder kontrollieren?", "lo", [[3, "Niemand kontrolliert Muscheln"], [3, "Gold in der Hand kann niemand sperren"], [0, "Konten können gesperrt werden, Zentralbank steuert"], [3, "Kein Chef, mit eigenen Schlüsseln nicht sperrbar"]], "nodes/", "Node-Wache"],
+  ["Akzeptanz", "Kannst du damit heute im Supermarkt bezahlen?", "hi", [[0, "Nirgends mehr"], [1, "Nur über Händler"], [3, "Überall in der Eurozone"], [1, "Nur in wenigen Läden"]], "inflation/", "Geld & Inflation"],
+  ["Wertstabilität", "Ist es morgen noch etwa gleich viel wert?", "lo", [[1, "Kaum noch Wert"], [2, "Schwankt etwas"], [3, "Kurzfristig sehr stabil"], [0, "Kann an einem Tag 10 % schwanken"]], "fomo/", "Gefühls-Achterbahn"],
+  ["Erfahrung", "Wie lange wird es schon als Geld genutzt?", "lo", [[3, "Seit Jahrtausenden"], [3, "Seit über 5.000 Jahren"], [1, "Seit 1999"], [0, "Erst seit 2009"]], "geschichte/", "Zeitreise"],
 ];
-const SYM = ["✗", "~", "✓"], CLS = ["n", "h", "y"];
-function prog(){ $("prog").innerHTML = R.map((_, i) => `<i class="${i < r ? "d" : i === r ? "c" : ""}"></i>`).join(""); }
+const dots = n => [0, 1, 2].map(k => `<i class="${k < n ? "on" : ""}"></i>`).join("");
+// Punktetabelle: fertige Runden mit Punkten, offene mit "?"
+function table(){
+  const tot = M.map((_, k) => got.reduce((a, g) => a + g[k], 0));
+  $("pts").innerHTML = `<tr><th>Eigenschaft</th>${M.map(m => `<th title="${m[1]}">${m[0]}</th>`).join("")}</tr>`
+    + R.map((x, i) => i < got.length ? `<tr class="${i === got.length - 1 ? "new" : ""}"><td>${x[0]}</td>${got[i].map(n => `<td>${dots(n)}</td>`).join("")}</tr>`
+      : `<tr class="${i === r ? "cur" : "q"}"><td>${i === r ? x[0] : "?"}</td>${M.map(() => "<td>?</td>").join("")}</tr>`).join("")
+    + `<tr class="tot"><td>Summe</td>${tot.map(t => `<td>${t}</td>`).join("")}</tr>`;
+  const max = Math.max(1, ...tot);
+  $("race").innerHTML = M.map((m, k) => `<div><span>${m[0]}</span><i style="width:${tot[k]/30*100}%"></i><b>${tot[k]}/30</b></div>`).join("");
+  return tot;
+}
 function round(){
-  prog(); $("sR").textContent = Math.min(r + 1, R.length) + "/" + R.length;
+  $("sR").textContent = Math.min(r + 1, R.length) + "/" + R.length; table();
   if (r >= R.length) return end();
-  const [p, task] = R[r], t = typeof task === "function" ? task() : task;
-  $("game").innerHTML = `<div class="round" id="rd"><span class="k">Runde ${r + 1}: Eigenschaft</span><h3>${p}</h3><p>${t}</p>
-    <p class="ask">Wer schafft das am besten?</p>
-    <div class="three">${M.map(([ic, n], i) => `<button class="m" type="button" data-i="${i}"><span class="ic">${ic}</span><b>${n}</b><span class="r"></span><span class="v"></span></button>`).join("")}</div>
-    <p class="out" id="out" aria-live="polite"></p></div>`;
+  const [p, what, dir] = R[r], w = typeof what === "function" ? what() : what;
+  $("game").innerHTML = `<div class="round" id="rd"><span class="k">Runde ${r + 1} von ${R.length}</span><h3>${p}</h3><p class="what">${w}</p>
+    <p class="ask">Wer bekommt hier die <em class="${dir}">${dir === "lo" ? "wenigsten" : "meisten"}</em> Punkte?</p>
+    <div class="four">${M.map(([ic, n], i) => `<button class="m" type="button" data-i="${i}"><span class="ic">${ic}</span><b>${n}</b><span class="pt"></span></button>`).join("")}</div>
+    <div id="res"></div></div>`;
   $("rd").onclick = e => { const b = e.target.closest(".m"); if (b && !b.disabled) pick(+b.dataset.i); };
 }
 function pick(i){
-  const [p, , v, link, name] = R[r], best = Math.max(...v.map(x => x[0])), ok = v[i][0] === best;
-  if (ok) hits++; btcPts += v[2][0]; log.push(v.map(x => x[0]));
+  const [, , dir, v, link, name] = R[r], pts = v.map(x => x[0]), goal = dir === "lo" ? Math.min(...pts) : Math.max(...pts), ok = pts[i] === goal;
+  if (ok) hits++; got.push(pts); $("sMe").textContent = hits;
   $("rd").classList.add("shown");
-  [...$("rd").querySelectorAll(".m")].forEach((b, k) => { b.disabled = true; b.classList.add(CLS[v[k][0]]); if (k === i) b.classList.add("pick");
-    b.querySelector(".r").textContent = SYM[v[k][0]]; b.querySelector(".v").textContent = v[k][1]; });
-  const winners = M.filter((_, k) => v[k][0] === best).map(m => m[1]).join(" und ");
-  $("out").innerHTML = `${ok ? "✓ <b>Richtig!</b>" : "✗ <b>Daneben.</b>"} Am besten: ${winners}. <a href="../${link}">Mehr dazu: ${name} →</a>
-    <div class="nav"><button class="btn" id="go" type="button">${r === R.length - 1 ? "Ergebnis ansehen" : "Nächste Runde →"}</button></div>`;
-  $("sMe").textContent = hits; $("sB").textContent = btcPts;
-  $("go").onclick = () => { r++; round(); };
+  [...$("rd").querySelectorAll(".m")].forEach((b, k) => { b.disabled = true; b.querySelector(".pt").innerHTML = dots(pts[k]) + " " + pts[k];
+    if (pts[k] === goal) b.classList.add("win"); if (k === i) b.classList.add("pick", ok ? "x" : "wrong"); });
+  $("res").innerHTML = `<ul class="why">${M.map((m, k) => `<li>${m[0]} <b>${pts[k]} P.</b> ${v[k][1]}</li>`).join("")}</ul>
+    <p class="out">${ok ? "✓ <b>Richtig!</b>" : "✗ <b>Daneben.</b>"} <a href="../${link}">Mehr dazu: ${name} →</a></p>
+    <div class="nav"><button class="btn" id="go" type="button">${r === R.length - 1 ? "Ergebnis ansehen 🏆" : "Nächste Runde →"}</button></div>`;
+  table();
+  $("go").onclick = () => { r++; round(); $("game").scrollIntoView({behavior: "smooth", block: "start"}); };
 }
 function end(){
-  const tot = k => log.reduce((a, x) => a + x[k], 0), T = M.map((_, k) => tot(k));
-  $("game").innerHTML = `<div class="round"><span class="k">Ergebnis</span><h3>${hits} von ${R.length} richtig geraten</h3>
-    <p>Punkte: 💶 Euro <b>${T[0]}</b> · 🥇 Gold <b>${T[1]}</b> · ₿ Bitcoin <b>${T[2]}</b> von 20.</p>
-    <p style="margin-top:8px">Bitcoin vereint vieles, was Gold und Euro jeweils <b>nur einzeln</b> können: knapp wie Gold, digital wie Kontogeld, dazu prüfbar und ohne Chef. Seine Schwächen sind ehrlich: <b>jung</b> und <b>schwankend</b>.</p>
-    <table class="sum"><tr><th>Eigenschaft</th><th>💶</th><th>🥇</th><th>₿</th></tr>${R.map((x, k) => `<tr><td><a href="../${x[3]}">${x[0]} →</a></td>${x[2].map(y => `<td class="${CLS[y[0]]}" style="color:var(--${["bear", "gold", "bull"][y[0]]})">${SYM[y[0]]}</td>`).join("")}</tr>`).join("")}</table>
+  const tot = table(), order = M.map((m, k) => [m, tot[k]]).sort((a, b) => b[1] - a[1]), medal = ["🥇", "🥈", "🥉", "4."];
+  $("game").innerHTML = `<div class="round"><span class="k">Ergebnis</span><h3>🏆 ${order[0][0][0]} ${order[0][0][1]} gewinnt knapp</h3>
+    <p class="what" style="color:var(--ink)">${order.map((o, k) => `${medal[k]} ${o[0][0]} ${o[0][1]} <b>${o[1]}</b>`).join(" · ")}</p>
+    <p class="what" style="margin-top:8px">Bitcoin holt fast überall volle Punkte: knapp, teilbar, schnell, prüfbar und ohne Chef. Verloren hat er bei <b>Akzeptanz</b>, <b>Wertstabilität</b> und <b>Erfahrung</b>. Gold ist der stärkste Gegner. Du hast <b>${hits} von ${R.length}</b> richtig geraten.</p>
     <div class="nav"><button class="btn ghost" id="again" type="button">↺ Nochmal spielen</button></div></div>`;
-  $("again").onclick = () => { r = 0; hits = 0; btcPts = 0; log = []; $("sMe").textContent = 0; $("sB").textContent = 0; round(); };
-  if (hits >= 8) Lern.confetti();
+  $("again").onclick = () => { r = 0; hits = 0; got = []; $("sMe").textContent = 0; round(); };
+  if (hits >= 7) Lern.confetti();
 }
 
 fetch("https://api.coinbase.com/v2/prices/BTC-EUR/spot").then(x => x.json()).then(j => { eurPrice = +j.data.amount || 0; }).catch(() => {})
@@ -133,7 +149,7 @@ fetch("https://api.coinbase.com/v2/prices/BTC-EUR/spot").then(x => x.json()).the
 
 const QUIZ = [
   ["Welche Eigenschaft hat Bitcoin, die Euro nicht hat?", ["Einen stabilen Preis", "Eine feste Obergrenze, die niemand ändern kann", "Er ist älter"], 1, "Die Menge von 21 Millionen steht fest. Eine Zentralbank kann dagegen neues Geld schaffen."],
-  ["Wo ist Gold besser als Bitcoin?", ["Es ist viel länger bewährt", "Es ist leichter zu verschicken", "Es ist besser teilbar"], 0, "Gold ist seit Jahrtausenden Geld. Bitcoin gibt es erst seit 2009."],
+  ["Wo schneidet Gold besser ab als Bitcoin?", ["Bei der Erfahrung: seit Jahrtausenden Geld", "Beim Verschicken", "Bei der Teilbarkeit"], 0, "Gold ist seit Jahrtausenden Geld. Bitcoin gibt es erst seit 2009."],
   ["Was heißt „dezentral“ bei Bitcoin?", ["Es gibt einen Chef pro Land", "Kein Einzelner bestimmt, tausende Nodes prüfen gemeinsam", "Bitcoin liegt auf einem großen Server"], 1, "Es gibt keine Firma und keine Zentralbank. Die Regeln werden von allen Nodes gemeinsam durchgesetzt."],
 ];
 Lern.quiz($("quiz"), "eigenschaften", QUIZ, "../"); Lern.visit("eigenschaften"); Lern.renderNext("eigenschaften", "../");
