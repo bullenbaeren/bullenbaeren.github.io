@@ -135,6 +135,12 @@ canvas.drag{cursor:grabbing}
 .chip i{width:7px;height:7px;border-radius:50%;background:#56609a;flex:none}
 .chip.ok i{background:var(--bull)} .chip.err i{background:var(--bear)} .chip.wait i{background:var(--gold)}
 .chip small{color:var(--muted);font-size:11px}
+/* 21-Millionen-Balken */
+.supbar{width:46px;height:6px;border-radius:3px;background:rgba(255,255,255,.12);overflow:hidden;flex:none}
+.supbar b{display:block;height:100%;background:#f7931a;border-radius:3px}
+/* Kurs antippen = Anzeige in sats */
+#price{cursor:pointer;-webkit-tap-highlight-color:transparent}
+#price small{font-size:.42em;font-weight:500;color:var(--muted);letter-spacing:0;margin-left:4px}
 /* Verbindungs-Details: erscheinen nur beim Antippen des LIVE-Etiketts */
 button.mode{cursor:pointer}
 .connpop{grid-column:1 / -1;order:4;background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
@@ -223,6 +229,8 @@ body.stream .welcome{display:none}
   <section class="feed" aria-label="Live-Kommentar"><span class="eyebrow">Kommentar</span><p class="news" id="news" aria-live="polite">Die Armeen stellen sich auf …</p></section>
   <div class="sbar" aria-label="Status">
     <span class="chip" id="chipBlock"><i></i>Block –</span>
+    <span class="chip" id="chipFee" hidden><i></i>Gebühren –</span>
+    <span class="chip" id="chipSupply" hidden><span class="supbar"><b></b></span>–</span>
     <span class="chip" id="chipFng" hidden><i></i>Fear &amp; Greed –</span>
     <span class="chip" id="chipMkt"><i></i>Börsen –</span>
   </div>
@@ -267,6 +275,9 @@ body.stream .welcome{display:none}
       <div class="lrow"><b class="y">Goldenes Tor</b><span>Das Allzeithoch, der höchste Kurs aller Zeiten. Unter dem Kurs steht, wie weit es noch ist.</span></div>
       <div class="lrow"><b>Wetter</b><span>Zeigt, wie stark der Kurs in den letzten 2 Minuten schwankt: Sonne, Wolken, Regen, Gewitter. Im Weltall: Sternenstaub, Meteorschauer, Sonnensturm.</span></div>
       <div class="lrow"><b class="y">Zeitlupe</b><span>Bei einem Trade oder einer Liquidation ab 1 Mio. $ hält die Zeit kurz an und die Kamera fährt heran.</span></div>
+      <div class="lrow"><b>Gebühren</b><span>Was eine schnelle Bitcoin-Überweisung gerade kostet (sat/vB). Bei Stau rollt der nächste Block überladen mit Kisten vorbei.</span></div>
+      <div class="lrow"><b class="y">21 Mio.</b><span>Es wird nie mehr als 21 Millionen Bitcoin geben. Der orange Balken zeigt, wie viele schon geschürft sind.</span></div>
+      <div class="lrow"><b>sats</b><span>Den Kurs antippen: zeigt, wie viele Satoshi (0,00000001 BTC) du für 1 € bzw. 1 $ bekommst.</span></div>
       <div class="lrow"><b>Krabben</b><span>Bewegt sich der Kurs 8 Minuten lang kaum, übernehmen die Krabben: Krabbenmarkt, es geht seitwärts.</span></div>
       <div class="lrow"><b class="y">Feiertage</b><span>Am Pizza Day (22.5.), Bitcoins Geburtstag (3.1.), Halloween (Skelette steigen aus den Gräbern), in der Weihnachtszeit und an Silvester ist das Schlachtfeld geschmückt.</span></div>
       <div class="lrow"><b>24-Std.-Linien</b><span>Gestrichelte Linien markieren Hoch und Tief der letzten 24 Stunden.</span></div>
@@ -1497,7 +1508,7 @@ function onBlock(b, quiet, real){
   chain = {h: b.height, ts: b.timestamp || Date.now()/1000, pool: (b.extras && b.extras.pool && b.extras.pool.name) || "", tx: b.tx_count || 0, real: !!(real || chain.real)};
   renderChain();
   if (first || quiet) return;
-  blockAnim = {t0: t, h: b.height, tx: chain.tx, pool: chain.pool};
+  blockAnim = {t0: t, h: b.height, tx: chain.tx, pool: chain.pool, fee: fees && chain.real ? fees.fast : 0};
   const left = nextHalving(b.height) - b.height;
   if (b.height % 210000 === 0){
     banner = {text: "HALVING!", sub: "Die Belohnung der Miner halbiert sich", color: C.gold, until: t + 5}; confetti(140); sfx("portal");
@@ -1518,6 +1529,18 @@ function renderChain(){
     cb.title = `Letzter Block vor ${ago} Min · Halving ca. ${eta.toLocaleDateString("de-DE", {month:"long", year:"numeric"})}`;
     cb.innerHTML = `<i></i>Block ${fmtInt(chain.h)} <small>· Halving in ${fmtInt(left)}</small>`;
   }
+  if (chain.h){
+    const cs = $("chipSupply"), m = minedBtc(chain.h), pct = m/21e6*100;
+    cs.hidden = false;
+    cs.title = `${pct.toLocaleString("de-DE", {maximumFractionDigits: 3})} % aller Bitcoin sind geschürft · noch ${fmtInt(21e6 - m)} BTC übrig${chain.real ? "" : " (Testwerte)"}`;
+    cs.innerHTML = `<span class="supbar"><b style="width:${pct.toFixed(2)}%"></b></span>${(m/1e6).toLocaleString("de-DE", {minimumFractionDigits: 2, maximumFractionDigits: 2})} <small>von 21 Mio. BTC</small>`;
+  }
+  if (fees){
+    const ce = $("chipFee"), l = feeLevel(fees.fast);
+    ce.hidden = false; ce.className = "chip " + (l <= 1 ? "ok" : l === 2 ? "wait" : "err");
+    ce.title = "Empfohlene Gebühr für die nächste Bestätigung (mempool.space)";
+    ce.innerHTML = `<i></i>Gebühren ${fmtFee(fees.fast)} <small>sat/vB · ${FEE_TXT[l]}</small>`;
+  }
   if (fng){
     cf.hidden = false;
     cf.className = "chip " + (fng.v < 45 ? "err" : fng.v > 55 ? "ok" : "wait");
@@ -1525,6 +1548,28 @@ function renderChain(){
     cf.title = "Fear & Greed Index (0 = Panik, 100 = Gier)";
   }
 }
+// ---------- Gebühren (Mempool) ----------
+// Empfohlene Gebühr für die nächste Bestätigung in sat/vB, live von mempool.space.
+// Ruhig < 5 · normal < 20 · voll < 60 · darüber Stau. Bei Stau rollt der nächste Block überladen vorbei.
+let fees = null, feeNewsCd = 0;
+const feeLevel = f => f < 5 ? 0 : f < 20 ? 1 : f < 60 ? 2 : 3;
+const FEE_TXT = ["ruhig", "normal", "voll", "Stau!"];
+function onFees(f){
+  const fast = +f.fastestFee; if (!(fast > 0)) return;
+  const prev = fees ? feeLevel(fees.fast) : -1, lvl = feeLevel(fast);
+  fees = {fast, hour: +f.hourFee || fast};
+  if (prev >= 0 && lvl !== prev && mode === "live" && t > feeNewsCd && (lvl >= 2 || prev >= 2)){
+    feeNewsCd = t + 600;
+    news(lvl === 3 ? `<b>Stau im Mempool!</b> Eine schnelle Transaktion kostet jetzt ${fmtFee(fast)} sat/vB.`
+       : lvl === 2 ? `Der Mempool füllt sich: ${fmtFee(fast)} sat/vB für die nächste Bestätigung.`
+       : `Der Stau löst sich auf. Nur noch ${fmtFee(fast)} sat/vB.`, lvl === 3);
+  }
+  renderChain();
+}
+const fmtFee = v => v.toLocaleString("de-DE", {maximumFractionDigits: v < 10 ? 1 : 0});
+async function loadFees(){ try { onFees(await (await fetch("https://mempool.space/api/v1/fees/recommended")).json()); } catch(e){} }
+// Bisher geschürfte Bitcoin, exakt aus der Blockhöhe (Belohnung halbiert sich alle 210.000 Blöcke)
+function minedBtc(h){ let sat = 0, n = h + 1, r = 50e8; while (n > 0 && r >= 1){ const k = Math.min(n, 210000); sat += k*r; n -= k; r = Math.floor(r/2); } return sat/1e8; }
 // Fear & Greed Index laden (alternative.me, alle 30 Min)
 async function loadFng(){
   try {
@@ -1537,12 +1582,14 @@ async function loadFng(){
 // Verbindung zum Bitcoin-Netzwerk (Blöcke) starten
 function startChain(){
   connect("mempool.space", "wss://mempool.space/api/v1/ws",
-    ws => ws.send(JSON.stringify({action:"want", data:["blocks"]})),
+    ws => ws.send(JSON.stringify({action:"want", data:["blocks", "stats"]})),
     m => {
+      if (m.fees) onFees(m.fees);
       if (m.blocks && m.blocks.length) onBlock(m.blocks.reduce((a,b) => b.height > a.height ? b : a), true, true);
       if (m.block) onBlock(m.block, false, true);
     });
   loadFng(); setInterval(loadFng, 30*60*1000);
+  loadFees(); setInterval(loadFees, 2*60*1000);
 }
 // Testkurs: simulierte Blöcke, nur wenn kein echtes Netzwerk verbunden ist
 function demoChain(dt){
@@ -1718,6 +1765,8 @@ function startLive(p){
 const conn = {};
 // LIVE-Etikett antippen: Verbindungs-Details ein- und ausblenden
 $("welcomeX").addEventListener("click", () => { $("welcome").hidden = true; });
+$("price").title = "Antippen: Anzeige in sats umschalten";
+$("price").addEventListener("click", () => { store.sats = !store.sats; save(); hud(); });
 $("mode").addEventListener("click", () => { const pop = $("connPop"), on = pop.hidden; pop.hidden = !on; $("mode").setAttribute("aria-expanded", on ? "true" : "false"); });
 // WebSocket mit Status-Anzeige und automatischem Wiederverbinden
 function connect(name, url, onopen, parse){
@@ -2449,11 +2498,24 @@ function draw(){
   }
 
   if (blockAnim){
-    const dur = 6, k = (t - blockAnim.t0)/dur;
+    const heavy = blockAnim.fee >= 20, dur = heavy ? 9 : 6, k = (t - blockAnim.t0)/dur;
     if (k > 1) blockAnim = null;
     else {
-      const sz = 62*KS, x = W + sz - k*(W + sz*2), ang = -(k*(W + sz*2))/(sz*.64);
-      const y = groundY - sz*.62 + Math.abs(Math.sin(ang*2))*-3;
+      // Überladen (volle Gebühren): rollt nicht, sondern schiebt sich ächzend vorwärts, mit Transaktions-Kisten obendrauf
+      const sz = 62*KS, x = W + sz - k*(W + sz*2), ang = heavy ? Math.sin(t*9)*.035 : -(k*(W + sz*2))/(sz*.64);
+      const y = groundY - sz*.62 + (heavy ? Math.abs(Math.sin(t*4.5))*-2 : Math.abs(Math.sin(ang*2))*-3);
+      if (heavy){
+        const n = clamp(Math.round(blockAnim.fee/8), 3, 12), bs = 13*KS, cols = ["#7ab8ff", "#34d982", "#ffc94d", "#ff5c73", "#c79bff"];
+        let i = 0;
+        for (let row = 0; i < n; row++){
+          const per = Math.max(1, 4 - row);
+          for (let c = 0; c < per && i < n; c++, i++){
+            const bx = x - (per - 1)*bs*.55 + c*bs*1.1 + Math.sin(t*6 + i)*1.5, by = y - sz/2 - bs*.5 - row*bs*1.02;
+            ctx.fillStyle = cols[i % cols.length]; rr(bx - bs/2, by - bs/2, bs, bs, 3); ctx.fill(); ctx.strokeStyle = C.ink; ctx.lineWidth = 1.5; ctx.stroke();
+          }
+        }
+        if (!reduce && Math.random() < .15) fx.push({k:"dot", x: x - sz*.4, y: y - sz*.3, vx: rnd(-40, -10), vy: rnd(-60, -20), life: .6, max: .6, c: "#9fd8ff", r: rnd(1.5, 2.5)});
+      }
       ctx.save(); ctx.translate(x, y); ctx.rotate(ang);
       const gr = ctx.createLinearGradient(-sz/2, -sz/2, sz/2, sz/2); gr.addColorStop(0, "#ffb347"); gr.addColorStop(1, "#e8780e");
       ctx.fillStyle = gr; rr(-sz/2, -sz/2, sz, sz, 8*KS); ctx.fill();
@@ -2463,10 +2525,12 @@ function draw(){
       if (Math.random() < .5) fx.push({k:"dot", x: x + sz*.4, y: groundY - 2, vx: rnd(10, 60), vy: rnd(-40, -10), life: .5, max: .5, c: "rgba(230,210,180,.6)", r: rnd(2, 4)});
       ctx.textAlign = "center"; ctx.lineWidth = 4; ctx.strokeStyle = C.ink;
       ctx.font = `400 ${Math.round(12*KS + 3)}px ${FONT_D}`; ctx.fillStyle = "#ffb347";
-      const l1 = "BLOCK " + fmtInt(blockAnim.h), l2 = fmtInt(blockAnim.tx) + " Tx" + (blockAnim.pool ? " · " + blockAnim.pool : "");
-      ctx.strokeText(l1, x, y - sz*.9); ctx.fillText(l1, x, y - sz*.9);
+      const l1 = (blockAnim.fee >= 60 ? "STAU! " : "") + "BLOCK " + fmtInt(blockAnim.h), l2 = fmtInt(blockAnim.tx) + " Tx" + (blockAnim.fee >= 20 ? " · " + fmtFee(blockAnim.fee) + " sat/vB" : blockAnim.pool ? " · " + blockAnim.pool : "");
+      let rows = 0; if (heavy){ for (let left = clamp(Math.round(blockAnim.fee/8), 3, 12); left > 0; rows++) left -= Math.max(1, 4 - rows); }
+      const ly = heavy ? y - sz/2 - rows*13*KS*1.02 - 28*KS : y - sz*.9;
+      ctx.strokeText(l1, x, ly); ctx.fillText(l1, x, ly);
       ctx.font = `600 ${Math.round(8*KS + 3)}px ${FONT_N}`; ctx.fillStyle = "#ffffff"; ctx.lineWidth = 3;
-      ctx.strokeText(l2, x, y - sz*.9 + 15*KS); ctx.fillText(l2, x, y - sz*.9 + 15*KS);
+      ctx.strokeText(l2, x, ly + 15*KS); ctx.fillText(l2, x, ly + 15*KS);
     }
   }
   drawCrabs();
@@ -2593,7 +2657,12 @@ function draw(){
 // ---------- Anzeige ----------
 function hud(){
   if (mode !== "connecting"){
-    $("price").textContent = money(price);
+    // Antippen schaltet auf sats um: wie viele Satoshi bekommt man für 1 € bzw. 1 $?
+    const pe = $("price");
+    if (store.sats && price > 0){
+      const eur = store.eur && eurRate && mode === "live", html = `${fmtInt(1e8/(eur ? price*eurRate : price))}<small>sats = 1 ${eur ? "€" : "$"}</small>`;
+      if (pe.innerHTML !== html) pe.innerHTML = html;
+    } else pe.textContent = money(price);
     const d = price - startP;
     const el = $("chg");
     el.textContent = isTest() ? (mode === "zeit" && zt ? `Zeitreise · ${MONTHS[Math.floor(zt.m) % 12]} ${Math.floor(Math.floor(zt.m)/12)}` : mode === "test" ? "Testmodus · live: " + money(livePrice) : "Testkurs · nicht echt") : (d >= 0 ? "+" : "−") + usd(Math.abs(d)) + " seit du zuschaust";
