@@ -13,23 +13,26 @@
 <style>
 /* Lernwelt "Schlüssel": nur seitenspezifische Teile, der Rest kommt aus lern.css */
 .keys{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
-.keys div,.sig{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;padding:10px 12px}
-.keys small,.sig small{display:block;font-size:12px;color:var(--muted)}
-.keys code,.sig code{display:block;font:600 13px var(--f-num);word-break:break-all;margin-top:4px}
+.keys div{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;padding:10px 12px}
+.keys small{display:block;font-size:12px;color:var(--muted)}
+.keys code{display:block;font:600 13px var(--f-num);word-break:break-all;margin-top:4px}
 .keys .priv{border-color:var(--bear)} .keys .priv code{color:#ff9b8f} .keys .pub{border-color:var(--bull)} .keys .pub code{color:#8ff0b5}
-.step{margin-top:16px;font-weight:700} .step span{color:var(--gold)}
-.msg{width:100%;box-sizing:border-box;margin-top:8px;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:#0b0f2a;color:var(--ink);font:15px inherit}
-.acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
-.sig{margin-top:10px}
-.ex{margin:4px 0 0;font-size:14px;line-height:1.55;color:var(--muted)} .ex b{color:var(--ink)}
-.vd{line-height:1.5}
-.chk{margin-top:12px;display:grid;gap:8px}
-.row2{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.03)}
-.row2 .ic{flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-weight:800}
-.row2.y{border-color:var(--bull)} .row2.y .ic{background:rgba(46,204,113,.25);color:var(--bull)} .row2.n{border-color:var(--bear)} .row2.n .ic{background:rgba(231,76,60,.25);color:var(--bear)}
-.row2 b{font-size:14px} .row2 small{display:block;font-size:13px;color:var(--muted);margin-top:2px;line-height:1.45}
-.row2 code{display:block;font:12px var(--f-num);margin-top:6px;line-height:1.6} .row2 code i{font-style:normal;color:var(--bear)} .row2 code em{font-style:normal;color:var(--bull)}
-.vd{margin:10px 0 0;font-weight:700;min-height:1.4em} .ok{color:var(--bull)} .bad{color:var(--bear)}
+.step{margin:18px 0 0;font-weight:700} .step span{color:var(--gold)}
+.sign{display:flex;gap:8px;margin-top:8px} .sign .btn{flex:none}
+.msg{flex:1;min-width:0;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:#0b0f2a;color:var(--ink);font:15px inherit}
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}
+.tabs .btn{padding:10px 4px;font-size:14px} .tabs .btn[aria-pressed="true"]{outline:2px solid var(--gold);background:rgba(247,147,26,.15)} .tabs .btn:disabled{opacity:.4}
+.eq{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:stretch;gap:6px;margin-top:12px}
+.eq .op{align-self:center;color:var(--muted);font-weight:800}
+.part{border:2px solid var(--line);border-radius:14px;padding:8px 10px;background:rgba(255,255,255,.03);font-size:13px;transition:border-color .2s,background .2s}
+.part small{display:block;color:var(--muted);font-size:12px} .part b{display:block;margin-top:2px;word-break:break-word}
+.part em{display:block;font-style:normal;font-size:12px;margin-top:4px;color:var(--bear);font-weight:700}
+.part.y{border-color:var(--bull)} .part.n{border-color:var(--bear);background:rgba(231,76,60,.12)}
+.res{margin-top:10px;padding:12px 14px;border-radius:14px;border:2px solid var(--line);font-size:15px;line-height:1.5}
+.res strong{display:block;font-size:20px} .res.ok{border-color:var(--bull)} .res.ok strong{color:var(--bull)} .res.bad{border-color:var(--bear)} .res.bad strong{color:var(--bear)}
+.res code{font:12px var(--f-num)} .res i{font-style:normal;color:var(--bear)}
+.how{margin-top:12px;font-size:14px;color:var(--muted)} .how summary{cursor:pointer;color:var(--gold);font-weight:700} .how p{margin:8px 0 0;line-height:1.55} .how b{color:var(--ink)}
+@media (max-width:620px){ .eq{grid-template-columns:1fr;gap:2px} .eq .op{justify-self:center;line-height:1} .sign{flex-direction:column} }
 .big{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
 .big div{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;padding:10px 12px;font-size:14px;color:var(--muted)}
 .big b{display:block;font:600 19px var(--f-num);color:var(--ink)}
@@ -46,33 +49,35 @@
 
   <section class="card" aria-labelledby="h1s">
     <h2 id="h1s">Unterschreiben und prüfen</h2>
-    <p class="step"><span>1.</span> Dein Schlüsselpaar</p>
-    <p class="ex">Eine Wallet erzeugt immer <b>zwei zusammengehörige Schlüssel</b>. Der <b>private</b> ist eine geheime Zufallszahl, mit ihm unterschreibst du Zahlungen. Aus ihm wird der <b>öffentliche</b> berechnet, aus ihm entsteht deine Bitcoin-Adresse. Umgekehrt geht das nicht: Vom öffentlichen Schlüssel kommt niemand zurück zum privaten.</p>
+    <p class="muted" style="margin:0">Eine Zahlung ist nur gültig, wenn <b>drei Teile zusammenpassen</b>: der Text, die Signatur und dein öffentlicher Schlüssel.</p>
+
+    <p class="step"><span>1.</span> Deine zwei Schlüssel</p>
     <div class="keys">
-      <div class="priv"><small>🔒 Privater Schlüssel · geheim halten</small><code id="kPriv">…</code></div>
-      <div class="pub"><small>🔓 Öffentlicher Schlüssel · darf jeder sehen</small><code id="kPub">…</code></div>
+      <div class="priv"><small>🔒 Privat · geheim, damit unterschreibst du</small><code id="kPriv">…</code></div>
+      <div class="pub"><small>🔓 Öffentlich · für alle, damit wird geprüft</small><code id="kPub">…</code></div>
     </div>
-    <div class="acts"><button class="btn ghost" id="newKey" type="button">🎲 Neues Schlüsselpaar</button></div>
 
-    <p class="step"><span>2.</span> Nachricht unterschreiben</p>
-    <p class="ex">Wenn du Bitcoin sendest, schreibt deine Wallet eine Nachricht wie unten und <b>unterschreibt sie mit deinem privaten Schlüssel</b>. Die Signatur ist eine lange Zahl, die aus <b>genau diesem Text und deinem privaten Schlüssel</b> berechnet wird. Der private Schlüssel selbst verlässt dabei nie deine Wallet.</p>
-    <input class="msg" id="msg" value="Zahle 0,01 BTC an Anna" aria-label="Nachricht">
-    <div class="acts"><button class="btn" id="sign" type="button">✍️ Mit privatem Schlüssel unterschreiben</button></div>
-    <div class="sig"><small>Signatur</small><code id="sig">noch keine</code></div>
+    <p class="step"><span>2.</span> Zahlung schreiben und unterschreiben</p>
+    <div class="sign"><input class="msg" id="msg" value="Zahle 0,01 BTC an Anna" aria-label="Zahlung"><button class="btn" id="sign" type="button">✍️ Unterschreiben</button></div>
 
-    <p class="step"><span>3.</span> Jemand prüft mit deinem öffentlichen Schlüssel</p>
-    <p class="ex">Jede Node im Netz bekommt <b>Nachricht, Signatur und öffentlichen Schlüssel</b>. Damit rechnet sie nach, ob alles zusammenpasst. Den privaten Schlüssel braucht sie dafür nicht. Teste die drei Fälle:</p>
-    <div class="acts">
-      <button class="btn ghost" id="vOk" type="button">✅ Prüfen</button>
-      <button class="btn ghost" id="vTamper" type="button">✏️ Betrag fälschen</button>
-      <button class="btn ghost" id="vThief" type="button">🦹 Dieb unterschreibt</button>
+    <p class="step"><span>3.</span> Die Node prüft. Wähle einen Fall:</p>
+    <div class="tabs" id="tabs">
+      <button class="btn ghost" data-c="ok" type="button" disabled>✅ Echt</button>
+      <button class="btn ghost" data-c="tamper" type="button" disabled>✏️ Text geändert</button>
+      <button class="btn ghost" data-c="thief" type="button" disabled>🦹 Dieb</button>
     </div>
-    <div class="chk" id="chk" hidden>
-      <p class="ex" style="margin:0 0 8px">Eine Node prüft immer <b>zwei Dinge</b>. Nur wenn <b>beide</b> stimmen, ist die Zahlung gültig:</p>
-      <div class="row2" id="cA"><span class="ic"></span><div><b>Frage 1: Wurde mit deinem privaten Schlüssel unterschrieben?</b><small id="cAt"></small></div></div>
-      <div class="row2" id="cB"><span class="ic"></span><div><b>Frage 2: Ist der Text noch genau der unterschriebene?</b><small id="cBt"></small><code id="cBf"></code></div></div>
+    <div class="eq" id="eq" hidden>
+      <div class="part" id="pT"><small>📝 Text</small><b id="pTv"></b><em id="pTe"></em></div><span class="op">+</span>
+      <div class="part" id="pS"><small>✍️ Signatur</small><b id="pSv"></b><em id="pSe"></em></div><span class="op">+</span>
+      <div class="part y"><small>🔓 Öffentlicher Schlüssel</small><b>deiner</b></div>
     </div>
-    <p class="vd" id="vd" aria-live="polite"></p>
+    <div class="res" id="res" aria-live="polite">Erst bei Schritt 2 unterschreiben.</div>
+
+    <details class="how"><summary>Wie rechnet die Node das genau?</summary>
+      <p>Beim Unterschreiben bildet die Wallet einen <b>Fingerabdruck</b> (Hash) des Textes und verrechnet ihn mit deinem <b>privaten Schlüssel</b>. Heraus kommt die Signatur.</p>
+      <p>Die Node bildet denselben Fingerabdruck und rechnet mit Signatur und <b>öffentlichem Schlüssel</b> nach. Geht die Rechnung auf, ist alles echt. Schon ein anderes Zeichen im Text oder ein fremder Schlüssel, und die Rechnung geht nicht auf.</p>
+      <p>Den privaten Schlüssel sieht die Node dabei nie. Und aus dem öffentlichen lässt er sich nicht zurückrechnen.</p>
+    </details>
   </section>
 
   <section class="card" aria-labelledby="h2s">
@@ -116,48 +121,42 @@ const b64u = s => hex(Uint8Array.from(atob(s.replace(/-/g, "+").replace(/_/g, "/
 const short = h => h.slice(0, 24) + "…" + h.slice(-8);
 const enc = t => new TextEncoder().encode(t);
 let pair = null, sig = null, signedMsg = "";
+const fp = t => Lern.sha256(t).slice(0, 12);   // Fingerabdruck (Hash) des Textes
 
 async function newKey(){
   pair = await C.generateKey(ALG, true, ["sign", "verify"]);
   const jwk = await C.exportKey("jwk", pair.privateKey);
   $("kPriv").textContent = short(b64u(jwk.d));
   $("kPub").textContent = short(hex(await C.exportKey("raw", pair.publicKey)));
-  sig = null; $("sig").textContent = "noch keine"; say("", ""); $("chk").hidden = true;
 }
-function say(cls, t){ $("vd").className = "vd " + cls; $("vd").textContent = t; }
-async function check(msg, s){ return C.verify(SIG, pair.publicKey, s, enc(msg)); }
+const check = (msg, s) => C.verify(SIG, pair.publicKey, s, enc(msg));   // echte Prüfung im Browser
+const part = (id, ok, val, err) => { $(id).className = "part " + (ok ? "y" : "n"); $(id + "v").textContent = val; $(id + "e").textContent = ok ? "" : err; };
 
-$("newKey").onclick = newKey;
 $("sign").onclick = async () => {
-  signedMsg = $("msg").value; sig = await C.sign(SIG, pair.privateKey, enc(signedMsg));
-  $("sig").textContent = short(hex(sig)); say("", "Unterschrieben. Jetzt prüfe unten, ob die Signatur passt und ob man sie fälschen kann.");
+  signedMsg = $("msg").value.trim() || "Zahle 0,01 BTC an Anna"; $("msg").value = signedMsg;
+  sig = await C.sign(SIG, pair.privateKey, enc(signedMsg));
+  [...$("tabs").children].forEach(b => b.disabled = false);
+  run("ok");
 };
-const need = () => { if (!sig){ say("bad", "Erst bei Schritt 2 unterschreiben."); return false; } return true; };
-const fp = t => Lern.sha256(t).slice(0, 16);   // Fingerabdruck (Hash) des Textes; signiert wird genau dieser Hash
-// Zeigt die zwei Prüffragen. keyOk: Signatur stammt von deinem Schlüssel; signedText: Text, für den die Signatur erstellt wurde
-function explain(valid, keyOk, text, signedText){
-  const same = text === signedText, A = $("cA"), B = $("cB");
-  $("chk").hidden = false;
-  A.className = "row2 " + (keyOk ? "y" : "n"); A.querySelector(".ic").textContent = keyOk ? "✓" : "✗";
-  $("cAt").textContent = keyOk ? "Ja. Rechnet man die Signatur mit deinem öffentlichen Schlüssel nach, geht die Rechnung auf." : "Nein. Die Signatur kommt von einem anderen privaten Schlüssel. Mit deinem öffentlichen Schlüssel geht die Rechnung nicht auf.";
-  B.className = "row2 " + (same ? "y" : "n"); B.querySelector(".ic").textContent = same ? "✓" : "✗";
-  $("cBt").textContent = same ? "Ja. Der Fingerabdruck des Textes ist derselbe wie beim Unterschreiben." : "Nein. Neuer Text ergibt einen ganz anderen Fingerabdruck. Die Signatur gilt aber nur für den alten.";
-  const f1 = fp(signedText), f2 = fp(text), tag = same ? "em" : "i";
-  $("cBf").innerHTML = `unterschrieben: ${f1}<br>jetzt im Text:&nbsp; <${tag}>${f2}</${tag}>`;
-  say(valid ? "ok" : "bad", valid ? "✓ Gültig: Beide Fragen mit Ja beantwortet. Die Nodes akzeptieren die Zahlung." : "✗ Ungültig: Mindestens eine Frage ist mit Nein beantwortet. Die Nodes lehnen ab.");
+$("msg").addEventListener("input", () => { if (sig && $("msg").value !== signedMsg) $("res").textContent = "Text geändert. Neu unterschreiben, damit die Signatur wieder passt."; });
+
+// Drei Fälle: echt, Text nachträglich geändert, Dieb mit eigenem Schlüssel
+async function run(c){
+  [...$("tabs").children].forEach(b => b.setAttribute("aria-pressed", b.dataset.c === c));
+  let text = signedMsg, s = sig, valid, why;
+  if (c === "tamper"){ const r = signedMsg.replace(/\d+([,.]\d+)?/, "100"); text = r === signedMsg ? signedMsg + "!" : r; }
+  if (c === "thief"){ const t = await C.generateKey(ALG, false, ["sign", "verify"]); text = "Zahle alles an den Dieb"; s = await C.sign(SIG, t.privateKey, enc(text)); }
+  valid = await check(text, s);
+  $("eq").hidden = false;
+  part("pT", c !== "tamper", "„" + text + "“", "nachträglich geändert");
+  part("pS", c !== "thief", c === "thief" ? "vom Dieb, " + short(hex(s)).slice(0, 12) + "…" : "von dir, " + short(hex(s)).slice(0, 12) + "…", "mit fremdem Schlüssel erstellt");
+  if (c === "ok") why = "Alle drei Teile passen zusammen. Die Zahlung kommt nachweislich von dir und wurde nicht verändert.";
+  if (c === "tamper") why = `Die Signatur wurde für den alten Text erstellt. Der geänderte Text hat einen anderen Fingerabdruck:<br><code>alt ${fp(signedMsg)}</code><br><code>neu <i>${fp(text)}</i></code>`;
+  if (c === "thief") why = "Der Dieb kann unterschreiben, aber nur mit seinem eigenen Schlüssel. Geprüft wird mit deinem öffentlichen Schlüssel, und der passt nur zu deinem privaten.";
+  $("res").className = "res " + (valid ? "ok" : "bad");
+  $("res").innerHTML = `<strong>${valid ? "✓ Gültig" : "✗ Ungültig"}</strong>${why}`;
 }
-$("vOk").onclick = async () => { if (!need()) return;
-  $("msg").value = signedMsg; explain(await check(signedMsg, sig), true, signedMsg, signedMsg);
-};
-$("vTamper").onclick = async () => { if (!need()) return;
-  const r = signedMsg.replace(/\d+([,.]\d+)?/, "100"), fake = r === signedMsg ? signedMsg + "!" : r;
-  $("msg").value = fake; explain(await check(fake, sig), true, fake, signedMsg);
-};
-$("vThief").onclick = async () => { if (!need()) return;
-  const thief = await C.generateKey(ALG, false, ["sign", "verify"]), m = "Zahle alles an den Dieb";
-  const s = await C.sign(SIG, thief.privateKey, enc(m));
-  $("msg").value = m; explain(await check(m, s), false, m, m);
-};
+$("tabs").addEventListener("click", e => { const b = e.target.closest("button"); if (b && !b.disabled) run(b.dataset.c); });
 
 // Wie schnell rät dieses Gerät Schlüssel? (Zufallszahlen erzeugen, 300 ms lang)
 function rate(){
@@ -169,7 +168,7 @@ function rate(){
   $("myTime").textContent = `≈ 10${sup} Jahre`;
 }
 
-newKey().catch(() => say("bad", "Dein Browser unterstützt Web Crypto hier nicht. Öffne die Seite über https."));
+newKey().catch(() => { $("res").textContent = "Dein Browser unterstützt Web Crypto hier nicht. Öffne die Seite über https."; });
 setTimeout(rate, 400);
 
 const QUIZ = [
