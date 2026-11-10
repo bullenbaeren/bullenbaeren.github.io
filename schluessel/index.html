@@ -31,6 +31,17 @@
 .res{margin-top:10px;padding:12px 14px;border-radius:14px;border:2px solid var(--line);font-size:15px;line-height:1.5}
 .res strong{display:block;font-size:20px} .res.ok{border-color:var(--bull)} .res.ok strong{color:var(--bull)} .res.bad{border-color:var(--bear)} .res.bad strong{color:var(--bear)}
 .res code{font:12px var(--f-num)} .res i{font-style:normal;color:var(--bear)}
+.ex{margin:4px 0 0;font-size:14px;line-height:1.55;color:var(--muted)} .ex b{color:var(--ink)}
+.acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.calc{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:8px}
+.calc li{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;padding:10px 12px;border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.03);animation:pop .3s}
+.calc .who{grid-row:span 2;font-size:22px} .calc b{font-size:14px} .calc span{font-size:14px;color:var(--muted);line-height:1.5}
+.calc code{font:700 15px var(--f-num);color:var(--ink)} .calc .sec{color:#ff9b8f} .calc .pub{color:#8ff0b5}
+.cmp2{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;margin-top:10px;padding:12px;border-radius:14px;border:2px solid var(--line)}
+.cmp2 div{text-align:center;font-size:13px;color:var(--muted)} .cmp2 code{display:block;font:700 22px var(--f-num);color:var(--ink);margin:2px 0}
+.cmp2 .eqs{font:800 26px var(--f-num)} .cmp2.ok{border-color:var(--bull)} .cmp2.ok .eqs{color:var(--bull)} .cmp2.bad{border-color:var(--bear)} .cmp2.bad .eqs{color:var(--bear)}
+.cmp2 p{grid-column:1/-1;margin:4px 0 0;font-size:14px;line-height:1.5}
+@keyframes pop{from{opacity:0;transform:translateY(6px)}}
 .how{margin-top:12px;font-size:14px;color:var(--muted)} .how summary{cursor:pointer;color:var(--gold);font-weight:700} .how p{margin:8px 0 0;line-height:1.55} .how b{color:var(--ink)}
 @media (max-width:620px){ .eq{grid-template-columns:1fr;gap:2px} .eq .op{justify-self:center;line-height:1} .sign{flex-direction:column} }
 .big{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
@@ -73,11 +84,21 @@
     </div>
     <div class="res" id="res" aria-live="polite">Erst bei Schritt 2 unterschreiben.</div>
 
-    <details class="how"><summary>Wie rechnet die Node das genau?</summary>
-      <p>Beim Unterschreiben bildet die Wallet einen <b>Fingerabdruck</b> (Hash) des Textes und verrechnet ihn mit deinem <b>privaten Schlüssel</b>. Heraus kommt die Signatur.</p>
-      <p>Die Node bildet denselben Fingerabdruck und rechnet mit Signatur und <b>öffentlichem Schlüssel</b> nach. Geht die Rechnung auf, ist alles echt. Schon ein anderes Zeichen im Text oder ein fremder Schlüssel, und die Rechnung geht nicht auf.</p>
-      <p>Den privaten Schlüssel sieht die Node dabei nie. Und aus dem öffentlichen lässt er sich nicht zurückrechnen.</p>
-    </details>
+    <p class="how"><a href="#h5s">Wie rechnet die Node das genau? Schritt für Schritt ↓</a></p>
+  </section>
+
+  <section class="card" aria-labelledby="h5s">
+    <h2 id="h5s">Die Rechnung dahinter, mit kleinen Zahlen</h2>
+    <p class="muted" style="margin:0">Bitcoin nutzt eine <b>Einbahn-Maschine</b>: Eine Zahl rein, eine andere raus. Vorwärts geht das blitzschnell, <b>rückwärts unmöglich</b>. Damit du mitrechnen kannst, ist unsere Maschine hier ganz einfach: <b>mal 7</b>.</p>
+    <ol class="calc" id="calc"></ol>
+    <div class="acts"><button class="btn" id="cNext" type="button">Nächster Schritt →</button><button class="btn ghost" id="cAgain" type="button" hidden>↺ Neue Zahlen</button></div>
+    <div class="tabs" id="cTabs" hidden>
+      <button class="btn ghost" data-t="ok" type="button">✅ Echt</button>
+      <button class="btn ghost" data-t="tamper" type="button">✏️ Text geändert</button>
+      <button class="btn ghost" data-t="thief" type="button">🦹 Dieb rät</button>
+    </div>
+    <div class="cmp2" id="cmp2" hidden></div>
+    <p class="ex" style="margin-top:10px"><b>Ehrlicher Hinweis:</b> „Mal 7“ könnte man natürlich durch 7 teilen. Die echte Maschine ist eine Rechnung auf einer elliptischen Kurve mit 78-stelligen Zahlen, und dort gibt es kein Zurück.</p>
   </section>
 
   <section class="card" aria-labelledby="h2s">
@@ -157,6 +178,45 @@ async function run(c){
   $("res").innerHTML = `<strong>${valid ? "✓ Gültig" : "✗ Ungültig"}</strong>${why}`;
 }
 $("tabs").addEventListener("click", e => { const b = e.target.closest("button"); if (b && !b.disabled) run(b.dataset.c); });
+
+// ---------- Die Rechnung dahinter (Schnorr-Prinzip mit "mal 7" als Spielzeug-Maschine) ----------
+const M = x => 7*x;   // Einbahn-Maschine (hier umkehrbar, in echt nicht)
+const TXT = "Zahle 0,01 BTC an Anna", FAKE = "Zahle 100 BTC an Anna";
+const E = t => parseInt(Lern.sha256(t).slice(0, 4), 16) % 9 + 2;   // kleiner Fingerabdruck 2–10
+const rnd = (a, b) => a + Math.floor(Math.random()*(b - a + 1));
+const n = v => v.toLocaleString("de-DE");
+let T = {}, stepN = 0;
+function fresh(){
+  const k = rnd(11, 49), r = rnd(11, 49), e = E(TXT);
+  T = {k, r, e, P: M(k), R: M(r), s: r + e*k};
+  stepN = 0; $("calc").innerHTML = ""; $("cTabs").hidden = $("cmp2").hidden = true; $("cNext").hidden = false; $("cAgain").hidden = true;
+}
+const STEPS = [
+  () => ["🔒", "Wallet: Geheimzahl würfeln", `Privater Schlüssel <code class="sec">k = ${T.k}</code>. Den kennt nur deine Wallet.`],
+  () => ["🔓", "Öffentlichen Schlüssel berechnen", `Maschine(${T.k}) = 7 × ${T.k} = <code class="pub">P = ${T.P}</code>. Diese Zahl darf jeder sehen.`],
+  () => ["🎲", "Wallet: Einmal-Zahl würfeln", `Für jede Zahlung neu: <code class="sec">r = ${T.r}</code>, daraus Maschine(${T.r}) = <code class="pub">R = ${T.R}</code>.`],
+  () => ["🧾", "Fingerabdruck des Textes", `Aus „${TXT}“ wird per Hash eine Zahl: <code>e = ${T.e}</code>. Anderer Text, andere Zahl.`],
+  () => ["✍️", "Signatur berechnen", `s = r + e × k = ${T.r} + ${T.e} × ${T.k} = <code>s = ${n(T.s)}</code>. Gesendet werden nur <b>R = ${T.R}</b> und <b>s = ${n(T.s)}</b>, nie k.`],
+  () => ["🖥", "Node prüft", `Die Node kennt nur Text, P, R und s. Sie rechnet zwei Seiten aus. Sind beide gleich, ist die Signatur echt.`],
+];
+$("cNext").onclick = () => {
+  const [w, t, d] = STEPS[stepN++]();
+  $("calc").insertAdjacentHTML("beforeend", `<li><span class="who">${w}</span><b>${stepN}. ${t}</b><span>${d}</span></li>`);
+  if (stepN === STEPS.length){ $("cNext").hidden = true; $("cAgain").hidden = false; $("cTabs").hidden = false; test("ok"); }
+};
+$("cAgain").onclick = () => { fresh(); $("cNext").click(); };
+function test(c){
+  [...$("cTabs").children].forEach(b => b.setAttribute("aria-pressed", b.dataset.t === c));
+  const txt = c === "tamper" ? FAKE : TXT, e = E(txt), s = c === "thief" ? T.s + rnd(1, 40) : T.s;
+  const L = M(s), Rr = T.R + e*T.P, ok = L === Rr;
+  const why = c === "ok" ? `Geht auf, weil 7 × (r + e × k) = 7 × r + e × 7 × k = R + e × P. Das klappt nur mit dem richtigen k.`
+    : c === "tamper" ? `Der Text „${FAKE}“ hat den Fingerabdruck e = ${e} statt ${T.e}. Die Signatur passt nur zum alten Text.`
+    : `Der Dieb kennt k nicht und rät s = ${n(s)}. Ohne k trifft er die richtige Zahl nicht.`;
+  const C2 = $("cmp2"); C2.hidden = false; C2.className = "cmp2 " + (ok ? "ok" : "bad");
+  C2.innerHTML = `<div>Links: Maschine(s)<code>${n(L)}</code>7 × ${n(s)}</div><span class="eqs">${ok ? "=" : "≠"}</span><div>Rechts: R + e × P<code>${n(Rr)}</code>${T.R} + ${e} × ${T.P}</div><p><b>${ok ? "✓ Gültig." : "✗ Ungültig."}</b> ${why}</p>`;
+}
+$("cTabs").addEventListener("click", ev => { const b = ev.target.closest("button"); if (b) test(b.dataset.t); });
+fresh();
 
 // Wie schnell rät dieses Gerät Schlüssel? (Zufallszahlen erzeugen, 300 ms lang)
 function rate(){
