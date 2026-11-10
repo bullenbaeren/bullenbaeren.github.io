@@ -45,6 +45,7 @@
 .der td{padding:5px 6px;border-top:1px solid var(--line);vertical-align:top} .der td:nth-child(2){font:700 13px var(--f-num);color:var(--ink);white-space:nowrap}
 .der td:nth-child(3){font:12px var(--f-num);color:var(--muted)} .der td:nth-child(4){color:var(--gold);font-size:12px} .der .pub{color:#8ff0b5}
 @media (max-width:520px){ .der td:nth-child(3){display:none} }
+.tip{margin-top:10px;padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:14px;line-height:1.55}
 @keyframes pop{from{opacity:0;transform:translateY(6px)}}
 .how{margin-top:12px;font-size:14px;color:var(--muted)} .how summary{cursor:pointer;color:var(--gold);font-weight:700} .how p{margin:8px 0 0;line-height:1.55} .how b{color:var(--ink)}
 @media (max-width:620px){ .eq{grid-template-columns:1fr;gap:2px} .eq .op{justify-self:center;line-height:1} .sign{flex-direction:column} }
@@ -102,6 +103,7 @@
       <button class="btn ghost" data-t="thief" type="button">🦹 Dieb rät</button>
     </div>
     <div class="cmp2" id="cmp2" hidden></div>
+    <div class="tip" id="cTip" hidden><b>Kurz erklärt:</b> Die Node rechnet <b>dieselbe Zahl auf zwei Wegen</b> aus. Links mit der Signatur s, rechts nur mit öffentlichen Zahlen (R, e, P). Die rechte Seite ist nur die linke, umsortiert. Weil in s die Geheimzahl k steckt, kommen beide Wege nur bei einer <b>echten Signatur</b> auf dieselbe Zahl. Ändert sich der Text (anderes e) oder rät jemand s, passt es nicht mehr.</div>
     <p class="ex" style="margin-top:10px"><b>Ehrlicher Hinweis:</b> „Mal 7“ könnte man natürlich durch 7 teilen. Die echte Maschine ist eine Rechnung auf einer elliptischen Kurve mit 78-stelligen Zahlen, und dort gibt es kein Zurück.</p>
   </section>
 
@@ -193,7 +195,7 @@ let T = {}, stepN = 0;
 function fresh(){
   const k = rnd(11, 49), r = rnd(11, 49), e = E(TXT);
   T = {k, r, e, P: M(k), R: M(r), s: r + e*k};
-  stepN = 0; $("calc").innerHTML = ""; $("cTabs").hidden = $("cmp2").hidden = true; $("cNext").hidden = false; $("cAgain").hidden = true;
+  stepN = 0; $("calc").innerHTML = ""; $("cTabs").hidden = $("cmp2").hidden = $("cTip").hidden = true; $("cNext").hidden = false; $("cAgain").hidden = true;
 }
 const STEPS = [
   () => ["🔒", "Wallet: Geheimzahl würfeln", `Privater Schlüssel <code class="sec">k = ${T.k}</code>. Den kennt nur deine Wallet.`],
@@ -206,7 +208,7 @@ const STEPS = [
 $("cNext").onclick = () => {
   const [w, t, d] = STEPS[stepN++]();
   $("calc").insertAdjacentHTML("beforeend", `<li><span class="who">${w}</span><b>${stepN}. ${t}</b><span>${d}</span></li>`);
-  if (stepN === STEPS.length){ $("cNext").hidden = true; $("cAgain").hidden = false; $("cTabs").hidden = false; test("ok"); }
+  if (stepN === STEPS.length){ $("cNext").hidden = true; $("cAgain").hidden = false; $("cTabs").hidden = false; $("cTip").hidden = false; test("ok"); }
 };
 $("cAgain").onclick = () => { fresh(); $("cNext").click(); };
 function test(c){
