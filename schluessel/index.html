@@ -41,6 +41,10 @@
 .cmp2 div{text-align:center;font-size:13px;color:var(--muted)} .cmp2 code{display:block;font:700 22px var(--f-num);color:var(--ink);margin:2px 0}
 .cmp2 .eqs{font:800 26px var(--f-num)} .cmp2.ok{border-color:var(--bull)} .cmp2.ok .eqs{color:var(--bull)} .cmp2.bad{border-color:var(--bear)} .cmp2.bad .eqs{color:var(--bear)}
 .cmp2 p{grid-column:1/-1;margin:4px 0 0;font-size:14px;line-height:1.5}
+.der{grid-column:1/-1;border-collapse:collapse;font-size:13px;margin-top:6px;width:100%}
+.der td{padding:5px 6px;border-top:1px solid var(--line);vertical-align:top} .der td:nth-child(2){font:700 13px var(--f-num);color:var(--ink);white-space:nowrap}
+.der td:nth-child(3){font:12px var(--f-num);color:var(--muted)} .der td:nth-child(4){color:var(--gold);font-size:12px} .der .pub{color:#8ff0b5}
+@media (max-width:520px){ .der td:nth-child(3){display:none} }
 @keyframes pop{from{opacity:0;transform:translateY(6px)}}
 .how{margin-top:12px;font-size:14px;color:var(--muted)} .how summary{cursor:pointer;color:var(--gold);font-weight:700} .how p{margin:8px 0 0;line-height:1.55} .how b{color:var(--ink)}
 @media (max-width:620px){ .eq{grid-template-columns:1fr;gap:2px} .eq .op{justify-self:center;line-height:1} .sign{flex-direction:column} }
@@ -209,7 +213,13 @@ function test(c){
   [...$("cTabs").children].forEach(b => b.setAttribute("aria-pressed", b.dataset.t === c));
   const txt = c === "tamper" ? FAKE : TXT, e = E(txt), s = c === "thief" ? T.s + rnd(1, 40) : T.s;
   const L = M(s), Rr = T.R + e*T.P, ok = L === Rr;
-  const why = c === "ok" ? `Geht auf, weil 7 × (r + e × k) = 7 × r + e × 7 × k = R + e × P. Das klappt nur mit dem richtigen k.`
+  const why = c === "ok" ? `Warum sind beide Seiten gleich? So setzt sich die linke Seite zusammen:</p>
+    <table class="der"><tr><td>Links</td><td>7 × s</td><td>7 × ${n(T.s)}</td><td></td></tr>
+    <tr><td>=</td><td>7 × (r + e × k)</td><td>7 × (${T.r} + ${T.e} × ${T.k})</td><td>s ist ja r + e × k</td></tr>
+    <tr><td>=</td><td>7 × r + e × (7 × k)</td><td>7 × ${T.r} + ${T.e} × (7 × ${T.k})</td><td>die 7 auf beide Teile verteilt</td></tr>
+    <tr><td>=</td><td><b class="pub">R</b> + e × <b class="pub">P</b></td><td>${T.R} + ${T.e} × ${T.P}</td><td>7 × r ist R, 7 × k ist P</td></tr>
+    <tr><td>=</td><td colspan="3"><b>Rechts ✓</b></td></tr></table>
+    <p style="margin-top:6px">Die Node kennt k und r nicht. Sie braucht sie aber auch nicht: Links steht nur s, rechts nur die öffentlichen Zahlen R, e und P. Weil in s die Geheimzahl k steckt, geht die Rechnung nur auf, wenn wirklich der Besitzer von k unterschrieben hat.`
     : c === "tamper" ? `Der Text „${FAKE}“ hat den Fingerabdruck e = ${e} statt ${T.e}. Die Signatur passt nur zum alten Text.`
     : `Der Dieb kennt k nicht und rät s = ${n(s)}. Ohne k trifft er die richtige Zahl nicht.`;
   const C2 = $("cmp2"); C2.hidden = false; C2.className = "cmp2 " + (ok ? "ok" : "bad");
