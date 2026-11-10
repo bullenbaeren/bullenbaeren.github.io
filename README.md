@@ -1,7 +1,7 @@
-# Bullen vs Bären
+# Satsland
 
-Der echte Bitcoin-Kurs als Comic-Schlacht.
+Bitcoin spielerisch verstehen: Lernwelten mit echten Live-Daten und das Spiel „Bullen vs Bären“.
 
-Live: https://bullenbaeren.github.io/
+https://satsland.github.io/
 
-Unterhaltung, keine Anlageberatung. Kursdaten ohne Gewähr.
+Unterhaltung und Lernen, keine Anlageberatung.

@@ -48,7 +48,7 @@ const Lern = (() => {
     const el = document.getElementById("next"); if (!el) return;
     const n = nextAfter(id);
     el.innerHTML = n ? `<span class="muted">Empfohlen als Nächstes</span><b>${n[1]}</b><a href="${root}${n[2]}">Los geht's →</a>`
-                     : `<b>Stark, alle bisherigen Welten geschafft!</b><a href="${root}lernen/">Zur Übersicht →</a>`;
+                     : `<b>Stark, alle bisherigen Welten geschafft!</b><a href="${root}">Zur Übersicht →</a>`;
   }
   return {PATH, load, done, visit, quiz, renderNext, nextAfter};
 })();
