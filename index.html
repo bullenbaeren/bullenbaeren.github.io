@@ -14,7 +14,7 @@
 <meta property="og:description" content="Bitcoin spielerisch verstehen, mit echten Live-Daten.">
 <meta property="og:image" content="https://satsland.github.io/og.png">
 <meta property="og:url" content="https://satsland.github.io/">
-<link rel="stylesheet" href="lern.css?v=23">
+<link rel="stylesheet" href="lern.css?v=24">
 <style>
 /* Übersicht der Lernwelten: gleiche Farben und Schriften wie das Spiel. */
 .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
@@ -65,6 +65,15 @@ a:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
 .kap .w .tag{display:none}
 .resume{display:flex;align-items:center;gap:10px;margin:10px 0 0;padding:12px 14px;border-radius:16px;border:3px solid #0d1230;box-shadow:3px 3px 0 #0d1230;background:linear-gradient(135deg,#ffc94d,#f7931a);color:#241500;text-decoration:none;font:900 16px var(--f-display)}
 .resume .ic{flex:none;width:40px;height:40px} .resume .ic svg{width:100%;height:100%} .resume small{display:block;font:700 12px var(--f-body);opacity:.75} .resume span{flex:1;min-width:0} .resume::after{content:"→";font-size:22px}
+
+/* Lernpfad als Berg (Pfad-Ansicht) */
+.vsw{margin-top:12px} .path.asmap details.kap{display:none}
+.mapw{margin-top:10px;max-height:72vh;overflow-y:auto;overscroll-behavior:contain;border-radius:18px;border:3px solid #0d1230;box-shadow:4px 4px 0 #0d1230;background:#0b0f2a;scroll-behavior:smooth}
+.mapw svg{display:block;width:100%;height:auto} .mapw a,.mapw [data-b]{cursor:pointer}
+.mapw a:hover .nb,.mapw [data-b]:hover .nb{stroke:#ffc94d}
+.mapw .curr{animation:mpulse 1.6s ease-in-out infinite;transform-box:fill-box;transform-origin:center} @keyframes mpulse{50%{transform:scale(1.12)}}
+.mapw .spin{animation:mspin 8s linear infinite;transform-box:fill-box;transform-origin:center} @keyframes mspin{to{transform:rotate(360deg)}}
+.mapw .gold{animation:mdraw 1.6s ease-out both} @keyframes mdraw{from{stroke-dashoffset:var(--len)}to{stroke-dashoffset:0}}
 /* Profi-Pfad: Vertiefungen nach dem Kapitel-Boss */
 details.pro{margin-top:10px;border-radius:14px;border:2px dashed rgba(178,107,255,.55);padding:8px 10px;background:rgba(178,107,255,.06)}
 details.pro > summary b{font:900 15px var(--f-display);color:#d6b8ff;white-space:nowrap} details.pro > summary small{flex:1;text-align:right;font-size:12px;color:var(--muted)}
@@ -93,6 +102,8 @@ details.fold[open] > summary{margin-bottom:12px}
   <section class="card path" aria-labelledby="pth"><div class="ph"><h2 id="pth">🗺️ Dein Lernpfad</h2><span class="muted" id="pathCount"></span></div>
     <p class="lvup" id="lvup"></p>
     <div class="next" id="next"></div>
+    <div class="seg vsw" id="vsw" role="group" aria-label="Ansicht wählen"><button class="btn" type="button" data-v="map">🗺️ Pfad</button><button class="btn" type="button" data-v="list">📋 Liste</button></div>
+    <div class="mapw" id="mapw" hidden><div id="map"></div></div>
     <details class="kap fold" data-k="1"><summary><span class="cn">1</span><span class="ct"><b>🏦 Geld verstehen</b><small>Was Geld ist, woher es kommt und warum es an Wert verliert.</small></span><span class="cp" data-cnt="1"><i><u></u></i><em></em></span></summary>
       <div class="grid big">
         <a class="w" href="geld/"><span class="tag live">Neu</span><span class="ic" aria-hidden="true"></span><b>Was ist Geld?</b><span>Tausch-Insel und die drei Aufgaben von Geld.</span><span class="go">Tausch-Insel →</span></a>
@@ -168,7 +179,7 @@ details.fold[open] > summary{margin-bottom:12px}
   </details>
   <p class="foot">Unterhaltung und Lernen, keine Anlageberatung. Keine Cookies, kein Tracking. <a href="#" id="guideOn" style="color:inherit">Satoshi zurückholen</a></p>
 </div>
-<script src="lern.js?v=23"></script>
+<script src="lern.js?v=24"></script>
 <script>
 // Lernpfad: Fortschritt aus dem eigenen Browser, Häkchen an den Karten, Empfehlung als Nächstes
 (() => {
@@ -239,6 +250,84 @@ details.fold[open] > summary{margin-bottom:12px}
   document.getElementById("lvup").innerHTML = Lern.LEVELS.map(l => `<span class="${l[2] === L.name ? "on" : n >= l[0] ? "got" : ""}" title="${l[2]} ab ${l[0]} Welten">${Lern.art(l[3])}</span>`).join("")
     + `<em>${nx ? `Du bist <b>${L.name}</b>. Noch ${nx[0] - n} Welt${nx[0] - n > 1 ? "en" : ""} bis Level <b>${nx[2]}</b>.` : "Du bist ein <b>Wal</b>! Alle Welten geschafft."}</em>`;
   Lern.renderNext("", "");
+
+  // ---------- Pfad-Ansicht: Lernpfad als Berg mit Profi-Abzweigungen ----------
+  const sec = document.querySelector(".card.path"), mapw = document.getElementById("mapw");
+  let view = "map"; try { view = localStorage.getItem("satsland-view") || "map"; } catch(e){}
+  function drawMap(first){
+    const L = Lern, box = mapw.clientWidth || 360, W = Math.min(780, Math.max(320, box)), nar = W < 560, STEP = nar ? 72 : 64, R = nar ? 22 : 25;
+    const nodes = []; L.CHAPTERS.forEach((c, k) => { c[3].forEach(id => nodes.push({t: "w", id, k})); nodes.push({t: "b", k}); });
+    const GAP = 40, N = nodes.length, TOP = 250, H = TOP + N * STEP + 6 * GAP + 150, BASE = H - 95, y = i => BASE - i * STEP - (nodes[Math.min(i, N - 1)].k) * GAP;
+    const hw = yy => 40 + (yy - TOP + 120) / (H - TOP) * (W / 2 - (nar ? 72 : 190)), x = i => W / 2 + Math.sin(i * .85) * hw(y(i)) * .58;
+    const P = nodes.map((n, i) => [x(i), y(i)]), peakY = y(N - 1) - 110;
+    const isDone = n => n.t === "b" ? !!won[n.k] : Lern.done(s, n.id);
+    let cur = nodes.findIndex(n => !isDone(n)); const allDone = cur < 0; if (allDone) cur = N;
+    const CH = ["#ffc94d", "#34d982", "#7cc4ff", "#ff9a6a", "#b26bff", "#ff5c73"];
+    const curve = pts => { let d = `M${pts[0][0]},${pts[0][1]}`; for (let i = 0; i < pts.length - 1; i++){ const a = pts[i - 1] || pts[i], b = pts[i], c = pts[i + 1], e = pts[i + 2] || c;
+      d += ` C${b[0] + (c[0] - a[0]) / 6},${b[1] + (c[1] - a[1]) / 6} ${c[0] - (e[0] - b[0]) / 6},${c[1] - (e[1] - b[1]) / 6} ${c[0]},${c[1]}`; } return d; };
+    const art = (n, cx, cy, sz) => L.art(n).replace("<svg", `<svg x="${cx - sz / 2}" y="${cy - sz / 2}" width="${sz}" height="${sz}"`);
+    const lbl = (tx, ty, t, side, col, fs, fw = 800) => `<text x="${tx}" y="${ty}" fill="${col}" font-size="${fs}" font-weight="${fw}" text-anchor="${side > 0 ? "start" : "end"}" font-family="system-ui,sans-serif" paint-order="stroke" stroke="#0b0f2a" stroke-width="4">${t}</text>`;
+    const mtn = yy => { const f = Math.max(0, (yy - (peakY - 60)) / (H - (peakY - 60))), h2 = f * (W / 2 - 8); return [W / 2 - h2, W / 2 + h2]; };
+    let g = `<defs><linearGradient id="msky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#05071a"/><stop offset=".55" stop-color="#121848"/><stop offset="1" stop-color="#1d2563"/></linearGradient><radialGradient id="mglow"><stop offset="0" stop-color="#ffc94d" stop-opacity=".7"/><stop offset="1" stop-color="#ffc94d" stop-opacity="0"/></radialGradient></defs><rect width="${W}" height="${H}" fill="url(#msky)"/>`;
+    for (let i = 0; i < 90; i++) g += `<circle cx="${(i * 137.5) % W}" cy="${(i * 89.3) % (H * .7)}" r="${(i % 3) * .6 + .6}" fill="#fff" opacity="${.25 + (i % 5) / 10}"/>`;
+    g += `<path d="M${W / 2},${peakY - 60} L${W - 8},${H} L8,${H}Z" fill="#1d2358" stroke="#0d1230" stroke-width="5"/><path d="M${W / 2},${peakY - 60} L${W - 8},${H} L${W / 2 + 30},${H}Z" fill="#000" opacity=".18"/><path d="M${W / 2},${peakY - 60} l-30 56 14-5 16 18 18-21 13 7z" fill="#eef0ff" opacity=".85" stroke="#0d1230" stroke-width="3"/>`;
+    let st = 0; L.CHAPTERS.forEach((c, k) => { const n = c[3].length + 1, y0 = y(st) + STEP / 2, y1 = y(st + n - 1) - STEP / 2; st += n; const a = mtn(y0), b = mtn(y1);
+      g += `<path d="M${a[0]},${y0} L${b[0]},${y1} L${b[1]},${y1} L${a[1]},${y0}Z" fill="${CH[k]}" opacity=".15"/><line x1="${b[0]}" y1="${y1}" x2="${b[1]}" y2="${y1}" stroke="${CH[k]}" stroke-opacity=".35" stroke-width="2" stroke-dasharray="6 8"/>`; });
+    // Profi-Abzweigungen
+    nodes.forEach((n, i) => { if (n.t !== "b" || !L.PRO[n.k].length) return; const [bx, by] = P[i], side = bx < W / 2 ? 1 : -1, list = L.PRO[n.k], open = !!won[n.k];
+      const ox = nar ? (side > 0 ? W - 26 : 26) : (side > 0 ? W - 160 : 160), gap = nar ? 40 : 46, pts = list.map((id, j) => [ox + (nar ? 0 : side * (j % 2 ? 26 : 0)), by + 40 + j * gap]);
+      const d = curve([[bx, by], [bx + side * (nar ? 40 : 80), by + 4], ...pts]);
+      g += `<path d="${d}" fill="none" stroke="#0d1230" stroke-width="11" stroke-linecap="round"/><path d="${d}" fill="none" stroke="#b26bff" stroke-width="4.5" stroke-dasharray="2 10" stroke-linecap="round" opacity="${open ? 1 : .55}"/>`;
+      pts.forEach(([px, py], j) => { const id = list[j], ok = Lern.done(s, id), r = nar ? 16 : 19;
+        g += `<a href="${L.TITLES[id][1]}" aria-label="Profi: ${L.TITLES[id][0]}"><title>🔬 ${L.TITLES[id][0]}</title><circle cx="${px}" cy="${py + 4}" r="${r}" fill="#0d1230"/><circle class="nb" cx="${px}" cy="${py}" r="${r}" fill="${ok ? "#5b2fa8" : "#2a1d52"}" stroke="#b26bff" stroke-width="3" opacity="${open || ok ? 1 : .6}"/>${art(L.CARD[id], px, py, nar ? 22 : 26)}${ok ? `<circle cx="${px + r * .7}" cy="${py - r * .7}" r="7" fill="#34d982" stroke="#0d1230" stroke-width="2"/>` : ""}${nar ? "" : lbl(px + side * 26, py + 4, L.TITLES[id][0], side, "#e3ccff", 12.5)}</a>`; });
+      const [lx, ly] = pts[pts.length - 1];
+      g += `<g transform="translate(${nar ? lx - side * 14 : lx},${ly + 34})"><rect x="${nar ? -32 : -46}" y="-12" width="${nar ? 64 : 92}" height="23" rx="11.5" fill="#b26bff" stroke="#0d1230" stroke-width="3"/><text y="4" fill="#fff" font-size="${nar ? 11 : 12}" font-weight="900" text-anchor="middle" font-family="system-ui">${open ? "🔬 Profi" + (nar ? "" : "-Pfad") : "🔒 Profi"}</text></g>`; });
+    // Hauptweg
+    const all = [[W / 2, H - 20], ...P, [W / 2, peakY + 10]], done = all.slice(0, Math.min(all.length, cur + 2));
+    g += `<path d="${curve(all)}" fill="none" stroke="#0d1230" stroke-width="${nar ? 26 : 30}" stroke-linecap="round"/><path d="${curve(all)}" fill="none" stroke="#3a4070" stroke-width="${nar ? 17 : 20}" stroke-linecap="round"/>`;
+    if (done.length > 1) g += `<path class="${first ? "gold" : ""}" id="mgold" d="${curve(done)}" fill="none" stroke="#ffc94d" stroke-width="${nar ? 17 : 20}" stroke-linecap="round"/>`;
+    g += `<path d="${curve(all)}" fill="none" stroke="#fff" stroke-opacity=".16" stroke-width="3" stroke-dasharray="4 14"/>`;
+    // Kapitel-Bänder
+    st = 0; L.CHAPTERS.forEach((c, k) => { const i = st; st += c[3].length + 1; const by2 = y(i) + (k ? (STEP + GAP) / 2 : STEP / 2 + 6), mx = (P[i][0] + (P[i - 1] || P[i])[0]) / 2, bw = nar ? 200 : 224, off = nar ? 105 : 175;
+      const bxx = Math.max(bw / 2 + 6, Math.min(W - bw / 2 - 6, mx < W / 2 ? mx + off : mx - off)), dn = c[3].filter(id => Lern.done(s, id)).length;
+      g += `<g transform="translate(${bxx},${by2})"><rect x="${-bw / 2}" y="-15" width="${bw}" height="30" rx="15" fill="${CH[k]}" stroke="#0d1230" stroke-width="4"/><text y="5" fill="#120d00" font-size="${nar ? 12.5 : 14}" font-weight="900" text-anchor="middle" font-family="Arial Black,system-ui">${k + 1} · ${c[0]} ${c[1]} · ${dn}/${c[3].length}</text></g>`; });
+    // Stationen
+    nodes.forEach((n, i) => { const [cx, cy] = P[i], ok = isDone(n), now = i === cur, boss = n.t === "b", r = boss ? R + 9 : R;
+      const ready = boss && L.CHAPTERS[n.k][3].every(id => Lern.done(s, id)), fill = boss ? (ok ? "#7a3b12" : "#3a1d2c") : ok ? "#34d982" : now ? "#ffc94d" : "#2a3170";
+      const side = cx > W / 2 + 4 ? -1 : cx < W / 2 - 4 ? 1 : (Math.cos(i * .85) > 0 ? -1 : 1), name = boss ? (ok ? "🏆 " : "👹 ") + L.BOSSES[n.k][1] : L.TITLES[n.id][0];
+      const open = boss ? `<g data-b="${n.k}" role="button" tabindex="0" aria-label="Boss: ${L.BOSSES[n.k][1]}">` : `<a href="${L.TITLES[n.id][1]}" aria-label="${name}">`, close = boss ? "</g>" : "</a>";
+      g += open;
+      if (now) g += `<circle cx="${cx}" cy="${cy}" r="${r + 30}" fill="url(#mglow)"/><circle class="spin" cx="${cx}" cy="${cy}" r="${r + 9}" fill="none" stroke="#ffc94d" stroke-width="4" stroke-dasharray="6 6"/>`;
+      g += `<g class="${now ? "curr" : ""}"><circle cx="${cx}" cy="${cy + 5}" r="${r}" fill="#0d1230"/><circle class="nb" cx="${cx}" cy="${cy}" r="${r}" fill="${fill}" stroke="#0d1230" stroke-width="4"/><g opacity="${ok || now || boss ? 1 : .55}">${art(boss ? L.BOSSES[n.k][0] : L.CARD[n.id], cx, cy, boss ? R * 2.1 : R * 1.36)}</g></g>`;
+      if (ok) g += `<circle cx="${cx + r * .72}" cy="${cy - r * .72}" r="9" fill="#fff" stroke="#0d1230" stroke-width="3"/><path d="M${cx + r * .72 - 4.5} ${cy - r * .72}l3.5 3.5 6-7" fill="none" stroke="#1a8a4a" stroke-width="3" stroke-linecap="round"/>`;
+      else if (!now && !(boss && ready)) g += `<text x="${cx + r * .72}" y="${cy - r * .72 + 4}" font-size="11" text-anchor="middle">🔒</text>`;
+      g += lbl(cx + side * (r + 9), cy + 5, name, side, boss ? "#ff9fb0" : now ? "#ffc94d" : ok ? "#cfe9d9" : "#aab2d8", boss ? (nar ? 13 : 14) : (nar ? 12.5 : 13), boss || now ? 900 : 700);
+      if (now) g += `<g transform="translate(${cx - side * (r + (nar ? 34 : 44))},${cy})"><rect x="${nar ? -27 : -32}" y="-14" width="${nar ? 54 : 64}" height="27" rx="13.5" fill="#fff" stroke="#0d1230" stroke-width="3"/><text y="5" font-size="13" font-weight="900" text-anchor="middle" font-family="system-ui" fill="#0d1230">${side > 0 ? "DU ➜" : "⬅ DU"}</text></g>`;
+      g += close; });
+    // Gipfel: Endboss
+    const fw = Lern.bossWon().f, finReady = [0, 1, 2, 3, 4, 5].every(k => won[k]), sx = W / 2, sy = peakY;
+    g += `<g data-b="f" role="button" tabindex="0" aria-label="Endboss: Satoshis Rätsel"><circle cx="${sx}" cy="${sy}" r="${allDone ? 90 : 70}" fill="url(#mglow)"/><circle cx="${sx}" cy="${sy + 6}" r="42" fill="#0d1230"/><circle class="nb ${allDone && !fw ? "curr" : ""}" cx="${sx}" cy="${sy}" r="42" fill="${fw ? "#ffd36b" : finReady ? "#ffc94d" : "#4a3f1a"}" stroke="#0d1230" stroke-width="5"/>${art("satoshi", sx, sy, 62)}
+      <path d="M${sx + 28} ${sy - 40}V${sy - 110}" stroke="#0d1230" stroke-width="5"/><path d="M${sx + 28} ${sy - 110}l46 13-46 15z" fill="#f7931a" stroke="#0d1230" stroke-width="4"/><text x="${sx + 44}" y="${sy - 91}" font-size="14" font-weight="900" fill="#fff" font-family="Arial">₿</text>
+      <text x="${sx}" y="${sy + 68}" fill="#ffd36b" font-size="${nar ? 14 : 16}" font-weight="900" text-anchor="middle" font-family="Arial Black,system-ui" paint-order="stroke" stroke="#0b0f2a" stroke-width="5">${fw ? "🏆 Gipfel erreicht!" : "👑 Endboss: Satoshis Rätsel"}</text></g>`;
+    g += `<text x="${W / 2}" y="${H - 4}" fill="#9aa2c8" font-size="12" text-anchor="middle" font-family="system-ui">Start ⬆</text>`;
+    document.getElementById("map").innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Lernpfad als Berg">${g}</svg>`;
+    const gp = document.getElementById("mgold"); if (gp && first){ gp.style.setProperty("--len", gp.getTotalLength()); gp.style.strokeDasharray = gp.getTotalLength(); }
+    // zur aktuellen Station scrollen (im Kasten, nicht die ganze Seite)
+    const ty = (cur >= N ? peakY : P[cur][1]) * (mapw.clientWidth / W);
+    mapw.style.scrollBehavior = "auto"; mapw.scrollTop = Math.max(0, ty - mapw.clientHeight / 2); mapw.style.scrollBehavior = "";
+  }
+  mapw.addEventListener("click", e => { const b = e.target.closest("[data-b]"); if (!b) return; const k = b.dataset.b;
+    if (k === "f"){ if ([0, 1, 2, 3, 4, 5].every(k => won[k])) Lern.boss("f"); else Lern.toast && Lern.toast("👑 Erst alle 6 Bosse besiegen, dann wartet Satoshi am Gipfel!"); return; }
+    if (Lern.CHAPTERS[+k][3].every(id => Lern.done(s, id))) Lern.boss(+k); else Lern.toast && Lern.toast("🔒 Schaffe erst alle Welten dieses Kapitels, dann wartet der Boss."); });
+  mapw.addEventListener("keydown", e => { if (e.key === "Enter" && e.target.closest("[data-b]")) e.target.closest("[data-b]").dispatchEvent(new MouseEvent("click", {bubbles: true})); });
+  function setView(v, first){ view = v; try { localStorage.setItem("satsland-view", v); } catch(e){}
+    sec.classList.toggle("asmap", v === "map"); mapw.hidden = v !== "map";
+    document.querySelectorAll("#vsw [data-v]").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === v));
+    if (v === "map") requestAnimationFrame(() => drawMap(first)); }
+  document.getElementById("vsw").onclick = e => { const b = e.target.closest("[data-v]"); if (b) setView(b.dataset.v, true); };
+  let rz; addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(() => { if (view === "map") drawMap(false); }, 250); });
+  setView(/^#pro\d/.test(location.hash) ? "list" : view, true);
+  { const pd = document.querySelector('details[data-k="path"]'); if (pd) pd.addEventListener("toggle", () => { if (pd.open && view === "map") drawMap(false); }); }
   // „Weiter, wo du warst“: zuletzt geöffnete, noch nicht geschaffte Welt (auch Profi), höchstens 30 Tage alt
   { const last = Object.keys(Lern.TITLES).filter(id => s[id] && s[id].seen && !Lern.done(s, id) && Date.now() - s[id].seen < 30 * 864e5).sort((a, b) => s[b].seen - s[a].seen)[0];
     const fresh = !Object.keys(s).length, go = last || (fresh ? "start" : "");
