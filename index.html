@@ -14,7 +14,7 @@
 <meta property="og:description" content="Bitcoin spielerisch verstehen, mit echten Live-Daten.">
 <meta property="og:image" content="https://satsland.github.io/og.png">
 <meta property="og:url" content="https://satsland.github.io/">
-<link rel="stylesheet" href="lern.css?v=7">
+<link rel="stylesheet" href="lern.css?v=8">
 <style>
 /* Übersicht der Lernwelten: gleiche Farben und Schriften wie das Spiel. */
 .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
@@ -71,7 +71,12 @@ a:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
     <p class="lead">Bitcoin spielerisch verstehen: Lernwelten mit echten Live-Daten, ohne Anmeldung und ohne Tracking.</p>
   </div>
   <p class="count"><b>Alle 27 Themen</b> sind spielbar.</p>
+  <section class="card daily" aria-labelledby="dly"><h2 id="dly">🔥 Tages-Challenge</h2><div id="daily"></div></section>
   <section class="card path" aria-label="Dein Lernpfad"><div class="ph"><h2>Dein Lernpfad</h2><span class="muted" id="pathCount"></span></div><p class="lvup" id="lvup"></p><div class="chs" id="steps"></div><div class="next" id="next"></div></section>
+  <section class="card" aria-labelledby="alb"><div class="ph"><h2 id="alb">🃏 Deine Sammelkarten</h2><span class="muted" id="albN"></span></div>
+    <p class="muted" style="margin:0 0 10px">Jede geschaffte Welt gibt eine Karte. Alle Quizfragen richtig? Dann glänzt sie. ✨</p>
+    <div class="tcards" id="album"></div>
+  </section>
   <section class="grp"><h2><span class="cn">1</span>🌱 Warum Bitcoin?</h2><p class="muted cd">Was gutes Geld ausmacht und warum Bitcoin anders ist.</p>
   <div class="grid big">
     <a class="w" href="eigenschaften/"><span class="tag live">Start</span><span class="ic" aria-hidden="true">⚔️</span><b>Was macht Bitcoin aus?</b><span>Euro, Gold und Bitcoin im Duell um 10 Eigenschaften von gutem Geld.</span><span class="go">Geld-Duell →</span></a>
@@ -110,9 +115,9 @@ a:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
   <div class="grid big">
     <a class="w" href="spiel/"><span class="tag live">Live</span><span class="ic" aria-hidden="true">📈</span><b>Volatilität &amp; Zyklen</b><span>Warum der Kurs so stark schwankt.</span><span class="go">Bullen vs Bären →</span></a>
   </div></section>
-  <p class="foot">Unterhaltung und Lernen, keine Anlageberatung. Keine Cookies, kein Tracking.</p>
+  <p class="foot">Unterhaltung und Lernen, keine Anlageberatung. Keine Cookies, kein Tracking. <a href="#" id="guideOn" style="color:inherit">Satoshi zurückholen</a></p>
 </div>
-<script src="lern.js?v=7"></script>
+<script src="lern.js?v=8"></script>
 <script>
 // Lernpfad: Fortschritt aus dem eigenen Browser, Häkchen an den Karten, Empfehlung als Nächstes
 (() => {
@@ -133,6 +138,10 @@ a:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
     });
     row.appendChild(ol); box.appendChild(row);
   });
+  Lern.daily(document.getElementById("daily"));
+  document.getElementById("guideOn").onclick = e => { e.preventDefault(); try { localStorage.removeItem(Lern.GK); } catch(x){} location.reload(); };
+  document.getElementById("album").innerHTML = Lern.PATH.map(([id]) => Lern.cardHTML(id, s)).join("");
+  document.getElementById("albN").textContent = `${n} von ${Lern.PATH.length}`;
   document.getElementById("pathCount").textContent = `${n} von ${Lern.PATH.length} geschafft`;
   // Level-Leiter: aktuelles Tier und wie viele Welten bis zum nächsten
   const L = Lern.level(n), nx = Lern.LEVELS.find(l => l[0] > n);

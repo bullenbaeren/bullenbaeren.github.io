@@ -115,10 +115,38 @@ h1 span.btc{background:linear-gradient(90deg,#ffb347,#f7931a 40%,#ffd36b 60%,#f7
 /* Einblenden beim Scrollen */
 .rv{opacity:0;transform:translateY(16px)} .rv.in{opacity:1;transform:none;transition:opacity .55s ease var(--d,0ms),transform .55s cubic-bezier(.2,.8,.2,1) var(--d,0ms)}
 /* Meldung und Konfetti */
-.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:50;padding:12px 18px;border-radius:16px;background:#1d2560;border:1px solid rgba(255,201,77,.5);box-shadow:0 18px 40px -16px #000;font-weight:700;max-width:calc(100vw - 32px);animation:up .4s cubic-bezier(.2,.8,.2,1)}
+.toast{position:fixed;left:50%;bottom:92px;transform:translateX(-50%);z-index:50;padding:12px 18px;border-radius:16px;background:#1d2560;border:1px solid rgba(255,201,77,.5);box-shadow:0 18px 40px -16px #000;font-weight:700;max-width:calc(100vw - 32px);animation:up .4s cubic-bezier(.2,.8,.2,1)}
 .toast.out{opacity:0;transform:translate(-50%,10px);transition:.4s}
 @keyframes up{from{opacity:0;transform:translate(-50%,20px)}}
 .confetti{position:fixed;inset:0;z-index:49;pointer-events:none}
 @media (max-width:520px){ .lvl i{display:none} .lvl small{display:none} }
+/* Satoshi-Begleiter: Comic-Figur unten rechts mit Sprechblase */
+.guide{position:fixed;right:12px;bottom:12px;z-index:40;display:flex;align-items:flex-end;gap:6px;pointer-events:none}
+.guide .gs{pointer-events:auto;width:64px;height:64px;padding:4px;border-radius:50%;border:3px solid #0d1230;background:radial-gradient(circle at 35% 30%,#ffd36b,#f7931a);box-shadow:3px 3px 0 #0d1230;cursor:pointer;animation:gIn .6s cubic-bezier(.3,1.5,.5,1) both;transition:transform .15s}
+.guide .gs:hover{transform:translateY(-3px) rotate(-4deg)} .guide .gs svg{display:block}
+.guide .gb{pointer-events:auto;position:relative;max-width:min(260px,calc(100vw - 110px));padding:10px 26px 10px 12px;border-radius:14px;background:#fff;color:#0d1230;border:3px solid #0d1230;box-shadow:3px 3px 0 #0d1230;font:700 14px/1.35 var(--f-body);margin-bottom:34px;opacity:0;transform:translateY(8px) scale(.9);transform-origin:bottom right;transition:opacity .25s,transform .25s;visibility:hidden}
+.guide .gb::after{content:"";position:absolute;right:-12px;bottom:10px;border:8px solid transparent;border-left:12px solid #0d1230}
+.guide.talk .gb{opacity:1;transform:none;visibility:visible}
+.guide .gx{position:absolute;top:2px;right:4px;border:0;background:none;font:900 16px var(--f-body);color:#0d1230;cursor:pointer;line-height:1}
+@keyframes gIn{from{transform:translateY(90px) rotate(20deg)}}
+@media (max-width:520px){ .guide .gs{width:52px;height:52px} .guide .gb{font-size:13px} .tcard .tart{width:52px;height:52px} .tcard{padding:8px 4px 6px} }
+/* Sammelkarten im Comic-Stil */
+.tcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:10px}
+.tcard{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 8px 8px;border-radius:12px;border:3px solid #0d1230;box-shadow:3px 3px 0 #0d1230;text-decoration:none;color:#0d1230;text-align:center;overflow:hidden;transition:transform .15s}
+.tcard:hover{transform:translateY(-3px) rotate(-1deg)}
+.tcard.got{background:linear-gradient(160deg,#fff7df,#ffe1a8)} .tcard.lock{background:repeating-linear-gradient(45deg,#1b2150 0 8px,#202867 8px 16px);color:var(--muted)}
+.tcard .tn{position:absolute;top:4px;left:6px;font:900 11px var(--f-num);opacity:.6}
+.tcard .tart{width:64px;height:64px;display:grid;place-items:center;font:900 34px var(--f-display);color:rgba(255,255,255,.25)}
+.tcard .tart svg{width:100%;height:100%;filter:drop-shadow(2px 3px 0 rgba(13,18,48,.35))}
+.tcard b{font:900 12px/1.15 var(--f-display)} .tcard small{font-size:10px;opacity:.7}
+.tcard.shiny{background:linear-gradient(120deg,#ffe9a8,#c9f7ff,#ffd0f0,#ffe9a8);background-size:300% 300%;animation:holo 5s linear infinite}
+.tcard.shiny::after{content:"";position:absolute;inset:-40%;background:linear-gradient(115deg,transparent 40%,rgba(255,255,255,.75) 50%,transparent 60%);animation:glint 3.2s ease-in-out infinite}
+@keyframes holo{to{background-position:300% 0}} @keyframes glint{from{transform:translateX(-60%)}to{transform:translateX(60%)}}
+/* Tages-Challenge */
+.daily .dh{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--muted)}
+.daily .fl{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:999px;border:2px solid var(--line);font-size:18px;filter:grayscale(1)} .daily .fl b{font:900 18px var(--f-num);color:var(--ink)}
+.daily .fl.on{filter:none;border-color:#ff8a3d;background:rgba(255,138,61,.15);animation:flame 1.4s ease-in-out infinite}
+@keyframes flame{50%{transform:scale(1.06)}}
+.daily .dq{margin:12px 0 8px;font:800 18px/1.35 var(--f-display)}
 /* Bewegung reduzieren (z. B. Firmen-PCs): nur Endlos-Bewegungen aus, kurze Effekte bleiben */
 @media (prefers-reduced-motion:reduce){ .mode.live::before,body::before,h1 span.btc,.wico{animation:none} *{scroll-behavior:auto} }
