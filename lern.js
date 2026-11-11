@@ -236,7 +236,7 @@ const Lern = (() => {
   // Level-Anzeige im Kopf jeder Seite
   function badge(){
     const L = level(count(load())), el = document.querySelector(".lvl") || document.createElement("a");
-    el.className = "lvl"; el.href = here ? "../" : "#steps"; el.title = "Dein Sats-Level: mehr Welten schaffen, um aufzusteigen";
+    el.className = "lvl"; el.href = here ? "../" : "#pth"; el.title = "Dein Sats-Level: mehr Welten schaffen, um aufzusteigen";
     el.innerHTML = `<span class="li">${L.ico}</span><span><b>${L.name}</b><small>${L.n} von ${PATH.length} Welten</small></span><i><u style="width:${L.n/PATH.length*100}%"></u></i>`;
     if (!el.parentNode){ const top = document.querySelector(".top"), back = document.querySelector(".wrap > .back");
       if (top) top.insertBefore(el, top.children[1] || null); else if (back) back.after(el); }
