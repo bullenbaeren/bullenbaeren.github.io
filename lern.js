@@ -49,8 +49,8 @@ const Lern = (() => {
       res.hidden = false; res.textContent = `${"⭐".repeat(right)}${"☆".repeat(QUIZ.length - right)}  ${right} von ${QUIZ.length} richtig. ✓ Diese Welt ist in deinem Lernpfad abgehakt.`;
       if (right === QUIZ.length) confetti();
       if (after.name !== before.name) toast(`${after.ico} Level-Up! Du bist jetzt <b>${after.name}</b>.`);
-      else if (first) toast(`🃏 Neue Sammelkarte: <b>${(PATH.find(p => p[0] === id) || [, ""])[1]}</b>`);
-      if (right === QUIZ.length) say("Glanzkarte! ✨ Alle Fragen richtig.");
+      else if (first) toast(`✓ Welt geschafft · ${after.n} von ${PATH.length}`);
+      if (right === QUIZ.length) say("Alle Fragen richtig! ✨");
       badge();
       renderNext(id, root);
     }
@@ -120,15 +120,9 @@ const Lern = (() => {
   };
   const art = n => `<svg viewBox="0 0 100 100" width="100%" height="100%" aria-hidden="true">${ART[n]}</svg>`;
 
-  // ---------- Sammelkarten: jede geschaffte Welt gibt eine Karte, 3/3 im Quiz = Glanzkarte ----------
+  // Zeichnung je Welt (Weltsymbol und Karte im Lernpfad)
   const CARD = {eigenschaften: "scale", inflation: "dollar", halving: "scissors", geschichte: "pizza", wallets: "bank2", seed: "letter", betrug: "mask", krypto: "rocket",
     sparplan: "pig", fomo: "boom", hebel: "volcano", utxo: "bag", bahnhof: "train", lightning: "bolt", hashing: "finger", schluessel: "key", blockchain: "chain", mining: "pick", nodes: "server"};
-  const shiny = (s, id) => !!(s[id] && s[id].quiz && s[id].quiz === s[id].total);
-  function cardHTML(id, s, root = ""){
-    const p = PATH.find(x => x[0] === id), got = done(s, id), sh = shiny(s, id), k = chapterOf(id);
-    return `<a class="tcard ${got ? "got" : "lock"} ${sh ? "shiny" : ""}" href="${root}${p[2]}" title="${p[1]}"><span class="tn">${PATH.indexOf(p) + 1}</span>`
-      + `<span class="tart">${got ? art(CARD[id]) : "?"}</span><b>${got ? p[1] : "???"}</b><small>${got ? (sh ? "✨ Glanzkarte" : CHAPTERS[k][1]) : "Welt schaffen"}</small></a>`;
-  }
 
   // ---------- Tages-Challenge mit Serie ----------
   const DAILY = [
@@ -185,7 +179,7 @@ const Lern = (() => {
 
   // ---------- Satoshi als Begleiter ----------
   const TIPS = {
-    "": "Willkommen in Satsland! Mach die Tages-Challenge und sammle alle Karten.",
+    "": "Willkommen in Satsland! Mach die Tages-Challenge und besiege alle 5 Bosse.",
     eigenschaften: "Hi, ich bin Satoshi! Rate, welches Geld gewinnt. Tipp: Gold ist ein harter Gegner.",
     inflation: "Schau, wie dein Einkaufswagen schrumpft. Genau das ist Inflation.",
     halving: "Alle 4 Jahre halbiert sich die Belohnung. Das macht Bitcoin knapp.",
@@ -324,15 +318,15 @@ const Lern = (() => {
     }
     function end(){
       clearInterval(timer); const win = hp <= 0;
-      if (win){ im.classList.add("down"); bub.textContent = "Neiiin … besiegt!"; const w = bossWon(); w[k] = true; try { localStorage.setItem(BK, JSON.stringify(w)); } catch(e){} confetti(); }
-      box.innerHTML = `<div class="end"><b>${win ? "🏆 Boss besiegt!" : "💀 Der Boss gewinnt diesmal"}</b><p class="muted">${win ? "Die Boss-Karte liegt jetzt in deinem Album." : "Lies die Erklärungen in den Welten nochmal und versuch es erneut."}</p>
+      if (win){ im.classList.add("down"); bub.textContent = "Neiiin … besiegt!"; const w = bossWon(); w[k] = lives === 2 ? "perfect" : (w[k] === "perfect" ? "perfect" : true); try { localStorage.setItem(BK, JSON.stringify(w)); } catch(e){} confetti(); }
+      box.innerHTML = `<div class="end"><b>${win ? "🏆 Boss besiegt!" : "💀 Der Boss gewinnt diesmal"}</b><p class="muted">${win ? (lives === 2 ? "Ohne einen Fehler! ✨ Du bekommst die Glanz-Bosskarte." : "Die Boss-Karte liegt jetzt in deinem Album. Ohne Fehler gibt es die Glanzkarte.") : "Lies die Erklärungen in den Welten nochmal und versuch es erneut."}</p>
         <div class="acts" style="justify-content:center;display:flex;gap:8px;margin-top:10px">${win ? "" : '<button class="btn" type="button" data-a="again">↺ Nochmal</button>'}<button class="btn ghost" type="button" data-a="close">Schließen</button></div></div>`;
       box.querySelector(".end").onclick = e => { const a = e.target.closest("button"); if (!a) return; close(); if (a.dataset.a === "again") boss(k); else if (win) location.reload(); };
     }
     hud(); setTimeout(ask, 1400);
   }
   function bossCard(k){ const won = bossWon()[k], [img, name] = BOSSES[k];
-    return `<span class="tcard bosscard ${won ? "got" : "lock"}"><span class="tn">B${k + 1}</span><span class="tart">${won ? art(img) : "?"}</span><b>${won ? name : "Boss " + (k + 1)}</b><small>${won ? "🏆 besiegt" : "Kapitel " + (k + 1)}</small></span>`; }
+    return `<span class="tcard bosscard ${won ? "got" : "lock"} ${won === "perfect" ? "shiny" : ""}"><span class="tn">B${k + 1}</span><span class="tart">${won ? art(img) : "?"}</span><b>${won ? name : "Boss " + (k + 1)}</b><small>${won === "perfect" ? "✨ Glanzkarte" : won ? "🏆 besiegt" : "Kapitel " + (k + 1)}</small></span>`; }
 
   // ---------- Spaß-Schicht: Level, Konfetti, Einblenden ----------
   const ICON = {eigenschaften: "⚔️", inflation: "🛒", halving: "⏳", hashing: "🧬", blockchain: "🔗", bahnhof: "🚉", seed: "🔑", betrug: "🕵️", sparplan: "🐷", lightning: "⚡", mining: "⛏", nodes: "🖥", schluessel: "🔐", utxo: "👛", wallets: "🗄", fomo: "🎢", hebel: "💥", geschichte: "📜", krypto: "🟠"};
@@ -397,5 +391,5 @@ const Lern = (() => {
   }
 
   init();
-  return {PATH, CHAPTERS, ART, art, BOSSES, boss, bossWon, bossCard, CARD, cardHTML, daily, streak, say, GK, chapterOf, LEVELS, level, count, load, done, visit, quiz, renderNext, nextAfter, sha256, confetti, toast};
+  return {PATH, CHAPTERS, ART, art, BOSSES, boss, bossWon, bossCard, CARD, daily, streak, say, GK, chapterOf, LEVELS, level, count, load, done, visit, quiz, renderNext, nextAfter, sha256, confetti, toast};
 })();

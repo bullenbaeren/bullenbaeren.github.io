@@ -208,6 +208,8 @@ svg.line path{fill:none;stroke-width:4;stroke-linecap:round;stroke-dasharray:900
 .bossbtn .bi{width:46px;height:46px;flex:none} .bossbtn small{display:block;font:600 12px var(--f-body);color:#d8c8ff}
 .bossbtn:disabled{filter:grayscale(.8);opacity:.6;cursor:default} .bossbtn.won{background:linear-gradient(90deg,#1f8a4c,#145a3a)}
 .tcard.bosscard.got{background:linear-gradient(160deg,#e9d6ff,#b48cff)}
+.tcard.bosscard.shiny{background:linear-gradient(120deg,#ffe9a8,#c9f7ff,#e9d6ff,#ffd0f0,#ffe9a8);background-size:300% 300%}
+.tcards:has(.bosscard){grid-template-columns:repeat(auto-fill,minmax(120px,1fr))}
 .wico svg,.lvl .li svg,.lvup span svg,.w .ic svg{width:100%;height:100%;display:block}
 .wico{padding:6px}
 /* Bewegung reduzieren (z. B. Firmen-PCs): nur Endlos-Bewegungen aus, kurze Effekte bleiben */
