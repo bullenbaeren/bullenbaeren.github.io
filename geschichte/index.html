@@ -34,14 +34,14 @@
 .stage.gold{background:radial-gradient(circle at 50% 120%,rgba(255,201,77,.6),transparent 60%),linear-gradient(#1a1440,#3b2a10)}
 .stage::after{content:"";position:absolute;left:0;right:0;bottom:0;height:34px;background:rgba(13,18,48,.45);border-top:3px solid #0d1230}
 .a{position:absolute;line-height:1;transform:translate(-50%,-50%);z-index:1;animation-fill-mode:both}
-.lbl{position:absolute;transform:translate(-50%,-50%) rotate(-2deg);z-index:2;font:900 13px var(--f-display);color:#0d1230;background:#fff;border:2.5px solid #0d1230;box-shadow:3px 3px 0 #0d1230;padding:3px 9px;border-radius:10px;white-space:nowrap;animation:fin .5s both}
+.lbl{position:absolute;transform:translate(-50%,-50%);z-index:2;font:900 13px var(--f-display);color:#0d1230;background:#fff;border:2.5px solid #0d1230;box-shadow:3px 3px 0 #0d1230;padding:3px 9px;border-radius:10px;white-space:nowrap;animation:fin .5s both}
 .paper{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);width:min(78%,330px);background:#f4efe1;color:#222;border-radius:6px;border:3px solid #0d1230;padding:10px 12px;font:700 13px/1.35 Georgia,serif;box-shadow:0 10px 30px -10px #000;z-index:2;animation:drop .7s cubic-bezier(.3,1.4,.5,1) both}
 .paper small{display:block;font:400 11px Georgia,serif;color:#555;margin-top:4px}
 .type{display:block;font-size:13px;animation:fin2 1.2s ease .5s both}
 @keyframes fin2{from{opacity:0;letter-spacing:.3em}}
 @keyframes type{from{width:0}} @keyframes blink{50%{border-color:transparent}}
 @keyframes drop{from{transform:translate(-50%,-260%) rotate(-8deg);opacity:0}}
-@keyframes fin{from{opacity:0;transform:translate(-50%,-10%) rotate(-2deg) scale(.6)}}
+@keyframes fin{from{opacity:0;transform:translate(-50%,-10%) scale(.6)}}
 @keyframes fly{from{left:var(--fx);top:var(--fy);opacity:0}15%{opacity:1}}
 @keyframes rise{from{transform:translate(-50%,120%);opacity:0}}
 @keyframes grow{from{transform:translate(-50%,-50%) scale(0)}}
