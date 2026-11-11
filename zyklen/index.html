@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kurs-Achterbahn · Satsland</title>
+<meta name="description" content="Lernwelt: Bitcoin-Kurszyklen und Crashs. Alle großen Abstürze von über 50 Prozent, wie lange die Erholung dauerte, und ein Halten-oder-Verkaufen-Simulator.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0b0f2a">
+<link rel="icon" href="../icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="stylesheet" href="../lern.css?v=19">
+<style>
+/* Lernwelt "Kurs-Achterbahn": nur seitenspezifische Teile, der Rest kommt aus lern.css */
+.idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
+.kv{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}
+.kv div{border:1px solid var(--line);border-radius:12px;padding:8px 10px;font-size:12px;color:var(--muted)} .kv b{display:block;font:700 18px var(--f-num);color:var(--ink)} .kv .g{color:var(--gold)}
+.seg{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px} .seg .btn[aria-pressed="true"]{outline:2px solid var(--gold);background:rgba(247,147,26,.15)}
+.res{margin-top:12px;padding:12px 14px;border-radius:14px;border:2px solid var(--line);font-size:15px;line-height:1.5}
+.res strong{display:block;font-size:18px} .res.ok{border-color:var(--bull)} .res.ok strong{color:var(--bull)} .res.bad{border-color:var(--bear)} .res.bad strong{color:var(--bear)} .res.warn{border-color:var(--gold)} .res.warn strong{color:var(--gold)}
+.note{margin:10px 0 0;font-size:14px;color:var(--muted);line-height:1.5} .note b{color:var(--ink)} .note a{color:var(--gold)}
+@media (max-width:620px){ .kv{grid-template-columns:1fr 1fr} }
+.lbl2{display:block;font-size:13px;color:var(--muted);margin-top:12px}
+.ctl .row{display:flex;align-items:center;gap:10px;margin-top:8px} .ctl .row input{flex:1} .ctl .row b{font:900 18px var(--f-num);min-width:5ch;text-align:right}
+.chart{margin-top:12px;border-radius:14px;background:#0b0f2a;border:1px solid var(--line);overflow:hidden} .chart svg{width:100%;height:auto;display:block}
+
+.cyc{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-top:12px}
+.cyc button{padding:8px 4px;border-radius:12px;border:2px solid var(--line);background:rgba(255,255,255,.04);color:var(--ink);font:800 13px var(--f-body);cursor:pointer}
+.cyc button b{display:block;font:900 17px var(--f-num);color:var(--bear)} .cyc button[aria-pressed="true"]{border-color:var(--gold);background:rgba(247,147,26,.15)}
+.dec{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px} .dec button{font-size:17px;padding:14px}
+.big{font:900 34px var(--f-num);text-align:center;margin-top:10px;transition:color .3s} .big small{display:block;font:700 13px var(--f-body);color:var(--muted)}
+@media (max-width:620px){ .cyc{grid-template-columns:repeat(3,minmax(0,1fr))} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a class="back" href="../">← Satsland</a><a class="back" href="../lexikon/">📖 Lexikon</a></div>
+  <div>
+    <h1>Die <span class="btc">Kurs</span>-Achterbahn</h1>
+    <p class="lead">Bitcoin ist in seiner Geschichte <b>mehrmals um 75 bis 90 % abgestürzt</b> und hat sich danach jedes Mal erholt. Wer das vorher weiß, verkauft im Crash nicht panisch. Wichtig: Was früher passiert ist, ist <b>keine Garantie</b> für die Zukunft.</p>
+  </div>
+
+  <section class="card" aria-labelledby="h1s">
+    <h2 id="h1s">1 · 15 Jahre Achterbahn <span class="mode demo">gerundete Werte in $</span></h2>
+    <div class="chart nogl" id="chart"></div>
+    <div class="seg" id="sc"><button class="btn" type="button" data-s="lin" aria-pressed="true">Normale Skala</button><button class="btn" type="button" data-s="log">Log-Skala</button></div>
+    <p class="note" id="scN"></p>
+  </section>
+
+  <section class="card" aria-labelledby="h2s">
+    <h2 id="h2s">2 · Die großen Crashs</h2>
+    <div class="cyc" id="cyc"></div>
+    <div class="kv" id="ckv"></div>
+    <p class="note" id="cN"></p>
+  </section>
+
+  <section class="card" aria-labelledby="h3s">
+    <h2 id="h3s">3 · Simulator: Hältst du durch?</h2>
+    <p class="muted" style="margin:0">Du hast am Hoch von Dezember 2017 für <b>1.000 €</b> Bitcoin gekauft. Dann beginnt der Absturz …</p>
+    <div class="big" id="sv">1.000 €<small>Wert deiner Bitcoin</small></div>
+    <div class="row" style="display:flex;justify-content:center;margin-top:10px"><button class="btn" type="button" id="sGo">▶ Zeit laufen lassen</button></div>
+    <div class="dec" id="dec" hidden><button class="btn" type="button" data-d="sell">😱 Verkaufen!</button><button class="btn" type="button" data-d="hold">💎 Halten</button></div>
+    <div id="sRes"></div>
+  </section>
+
+  <section class="card" aria-labelledby="hMs">
+    <h2 id="hMs">Das solltest du dir merken</h2>
+    <div class="learn">
+      <div><b>Crashs sind normal</b><span>Bitcoin fiel schon <b>vier Mal um über 75 %</b> und seit 2025 erneut um über 50 %.</span></div>
+      <div><b>Erholung dauerte Jahre</b><span>Bis zum nächsten Rekord vergingen oft <b>2 bis 3 Jahre</b>. Geduld ist Pflicht.</span></div>
+      <div><b>Panik kostet</b><span>Wer im Tief verkauft, macht den Verlust <b>endgültig</b>. Nur Geld investieren, das man lange entbehren kann.</span></div>
+      <div><b>Keine Garantie</b><span>Die Vergangenheit zeigt Muster, aber <b>keine Sicherheit</b> für die Zukunft.</span></div>
+    </div>
+    <details class="qz"><summary>Teste dich: 3 Fragen</summary><div id="quiz"></div></details>
+  </section>
+
+  <section class="card next" id="next" aria-label="Weiter"></section>
+  <details class="foot"><summary>Quellen</summary><p>Gerundete Kurswerte nach öffentlichen Kursdaten · <a href="https://www.finanzen.net/nachricht/devisen/kryptomarkt-fuenfte-verlustwoche-in-folge-bitcoin-startet-bei-74-200-dollar-in-die-cpi-woche-ether-faellt-auf-2-100-dollar-00-16049754">finanzen.net (9. Nov. 2026)</a> · <a href="https://www.bilanz.ch/invest/krypto/bitcoin-crash-2026-kurs-ursachen-und-verlierer-im-uberblick/2hbvwkh">Bilanz: Bitcoin-Crash 2026</a></p></details>
+  <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
+</div>
+
+<script src="../lern.js?v=19"></script>
+<script>
+/* =====================================================================
+   KURS-ACHTERBAHN – Lernwelt von Satsland
+   ===================================================================== */
+(() => {
+const $ = id => document.getElementById(id);
+// Gerundete Monatswerte in US-Dollar (Stützpunkte)
+const H = [["2011-01",0.3],["2011-06",30],["2011-11",2],["2012-08",12],["2013-04",200],["2013-07",80],["2013-12",1000],["2014-06",600],["2015-01",200],["2015-12",430],["2016-12",960],["2017-06",2500],["2017-12",19000],["2018-02",7000],["2018-12",3300],["2019-06",12000],["2019-12",7200],["2020-03",5000],["2020-12",29000],["2021-04",63000],["2021-07",31000],["2021-11",67000],["2022-06",19000],["2022-11",16000],["2023-06",30000],["2023-12",42000],["2024-03",71000],["2024-08",55000],["2024-12",100000],["2025-04",78000],["2025-10",124000],["2026-02",62000],["2026-11",74000]];
+const C = [["2011", 32, 2, -93, "Jun 2011 → Nov 2011", "rund 20 Monate", "2011-06", "2011-11"], ["2013", 1150, 160, -86, "Dez 2013 → Jan 2015", "gut 3 Jahre", "2013-12", "2015-01"], ["2017", 19700, 3150, -84, "Dez 2017 → Dez 2018", "rund 3 Jahre", "2017-12", "2018-12"], ["2021", 69000, 15500, -77, "Nov 2021 → Nov 2022", "rund 2 Jahre und 4 Monate", "2021-11", "2022-11"], ["2025", 126000, 60000, -52, "Okt 2025 → Feb 2026", "läuft noch", "2025-10", "2026-02"]];
+const t = s => +s.slice(0, 4) + (+s.slice(5) - 1) / 12;
+let log = false, sel = 2;
+function chart(){
+  const W = 640, Hh = 320, T0 = 2011, T1 = 2027, x = d => 50 + (t(d) - T0) / (T1 - T0) * (W - 70);
+  const y = v => log ? Hh - 36 - (Math.log10(v) + 1) / 6.3 * (Hh - 60) : Hh - 36 - v / 130000 * (Hh - 60);
+  const c = C[sel];
+  const pts = H.map(([d, v]) => x(d) + "," + y(v)).join(" ");
+  const grid = (log ? [1, 100, 10000, 1000000 / 10] : [0, 50000, 100000]).map(v => `<line x1="50" x2="${W - 10}" y1="${y(v || 0.0001)}" y2="${y(v || 0.0001)}" stroke="#232a62"/><text x="44" y="${y(v || 0.0001) + 6}" fill="#8890b8" font-size="17" text-anchor="end">${v >= 1000 ? v / 1000 + "k" : v}</text>`).join("");
+  const yrs = [2012, 2015, 2018, 2021, 2024, 2027].map(j => `<text x="${50 + (j - T0) / (T1 - T0) * (W - 70)}" y="${Hh - 8}" fill="#8890b8" font-size="17" text-anchor="middle">${j}</text>`).join("");
+  const band = `<rect x="${x(c[6])}" y="10" width="${x(c[7]) - x(c[6])}" height="${Hh - 46}" fill="rgba(255,92,115,.16)"/>`;
+  $("chart").innerHTML = `<svg viewBox="0 0 ${W} ${Hh}" role="img" aria-label="Bitcoin-Kurs seit 2011">${grid}${band}<polyline points="${pts}" fill="none" stroke="#ffc94d" stroke-width="4" stroke-linejoin="round"/>${yrs}<text x="${(x(c[6]) + x(c[7])) / 2}" y="34" fill="#ff5c73" font-size="22" font-weight="900" text-anchor="middle">${c[3]} %</text></svg>`;
+  $("scN").innerHTML = log ? "Auf der <b>Log-Skala</b> ist jeder Strich das Hundertfache. So sieht man: Auch die frühen Crashs waren gewaltig, und der Langzeit-Trend ging trotzdem nach oben." : "Auf der normalen Skala sehen frühe Crashs winzig aus, obwohl sie prozentual sogar <b>größer</b> waren. Schalte auf die Log-Skala um!";
+}
+function cyc(){
+  $("cyc").innerHTML = C.map((c, i) => `<button type="button" data-i="${i}" aria-pressed="${i === sel}">${c[0]}<b>${c[3]} %</b></button>`).join("");
+  const c = C[sel];
+  $("ckv").innerHTML = `<div>Hoch → Tief<b style="font-size:15px">${c[1].toLocaleString("de-DE")} → ${c[2].toLocaleString("de-DE")} $</b></div><div>Zeitraum<b class="g" style="font-size:15px">${c[4]}</b></div><div>Bis zum neuen Rekord<b style="font-size:15px">${c[5]}</b></div>`;
+  $("cN").innerHTML = sel === 4 ? "Der aktuelle Crash: Vom Rekord von rund <b>126.000 $</b> im Oktober 2025 fiel Bitcoin bis Februar 2026 um <b>mehr als die Hälfte</b>. Anfang November 2026 lag er bei rund <b>74.000 $</b>. Wie es weitergeht, weiß niemand." : "Aus 1.000 € am Hoch wurden im Tief <b>" + Math.round(1000 * c[2] / c[1]).toLocaleString("de-DE") + " €</b>. Wer gehalten hat, war Jahre später trotzdem im Plus.";
+  chart();
+}
+$("cyc").onclick = e => { const b = e.target.closest("[data-i]"); if (b){ sel = +b.dataset.i; cyc(); } };
+$("sc").onclick = e => { const b = e.target.closest("[data-s]"); if (!b) return; log = b.dataset.s === "log"; $("sc").querySelectorAll("[data-s]").forEach(x => x.setAttribute("aria-pressed", x === b)); chart(); };
+cyc();
+// Simulator: Hoch Dez 2017 (19.000 $) bis Tief Dez 2018 (3.300 $), dann Ende 2020 (29.000 $) und heute (~74.000 $)
+const PATH = [19000, 15000, 11000, 8000, 7000, 9500, 7500, 6500, 6300, 6400, 5500, 4000, 3300];
+$("sGo").onclick = () => { $("sGo").disabled = true; $("sRes").innerHTML = ""; let i = 0;
+  const tm = setInterval(() => { const v = 1000 * PATH[i] / 19000; $("sv").innerHTML = `${Math.round(v).toLocaleString("de-DE")} €<small>Monat ${i + 1}: Bitcoin bei ${PATH[i].toLocaleString("de-DE")} $</small>`; $("sv").style.color = v < 500 ? "var(--bear)" : "";
+    if (++i >= PATH.length){ clearInterval(tm); $("dec").hidden = false; Lern.say && Lern.say("Minus 83 %! Alle reden von Bitcoin-Tod. Was machst du?", 4000); } }, 260); };
+$("dec").onclick = e => { const b = e.target.closest("[data-d]"); if (!b) return; $("dec").hidden = true; $("sGo").disabled = false; $("sGo").textContent = "↺ Nochmal";
+  const hold = b.dataset.d === "hold", v20 = Math.round(1000 * 29000 / 19000), now = Math.round(1000 * 74000 / 19000);
+  $("sRes").innerHTML = hold ? `<div class="res ok"><strong>💎 Durchgehalten!</strong>Ende 2020 war Bitcoin bei rund 29.000 $, deine Bitcoin waren <b>${v20.toLocaleString("de-DE")} €</b> wert. Im November 2026, mitten im nächsten Crash, immer noch rund <b>${now.toLocaleString("de-DE")} €</b>. Ohne Garantie, dass es immer so läuft.</div>`
+    : `<div class="res bad"><strong>😱 Verkauft für 174 €</strong>Der Verlust von <b>826 €</b> ist jetzt endgültig. Hättest du gehalten, wären es Ende 2020 rund ${v20.toLocaleString("de-DE")} € gewesen. Panik ist der teuerste Berater.</div>`;
+  if (hold) Lern.confetti && Lern.confetti(); };
+
+const QUIZ = [["Wie oft ist Bitcoin schon um mehr als 75 % gefallen?", ["Noch nie", "Einmal", "Vier Mal", "Jedes Jahr"], 2, "2011, 2013 bis 2015, 2017 bis 2018 und 2021 bis 2022 fiel Bitcoin jeweils um 77 bis 93 %."], ["Wie lange dauerte es meist bis zum nächsten Rekordhoch?", ["Ein paar Tage", "Etwa 2 bis 3 Jahre", "20 Jahre", "Es gab nie ein neues Hoch"], 1, "Nach den großen Crashs dauerte es meist 2 bis 3 Jahre bis zum nächsten Rekord."], ["Was ist im Crash meistens der teuerste Fehler?", ["Halten", "In Panik verkaufen", "Nichts tun", "Lernen"], 1, "Wer im Tief verkauft, macht den Verlust endgültig. Darum nur Geld investieren, das man lange nicht braucht."]];
+Lern.quiz($("quiz"), "zyklen", QUIZ, "../"); Lern.visit("zyklen"); Lern.renderNext("zyklen", "../");
+})();
+</script>
+</body>
+</html>

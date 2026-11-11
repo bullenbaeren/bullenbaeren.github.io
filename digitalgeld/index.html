@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Digitalgeld-Vergleich · Satsland</title>
+<meta name="description" content="Lernwelt: Digitaler Euro, Stablecoins und Bitcoin im Vergleich. Wer gibt es heraus, kann es gesperrt werden, wie privat ist es? Mit aktuellem Zeitplan des digitalen Euro.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0b0f2a">
+<link rel="icon" href="../icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="stylesheet" href="../lern.css?v=19">
+<style>
+/* Lernwelt "Digitalgeld-Vergleich": nur seitenspezifische Teile, der Rest kommt aus lern.css */
+.idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
+.kv{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}
+.kv div{border:1px solid var(--line);border-radius:12px;padding:8px 10px;font-size:12px;color:var(--muted)} .kv b{display:block;font:700 18px var(--f-num);color:var(--ink)} .kv .g{color:var(--gold)}
+.seg{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px} .seg .btn[aria-pressed="true"]{outline:2px solid var(--gold);background:rgba(247,147,26,.15)}
+.res{margin-top:12px;padding:12px 14px;border-radius:14px;border:2px solid var(--line);font-size:15px;line-height:1.5}
+.res strong{display:block;font-size:18px} .res.ok{border-color:var(--bull)} .res.ok strong{color:var(--bull)} .res.bad{border-color:var(--bear)} .res.bad strong{color:var(--bear)} .res.warn{border-color:var(--gold)} .res.warn strong{color:var(--gold)}
+.note{margin:10px 0 0;font-size:14px;color:var(--muted);line-height:1.5} .note b{color:var(--ink)} .note a{color:var(--gold)}
+@media (max-width:620px){ .kv{grid-template-columns:1fr 1fr} }
+.lbl2{display:block;font-size:13px;color:var(--muted);margin-top:12px}
+.ctl .row{display:flex;align-items:center;gap:10px;margin-top:8px} .ctl .row input{flex:1} .ctl .row b{font:900 18px var(--f-num);min-width:5ch;text-align:right}
+.chart{margin-top:12px;border-radius:14px;background:#0b0f2a;border:1px solid var(--line);overflow:hidden} .chart svg{width:100%;height:auto;display:block}
+
+.tbl{width:100%;border-collapse:collapse;margin-top:12px;font-size:13px} .tbl th,.tbl td{padding:8px 6px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top} .tbl th{font-size:12px;color:var(--muted)} .tbl th:last-child,.tbl td:last-child{background:rgba(247,147,26,.08)}
+.who{margin-top:12px;border:3px solid #0d1230;border-radius:18px;padding:16px;background:linear-gradient(160deg,#232a62,#151a40);box-shadow:4px 4px 0 #0d1230}
+.who ol{margin:8px 0 0;padding-left:1.3em;line-height:1.6} .who li{animation:pop .3s} @keyframes pop{from{opacity:0;transform:translateY(6px)}}
+.pick4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:12px} .pick4 button{padding:10px 4px;font-size:14px}
+.tl{margin-top:12px;display:grid;gap:8px;border-left:4px solid var(--gold);padding-left:14px}
+.tl div{font-size:14px;line-height:1.45} .tl b{display:block;font:900 14px var(--f-num);color:var(--gold)} .tl .f{opacity:.7}
+.mcards{display:none;gap:8px;margin-top:12px} .mcards div{border:2px solid var(--line);border-radius:14px;padding:10px 12px;font-size:13px;line-height:1.5} .mcards div.btc4{border-color:var(--gold);background:rgba(247,147,26,.08)} .mcards h3{margin:0 0 4px;font-size:16px} .mcards span{color:var(--muted)}
+@media (max-width:620px){ .pick4{grid-template-columns:1fr 1fr} .tw{display:none} .mcards{display:grid} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a class="back" href="../">← Satsland</a><a class="back" href="../lexikon/">📖 Lexikon</a></div>
+  <div>
+    <h1>Digitaler Euro, Stablecoin oder <span class="btc">Bitcoin</span>?</h1>
+    <p class="lead">Bald gibt es mehrere Arten von digitalem Geld. Sie sehen ähnlich aus, sind aber grundverschieden: <b>Wer gibt es heraus, wer kann es sperren, und kann jemand mehr davon drucken?</b></p>
+  </div>
+
+  <section class="card" aria-labelledby="h1s">
+    <h2 id="h1s">1 · Der große Vergleich</h2>
+    <div class="tw" style="overflow-x:auto"><table class="tbl" id="tbl">
+      <tr><th></th><th>💶 Bargeld</th><th>📲 Digitaler Euro</th><th>🪙 Stablecoin</th><th>🟠 Bitcoin</th></tr>
+      <tr><td><b>Herausgeber</b></td><td>Zentralbank</td><td>Zentralbank (EZB)</td><td>Private Firma</td><td><b>Niemand</b>, ein offenes Netz</td></tr>
+      <tr><td><b>Menge</b></td><td>beliebig vermehrbar</td><td>beliebig vermehrbar</td><td>wächst mit Einzahlungen</td><td><b>max. 21 Mio.</b></td></tr>
+      <tr><td><b>Wert</b></td><td>1 €</td><td>1 €</td><td>meist 1 $ oder 1 €</td><td><b>schwankt</b> stark</td></tr>
+      <tr><td><b>Sperrbar?</b></td><td>nein</td><td>möglich, Regeln noch offen</td><td>ja, Herausgeber kann einfrieren</td><td><b>nein</b>, bei eigener Wallet</td></tr>
+      <tr><td><b>Privatsphäre</b></td><td>hoch</td><td>versprochen, offline wie Bargeld</td><td>gering</td><td>öffentlich, aber pseudonym</td></tr>
+      <tr><td><b>Grenzen</b></td><td>Bargeld-Obergrenzen</td><td>Haltegrenze geplant</td><td>je nach Anbieter</td><td><b>keine</b></td></tr>
+    </table></div>
+    <div class="mcards" id="mc"></div>
+  </section>
+
+  <section class="card" aria-labelledby="h2s">
+    <h2 id="h2s">2 · Rätsel: Wer bin ich?</h2>
+    <div class="who" id="who"></div>
+    <div class="row" style="display:flex;gap:8px;margin-top:10px"><button class="btn" type="button" id="hint">💡 Noch ein Hinweis</button></div>
+    <div class="pick4" id="pick"><button class="btn" type="button" data-a="0">💶 Bargeld</button><button class="btn" type="button" data-a="1">📲 Digitaler Euro</button><button class="btn" type="button" data-a="2">🪙 Stablecoin</button><button class="btn" type="button" data-a="3">🟠 Bitcoin</button></div>
+    <div id="wRes"></div>
+  </section>
+
+  <section class="card" aria-labelledby="h3s">
+    <h2 id="h3s">3 · Wann kommt der digitale Euro? <span class="mode demo">Stand Nov. 2026</span></h2>
+    <div class="tl">
+      <div><b>Dez. 2025</b>Die EU-Staaten legen ihre gemeinsame Position fest.</div>
+      <div><b>23. Juni 2026</b>Der Wirtschaftsausschuss des EU-Parlaments stimmt zu. Jetzt verhandeln Parlament, Staaten und Kommission.</div>
+      <div class="f"><b>Mitte 2027</b>Erste Pilot-Tests laut EZB.</div>
+      <div class="f"><b>frühestens 2029</b>Start für alle, wenn sich die EU bis Ende 2026 einigt.</div>
+    </div>
+    <p class="note">Geplant ist eine <b>Haltegrenze</b> pro Person, damit nicht zu viel Geld von Banken abfließt. Die genaue Höhe ist noch offen, diskutiert wurden rund 3.000 €. Der digitale Euro ist <b>Euro</b>: Er schützt nicht vor Inflation, ist aber bequem und soll europäische Zahlungen unabhängiger von Visa und Co. machen.</p>
+  </section>
+
+  <section class="card" aria-labelledby="hMs">
+    <h2 id="hMs">Das solltest du dir merken</h2>
+    <div class="learn">
+      <div><b>Herausgeber entscheidet</b><span>Euro und digitaler Euro kommen von der <b>Zentralbank</b>, Stablecoins von <b>Firmen</b>, Bitcoin von <b>niemandem</b>.</span></div>
+      <div><b>Sperren</b><span>Stablecoins kann der Herausgeber <b>einfrieren</b>. Bitcoin in deiner eigenen Wallet kann niemand sperren.</span></div>
+      <div><b>Stabil vs knapp</b><span>Digitaler Euro und Stablecoins sind <b>wertstabil</b>, aber vermehrbar. Bitcoin ist <b>knapp</b>, aber schwankt.</span></div>
+      <div><b>Digitaler Euro</b><span>Frühestens <b>2029</b>, mit Haltegrenze und Offline-Funktion. Er bleibt ein Euro.</span></div>
+    </div>
+    <details class="qz"><summary>Teste dich: 3 Fragen</summary><div id="quiz"></div></details>
+  </section>
+
+  <section class="card next" id="next" aria-label="Weiter"></section>
+  <details class="foot"><summary>Quellen</summary><p><a href="https://netzpolitik.org/2026/alternative-zu-visa-paypal-und-co-eu-abgeordnete-stimmen-fuer-digitalen-euro/">netzpolitik.org (Juni 2026)</a> · <a href="https://de.wikipedia.org/wiki/Digitaler_Euro">Wikipedia: Digitaler Euro</a> · <a href="https://www.handelsblatt.com/finanzen/maerkte/devisen-rohstoffe/digitaler-euro-neue-waehrung-fuer-europa-nimmt-wichtige-huerde/100234997.html">Handelsblatt</a></p></details>
+  <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
+</div>
+
+<script src="../lern.js?v=19"></script>
+<script>
+/* =====================================================================
+   DIGITALGELD-VERGLEICH – Lernwelt von Satsland
+   ===================================================================== */
+(() => {
+const $ = id => document.getElementById(id);
+const N = ["Bargeld", "Digitaler Euro", "Stablecoin", "Bitcoin"];
+// Handy: Tabelle als Karten je Geldart
+{ const rows = [...$("tbl").rows], head = [...rows[0].cells].slice(1).map(c => c.innerHTML);
+  $("mc").innerHTML = head.map((h, i) => `<div class="${i === 3 ? "btc4" : ""}"><h3>${h}</h3>${rows.slice(1).map(r => `<span>${r.cells[0].textContent.replace("?", "")}:</span> ${r.cells[i + 1].innerHTML}`).join("<br>")}</div>`).join(""); }
+const W = [[2, ["Ich bin digital.", "Ich bin fast immer genau 1 Dollar wert.", "Eine Firma gibt mich heraus.", "Wenn sie will, kann sie mich auf deiner Adresse einfrieren."]],
+  [3, ["Ich bin digital.", "Mich gibt es schon seit 2009.", "Niemand kann mehr von mir drucken.", "Mein Wert schwankt stark."]],
+  [1, ["Ich bin ein Euro.", "Mich gibt es noch gar nicht für alle.", "Ich soll sogar offline von Handy zu Handy funktionieren.", "Du darfst nur eine begrenzte Menge von mir halten."]],
+  [0, ["Ich bin ein Euro.", "Mich kann man anfassen.", "Bei mir sieht niemand, wofür du mich ausgibst.", "Ich verliere durch Inflation an Wert."]]];
+let w = 0, shown = 1;
+function who(){ $("who").innerHTML = `<b>Rätsel ${w + 1} von ${W.length}</b><ol>${W[w][1].slice(0, shown).map(h => `<li>${h}</li>`).join("")}</ol>`; $("hint").disabled = shown >= 4; }
+$("hint").onclick = () => { shown = Math.min(4, shown + 1); who(); };
+$("pick").onclick = e => { const b = e.target.closest("[data-a]"); if (!b || $("wRes").innerHTML) return; const ok = +b.dataset.a === W[w][0];
+  $("wRes").innerHTML = `<div class="res ${ok ? "ok" : "bad"}"><strong>${ok ? `Richtig${shown === 1 ? ", schon nach einem Hinweis! 🏆" : "!"}` : "Nicht ganz."} Ich bin: ${N[W[w][0]]}</strong><button class="btn" type="button" id="wN" style="margin-top:8px">${w < W.length - 1 ? "Nächstes Rätsel →" : "↺ Von vorn"}</button></div>`;
+  $("wN").onclick = () => { w = (w + 1) % W.length; shown = 1; $("wRes").innerHTML = ""; who(); }; if (ok && shown === 1) Lern.confetti && Lern.confetti(); };
+who();
+
+const QUIZ = [["Wer gibt den digitalen Euro heraus?", ["Eine private Firma", "Die Europäische Zentralbank", "Niemand", "Die Miner"], 1, "Der digitale Euro wäre Zentralbankgeld, herausgegeben vom Eurosystem mit der EZB."], ["Was kann der Herausgeber eines Stablecoins tun?", ["Nichts", "Guthaben auf Adressen einfrieren", "Bitcoin drucken", "Die Blockchain löschen"], 1, "Große Stablecoin-Herausgeber können Guthaben einfrieren, etwa auf Anordnung von Behörden."], ["Wann kommt der digitale Euro frühestens für alle?", ["2026", "2027", "2029", "Er ist schon da"], 2, "Nach aktuellem Plan frühestens 2029, wenn sich die EU bis Ende 2026 auf das Gesetz einigt."]];
+Lern.quiz($("quiz"), "digitalgeld", QUIZ, "../"); Lern.visit("digitalgeld"); Lern.renderNext("digitalgeld", "../");
+})();
+</script>
+</body>
+</html>
