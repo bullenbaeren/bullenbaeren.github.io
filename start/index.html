@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bitcoin in 5 Minuten · Satsland</title>
+<meta name="description" content="Lernwelt: Bitcoin in 5 Minuten. Das große Bild in 6 Comic-Szenen: Problem, Kassenbuch, Mining, Schlüssel, Knappheit, und wie alles zusammenpasst.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0b0f2a">
+<link rel="icon" href="../icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="stylesheet" href="../lern.css?v=21">
+<style>
+/* Lernwelt "Bitcoin in 5 Minuten": nur seitenspezifische Teile, der Rest kommt aus lern.css */
+.idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
+.kv{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}
+.kv div{border:1px solid var(--line);border-radius:12px;padding:8px 10px;font-size:12px;color:var(--muted)} .kv b{display:block;font:700 18px var(--f-num);color:var(--ink)} .kv .g{color:var(--gold)}
+.seg{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px} .seg .btn[aria-pressed="true"]{outline:2px solid var(--gold);background:rgba(247,147,26,.15)}
+.res{margin-top:12px;padding:12px 14px;border-radius:14px;border:2px solid var(--line);font-size:15px;line-height:1.5}
+.res strong{display:block;font-size:18px} .res.ok{border-color:var(--bull)} .res.ok strong{color:var(--bull)} .res.bad{border-color:var(--bear)} .res.bad strong{color:var(--bear)} .res.warn{border-color:var(--gold)} .res.warn strong{color:var(--gold)}
+.note{margin:10px 0 0;font-size:14px;color:var(--muted);line-height:1.5} .note b{color:var(--ink)} .note a{color:var(--gold)}
+@media (max-width:620px){ .kv{grid-template-columns:1fr 1fr} }
+.lbl2{display:block;font-size:13px;color:var(--muted);margin-top:12px}
+.ctl .row{display:flex;align-items:center;gap:10px;margin-top:8px} .ctl .row input{flex:1} .ctl .row b{font:900 18px var(--f-num);min-width:5ch;text-align:right}
+.chart{margin-top:12px;border-radius:14px;background:#0b0f2a;border:1px solid var(--line);overflow:hidden} .chart svg{width:100%;height:auto;display:block}
+
+.story{margin-top:12px;border:3px solid #0d1230;border-radius:20px;box-shadow:4px 4px 0 #0d1230;background:linear-gradient(160deg,#232a62,#151a40);padding:16px;min-height:280px;display:grid;grid-template-columns:120px 1fr;gap:16px;align-items:center}
+.story .pic{width:120px;height:120px;animation:bob 2.4s ease-in-out infinite} .story .pic svg{width:100%;height:100%}
+@keyframes bob{50%{transform:translateY(-6px) rotate(-2deg)}}
+.story .k{font:900 12px var(--f-num);color:var(--gold)} .story h3{margin:4px 0 6px;font:900 21px/1.25 var(--f-display)} .story p{margin:0;line-height:1.55}
+.story a{display:inline-block;margin-top:8px;color:var(--gold);font-weight:800}
+.story.in{animation:slidein .35s} @keyframes slidein{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:none}}
+.snav{display:flex;align-items:center;gap:8px;margin-top:10px} .snav .dots{flex:1;display:flex;gap:5px;justify-content:center} .snav .dots i{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.15);cursor:pointer} .snav .dots i.on{background:var(--gold);transform:scale(1.25)}
+.match{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.match .col{display:grid;gap:8px;align-content:start}
+.match button{text-align:left;padding:10px 12px;border-radius:12px;border:2px solid var(--line);background:rgba(255,255,255,.04);color:var(--ink);font:600 14px var(--f-body);cursor:pointer;transition:all .2s}
+.match button.sel{border-color:var(--gold);background:rgba(247,147,26,.15)} .match button.ok{border-color:var(--bull);background:rgba(52,217,130,.12);cursor:default} .match button.no{animation:shake .35s;border-color:var(--bear)}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+@media (max-width:560px){ .story{grid-template-columns:1fr;text-align:center;min-height:0} .story .pic{margin:0 auto;width:96px;height:96px} .match{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a class="back" href="../">← Satsland</a><a class="back" href="../lexikon/">📖 Lexikon</a></div>
+  <div>
+    <h1>Bitcoin in <span class="btc">5 Minuten</span></h1>
+    <p class="lead">Bevor wir in die Details gehen: Hier ist das <b>große Bild</b>. Sechs Szenen, und du weißt, wie Bitcoin im Kern funktioniert. Zu jeder Szene gibt es später eine eigene Welt zum Vertiefen.</p>
+  </div>
+
+  <section class="card" aria-labelledby="h1s">
+    <h2 id="h1s">Die Geschichte in 6 Szenen</h2>
+    <div class="story" id="story" aria-live="polite"></div>
+    <div class="snav"><button class="btn" type="button" id="sP" aria-label="Zurück">◀</button><div class="dots" id="sD"></div><button class="btn" type="button" id="sN">Weiter ▶</button></div>
+  </section>
+
+  <section class="card" aria-labelledby="h2s">
+    <h2 id="h2s">Bau Bitcoin zusammen</h2>
+    <p class="muted" style="margin:0">Jedes Problem von digitalem Geld hat in Bitcoin eine Lösung. Tipp links ein Problem an, dann rechts die passende Lösung.</p>
+    <div class="match" id="match"><div class="col" id="mP"></div><div class="col" id="mS"></div></div>
+    <div id="mRes"></div>
+  </section>
+
+  <section class="card" aria-labelledby="hMs">
+    <h2 id="hMs">Das solltest du dir merken</h2>
+    <div class="learn">
+      <div><b>Gemeinsames Kassenbuch</b><span>Alle Zahlungen stehen in der <b>Blockchain</b>, von der tausende <b>Nodes</b> eine Kopie haben und alles prüfen.</span></div>
+      <div><b>Miner schreiben</b><span>Etwa alle <b>10 Minuten</b> gewinnt ein Miner das Rechen-Wettrennen und darf den nächsten Block anhängen.</span></div>
+      <div><b>Schlüssel = Besitz</b><span>Wer den <b>privaten Schlüssel</b> hat, kann ausgeben. Deine 12 Wörter sind das Backup davon.</span></div>
+      <div><b>Feste Regeln</b><span>Höchstens <b>21 Millionen</b>, keiner kann mehr drucken. Die Nodes setzen die Regeln durch.</span></div>
+    </div>
+    <details class="qz"><summary>Teste dich: 3 Fragen</summary><div id="quiz"></div></details>
+  </section>
+
+  <section class="card next" id="next" aria-label="Weiter"></section>
+  <details class="foot"><summary>Quellen</summary><p><a href="https://bitcoin.org/bitcoin.pdf">Bitcoin-Whitepaper (2008)</a> · <a href="https://bitcoin.org/de/wie-es-funktioniert">bitcoin.org: Wie es funktioniert</a></p></details>
+  <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
+</div>
+
+<script src="../lern.js?v=21"></script>
+<script>
+/* =====================================================================
+   BITCOIN IN 5 MINUTEN – Lernwelt von Satsland
+   ===================================================================== */
+(() => {
+const $ = id => document.getElementById(id);
+const SC = [
+  ["coin", "Das Problem", "Online-Geld braucht immer einen Chef", "Willst du heute jemandem im Internet Geld schicken, brauchst du eine Bank oder PayPal. Die können sperren, mitlesen und Gebühren verlangen. Ohne Chef ging es nicht, denn digitale Dateien kann man <b>kopieren</b>.", "doppelt", "Das Kopier-Problem"],
+  ["news", "Die Idee", "Ein Kassenbuch, das allen gehört", "Satoshi Nakamoto hatte 2008 die Idee: Alle Zahlungen kommen in <b>ein öffentliches Kassenbuch</b>. Tausende Computer (<b>Nodes</b>) auf der ganzen Welt haben eine Kopie und prüfen jede Zahlung. Wer etwas doppelt ausgibt, fliegt auf.", "blockchain", "Blockchain"],
+  ["pick", "Wer darf schreiben?", "Ein Rechen-Wettrennen alle 10 Minuten", "Neue Zahlungen werden in <b>Blöcken</b> gebündelt. Wer den nächsten Block anhängen darf, entscheidet ein Wettrennen: <b>Miner</b> raten Zahlen, bis einer einen passenden Fingerabdruck findet. Der Gewinner bekommt neue Bitcoin als Belohnung.", "mining", "Mining-Werkstatt"],
+  ["key", "Wem gehört was?", "Schlüssel statt Konto", "Es gibt keine Konten mit Namen. Bitcoin gehören dem, der den <b>privaten Schlüssel</b> hat und damit unterschreiben kann. Deine <b>Wallet</b> verwaltet die Schlüssel, deine <b>12 Wörter</b> sind das Backup.", "schluessel", "Schlüssel-Labor"],
+  ["scissors", "Wie viel gibt es?", "21 Millionen, keine mehr", "Die Regeln legen fest: Es gibt höchstens <b>21 Millionen</b> Bitcoin. Alle vier Jahre halbiert sich die Belohnung für Miner (<b>Halving</b>). Niemand kann zusätzliche Bitcoin drucken, auch kein Staat.", "halving", "Knappheit & Halving"],
+  ["trophy", "Das Ergebnis", "Geld ohne Chef", "Zusammen ergibt das <b>Geld, das niemandem gehört</b>: rund um die Uhr, weltweit, ohne Erlaubnis. Nicht perfekt, der Kurs schwankt stark. Aber zum ersten Mal kann digitales Geld ohne Bank funktionieren.", "eigenschaften", "Geld-Duell"]];
+let sc = 0;
+function story(){
+  const [art, k, h, p, link, ln] = SC[sc];
+  $("story").innerHTML = `<div class="pic" aria-hidden="true">${Lern.art(art)}</div><div><span class="k">SZENE ${sc + 1} VON 6 · ${k.toUpperCase()}</span><h3>${h}</h3><p>${p}</p><a href="../${link}/">Mehr dazu: ${ln} →</a></div>`;
+  $("story").classList.remove("in"); void $("story").offsetWidth; $("story").classList.add("in");
+  $("sD").innerHTML = SC.map((_, i) => `<i class="${i === sc ? "on" : ""}" data-i="${i}" role="button" aria-label="Szene ${i + 1}"></i>`).join("");
+  $("sP").disabled = sc === 0; $("sN").textContent = sc === SC.length - 1 ? "↺ Von vorn" : "Weiter ▶";
+}
+$("sN").onclick = () => { sc = (sc + 1) % SC.length; story(); }; $("sP").onclick = () => { if (sc){ sc--; story(); } };
+$("sD").onclick = e => { const d = e.target.closest("[data-i]"); if (d){ sc = +d.dataset.i; story(); } };
+story();
+// Zuordnen
+const PR = [["Wer verhindert, dass Geld kopiert wird?", "Alle Nodes prüfen ein gemeinsames Kassenbuch"], ["Wer entscheidet, wer den nächsten Block schreibt?", "Das Rechen-Wettrennen der Miner"], ["Wie beweise ich, dass es mein Geld ist?", "Unterschrift mit dem privaten Schlüssel"], ["Wer bestimmt, wie viel Geld es gibt?", "Eine feste Regel: höchstens 21 Millionen"]];
+let pick = -1, solved = 0, err = 0;
+const mix = a => a.map((x, i) => [Math.random(), i, x]).sort((p, q) => p[0] - q[0]);
+function match(){ solved = 0; err = 0; pick = -1; $("mRes").innerHTML = "";
+  $("mP").innerHTML = mix(PR).map(([, i, x]) => `<button type="button" data-p="${i}">❓ ${x[0]}</button>`).join("");
+  $("mS").innerHTML = mix(PR).map(([, i, x]) => `<button type="button" data-s="${i}">✅ ${x[1]}</button>`).join(""); }
+$("match").onclick = e => { const b = e.target.closest("button"); if (!b || b.classList.contains("ok")) return;
+  if (b.dataset.p != null){ $("mP").querySelectorAll("button").forEach(x => x.classList.remove("sel")); b.classList.add("sel"); pick = +b.dataset.p; return; }
+  if (pick < 0){ Lern.say && Lern.say("Tipp erst links ein Problem an!", 2500); return; }
+  if (+b.dataset.s === pick){ b.classList.add("ok"); $("mP").querySelector(`[data-p="${pick}"]`).className = "ok"; pick = -1; solved++;
+    if (solved === PR.length){ $("mRes").innerHTML = `<div class="res ${err ? "warn" : "ok"}"><strong>${err ? "Geschafft!" : "Perfekt, du hast Bitcoin verstanden!"}</strong>Genau diese vier Bausteine machen Bitcoin aus. Jetzt geht es in die Details. <button class="btn" type="button" id="mA" style="margin-top:8px">↺ Nochmal</button></div>`; $("mA").onclick = match; Lern.confetti && Lern.confetti(); } }
+  else { err++; b.classList.remove("no"); void b.offsetWidth; b.classList.add("no"); } };
+match();
+
+const QUIZ = [["Wer hat eine Kopie der Bitcoin-Blockchain?", ["Nur Satoshi", "Tausende Nodes auf der ganzen Welt", "Eine Bank in der Schweiz", "Niemand"], 1, "Jeder kann eine Node betreiben. Tausende tun es und prüfen jede Zahlung selbst."], ["Wie oft wird im Schnitt ein neuer Block angehängt?", ["Jede Sekunde", "Etwa alle 10 Minuten", "Einmal im Jahr", "Nie"], 1, "Im Schnitt alle 10 Minuten, dafür sorgt die Difficulty-Anpassung."], ["Was beweist, dass dir Bitcoin gehören?", ["Dein Name im Kassenbuch", "Dein privater Schlüssel, mit dem du unterschreiben kannst", "Dein Personalausweis", "Ein Vertrag"], 1, "Bitcoin kennt keine Namen. Wer den Schlüssel hat, kann ausgeben."]];
+Lern.quiz($("quiz"), "start", QUIZ, "../"); Lern.visit("start"); Lern.renderNext("start", "../");
+})();
+</script>
+</body>
+</html>

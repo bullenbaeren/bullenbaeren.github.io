@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Einigungs-Labor · Satsland</title>
+<meta name="description" content="Lernwelt: Wie sich Bitcoin-Nodes ohne Chef einigen. Das Problem der byzantinischen Generäle, die längste Kette, Anreize für ehrliche Miner und die Difficulty-Anpassung, mit Live-Daten.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0b0f2a">
+<link rel="icon" href="../icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="stylesheet" href="../lern.css?v=21">
+<style>
+/* Lernwelt "Einigungs-Labor": nur seitenspezifische Teile, der Rest kommt aus lern.css */
+.idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
+.kv{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}
+.kv div{border:1px solid var(--line);border-radius:12px;padding:8px 10px;font-size:12px;color:var(--muted)} .kv b{display:block;font:700 18px var(--f-num);color:var(--ink)} .kv .g{color:var(--gold)}
+.seg{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px} .seg .btn[aria-pressed="true"]{outline:2px solid var(--gold);background:rgba(247,147,26,.15)}
+.res{margin-top:12px;padding:12px 14px;border-radius:14px;border:2px solid var(--line);font-size:15px;line-height:1.5}
+.res strong{display:block;font-size:18px} .res.ok{border-color:var(--bull)} .res.ok strong{color:var(--bull)} .res.bad{border-color:var(--bear)} .res.bad strong{color:var(--bear)} .res.warn{border-color:var(--gold)} .res.warn strong{color:var(--gold)}
+.note{margin:10px 0 0;font-size:14px;color:var(--muted);line-height:1.5} .note b{color:var(--ink)} .note a{color:var(--gold)}
+@media (max-width:620px){ .kv{grid-template-columns:1fr 1fr} }
+.lbl2{display:block;font-size:13px;color:var(--muted);margin-top:12px}
+.ctl .row{display:flex;align-items:center;gap:10px;margin-top:8px} .ctl .row input{flex:1} .ctl .row b{font:900 18px var(--f-num);min-width:5ch;text-align:right}
+.chart{margin-top:12px;border-radius:14px;background:#0b0f2a;border:1px solid var(--line);overflow:hidden} .chart svg{width:100%;height:auto;display:block}
+
+.camp svg{width:100%;height:auto;display:block}
+.seg2{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.race{display:grid;gap:10px;margin-top:12px}
+.lane{display:flex;align-items:center;gap:6px;min-height:46px;padding:6px;border-radius:12px;background:rgba(255,255,255,.03);overflow-x:auto}
+.lane .lb{flex:none;width:5.2em;font:800 12px var(--f-body);color:var(--muted)}
+.blk{flex:none;width:44px;height:34px;border-radius:8px;display:grid;place-items:center;font:900 12px var(--f-num);border:3px solid #0d1230;background:#ffc94d;color:#241500;animation:pop .35s}
+.blk.b{background:#7cc4ff} .blk.dead{background:#3a4070;color:#8890b8;opacity:.6} .blk.atk{background:#ff5c73;color:#fff}
+@keyframes pop{from{transform:scale(.4)}to{transform:none}}
+.tbl{width:100%;border-collapse:collapse;margin-top:10px;font-size:13px} .tbl th,.tbl td{padding:6px;border-bottom:1px solid var(--line);text-align:right} .tbl th:first-child,.tbl td:first-child{text-align:left} .tbl th{color:var(--muted);font-size:12px}
+.pay{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.pay div{border:2px solid var(--line);border-radius:14px;padding:10px 12px;font-size:14px;line-height:1.5} .pay .h{border-color:rgba(52,217,130,.55)} .pay .a{border-color:rgba(255,92,115,.55)} .pay div > b:first-child{display:block;font-family:var(--f-display);font-size:16px}
+@media (max-width:620px){ .pay{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a class="back" href="../">← Satsland</a><a class="back" href="../lexikon/">📖 Lexikon</a></div>
+  <div>
+    <h1>Wie sich alle <span class="btc">einigen</span></h1>
+    <p class="lead">Tausende Computer, die sich nicht kennen und nicht vertrauen, einigen sich auf <b>ein</b> Kassenbuch. Ohne Chef, ohne Abstimmung. Das galt jahrzehntelang als unlösbar. Hier siehst du, wie Bitcoin es schafft.</p>
+  </div>
+
+  <section class="card" aria-labelledby="h1s">
+    <h2 id="h1s">1 · Das Problem der Generäle</h2>
+    <p class="muted" style="margin:0">Fünf Generäle umzingeln eine Stadt. Greifen <b>alle</b> gleichzeitig an, siegen sie. Greifen nur einige an, verlieren sie. Sie können nur über Boten reden, und <b>einer ist ein Verräter</b>, der jedem etwas anderes erzählt.</p>
+    <div class="chart camp nogl" id="camp"></div>
+    <div class="seg2"><button class="btn" type="button" id="gA">📨 Ohne Bitcoin abstimmen</button><button class="btn" type="button" id="gB">⛏️ Mit Proof of Work</button></div>
+    <p class="note" id="gN"></p>
+  </section>
+
+  <section class="card" aria-labelledby="h2s">
+    <h2 id="h2s">2 · Zwei Blöcke gleichzeitig: Welche Kette gilt?</h2>
+    <p class="muted" style="margin:0">Manchmal finden zwei Miner fast zeitgleich einen Block. Kurz gibt es zwei Versionen. Die Regel: <b>Es gilt die Kette mit der meisten Arbeit.</b> Sobald eine Seite den nächsten Block findet, wechseln alle dorthin.</p>
+    <div class="race nogl" id="race"></div>
+    <div class="seg2"><button class="btn" type="button" id="rS">⚡ Zwei Blöcke gleichzeitig!</button><button class="btn" type="button" id="rN" disabled>⛏️ Nächster Block</button></div>
+    <p class="note" id="rT"></p>
+  </section>
+
+  <section class="card" aria-labelledby="h3s">
+    <h2 id="h3s">3 · Kann ein Betrüger aufholen?</h2>
+    <p class="muted" style="margin:0">Ein Angreifer will eine bezahlte Zahlung rückgängig machen. Dafür muss er heimlich eine längere Kette bauen. Satoshi hat im Whitepaper ausgerechnet, wie wahrscheinlich das ist.</p>
+    <div class="ctl"><label class="lbl2" for="aq">Anteil des Angreifers an der Rechenleistung</label><div class="row"><input id="aq" type="range" min="1" max="49" value="10"><b id="aqV" class="num">10 %</b></div></div>
+    <table class="tbl nogl" id="atk"></table>
+    <p class="note">Darum warten Händler bei großen Beträgen auf <b>6 Bestätigungen</b> (etwa eine Stunde). Ab 50 % könnte ein Angreifer irgendwann immer aufholen, das wäre der <b>51-%-Angriff</b>.</p>
+  </section>
+
+  <section class="card" aria-labelledby="h4s">
+    <h2 id="h4s">4 · Warum Ehrlichkeit sich lohnt</h2>
+    <div class="pay">
+      <div class="h"><b>⛏️ Ehrlich minen</b>Jeder gefundene Block bringt <b>3,125 BTC</b> plus Gebühren. Planbar, legal, und der Wert deiner Belohnung bleibt erhalten.</div>
+      <div class="a"><b>😈 Betrügen</b>Braucht über die Hälfte der weltweiten Rechenleistung: Milliarden für Geräte und Strom. Selbst wenn es klappt, bricht das Vertrauen und damit der <b>Wert</b> deiner eigenen Bitcoin und Geräte ein.</div>
+    </div>
+    <p class="note">Das ist der eigentliche Trick von Bitcoin: Die Regeln sind so gebaut, dass <b>Ehrlichkeit mehr Gewinn bringt als Betrug</b>. Man muss den Minern nicht vertrauen, sie handeln aus Eigennutz richtig. Fachleute nennen das <b>Spieltheorie</b>.</p>
+  </section>
+
+  <section class="card" aria-labelledby="h5s">
+    <h2 id="h5s">5 · Immer 10 Minuten: die Difficulty-Anpassung <span class="mode" id="mode">Verbinde …</span></h2>
+    <p class="muted" style="margin:0">Kommen mehr Miner dazu, würden Blöcke schneller gefunden. Darum passt Bitcoin alle <b>2.016 Blöcke</b> (etwa 2 Wochen) die Schwierigkeit an. Probier es aus:</p>
+    <div class="seg2"><button class="btn" type="button" data-h="2">🚀 Doppelt so viele Miner</button><button class="btn" type="button" data-h="0.5">📉 Hälfte der Miner fällt aus</button><button class="btn" type="button" data-h="0">↺ Neu</button></div>
+    <div class="chart nogl" id="diff"></div>
+    <div class="kv" id="dkv"></div>
+  </section>
+
+  <section class="card" aria-labelledby="hMs">
+    <h2 id="hMs">Das solltest du dir merken</h2>
+    <div class="learn">
+      <div><b>Byzantinische Generäle</b><span>Das alte Problem: Wie einigen sich Fremde, wenn manche <b>lügen</b>? Bitcoin löst es mit Arbeit statt Abstimmung.</span></div>
+      <div><b>Meiste Arbeit gewinnt</b><span>Bei zwei Versionen gilt die Kette mit der <b>meisten Rechenarbeit</b>. Der andere Block verwaist.</span></div>
+      <div><b>Ehrlichkeit lohnt sich</b><span>Betrug kostet Milliarden und zerstört den eigenen Gewinn. Darum handeln Miner aus <b>Eigennutz</b> ehrlich.</span></div>
+      <div><b>Alle 2.016 Blöcke</b><span>Die Schwierigkeit passt sich an, damit ein Block im Schnitt <b>10 Minuten</b> dauert.</span></div>
+    </div>
+    <details class="qz"><summary>Teste dich: 3 Fragen</summary><div id="quiz"></div></details>
+  </section>
+
+  <section class="card xref" aria-label="Passend dazu"><p class="note" style="margin:0">🔗 <b>Passend dazu:</b> <a href="../mining/">Mining-Werkstatt</a> <span class="muted">(selbst minen)</span> · <a href="../nodes/">Node-Wache</a> <span class="muted">(wer die Regeln durchsetzt)</span></p></section>
+
+  <section class="card next" id="next" aria-label="Weiter"></section>
+  <details class="foot"><summary>Quellen</summary><p><a href="https://bitcoin.org/bitcoin.pdf">Bitcoin-Whitepaper, Abschnitte 4, 5 und 11</a> · <a href="https://lamport.azurewebsites.net/pubs/byz.pdf">Lamport u. a.: The Byzantine Generals Problem (1982)</a> · <a href="https://mempool.space/de/mining">mempool.space (Live)</a></p></details>
+  <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
+</div>
+
+<script src="../lern.js?v=21"></script>
+<script>
+/* =====================================================================
+   EINIGUNGS-LABOR – Lernwelt von Satsland
+   ===================================================================== */
+(() => {
+const $ = id => document.getElementById(id);
+// 1) Generäle
+const POS = [[200, 50], [345, 150], [290, 300], [110, 300], [55, 150]];
+let traitor = 0;
+function camp(mode){
+  const T = POS.map((p, i) => { let txt, col;
+    if (!mode){ txt = "?"; col = "#3a4070"; }
+    else if (mode === 1){ const atk = i === traitor ? "😈" : (i % 2 ? "Angriff" : "Rückzug"); txt = atk; col = i === traitor ? "#b26bff" : i % 2 ? "#ff5c73" : "#7cc4ff"; }
+    else { txt = i === traitor ? "😈 allein" : "Angriff"; col = i === traitor ? "#b26bff" : "#34d982"; }
+    return `<g><circle cx="${p[0]}" cy="${p[1]}" r="34" fill="${col}" stroke="#0d1230" stroke-width="4"/><text x="${p[0]}" y="${p[1] - 2}" font-size="26" text-anchor="middle">⛺</text><text x="${p[0]}" y="${p[1] + 54}" fill="#eef0ff" font-size="17" font-weight="800" text-anchor="middle">${txt}</text></g>`; }).join("");
+  const lines = mode === 1 ? POS.map((p, i) => i === traitor ? "" : `<line x1="${POS[traitor][0]}" y1="${POS[traitor][1]}" x2="${p[0]}" y2="${p[1]}" stroke="#b26bff" stroke-width="3" stroke-dasharray="6 6"/>`).join("") : "";
+  const chain = mode === 2 ? `<g transform="translate(150 150)">${[0, 1, 2].map(k => `<rect x="${k * 36}" y="0" width="30" height="24" rx="5" fill="#ffc94d" stroke="#0d1230" stroke-width="3"/>`).join("")}</g>` : `<text x="200" y="182" font-size="44" text-anchor="middle">🏰</text>`;
+  $("camp").innerHTML = `<svg viewBox="0 0 400 370" role="img" aria-label="Fünf Generäle um eine Stadt">${lines}${chain}${T}</svg>`;
+  $("gN").innerHTML = !mode ? "Wähle oben, wie die Generäle sich abstimmen." : mode === 1 ? "Der Verräter erzählt jedem etwas anderes. Jetzt glauben manche an Angriff, andere an Rückzug. <b>Chaos, die Stadt gewinnt.</b> Genau so könnte jemand bei digitalem Geld dem einen „gezahlt“ und dem anderen „nicht gezahlt“ erzählen." : "Mit Bitcoin zählt nicht, wer was <b>sagt</b>, sondern die gemeinsame Kette mit der <b>meisten Arbeit</b>. Fälschen würde enorm viel Rechenleistung kosten. Alle Ehrlichen sehen dieselbe Kette und greifen gemeinsam an. Der Verräter bleibt allein.";
+}
+$("gA").onclick = () => { traitor = Bit0(); camp(1); }; $("gB").onclick = () => camp(2);
+const Bit0 = () => Math.floor(Math.random() * 5);
+camp(0);
+// 2) Rennen zweier Ketten
+let A = [], B = [], fork = false;
+const base = [880, 881, 882];
+function race(){ const L = (lb, arr, cls) => `<div class="lane"><span class="lb">${lb}</span>${base.map(n => `<span class="blk">${n}</span>`).join("")}${arr.map(([n, c]) => `<span class="blk ${c}">${n}</span>`).join("")}</div>`;
+  $("race").innerHTML = L("Kette A", A, "") + (fork || B.length ? L("Kette B", B, "b") : ""); }
+$("rS").onclick = () => { A = [[883, ""]]; B = [[883, "b"]]; fork = true; $("rN").disabled = false; $("rS").disabled = true; race();
+  $("rT").innerHTML = "Zwei Miner haben gleichzeitig Block 883 gefunden. Die Hälfte der Nodes arbeitet an <b>A</b>, die andere an <b>B</b>. Wer findet den nächsten?"; };
+$("rN").onclick = () => { const winA = Math.random() < .5; (winA ? A : B).push([884, winA ? "" : "b"]); const lose = winA ? B : A; lose.forEach(x => x[1] = "dead");
+  race(); $("rN").disabled = true; $("rS").disabled = false; fork = false;
+  $("rT").innerHTML = `Kette <b>${winA ? "A" : "B"}</b> hat Block 884 zuerst gefunden und ist jetzt länger. Alle Nodes wechseln sofort dorthin. Der andere Block 883 <b>verwaist</b>: Seine Zahlungen kommen zurück in den Mempool und landen in einem späteren Block. Das passiert ab und zu und ist völlig normal.`; };
+race();
+// 3) Satoshis Formel (Whitepaper, Abschnitt 11)
+function prob(q, z){ const p = 1 - q, l = z * q / p; let s = 1; for (let k = 0; k <= z; k++){ let po = Math.exp(-l); for (let i = 1; i <= k; i++) po *= l / i; s -= po * (1 - Math.pow(q / p, z - k)); } return Math.max(0, s); }
+function atk(){ const q = +$("aq").value / 100; $("aqV").textContent = Math.round(q * 100) + " %";
+  const f = v => v >= 0.995 ? "fast sicher" : v < 1e-6 ? "< 1 zu 1 Mio." : v < 0.001 ? "1 zu " + Math.round(1 / v).toLocaleString("de-DE") : (v * 100).toLocaleString("de-DE", {maximumFractionDigits: 1}) + " %";
+  $("atk").innerHTML = `<tr><th>Bestätigungen</th><th>Chance des Angreifers</th></tr>` + [1, 2, 3, 6, 10].map(z => `<tr><td>${z}${z === 6 ? " ⭐" : ""}</td><td>${f(prob(q, z))}</td></tr>`).join(""); }
+$("aq").oninput = atk; atk();
+// 5) Difficulty-Simulation: 6 Perioden à 2.016 Blöcke
+let hash = [1], diff = [1];
+function diffSim(){
+  const per = hash.map((h, i) => 10 * diff[i] / h), W = 640, H = 240, n = Math.max(6, per.length), x = i => 60 + i * (W - 90) / (n - 1), y = m => H - 40 - Math.min(m, 21) / 21 * (H - 80);
+  $("diff").innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Blockzeit pro Periode"><line x1="50" x2="${W - 20}" y1="${y(10)}" y2="${y(10)}" stroke="#34d982" stroke-dasharray="6 6"/><text x="${W - 22}" y="${y(10) - 8}" fill="#34d982" font-size="24" font-weight="800" text-anchor="end">Ziel: 10 Min.</text>
+    ${per.map((m, i) => `<rect x="${x(i) - 30}" y="${y(m)}" width="60" height="${H - 40 - y(m)}" rx="8" fill="${Math.abs(m - 10) < 0.5 ? "#34d982" : m < 10 ? "#ffc94d" : "#ff5c73"}"/><text x="${x(i)}" y="${y(m) - 8}" fill="#eef0ff" font-size="26" font-weight="900" text-anchor="middle">${m.toLocaleString("de-DE", {maximumFractionDigits: 1})}</text><text x="${x(i)}" y="${H - 14}" fill="#8890b8" font-size="20" text-anchor="middle">P${i + 1}</text>`).join("")}</svg>`;
+}
+document.querySelectorAll("[data-h]").forEach(b => b.onclick = () => { const f = +b.dataset.h;
+  if (!f){ hash = [1]; diff = [1]; } else { if (hash.length >= 6){ hash = hash.slice(-1); diff = diff.slice(-1); }
+    // Anpassung nach jeder Periode: neue Schwierigkeit = alte × (10 Min ÷ tatsächliche Blockzeit), max. Faktor 4
+    const i = hash.length - 1, nh = hash[i] * f; const adj = Math.min(4, Math.max(.25, hash[i] / diff[i])); hash.push(nh); diff.push(diff[i] * adj);
+    const j = hash.length - 1, adj2 = Math.min(4, Math.max(.25, hash[j] / diff[j])); hash.push(nh); diff.push(diff[j] * adj2); }
+  diffSim(); });
+diffSim();
+async function live(){ let d = null; try { d = await (await fetch("https://mempool.space/api/v1/difficulty-adjustment")).json(); } catch(e){}
+  $("mode").className = "mode " + (d ? "live" : "demo"); $("mode").textContent = d ? "Live" : "Live nicht erreichbar";
+  $("dkv").innerHTML = d ? `<div>Aktuelle Periode<b>${Math.round(d.progressPercent)} %</b></div><div>Blockzeit gerade<b>${(d.timeAvg / 60000).toLocaleString("de-DE", {maximumFractionDigits: 1})} Min.</b></div><div>Nächste Anpassung<b class="g">${d.difficultyChange > 0 ? "+" : ""}${d.difficultyChange.toLocaleString("de-DE", {maximumFractionDigits: 1})} %</b></div>`
+    : `<div>Periode<b>2.016 Blöcke</b></div><div>Ziel<b>10 Min.</b></div><div>Max. Änderung<b class="g">×4 / ÷4</b></div>`; }
+live();
+
+const QUIZ = [["Welche Kette gilt, wenn es zwei Versionen gibt?", ["Die ältere", "Die mit der meisten Rechenarbeit", "Die von Satoshi", "Die mit den meisten Zahlungen"], 1, "Nodes folgen immer der Kette mit der meisten Arbeit. Der andere Block verwaist."], ["Warum lohnt sich Betrug für Miner meist nicht?", ["Weil er verboten ist", "Weil er Milliarden kostet und den Wert der eigenen Bitcoin zerstören würde", "Weil Satoshi aufpasst", "Er lohnt sich immer"], 1, "Ehrliches Minen bringt sichere Belohnung. Ein Angriff würde das Vertrauen und damit den eigenen Gewinn vernichten."], ["Wie oft passt Bitcoin die Schwierigkeit an?", ["Jeden Block", "Alle 2.016 Blöcke, etwa alle 2 Wochen", "Einmal im Jahr", "Nie"], 1, "Alle 2.016 Blöcke, damit ein Block im Schnitt 10 Minuten dauert."]];
+Lern.quiz($("quiz"), "konsens", QUIZ, "../"); Lern.visit("konsens"); Lern.renderNext("konsens", "../");
+})();
+</script>
+</body>
+</html>

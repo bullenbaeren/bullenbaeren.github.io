@@ -14,7 +14,7 @@
 <meta property="og:description" content="Bitcoin spielerisch verstehen, mit echten Live-Daten.">
 <meta property="og:image" content="https://satsland.github.io/og.png">
 <meta property="og:url" content="https://satsland.github.io/">
-<link rel="stylesheet" href="lern.css?v=20">
+<link rel="stylesheet" href="lern.css?v=21">
 <style>
 /* Übersicht der Lernwelten: gleiche Farben und Schriften wie das Spiel. */
 .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
@@ -86,7 +86,7 @@ details.fold[open] > summary{margin-bottom:12px}
     <h1>Sats<span>land</span></h1>
     <p class="lead">Bitcoin spielerisch verstehen: Lernwelten mit echten Live-Daten, ohne Anmeldung und ohne Tracking.</p>
   </div>
-  <p class="count"><b>34 Welten</b> in 6 Kapiteln · <b>6 Bosse</b> + Endboss · <b>🔬 9 Profi-Vertiefungen</b></p>
+  <p class="count"><b>36 Welten</b> in 6 Kapiteln · <b>6 Bosse</b> + Endboss · <b>🔬 9 Profi-Vertiefungen</b></p>
   <a class="resume" id="resume" hidden></a>
   <details class="card daily fold" data-k="daily"><summary><h2 id="dly">🔥 Tages-Challenge</h2><span class="muted sm" id="dlyS"></span></summary><div id="daily"></div></details>
   <section class="card path" aria-labelledby="pth"><div class="ph"><h2 id="pth">🗺️ Dein Lernpfad</h2><span class="muted" id="pathCount"></span></div>
@@ -104,6 +104,7 @@ details.fold[open] > summary{margin-bottom:12px}
     </details>
     <details class="kap fold" data-k="2"><summary><span class="cn">2</span><span class="ct"><b>🌱 Warum Bitcoin?</b><small>Das Kopier-Problem, gutes Geld, Knappheit und wie alles anfing.</small></span><span class="cp" data-cnt="2"><i><u></u></i><em></em></span></summary>
       <div class="grid big">
+        <a class="w" href="start/"><span class="tag live">Neu</span><span class="ic" aria-hidden="true"></span><b>Bitcoin in 5 Minuten</b><span>Das große Bild in 6 Comic-Szenen. Der perfekte Einstieg!</span><span class="go">Bitcoin in 5 Minuten →</span></a>
         <a class="w" href="doppelt/"><span class="tag live">Neu</span><span class="ic" aria-hidden="true"></span><b>Das Kopier-Problem</b><span>Warum digitales Geld so schwer ist und wie Bitcoin es ohne Bank löst.</span><span class="go">Kopier-Problem →</span></a>
         <a class="w" href="eigenschaften/"><span class="tag live">Start</span><span class="ic" aria-hidden="true">⚔️</span><b>Was macht Bitcoin aus?</b><span>Euro, Gold und Bitcoin im Duell um 10 Eigenschaften von gutem Geld.</span><span class="go">Geld-Duell →</span></a>
         <a class="w" href="wert/"><span class="tag live">Neu</span><span class="ic" aria-hidden="true"></span><b>Warum hat Bitcoin Wert?</b><span>Angebot, Nachfrage und warum der Kurs so schwankt.</span><span class="go">Wert-Waage →</span></a>
@@ -147,6 +148,7 @@ details.fold[open] > summary{margin-bottom:12px}
         <a class="w" href="blockchain/"><span class="tag live">Live</span><span class="ic" aria-hidden="true">🔗</span><b>Blockchain</b><span>Fälsch einen Block und sieh, wie die Kette bricht. Mit der echten Kette live.</span><span class="go">Block-Kette →</span></a>
         <a class="w" href="mining/"><span class="tag live">Live</span><span class="ic" aria-hidden="true">⛏</span><b>Mining &amp; Energie</b><span>Selbst minen, Difficulty live und wie viel Strom Bitcoin braucht.</span><span class="go">Mining-Werkstatt →</span></a>
         <a class="w" href="nodes/"><span class="tag live">Live</span><span class="ic" aria-hidden="true">🖥</span><b>Nodes &amp; Upgrades</b><span>Versuch, die Regeln zu brechen, und sieh, wie Bitcoin sich trotzdem ändert.</span><span class="go">Node-Wache →</span></a>
+        <a class="w" href="konsens/"><span class="tag live">Neu</span><span class="ic" aria-hidden="true"></span><b>Wie sich alle einigen</b><span>Generäle-Problem, längste Kette, Anreize und Difficulty, mit Live-Daten.</span><span class="go">Einigungs-Labor →</span></a>
         <a class="w" href="reise/"><span class="tag live">Neu</span><span class="ic" aria-hidden="true"></span><b>Die Reise einer Zahlung</b><span>Das große Ganze: deine Zahlung durch alle 7 Stationen, mit Live-Daten.</span><span class="go">Reise einer Zahlung →</span></a>
       </div>
     </details>
@@ -165,7 +167,7 @@ details.fold[open] > summary{margin-bottom:12px}
   </details>
   <p class="foot">Unterhaltung und Lernen, keine Anlageberatung. Keine Cookies, kein Tracking. <a href="#" id="guideOn" style="color:inherit">Satoshi zurückholen</a></p>
 </div>
-<script src="lern.js?v=20"></script>
+<script src="lern.js?v=21"></script>
 <script>
 // Lernpfad: Fortschritt aus dem eigenen Browser, Häkchen an den Karten, Empfehlung als Nächstes
 (() => {
@@ -238,8 +240,9 @@ details.fold[open] > summary{margin-bottom:12px}
   Lern.renderNext("", "");
   // „Weiter, wo du warst“: zuletzt geöffnete, noch nicht geschaffte Welt (auch Profi), höchstens 30 Tage alt
   { const last = Object.keys(Lern.TITLES).filter(id => s[id] && s[id].seen && !Lern.done(s, id) && Date.now() - s[id].seen < 30 * 864e5).sort((a, b) => s[b].seen - s[a].seen)[0];
-    if (last){ const r = document.getElementById("resume"); r.href = Lern.TITLES[last][1]; r.hidden = false;
-      r.innerHTML = `<span class="ic" aria-hidden="true">${Lern.art(Lern.CARD[last])}</span><span><small>Weiter, wo du warst</small>${Lern.TITLES[last][0]}</span>`; } }
+    const fresh = !Object.keys(s).length, go = last || (fresh ? "start" : "");
+    if (go){ const r = document.getElementById("resume"); r.href = Lern.TITLES[go][1]; r.hidden = false;
+      r.innerHTML = `<span class="ic" aria-hidden="true">${Lern.art(Lern.CARD[go])}</span><span><small>${last ? "Weiter, wo du warst" : "Neu hier? Starte mit"}</small>${Lern.TITLES[go][0]}</span>`; } }
 })();
 </script>
 </body>
