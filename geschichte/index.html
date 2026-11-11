@@ -16,13 +16,45 @@
 .dots button{flex:none;border:1px solid var(--line);background:rgba(255,255,255,.03);color:var(--muted);border-radius:999px;padding:5px 9px;font:700 12px var(--f-num);cursor:pointer}
 .dots button[aria-current="true"]{background:var(--gold);color:#2a1600;border-color:var(--gold)} .dots button.seen{color:var(--ink)}
 .ev{margin-top:12px;padding:16px;border-radius:18px;border:2px solid var(--gold);background:rgba(247,147,26,.06);animation:pop .3s}
-.ev .ic{font-size:40px;line-height:1} .ev .d{font-size:13px;color:var(--muted);margin-top:6px} .ev h3{margin:2px 0 8px;font-size:21px}
+.ev .d{font-size:13px;color:var(--muted);margin-top:6px} .ev h3{margin:2px 0 8px;font-size:21px}
 .ev p{margin:0;font-size:15px;line-height:1.55}
 .kv{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
 .kv div{border:1px solid var(--line);border-radius:12px;padding:8px 10px;font-size:12px;color:var(--muted)} .kv b{display:block;font:700 17px var(--f-num);color:var(--ink)} .kv .g{color:var(--gold)}
 .nav{display:flex;justify-content:space-between;gap:8px;margin-top:12px} .nav .btn{flex:1}
 .pz{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px} .pz .btn.y{background:rgba(46,204,113,.25);border-color:var(--bull)} .pz .btn.n{opacity:.5}
 .pres{margin-top:10px;font-size:15px;line-height:1.5;min-height:1.4em}
+/* Animierte Szenen: Bühne mit Himmel je Epoche, Figuren als Emojis */
+.stage{position:relative;height:210px;border-radius:18px;overflow:hidden;margin:-4px -4px 14px;border:1px solid rgba(255,255,255,.08)}
+.stage.night{background:radial-gradient(1.5px 1.5px at 15% 20%,#fff9,transparent),radial-gradient(1.5px 1.5px at 70% 15%,#fff8,transparent),radial-gradient(1.2px 1.2px at 40% 35%,#fff7,transparent),radial-gradient(1.4px 1.4px at 88% 40%,#fff6,transparent),linear-gradient(#0a0f2e,#1c2464)}
+.stage.dawn{background:linear-gradient(#2a2f6e,#7a4a8c 60%,#f7931a)}
+.stage.day{background:linear-gradient(#2f6fd6,#7fb7ff)}
+.stage.dusk{background:linear-gradient(#1b1f4d,#5b2a5e 55%,#c0483a)}
+.stage.gold{background:radial-gradient(circle at 50% 120%,rgba(255,201,77,.6),transparent 60%),linear-gradient(#1a1440,#3b2a10)}
+.stage::after{content:"";position:absolute;left:0;right:0;bottom:0;height:34px;background:rgba(0,0,0,.28)}
+.a{position:absolute;line-height:1;transform:translate(-50%,-50%);z-index:1;animation-fill-mode:both}
+.lbl{position:absolute;transform:translate(-50%,-50%);z-index:2;font:800 13px var(--f-num);color:#fff;background:rgba(0,0,0,.45);padding:3px 8px;border-radius:8px;white-space:nowrap;animation:fin .5s both}
+.paper{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);width:min(78%,330px);background:#f4efe1;color:#222;border-radius:6px;padding:10px 12px;font:700 13px/1.35 Georgia,serif;box-shadow:0 10px 30px -10px #000;z-index:2;animation:drop .7s cubic-bezier(.3,1.4,.5,1) both}
+.paper small{display:block;font:400 11px Georgia,serif;color:#555;margin-top:4px}
+.type{display:inline-block;max-width:100%;font-size:11.5px;overflow:hidden;white-space:nowrap;border-right:2px solid #333;animation:type 2.2s steps(40) .5s both,blink .8s step-end infinite}
+@keyframes type{from{width:0}} @keyframes blink{50%{border-color:transparent}}
+@keyframes drop{from{transform:translate(-50%,-260%) rotate(-8deg);opacity:0}}
+@keyframes fin{from{opacity:0;transform:translate(-50%,-30%)}}
+@keyframes fly{from{left:var(--fx);top:var(--fy);opacity:0}15%{opacity:1}}
+@keyframes rise{from{transform:translate(-50%,120%);opacity:0}}
+@keyframes grow{from{transform:translate(-50%,-50%) scale(0)}}
+@keyframes bobA{50%{transform:translate(-50%,-62%)}}
+@keyframes fade{to{opacity:0;transform:translate(-50%,-80%) scale(.7)}}
+@keyframes shake{20%,60%{transform:translate(-54%,-50%) rotate(-3deg)}40%,80%{transform:translate(-46%,-50%) rotate(3deg)}}
+@keyframes fall{to{transform:translate(-50%,320%) rotate(220deg);opacity:0}}
+@keyframes rocket{0%{transform:translate(-50%,40%)}60%{transform:translate(-50%,-240%)}100%{transform:translate(120%,140%) rotate(150deg)}}
+@keyframes spinA{to{transform:translate(-50%,-50%) rotate(360deg)}}
+@keyframes cut{50%{transform:translate(-50%,-50%) rotate(-25deg)}}
+@keyframes tilt{to{transform:translate(-50%,-50%) rotate(0)}}
+svg.line{position:absolute;inset:0;width:100%;height:100%;z-index:1}
+svg.line path{fill:none;stroke-width:4;stroke-linecap:round;stroke-dasharray:900;stroke-dashoffset:900;animation:draw 2.4s ease .3s forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.play{margin-left:auto}
+@media (prefers-reduced-motion:reduce){ .stage *{animation:none!important} .type{width:auto} }
 @keyframes pop{from{opacity:0;transform:translateY(6px)}}
 @media (max-width:620px){ .pz{grid-template-columns:1fr} }
 </style>
@@ -32,14 +64,14 @@
   <div class="top"><a class="back" href="../">← Satsland</a><a class="back" href="../spiel/">Zum Spiel</a></div>
   <div>
     <h1><span class="btc">Zeit</span>reise</h1>
-    <p class="lead">Von einem Text im Internet zu einer Billionen-Dollar-Idee: Bitcoin in <b>15 Momenten</b>. Blättere durch oder tippe ein Jahr an.</p>
+    <p class="lead">Von einem Text im Internet zu einer Billionen-Dollar-Idee: Bitcoin in <b>15 animierten Szenen</b>. Blättere durch, tippe ein Jahr an oder drück auf <b>▶ Abspielen</b>.</p>
   </div>
 
   <section class="card" aria-labelledby="h1s">
     <h2 id="h1s">Die Geschichte von Bitcoin <span class="mode" id="mode">Verbinde …</span></h2>
     <div class="dots" id="dots"></div>
     <div id="ev"></div>
-    <div class="nav"><button class="btn ghost" id="prev" type="button">← Zurück</button><button class="btn" id="nextE" type="button">Weiter →</button></div>
+    <div class="nav"><button class="btn ghost" id="prev" type="button">←</button><button class="btn ghost" id="play" type="button">▶ Abspielen</button><button class="btn" id="nextE" type="button">Weiter →</button></div>
   </section>
 
   <section class="card" aria-labelledby="h2s">
@@ -93,18 +125,50 @@ const E = [
   ["🏛", "Januar 2024", "Bitcoin-ETFs in den USA", "Große Fondsanbieter dürfen Bitcoin-ETFs verkaufen. Bitcoin kommt an der Wall Street an.", 46000],
   ["💯", "Dezember 2024", "100.000 Dollar", "Erstmals kostet ein Bitcoin mehr als 100.000 $. Aus 10.000 Pizza-Bitcoin wurde ein Milliardenvermögen.", 100000],
 ];
+// ---------- Szenen: je Moment eine kleine Animation ----------
+// a(Emoji, x %, y %, Größe px, Animation, Verzögerung s, Extra-Style)
+const a = (e, x, y, sz, an = "", d = 0, st = "") => `<span class="a" style="left:${x}%;top:${y}%;font-size:${sz}px;${an ? `animation:${an};animation-delay:${d}s;` : ""}${st}">${e}</span>`;
+const L = (t, x, y, d = 0, st = "") => `<span class="lbl" style="left:${x}%;top:${y}%;animation-delay:${d}s;${st}">${t}</span>`;
+const fly = (e, fx, fy, x, y, sz, d) => a(e, x, y, sz, "fly 1.4s cubic-bezier(.3,.7,.3,1) both", d, `--fx:${fx}%;--fy:${fy}%`);
+const SC = [
+  ["night", a("💻", 18, 70, 46) + `<div class="paper"><span class="type">Bitcoin: A Peer-to-Peer Electronic Cash System</span><small>Satoshi Nakamoto · 9 Seiten · 31.10.2008</small></div>` + a("✉️", 82, 72, 30, "bobA 2s ease-in-out infinite")],
+  ["night", a("📰", 26, 50, 70, "grow .6s both") + L("„Chancellor on brink of second bailout for banks“", 50, 16, .4, "white-space:normal;width:70%;text-align:center") + a("🧱", 72, 140, 64, "drop .9s cubic-bezier(.3,1.4,.5,1) .9s both", 0, "top:58%") + L("Block 0", 72, 84, 1.6)],
+  ["night", a("🧑‍💻", 15, 60, 54) + L("Satoshi", 15, 86) + a("👨‍💻", 85, 60, 54) + L("Hal Finney", 85, 86) + fly("🪙", 15, 55, 85, 40, 34, .4) + L("10 BTC", 50, 30, 1.2) + L("„Running bitcoin“", 85, 16, 1.8)],
+  ["dusk", a("🍕", 70, 52, 58, "grow .5s both", .2) + a("🍕", 84, 58, 50, "grow .5s both", .5) + fly("🪙", 10, 60, 30, 46, 28, .6) + fly("🪙", 10, 60, 22, 58, 28, .8) + fly("🪙", 10, 60, 36, 62, 28, 1) + L('<span data-count="10000">0</span> BTC', 28, 82, .6) + L("≈ 41 $", 76, 84, 1.4)],
+  ["night", a("🧑‍💻", 40, 58, 60, "fade 2.2s ease 1s both") + a("👻", 40, 50, 54, "grow .6s both, bobA 2s ease-in-out 3s infinite", 2.4) + a("💰", 74, 62, 54) + L("≈ 1 Mio. BTC, nie bewegt", 74, 86, 1.2)],
+  ["day", a("⚖️", 50, 52, 96, "tilt 1.6s cubic-bezier(.3,1.6,.5,1) both", .2, "transform:translate(-50%,-50%) rotate(-14deg)") + a("₿", 30, 38, 40, "grow .5s both", .6, "color:#f7931a;font-weight:900") + a("💵", 70, 38, 40, "grow .5s both", .9) + L("1 : 1", 50, 86, 1.6)],
+  ["dawn", L("50 BTC", 24, 50, 0, "font-size:22px") + a("✂️", 50, 50, 46, "cut .6s ease 3", .4) + L("25 BTC", 76, 50, 1.6, "font-size:22px;background:#f7931a;color:#2a1600") + a("⛏", 50, 82, 30)],
+  ["dusk", a("🏦", 50, 50, 96, "shake .5s ease .5s 4") + L("MT. GOX", 50, 18) + [30, 44, 56, 70].map((x, i) => a("🪙", x, 62, 26, "fall 1.6s ease-in both", 2.3 + i*.15)).join("") + L("850.000 BTC fehlen", 50, 86, 2.6)],
+  ["day", `<svg class="line" viewBox="0 0 400 210"><path d="M20 105 H180 L380 50" stroke="#f7931a"/><path d="M180 105 L380 160" stroke="#9aa2d6" style="animation-delay:1.2s"/></svg>` + L("Bitcoin", 86, 18, 2) + L("Bitcoin Cash", 84, 86, 2.4) + a("🍴", 45, 50, 34, "grow .5s both", 1)],
+  ["dusk", `<svg class="line" viewBox="0 0 400 210"><path d="M10 180 C120 175 200 150 250 40 C270 20 280 30 300 150 L390 175" stroke="#f7931a"/></svg>` + a("🚀", 62, 70, 40, "rocket 3s ease-in-out .3s both") + L("fast 20.000 $", 62, 12, 1.2) + L("−80 %", 82, 70, 2.6, "background:#c0483a")],
+  ["day", a("🌋", 22, 60, 76) + a("🇸🇻", 50, 30, 50, "grow .5s both", .3) + a("📱", 74, 62, 44, "bobA 1.6s ease-in-out infinite") + fly("⚡", 74, 62, 50, 64, 30, .8) + L("Gesetzliches Zahlungsmittel", 50, 88, 1.2)],
+  ["dawn", a("🌱", 50, 66, 30, "grow 1.6s cubic-bezier(.3,1.4,.5,1) both", .2, "font-size:90px") + L("Schnorr", 22, 30, 1.2) + L("Privatsphäre", 78, 30, 1.6) + L("über 90 % dafür", 50, 88, 2)],
+  ["dusk", a("🏢", 50, 54, 90, "shake .4s ease .3s 3, fall 1.2s ease-in 1.6s both") + a("💥", 50, 50, 70, "grow .4s both", 1.6) + L("FTX", 50, 16) + L("Kundengeld weg", 50, 86, 2.2)],
+  ["day", a("🏛", 26, 56, 84) + a("🐂", 74, 60, 70, "bobA 1.4s ease-in-out infinite") + L("ETF ✓", 26, 18, .6, "background:#1f8a4c") + L("₿ ▲", 74, 20, 1, "color:#7ff0b2")],
+  ["gold", a("🏆", 50, 46, 76, "grow .6s cubic-bezier(.3,1.6,.5,1) both") + L('<span data-count="100000">0</span> $', 50, 84, .3, "font-size:20px;background:#f7931a;color:#2a1600")],
+];
+// Zahlen hochzählen lassen
+function counters(root){ root.querySelectorAll("[data-count]").forEach(el => { const end = +el.dataset.count, t0 = performance.now();
+  (function f(t){ const q = Math.min(1, (t - t0)/1600); el.textContent = Math.round(end*(1 - Math.pow(1 - q, 3))).toLocaleString("de-DE"); if (q < 1) requestAnimationFrame(f); })(t0); }); }
+let auto = 0;
 function draw(){
   const [ic, d, t, x, p] = E[k];
   $("dots").innerHTML = E.map((e, i) => `<button type="button" data-i="${i}" aria-current="${i === k}" class="${i < k ? "seen" : ""}">${e[1].match(/\d{4}/)[0]}</button>`).join("");
   $("dots").children[k].scrollIntoView({block: "nearest", inline: "center"});
   const x100 = p && now ? now/p : 0;
-  $("ev").innerHTML = `<div class="ev"><span class="ic">${ic}</span><div class="d">${k + 1} von ${E.length} · ${d}</div><h3>${t}</h3><p>${x}</p>
+  $("ev").innerHTML = `<div class="ev"><div class="stage ${SC[k][0]}" aria-hidden="true">${SC[k][1]}</div><div class="d">${k + 1} von ${E.length} · ${d}</div><h3>${t}</h3><p>${x}</p>
     <div class="kv"><div>1 Bitcoin kostete damals<b class="num">${p ? usd(p) : "noch nichts"}</b></div><div>${x100 ? "100 $ von damals wären heute" : k < 2 ? "Blöcke seit dem ersten" : "Kurs heute"}<b class="num g">${x100 ? usd(100*x100) : k < 2 ? (height ? height.toLocaleString("de-DE") : "–") : now ? usd(now) : "–"}</b></div></div></div>`;
+  counters($("ev"));
   $("prev").disabled = k === 0; $("nextE").textContent = k === E.length - 1 ? "Von vorn ↺" : "Weiter →";
 }
 $("dots").onclick = e => { const b = e.target.closest("button"); if (b){ k = +b.dataset.i; draw(); } };
 $("prev").onclick = () => { if (k > 0){ k--; draw(); } };
 $("nextE").onclick = () => { k = k === E.length - 1 ? 0 : k + 1; draw(); };
+// Automatisch durch alle Momente, wie ein kleiner Film
+$("play").onclick = () => {
+  if (auto){ clearInterval(auto); auto = 0; $("play").textContent = "▶ Abspielen"; return; }
+  $("play").textContent = "⏸ Pause"; auto = setInterval(() => { if (k === E.length - 1){ clearInterval(auto); auto = 0; $("play").textContent = "▶ Abspielen"; return; } k++; draw(); }, 6500);
+};
 
 // Pizza-Rätsel
 function pizza(){
