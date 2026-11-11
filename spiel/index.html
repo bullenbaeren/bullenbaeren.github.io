@@ -210,7 +210,7 @@ body.stream .welcome{display:none}
   <div class="top">
     <h1><span class="b">Bullen</span><span class="v">vs</span><span class="r">Bären</span></h1>
     <div class="tools">
-      <a class="pill learn" href="../index.html" title="Satsland: Bitcoin spielerisch verstehen">🎓 Satsland</a>
+      <a class="pill learn" id="slPill" href="../index.html" title="Satsland: Kapitel schaffen schaltet Accessoires im Spiel frei">🎓 Satsland</a>
       <button class="pill time" id="timeBtn" type="button">Zeitreise</button>
       <div class="tgroup" role="group" aria-label="Einstellungen">
         <button class="ib" id="snd" type="button" aria-pressed="false" aria-label="Ton" title="Ton"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg></button>
@@ -598,10 +598,19 @@ const laneY = l => groundY + 18 + l*(H - groundY - 46)/3;
 // Figurengröße je Reihe
 const unitScale = l => (KS)*(0.95 + l*0.14)*(W < 560 ? .95 : 1.1);
 
+// ---------- Satsland-Verbindung: geschaffte Kapitel schalten Accessoires frei ----------
+// 1 Kapitel = Doktorhut (5), 3 Kapitel = Krone (6), alle 5 = Laseraugen (7)
+const SL_CH = [["eigenschaften","inflation","halving","geschichte"],["wallets","seed","betrug","krypto"],["sparplan","fomo","hebel"],["utxo","bahnhof","lightning"],["hashing","schluessel","blockchain","mining","nodes"]];
+const slDone = (() => { try { const s = JSON.parse(localStorage.getItem("bvb-lernen")) || {}; return SL_CH.filter(c => c.every(id => s[id] && s[id].quiz)).length; } catch(e){ return 0; } })();
+const SL_ACC = [[1, 5, "🎓 Doktorhut"], [3, 6, "👑 Krone"], [5, 7, "🔴 Laseraugen"]].filter(a => slDone >= a[0]);
+{ const pill = document.getElementById("slPill"); if (pill) pill.textContent = `🎓 Satsland ${slDone}/5`; }
+if (SL_ACC.length) setTimeout(() => news(`<b>Satsland-Bonus:</b> ${SL_ACC.map(a => a[2]).join(", ")} freigeschaltet!`, true), 6000);
+
 // ---------- Einheiten & Effekte ----------
 function spawn(side, x){
   const lane = Math.floor(Math.random()*4);
-  const acc = Math.random() < .45 ? 0 : 1 + Math.floor(Math.random()*3);
+  let acc = Math.random() < .45 ? 0 : 1 + Math.floor(Math.random()*3);
+  if (SL_ACC.length && Math.random() < .3) acc = SL_ACC[Math.floor(Math.random()*SL_ACC.length)][1];   // freigeschaltet in Satsland
   const u = {side, lane, acc, y: laneY(lane), x: x !== undefined ? x : (side === "bull" ? -30 : W + 30), sp: rnd(55,95), off: rnd(4, 62), ph: Math.random()*6, fight:false, s: unitScale(lane)*rnd(.9,1.1)};
   if (side === "bull" && store.visit.streak >= 7 && Math.random() < .06) u.pal = PAL.goldBull;
   (side === "bull" ? bulls : bears).push(u);
@@ -2292,6 +2301,16 @@ function closedEye(x, y){ ctx.strokeStyle = C.ink; ctx.lineWidth = 1.5; ctx.line
 
 // ---------- Bulle: Teile ----------
 // Beine mit Turnschuhen und Schwanz; leg(i) = Versatz des i-ten Beins, tw = Schwanzschwung
+// Satsland-Accessoires: Doktorhut, Krone, Laseraugen
+function slGear(u, hx, hy, r, dir, eyes){
+  const O = C.ink, top = hy - r;
+  if (u.acc === 5){ ctx.fillStyle = "#1b1b2a"; ctx.strokeStyle = O; ctx.lineWidth = 1.4; ctx.beginPath(); ctx.moveTo(hx - 11, top - 2); ctx.lineTo(hx, top - 7); ctx.lineTo(hx + 11, top - 2); ctx.lineTo(hx, top + 3); ctx.closePath(); ctx.fill(); ctx.stroke();
+    rr(hx - 5, top - 1, 10, 4, 1); ctx.fill(); ctx.strokeStyle = C.gold; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(hx, top - 2.5); ctx.lineTo(hx + 8*dir, top + 1); ctx.lineTo(hx + 8*dir, top + 6); ctx.stroke(); }
+  if (u.acc === 6){ ctx.fillStyle = C.gold; ctx.strokeStyle = O; ctx.lineWidth = 1.4; ctx.beginPath(); ctx.moveTo(hx - 8, top + 2); ctx.lineTo(hx - 8, top - 6); ctx.lineTo(hx - 4, top - 2); ctx.lineTo(hx, top - 8); ctx.lineTo(hx + 4, top - 2); ctx.lineTo(hx + 8, top - 6); ctx.lineTo(hx + 8, top + 2); ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = "#ff5c73"; ctx.beginPath(); ctx.arc(hx, top - 1, 1.3, 0, TAU); ctx.fill(); }
+  if (u.acc === 7){ ctx.save(); ctx.globalAlpha = .55 + .35*Math.sin(t*12 + u.ph); ctx.strokeStyle = "#ff2a2a"; ctx.lineWidth = 2.2; ctx.shadowColor = "#ff2a2a"; ctx.shadowBlur = 8; ctx.lineCap = "round";
+    eyes.forEach(([ex, ey]) => { ctx.beginPath(); ctx.moveTo(ex, ey); ctx.lineTo(ex + 34*dir, ey + 3); ctx.stroke(); }); ctx.restore(); }
+}
 function bullLegs(P, leg, tw){
   const O = C.ink, L = 2;
   [-10,-3,4,10].forEach((x,i) => { const dx = x + leg(i);
@@ -2335,7 +2354,8 @@ function bullBody(u, P, losing, closed){
   // Partyhut und HODL-Schild
   if (u.acc === 3){ ctx.beginPath(); ctx.moveTo(9,-33); ctx.lineTo(14,-47); ctx.lineTo(19,-33); ctx.closePath(); ctx.fillStyle = C.bear; ctx.fill(); ctx.strokeStyle = O; ctx.lineWidth = 1.6; ctx.stroke(); ctx.fillStyle = C.gold; ctx.fillRect(11,-38,6,2); ctx.beginPath(); ctx.arc(14,-47,2,0,TAU); ctx.fill(); }
   if (u.acc === 4) sign(-4,-48,"HODL",C.gold,C.ink);
-  if (!u.statue && u.acc !== 3) worldGear(14,-24,1);
+  if (u.acc >= 5) slGear(u, 14, -24, 10.5, 1, [[11,-27],[18,-27.5]]);
+  else if (!u.statue && u.acc !== 3) worldGear(14,-24,1);
 }
 // Bulle zeichnen (Angriff, Flug, Drehung, Rückzug, Gesten berücksichtigt)
 function drawBull(u){
@@ -2407,7 +2427,8 @@ function bearBody(u, P, losing, closed, yawn){
   if (u.acc === 2){ rr(-21,-46,13,10,1.5); ctx.fillStyle = "#1b1b2a"; ctx.fill(); ctx.strokeStyle = O; ctx.lineWidth = 1.4; ctx.stroke(); rr(-24.5,-37.5,20,2.6,1); ctx.fill(); ctx.stroke(); ctx.fillStyle = C.bear; ctx.fillRect(-21,-39.8,13,1.8); }
   if (u.acc === 3){ ctx.strokeStyle = C.gold; ctx.lineWidth = 1.3; ctx.beginPath(); ctx.arc(-10,-27.5,4,0,TAU); ctx.moveTo(-6.3,-26); ctx.lineTo(-5,-17); ctx.stroke(); }
   if (u.acc === 4) sign(6,-46,"SELL",C.bear,"#ffffff");
-  if (!u.statue && u.acc !== 2) worldGear(-14,-25,-1);
+  if (u.acc >= 5) slGear(u, -14, -25, 11, -1, [[-18,-27],[-10,-27.5]]);
+  else if (!u.statue && u.acc !== 2) worldGear(-14,-25,-1);
 }
 // Bär zeichnen
 function drawBear(u){

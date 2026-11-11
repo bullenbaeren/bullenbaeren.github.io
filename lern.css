@@ -148,5 +148,67 @@ h1 span.btc{background:linear-gradient(90deg,#ffb347,#f7931a 40%,#ffd36b 60%,#f7
 .daily .fl.on{filter:none;border-color:#ff8a3d;background:rgba(255,138,61,.15);animation:flame 1.4s ease-in-out infinite}
 @keyframes flame{50%{transform:scale(1.06)}}
 .daily .dq{margin:12px 0 8px;font:800 18px/1.35 var(--f-display)}
+/* Comic-Szenen (Zeitreise und Welt-Intros): Bühne mit Himmel, Figuren als Zeichnungen */
+.stage{position:relative;height:220px;border-radius:14px;overflow:hidden;margin:-4px -4px 16px;border:4px solid #0d1230;box-shadow:5px 5px 0 #0d1230,0 0 0 2px rgba(255,255,255,.12)}
+.stage::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;background:radial-gradient(rgba(255,255,255,.09) 1.2px,transparent 1.4px) 0 0/9px 9px}
+.a svg{display:block;overflow:visible;filter:drop-shadow(3px 4px 0 rgba(13,18,48,.45))}
+.stage.night{background:radial-gradient(1.5px 1.5px at 15% 20%,#fff9,transparent),radial-gradient(1.5px 1.5px at 70% 15%,#fff8,transparent),radial-gradient(1.2px 1.2px at 40% 35%,#fff7,transparent),radial-gradient(1.4px 1.4px at 88% 40%,#fff6,transparent),linear-gradient(#0a0f2e,#1c2464)}
+.stage.dawn{background:linear-gradient(#2a2f6e,#7a4a8c 60%,#f7931a)}
+.stage.day{background:linear-gradient(#2f6fd6,#7fb7ff)}
+.stage.dusk{background:linear-gradient(#1b1f4d,#5b2a5e 55%,#c0483a)}
+.stage.gold{background:radial-gradient(circle at 50% 120%,rgba(255,201,77,.6),transparent 60%),linear-gradient(#1a1440,#3b2a10)}
+.stage::after{content:"";position:absolute;left:0;right:0;bottom:0;height:34px;background:rgba(13,18,48,.45);border-top:3px solid #0d1230}
+.a{position:absolute;line-height:1;transform:translate(-50%,-50%);z-index:1;animation-fill-mode:both}
+.lbl{position:absolute;transform:translate(-50%,-50%);z-index:2;font:900 13px var(--f-display);color:#0d1230;background:#fff;border:2.5px solid #0d1230;box-shadow:3px 3px 0 #0d1230;padding:3px 9px;border-radius:10px;white-space:nowrap;animation:fin .5s both}
+.paper{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);width:min(78%,330px);background:#f4efe1;color:#222;border-radius:6px;border:3px solid #0d1230;padding:10px 12px;font:700 13px/1.35 Georgia,serif;box-shadow:0 10px 30px -10px #000;z-index:2;animation:drop .7s cubic-bezier(.3,1.4,.5,1) both}
+.paper small{display:block;font:400 11px Georgia,serif;color:#555;margin-top:4px}
+.type{display:block;font-size:13px;animation:fin2 1.2s ease .5s both}
+@keyframes fin2{from{opacity:0;letter-spacing:.3em}}
+@keyframes type{from{width:0}} @keyframes blink{50%{border-color:transparent}}
+@keyframes drop{from{transform:translate(-50%,-260%) rotate(-8deg);opacity:0}}
+@keyframes fin{from{opacity:0;transform:translate(-50%,-10%) scale(.6)}}
+@keyframes fly{from{left:var(--fx);top:var(--fy);opacity:0}15%{opacity:1}}
+@keyframes rise{from{transform:translate(-50%,120%);opacity:0}}
+@keyframes grow{from{transform:translate(-50%,-50%) scale(0)}}
+@keyframes bobA{50%{transform:translate(-50%,-62%)}}
+@keyframes fade{to{opacity:0;transform:translate(-50%,-80%) scale(.7)}}
+@keyframes shake{20%,60%{transform:translate(-54%,-50%) rotate(-3deg)}40%,80%{transform:translate(-46%,-50%) rotate(3deg)}}
+@keyframes fall{to{transform:translate(-50%,320%) rotate(220deg);opacity:0}}
+@keyframes rocket{0%{transform:translate(-50%,40%)}60%{transform:translate(-50%,-240%)}100%{transform:translate(120%,140%) rotate(150deg)}}
+@keyframes spinA{to{transform:translate(-50%,-50%) rotate(360deg)}}
+@keyframes cut{50%{transform:translate(-50%,-50%) rotate(-25deg)}}
+@keyframes tilt{to{transform:translate(-50%,-50%) rotate(0)}}
+svg.line{position:absolute;inset:0;width:100%;height:100%;z-index:1}
+svg.line path{fill:none;stroke-width:4;stroke-linecap:round;stroke-dasharray:900;stroke-dashoffset:900;animation:draw 2.4s ease .3s forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.stage.intro{height:170px;margin:0;cursor:pointer}
+.stage.intro .say{position:absolute;left:12px;top:12px;z-index:3;max-width:62%;font:900 14px/1.25 var(--f-display);color:#0d1230;background:#fff;border:3px solid #0d1230;box-shadow:3px 3px 0 #0d1230;padding:6px 10px;border-radius:12px;animation:fin .5s both .2s}
+@keyframes rin{from{opacity:0;transform:translateY(8px)}}
+@keyframes drive{from{left:-20%}to{left:120%}}
+@keyframes shrink{to{transform:translate(-50%,-50%) scale(.45)}}
+@keyframes swing{0%,100%{transform:translate(-50%,-50%) rotate(-30deg)}50%{transform:translate(-50%,-50%) rotate(20deg)}}
+@keyframes zap{0%,100%{opacity:0}40%,60%{opacity:1}}
+/* Kapitel-Boss: Kampf-Fenster im Comic-Stil */
+.bossbg{position:fixed;inset:0;z-index:60;background:rgba(5,8,25,.82);display:grid;place-items:center;padding:16px;animation:rin .3s}
+.boss{width:min(520px,100%);max-height:calc(100vh - 32px);overflow:auto;border-radius:20px;border:4px solid #0d1230;box-shadow:6px 6px 0 #0d1230;background:linear-gradient(#2a1450,#141a48);padding:16px;color:var(--ink)}
+.boss.hit{animation:shake .4s}
+.boss .bt{display:flex;align-items:center;gap:10px} .boss .bt b{flex:1;font:900 20px var(--f-display);color:#ffd36b} .boss .bx{border:0;background:none;color:var(--muted);font:900 22px var(--f-body);cursor:pointer}
+.boss .arena{position:relative;display:flex;align-items:flex-end;gap:12px;margin-top:8px}
+.boss .bimg{width:120px;height:120px;flex:none;filter:drop-shadow(4px 5px 0 rgba(0,0,0,.4));transition:transform .2s}
+.boss .bimg.ouch{animation:shake .4s} .boss .bimg.down{transform:rotate(80deg) translateY(20px);opacity:.4;transition:1s}
+.boss .bubble{flex:1;background:#fff;color:#0d1230;border:3px solid #0d1230;box-shadow:3px 3px 0 #0d1230;border-radius:14px;padding:8px 12px;font:800 15px/1.3 var(--f-display);margin-bottom:40px}
+.boss .bars{display:grid;grid-template-columns:auto 1fr;gap:6px 10px;align-items:center;margin-top:10px;font-size:13px;color:var(--muted)}
+.boss .hp{height:14px;border-radius:7px;background:rgba(255,255,255,.1);border:2px solid #0d1230;overflow:hidden} .boss .hp i{display:block;height:100%;background:linear-gradient(90deg,#ff5c73,#ff9a6a);transition:width .4s}
+.boss .lives{font-size:18px;letter-spacing:2px}
+.boss .tm{height:6px;border-radius:3px;background:rgba(255,255,255,.1);overflow:hidden;margin-top:12px} .boss .tm i{display:block;height:100%;background:var(--gold)}
+.boss .bq{margin:12px 0 8px;font:800 17px/1.35 var(--f-display)}
+.boss .opts{display:grid;gap:8px} .boss .opts button{text-align:left}
+.boss .end{text-align:center;padding:10px 0} .boss .end b{display:block;font:900 24px var(--f-display);margin-bottom:6px}
+.bossbtn{margin-top:12px;width:100%;display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;border:3px solid #0d1230;box-shadow:3px 3px 0 #0d1230;background:linear-gradient(90deg,#5a1f7a,#2a1450);color:#fff;font:900 15px var(--f-display);cursor:pointer;text-align:left}
+.bossbtn .bi{width:46px;height:46px;flex:none} .bossbtn small{display:block;font:600 12px var(--f-body);color:#d8c8ff}
+.bossbtn:disabled{filter:grayscale(.8);opacity:.6;cursor:default} .bossbtn.won{background:linear-gradient(90deg,#1f8a4c,#145a3a)}
+.tcard.bosscard.got{background:linear-gradient(160deg,#e9d6ff,#b48cff)}
+.wico svg,.lvl .li svg,.lvup span svg,.w .ic svg{width:100%;height:100%;display:block}
+.wico{padding:6px}
 /* Bewegung reduzieren (z. B. Firmen-PCs): nur Endlos-Bewegungen aus, kurze Effekte bleiben */
 @media (prefers-reduced-motion:reduce){ .mode.live::before,body::before,h1 span.btc,.wico{animation:none} *{scroll-behavior:auto} }

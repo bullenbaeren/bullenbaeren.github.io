@@ -70,6 +70,19 @@ const Lern = (() => {
   const hl = (x, y, rx, ry) => `<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="#fff" opacity=".45"/>`;
   const coinP = (cx, cy, r) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="#ffc94d" ${SK}/><circle cx="${cx}" cy="${cy}" r="${r*.72}" fill="none" stroke="#e0a000" stroke-width="3"/><text x="${cx}" y="${cy + r*.36}" font-size="${r}" font-weight="900" text-anchor="middle" fill="#b86e00" font-family="Arial">₿</text>${hl(cx - r*.35, cy - r*.45, r*.3, r*.14)}`;
   const ART = {
+    plankton: `<path d="M50 18c18 0 30 14 30 32S68 84 50 84 20 70 20 50s12-32 30-32z" fill="#7ad890" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="36" cy="40" r="4" fill="#34d982"/><circle cx="62" cy="64" r="5" fill="#34d982"/><circle cx="58" cy="34" r="3" fill="#34d982"/><circle cx="44" cy="52" r="6" fill="#fff" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="45" cy="52" r="2.7" fill="#0d1230"/><circle cx="58" cy="50" r="5" fill="#fff" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="59" cy="50" r="2.25" fill="#0d1230"/><path d="M20 50l-10-4M80 50l10-4M50 18l2-10M50 84l-2 10" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>`,
+    shrimp: `<path d="M78 30c-4 32-26 52-52 46-8-2-10-10-4-14 18 4 34-6 38-30z" fill="#ff9a6a" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><path d="M60 40l8 4M52 52l8 6M42 62l6 8" stroke="#c9374f" stroke-width="3" stroke-linecap="round"/><path d="M76 30q4-18 18-22M74 30q-6-16 2-26" fill="none" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="72" cy="30" r="5" fill="#fff" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="73" cy="30" r="2.25" fill="#0d1230"/><path d="M22 66l-12 4 4 10" fill="#ff9a6a" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>`,
+    crab: `<ellipse cx="50" cy="58" rx="30" ry="20" fill="#ff5c73" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><path d="M24 52q-14-10-10-26 12 2 14 14M76 52q14-10 10-26-12 2-14 14" fill="#ff5c73" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><path d="M14 26l8 4M86 26l-8 4" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="40" cy="40" r="6" fill="#fff" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="41" cy="40" r="2.7" fill="#0d1230"/><circle cx="60" cy="40" r="6" fill="#fff" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="61" cy="40" r="2.7" fill="#0d1230"/><path d="M30 74l-8 10M42 78l-4 10M58 78l4 10M70 74l8 10" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><path d="M42 60q8 6 16 0" fill="none" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><ellipse cx="40" cy="50" rx="8" ry="3" fill="#fff" opacity=".45"/>`,
+    fish: `<path d="M20 50c12-22 40-26 58-6-18 22-46 20-58 6z" fill="#7cc4ff" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><path d="M78 44l16-14v38l-16-14z" fill="#5aa0e8" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><path d="M40 34q10 16 0 32" fill="none" stroke="#2f6fd6" stroke-width="3"/><circle cx="30" cy="46" r="5" fill="#fff" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="31" cy="46" r="2.25" fill="#0d1230"/><ellipse cx="50" cy="38" rx="10" ry="3" fill="#fff" opacity=".45"/>`,
+    dolphin: `<path d="M12 60c10-26 44-40 74-22 6 4 6 10 0 12-24 10-50 14-74 10z" fill="#8fb4d8" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><path d="M50 36l8-18 8 20z" fill="#8fb4d8" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><path d="M80 48l14 6-4-14z" fill="#8fb4d8" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><path d="M14 60l-6 4 8 2" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="28" cy="52" r="4" fill="#fff" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="29" cy="52" r="1.8" fill="#0d1230"/><path d="M20 60q10 4 22 0" fill="none" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><ellipse cx="50" cy="44" rx="12" ry="3" fill="#fff" opacity=".45"/>`,
+    shark: `<path d="M8 58c16-24 52-30 82-10-26 22-62 24-82 10z" fill="#9aa2b8" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><path d="M46 38l6-26 14 30z" fill="#9aa2b8" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><path d="M88 48l8-16v34z" fill="#9aa2b8" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><path d="M14 58l22 2-4 6-4-5-4 6-4-6-4 5z" fill="#fff" stroke="#0d1230" stroke-width="2.5" stroke-linejoin="round"/><circle cx="30" cy="48" r="4" fill="#fff" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="31" cy="48" r="1.8" fill="#0d1230"/><path d="M50 52l2 8M58 50l2 8M66 50l2 8" stroke="#0d1230" stroke-width="2.5"/>`,
+    humpback: `<path d="M8 58c6-24 46-36 78-16 8 6 6 22-6 26-30 8-56 6-72-10z" fill="#3a5a9a" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><path d="M12 62c20 10 46 12 70 4" fill="none" stroke="#dbe6ff" stroke-width="3"/><path d="M84 46l12-14 0 26z" fill="#3a5a9a" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><path d="M40 66l-6 16 16-10z" fill="#3a5a9a" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="24" cy="52" r="4" fill="#fff" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="25" cy="52" r="1.8" fill="#0d1230"/><circle cx="44" cy="44" r="3" fill="#5a7ac0"/><circle cx="56" cy="40" r="3" fill="#5a7ac0"/>`,
+    whale: `<path d="M8 60c0-24 30-40 62-30 18 6 24 20 18 30-10 16-60 20-80 0z" fill="#2f6fd6" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><path d="M82 46l14-12v28z" fill="#2f6fd6" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><path d="M12 66c18 8 50 10 70-2" fill="none" stroke="#bfe0ff" stroke-width="3"/><circle cx="26" cy="52" r="5" fill="#fff" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="27" cy="52" r="2.25" fill="#0d1230"/><path d="M36 26q-4-14 4-20M36 26q6-12 16-12" fill="none" stroke="#7cc4ff" stroke-width="5" stroke-linecap="round"/><circle cx="56" cy="50" r="10" fill="#ffc94d" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><text x="56" y="55" font-size="13" font-weight="900" text-anchor="middle" fill="#b86e00" font-family="Arial">₿</text><ellipse cx="40" cy="38" rx="12" ry="3" fill="#fff" opacity=".45"/>`,
+    printer: `<path d="M14 34h72v40H14z" fill="#c0c0cc" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><path d="M24 14h52v22H24z" fill="#f2f4ff" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><path d="M24 74h52v18H24z" fill="#9ee6a8" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><text x="50" y="88" font-size="12" font-weight="900" text-anchor="middle" fill="#0d1230" font-family="Arial">€€€</text><circle cx="34" cy="52" r="7" fill="#fff" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="35" cy="52" r="3.15" fill="#0d1230"/><circle cx="66" cy="52" r="7" fill="#fff" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="67" cy="52" r="3.15" fill="#0d1230"/><path d="M26 42l14 4M74 42l-14 4" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><path d="M40 64q10-6 20 0" fill="none" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>`,
+    phisher: `<path d="M20 96c0-24 14-36 30-36s30 12 30 36z" fill="#3a3f5c" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="50" cy="40" r="22" fill="#ffd0a0" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><path d="M26 34h48v10H26z" fill="#0d1230"/><ellipse cx="41" cy="39" rx="5" ry="3" fill="#fff"/><ellipse cx="59" cy="39" rx="5" ry="3" fill="#fff"/><path d="M40 52q10 6 20-2" fill="none" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><path d="M28 22q22-14 44 0v6H28z" fill="#0d1230" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><path d="M80 66V18l10-6" fill="none" stroke="#8a5a2b" stroke-width="5" stroke-linecap="round"/><path d="M90 12v20q0 6-6 6-5 0-5-5" fill="none" stroke="#c0c0cc" stroke-width="3"/>`,
+    fomo: `<path d="M14 88c-6-30 4-66 36-70s46 30 38 70c-6-6-10-6-14 0-4-6-10-6-14 0-4-6-10-6-14 0-4-6-10-6-14 0-4-6-12-6-18 0z" fill="#b26bff" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="36" cy="44" r="10" fill="#fff" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="37" cy="44" r="4.5" fill="#0d1230"/><circle cx="64" cy="44" r="10" fill="#fff" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="65" cy="44" r="4.5" fill="#0d1230"/><path d="M34 66q16 14 32 0" fill="#3a0d1a" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><path d="M42 66l3 5 3-5M52 66l3 5 3-5" fill="#fff"/><path d="M20 30l10 6M80 30l-10 6" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>`,
+    troll: `<circle cx="50" cy="48" r="30" fill="#7ad890" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><path d="M22 40l-12-8 4 16M78 40l12-8-4 16" fill="#7ad890" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="40" cy="42" r="6" fill="#fff" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="41" cy="42" r="2.7" fill="#0d1230"/><circle cx="60" cy="42" r="6" fill="#fff" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="61" cy="42" r="2.7" fill="#0d1230"/><ellipse cx="50" cy="56" rx="8" ry="6" fill="#5ab870" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><path d="M36 68q14 8 28 0" fill="none" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><path d="M40 68l2 6M58 68l-2 6" stroke="#fff" stroke-width="3"/><path d="M70 66v28" stroke="#8a5a2b" stroke-width="5"/><path d="M60 60h26v14H60z" fill="#ffc94d" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><text x="73" y="71" font-size="9" font-weight="900" text-anchor="middle" fill="#0d1230" font-family="Arial">GEBÜHR</text>`,
+    golem: `<path d="M26 30h48v44H26z" fill="#8a8a98" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><path d="M34 14h32v18H34z" fill="#9a9aa8" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><path d="M14 36h12v30H14zM74 36h12v30H74z" fill="#7a7a88" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><path d="M32 74h12v18H32zM56 74h12v18H56z" fill="#7a7a88" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="42" cy="23" r="4" fill="#ff5c73"/><circle cx="58" cy="23" r="4" fill="#ff5c73"/><text x="50" y="58" font-size="16" font-weight="900" text-anchor="middle" fill="#ffe066" font-family="Arial" stroke="#0d1230" stroke-width="1">51%</text><path d="M34 40l6 8M64 44l-4 10" stroke="#5a5a68" stroke-width="2"/>`,
     key: `<circle cx="32" cy="50" r="20" fill="#ffc94d" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="32" cy="50" r="7" fill="#1b2150" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><path d="M50 50h40v10M78 50v12M66 50v8" fill="none" stroke="#0d1230" stroke-width="10" stroke-linecap="round"/><path d="M50 50h40v10M78 50v12M66 50v8" fill="none" stroke="#ffc94d" stroke-width="5" stroke-linecap="round"/>`,
     mask: `<circle cx="50" cy="52" r="34" fill="#ffd0a0" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><path d="M14 44q36-18 72 0v14q-36 14-72 0z" fill="#0d1230"/><ellipse cx="36" cy="50" rx="8" ry="5" fill="#fff"/><ellipse cx="64" cy="50" rx="8" ry="5" fill="#fff"/><circle cx="37" cy="50" r="3" fill="#0d1230"/><circle cx="63" cy="50" r="3" fill="#0d1230"/><path d="M38 72q12-6 24 0" fill="none" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><path d="M20 30q30-26 60 0" fill="#3a3f5c" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>`,
     pig: `<ellipse cx="50" cy="56" rx="36" ry="28" fill="#ffb3c8" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><path d="M30 34l-4-14 14 8M64 30l10-12 2 16" fill="#ff8fb0" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><ellipse cx="84" cy="58" rx="8" ry="10" fill="#ff8fb0" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="64" cy="46" r="3.5" fill="#0d1230"/><path d="M40 30h18" stroke="#0d1230" stroke-width="5" stroke-linecap="round"/><path d="M30 82v8M66 82v8" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><text x="44" y="68" font-size="18" font-weight="900" text-anchor="middle" fill="#f7931a" font-family="Arial">₿</text>`,
@@ -214,12 +227,119 @@ const Lern = (() => {
   const PRAISE = ["Stark! 💪", "Genau so!", "Du hast's drauf!", "Richtig! Weiter so."], OOPS = ["Fast! Lies kurz die Erklärung.", "Kein Problem, so lernt man.", "Knapp daneben. Jetzt weißt du's!"];
   const pickOne = a => a[Math.floor(Math.random()*a.length)];
 
+
+  // ---------- Comic-Intro je Welt: kurzes animiertes Panel unter der Überschrift ----------
+  const sa = (n, x, y, z, an = "", d = 0, st = "") => `<span class="a" style="left:${x}%;top:${y}%;width:${z}px;height:${z}px;${an ? `animation:${an};animation-delay:${d}s;` : ""}${st}">${art(n)}</span>`;
+  const sl = (t, x, y, d = 0) => `<span class="lbl" style="left:${x}%;top:${y}%;animation-delay:${d}s">${t}</span>`;
+  const sf = (n, fx, fy, x, y, z, d) => sa(n, x, y, z, "fly 1.3s cubic-bezier(.3,.7,.3,1) both", d, `--fx:${fx}%;--fy:${fy}%`);
+  const INTRO = {
+    eigenschaften: ["day", "Wer ist das beste Geld?", sa("dollar", 22, 60, 64, "grow .5s both", .2) + sa("trophy", 50, 56, 74, "grow .5s both", .5) + sa("coin", 78, 60, 64, "grow .5s both", .8) + sl("Das Duell beginnt!", 50, 88, 1.2)],
+    inflation: ["dusk", "Alles wird teurer …", sa("dollar", 34, 60, 84, "shrink 2.4s ease .6s both") + sa("bag", 72, 60, 64) + sl("Kaufkraft schrumpft", 50, 88, 1)],
+    halving: ["night", "Schnipp, schnapp: halbiert!", sa("coin", 24, 62, 70) + sa("scissors", 50, 58, 60, "cut .6s ease 3", .3) + sa("coin", 76, 66, 40, "grow .5s both", 1.8) + sl("50 → 25 → … → 3,125", 50, 88, 1.4)],
+    wallets: ["day", "Hol dir deine Schlüssel!", sa("bank2", 22, 60, 76) + sf("key", 22, 60, 76, 58, 52, .6) + sa("phone", 80, 62, 60) + sl("Nicht deine Schlüssel …", 50, 88, 1.6)],
+    seed: ["dusk", "12 Wörter = alles", sa("letter", 32, 60, 72, "grow .5s both", .2) + sa("key", 70, 58, 64, "bobA 1.6s ease-in-out infinite", .8) + sl("Offline aufschreiben!", 50, 88, 1)],
+    betrug: ["night", "Psst … gratis Bitcoin?", sa("mask", 30, 60, 76, "shake .5s ease .6s 3") + sa("phone", 74, 62, 56) + sl("Achtung, Falle!", 50, 88, 1.4)],
+    krypto: ["day", "1000x garantiert!!!", sa("rocket", 30, 62, 66, "rocket 3s ease-in-out .3s both") + sa("coin", 72, 60, 66, "grow .5s both", .4) + sl("Lieber erst prüfen", 50, 88, 1.6)],
+    sparplan: ["dawn", "Jeden Monat ein bisschen", sa("pig", 64, 62, 80) + sf("coin", 64, -20, 64, 40, 34, .3) + sf("coin", 64, -20, 64, 40, 34, 1.3) + sf("coin", 64, -20, 64, 40, 34, 2.3) + sl("Klein, aber regelmäßig", 30, 88, 1)],
+    fomo: ["dusk", "Kaufen? Verkaufen? AAAH!", `<svg class="line" viewBox="0 0 400 170"><path d="M10 140 C120 135 200 120 250 30 C270 15 280 25 300 120 L390 140" stroke="#f7931a"/></svg>` + sa("fomo", 18, 62, 60, "bobA 1s ease-in-out infinite") + sl("Ruhig bleiben!", 76, 86, 2.4)],
+    hebel: ["dusk", "10× Hebel, was kann schon …", sa("volcano", 34, 62, 86) + sa("boom", 66, 52, 76, "grow .4s both", 1.6) + sl("BOOM. Einsatz weg.", 66, 88, 2)],
+    utxo: ["day", "Wechselgeld, bitte!", sa("bag", 22, 60, 66) + sf("coin", 22, 60, 60, 56, 40, .5) + sf("coin", 22, 60, 82, 62, 30, 1) + sl("Rest kommt zurück", 70, 88, 1.6)],
+    bahnhof: ["night", "Nächster Zug: in ~10 Minuten", sa("train", 50, 64, 90, "drive 4s linear .2s infinite") + sl("Wer mehr zahlt, fährt mit", 50, 90, .8)],
+    lightning: ["night", "Bezahlt in 1 Sekunde", sa("phone", 18, 62, 60) + sa("phone", 82, 62, 60) + sa("bolt", 50, 56, 56, "zap 1s ease .3s 3") + sl("⚡ fast gratis", 50, 88, 1.2)],
+    hashing: ["night", "Jeder Text hat einen Fingerabdruck", sa("news", 22, 60, 66) + sf("finger", 22, 60, 76, 58, 66, .6) + sl("Ein Zeichen anders = alles anders", 50, 90, 1.6)],
+    schluessel: ["dawn", "Unterschrift mit Schlüssel", sa("key", 28, 60, 70, "bobA 1.4s ease-in-out infinite") + sa("letter", 72, 60, 70, "grow .5s both", .5) + sl("✓ echt", 72, 30, 1.4)],
+    blockchain: ["night", "Block an Block an Block", sa("block", 20, 62, 54, "drop .7s cubic-bezier(.3,1.4,.5,1) both", .2, "top:62%") + sa("block", 44, 62, 54, "drop .7s cubic-bezier(.3,1.4,.5,1) both", .7, "top:62%") + sa("block", 68, 62, 54, "drop .7s cubic-bezier(.3,1.4,.5,1) both", 1.2, "top:62%") + sa("chain", 86, 62, 40, "grow .5s both", 1.8)],
+    mining: ["dusk", "Raten, raten … Treffer!", sa("pick", 34, 58, 70, "swing .5s ease-in-out 4") + sa("block", 66, 62, 60, "grow .5s both", 2.2) + sl("Neuer Block!", 66, 24, 2.4)],
+    nodes: ["night", "Tausende Wächter prüfen alles", sa("server", 18, 62, 52, "grow .4s both", .1) + sa("server", 39, 62, 52, "grow .4s both", .3) + sa("server", 61, 62, 52, "grow .4s both", .5) + sa("server", 82, 62, 52, "grow .4s both", .7) + sl("✓ ✓ ✓ ✓", 50, 22, 1.2)],
+  };
+  function intro(){
+    const I = INTRO[here], h = document.querySelector("h1"); if (!I || !h) return;
+    const st = document.createElement("div"); st.className = `stage intro ${I[0]}`; st.setAttribute("aria-hidden", "true"); st.title = "Nochmal abspielen";
+    const play = () => { st.innerHTML = `<span class="say">${I[1]}</span>` + I[2]; };
+    play(); st.onclick = play; h.parentElement.after(st);
+  }
+
+  // ---------- Kapitel-Bosse: 5 Fragen auf Zeit, Boss hat 4 Leben, du 2 ----------
+  const BOSSES = [
+    ["printer", "Der Gelddrucker", "Ich drucke einfach mehr Geld. Hahaha!", [
+      ["Es wird mehr Geld gedruckt, aber nicht mehr hergestellt. Was passiert meist?", ["Die Preise steigen", "Die Preise fallen", "Nichts"], "Mehr Geld für gleich viele Waren: Jeder Euro kauft weniger."],
+      ["Wie viele Bitcoin gibt es höchstens?", ["21 Millionen", "21 Milliarden", "Unbegrenzt"], "Die Grenze steht fest im Code."],
+      ["Was halbiert sich beim Halving?", ["Die neuen Bitcoin pro Block", "Der Bitcoin-Preis", "Die Zahl der Nodes"], "Die Belohnung für Miner halbiert sich etwa alle 4 Jahre."],
+      ["Wo hat Gold einen Vorteil gegenüber Bitcoin?", ["Es ist seit Jahrtausenden bewährt", "Es ist leichter zu verschicken", "Es ist besser teilbar"], "Bitcoin gibt es erst seit 2009."],
+      ["Wer kann neue Euro erschaffen?", ["Zentralbank und Banken", "Jeder Bürger", "Niemand"], "Bei Bitcoin kann das dagegen niemand."]]],
+    ["phisher", "Phishing-Phil", "Gib mir mal kurz deine Seed-Wörter …", [
+      ["Der „Support“ fragt im Chat nach deinen Seed-Wörtern. Was tust du?", ["Niemals herausgeben, das ist Betrug", "Herausgeben, er will helfen", "Nur die Hälfte schicken"], "Echter Support fragt nie nach dem Seed."],
+      ["Wo bewahrst du Seed-Wörter am besten auf?", ["Offline auf Papier oder Metall", "Als Foto in der Cloud", "In einer E-Mail an dich selbst"], "Alles Digitale kann gehackt werden."],
+      ["Deine Börse geht pleite. Wer ist sicher?", ["Wer seine Bitcoin in der eigenen Wallet hat", "Wer sie auf der Börse lässt", "Niemand"], "Nicht deine Schlüssel, nicht deine Bitcoin."],
+      ["Ein Coin verspricht „1000x garantiert“. Das ist …", ["Ein großes Warnsignal", "Eine sichere Sache", "Normal"], "Garantierte Gewinne gibt es nicht."],
+      ["Was speichert eine Hardware-Wallet?", ["Deine privaten Schlüssel", "Deine Bitcoin selbst", "Dein Bankkonto"], "Die Bitcoin liegen in der Blockchain, das Gerät schützt die Schlüssel."]]],
+    ["fomo", "Das FOMO-Monster", "Alle werden reich, nur du nicht! KAUF JETZT!", [
+      ["Rekordhoch, alle reden von Bitcoin. Was lehrt die Geschichte?", ["Dann ist es oft schon teuer, ruhig bleiben", "Sofort alles kaufen", "Kredit aufnehmen"], "In der Euphorie kaufen viele zu teuer."],
+      ["Was ist ein Sparplan?", ["Regelmäßig den gleichen Betrag kaufen", "Einmal alles kaufen", "Mit Hebel kaufen"], "So musst du keinen perfekten Zeitpunkt treffen."],
+      ["10× Hebel, der Kurs fällt um 10 %. Was passiert?", ["Der Einsatz ist komplett weg", "Du verlierst 1 %", "Nichts"], "100 % geteilt durch 10 = 10 %."],
+      ["Minus 70 %, überall Panik. Was war in der Vergangenheit oft ein Fehler?", ["In Panik alles verkaufen", "Ruhig bleiben", "Einen Plan haben"], "Wer panisch verkauft, macht den Verlust endgültig."],
+      ["Wer kann nie liquidiert werden?", ["Wer ohne Hebel kauft", "Wer mit 2× Hebel handelt", "Wer nur nachts handelt"], "Ohne geliehenes Geld gibt es nichts zu liquidieren."]]],
+    ["troll", "Der Gebühren-Troll", "Hier kommt keiner durch ohne Gebühr!", [
+      ["Wovon hängt die Bitcoin-Gebühr vor allem ab?", ["Von der Größe der Transaktion in vByte", "Vom Betrag", "Von der Uhrzeit"], "Miner werden pro vByte bezahlt."],
+      ["Du hast eine 0,05-BTC-Münze und zahlst 0,01 BTC. Was passiert?", ["Sie wird ganz ausgegeben, der Rest kommt als Wechselgeld zurück", "Sie wird geteilt", "Das geht nicht"], "Wie beim Bargeld."],
+      ["Was ist die Mempool?", ["Der Warteraum für unbestätigte Transaktionen", "Ein Mining-Pool", "Eine Börse"], "Miner nehmen zuerst die Transaktionen mit hoher Gebühr."],
+      ["Warum ist Lightning so günstig?", ["Zahlungen laufen über Kanäle außerhalb der Blockchain", "Weil es ein anderer Coin ist", "Weil Miner verzichten"], "Nur Öffnen und Schließen eines Kanals kosten Platz in der Blockchain."],
+      ["Wer bekommt die Gebühr?", ["Der Miner, der den Block findet", "Eine Bitcoin-Firma", "Der Staat"], "Gebühren sind Teil des Miner-Lohns."]]],
+    ["golem", "Der 51-%-Golem", "Ich habe die meiste Rechenleistung. Ich ändere die Regeln!", [
+      ["Was ist ein Hash?", ["Ein digitaler Fingerabdruck von Daten", "Ein Passwort", "Eine Adresse"], "Ein Zeichen anders, und der Hash ist ein völlig anderer."],
+      ["Womit wird eine Bitcoin-Zahlung unterschrieben?", ["Mit dem privaten Schlüssel", "Mit dem öffentlichen Schlüssel", "Mit dem Börsen-Passwort"], "Geprüft wird mit dem öffentlichen Schlüssel."],
+      ["Jemand ändert einen alten Block. Was passiert?", ["Sein Hash ändert sich, die Kette passt nicht mehr", "Niemand merkt es", "Der Block wird gelöscht"], "Jeder Block enthält den Hash des vorherigen."],
+      ["Kann eine Miner-Mehrheit mehr als 21 Mio. Bitcoin erzeugen?", ["Nein, die Nodes lehnen solche Blöcke ab", "Ja, ab 51 %", "Ja, ab 90 %"], "Nodes stimmen nicht ab, sie prüfen die Regeln."],
+      ["Warum braucht Bitcoin-Mining Strom?", ["Weil Miner raten müssen, bis ein Hash passt", "Für die Kühlung von Börsen", "Für das Drucken von Coins"], "Proof of Work: echter Aufwand schützt das Netz."]]],
+  ];
+  const BK = "satsland-boss", bossWon = () => { try { return JSON.parse(localStorage.getItem(BK)) || {}; } catch(e){ return {}; } };
+  function boss(k){
+    const [img, name, taunt, Q] = BOSSES[k], bg = document.createElement("div"); bg.className = "bossbg";
+    let i = 0, hp = 4, lives = 2, t = 0, timer = 0, lock = false;
+    const order = Q.map(q => q).sort(() => Math.random() - .5);
+    bg.innerHTML = `<div class="boss" role="dialog" aria-label="Boss-Kampf"><div class="bt"><b>👹 ${name}</b><button class="bx" type="button" aria-label="Schließen">×</button></div>
+      <div class="arena"><div class="bimg">${art(img)}</div><div class="bubble">${taunt}</div></div>
+      <div class="bars"><span>Boss</span><div class="hp"><i style="width:100%"></i></div><span>Du</span><span class="lives">❤️❤️</span></div><div id="bq"></div></div>`;
+    document.body.appendChild(bg);
+    const B = bg.querySelector(".boss"), im = bg.querySelector(".bimg"), bub = bg.querySelector(".bubble"), box = bg.querySelector("#bq");
+    const close = () => { clearInterval(timer); bg.remove(); };
+    bg.querySelector(".bx").onclick = close;
+    const hud = () => { bg.querySelector(".hp i").style.width = hp/4*100 + "%"; bg.querySelector(".lives").textContent = "❤️".repeat(lives) + "🖤".repeat(2 - lives); };
+    function ask(){
+      if (hp <= 0 || lives <= 0 || i >= order.length) return end();
+      const [q, opts, why] = order[i], mix = opts.map((o, n) => [Math.random(), n, o]).sort((a, b) => a[0] - b[0]);
+      box.innerHTML = `<div class="tm"><i style="width:100%"></i></div><p class="bq">${i + 1}. ${q}</p><div class="opts">${mix.map(([, n, o]) => `<button type="button" data-n="${n}">${o}</button>`).join("")}</div><p class="why" hidden></p>`;
+      t = 15; lock = false; clearInterval(timer);
+      timer = setInterval(() => { t -= .1; box.querySelector(".tm i").style.width = Math.max(0, t/15*100) + "%"; if (t <= 0) answer(-1); }, 100);
+      box.querySelector(".opts").onclick = e => { const b = e.target.closest("button"); if (b) answer(+b.dataset.n); };
+    }
+    function answer(n){
+      if (lock) return; lock = true; clearInterval(timer);
+      const ok = n === 0, [, , why] = order[i];
+      box.querySelectorAll(".opts button").forEach(b => { b.disabled = true; if (+b.dataset.n === 0) b.classList.add("ok"); else if (+b.dataset.n === n) b.classList.add("no"); });
+      const w = box.querySelector(".why"); w.hidden = false; w.textContent = (n < 0 ? "⏰ Zeit um! " : ok ? "Treffer! " : "Autsch. ") + why;
+      if (ok){ hp--; im.classList.remove("ouch"); void im.offsetWidth; im.classList.add("ouch"); bub.textContent = pickOne(["Autsch!", "Das tat weh!", "Grrr …", "Unmöglich!"]); }
+      else { lives--; B.classList.remove("hit"); void B.offsetWidth; B.classList.add("hit"); bub.textContent = pickOne(["Hahaha!", "Zu langsam!", "Daneben!", "Ich bin unbesiegbar!"]); }
+      hud(); i++; setTimeout(ask, 1900);
+    }
+    function end(){
+      clearInterval(timer); const win = hp <= 0;
+      if (win){ im.classList.add("down"); bub.textContent = "Neiiin … besiegt!"; const w = bossWon(); w[k] = true; try { localStorage.setItem(BK, JSON.stringify(w)); } catch(e){} confetti(); }
+      box.innerHTML = `<div class="end"><b>${win ? "🏆 Boss besiegt!" : "💀 Der Boss gewinnt diesmal"}</b><p class="muted">${win ? "Die Boss-Karte liegt jetzt in deinem Album." : "Lies die Erklärungen in den Welten nochmal und versuch es erneut."}</p>
+        <div class="acts" style="justify-content:center;display:flex;gap:8px;margin-top:10px">${win ? "" : '<button class="btn" type="button" data-a="again">↺ Nochmal</button>'}<button class="btn ghost" type="button" data-a="close">Schließen</button></div></div>`;
+      box.querySelector(".end").onclick = e => { const a = e.target.closest("button"); if (!a) return; close(); if (a.dataset.a === "again") boss(k); else if (win) location.reload(); };
+    }
+    hud(); setTimeout(ask, 1400);
+  }
+  function bossCard(k){ const won = bossWon()[k], [img, name] = BOSSES[k];
+    return `<span class="tcard bosscard ${won ? "got" : "lock"}"><span class="tn">B${k + 1}</span><span class="tart">${won ? art(img) : "?"}</span><b>${won ? name : "Boss " + (k + 1)}</b><small>${won ? "🏆 besiegt" : "Kapitel " + (k + 1)}</small></span>`; }
+
   // ---------- Spaß-Schicht: Level, Konfetti, Einblenden ----------
   const ICON = {eigenschaften: "⚔️", inflation: "🛒", halving: "⏳", hashing: "🧬", blockchain: "🔗", bahnhof: "🚉", seed: "🔑", betrug: "🕵️", sparplan: "🐷", lightning: "⚡", mining: "⛏", nodes: "🖥", schluessel: "🔐", utxo: "👛", wallets: "🗄", fomo: "🎢", hebel: "💥", geschichte: "📜", krypto: "🟠"};
   // Sats-Level nach geschafften Welten (angelehnt an die Bitcoin-Tierwelt von Garnele bis Wal)
-  const LEVELS = [[0, "🦠", "Plankton"], [1, "🦐", "Garnele"], [3, "🦀", "Krabbe"], [6, "🐟", "Fisch"], [9, "🐬", "Delfin"], [12, "🦈", "Hai"], [15, "🐳", "Buckelwal"], [19, "🐋", "Wal"]];
+  const LEVELS = [[0, "🦠", "Plankton", "plankton"], [1, "🦐", "Garnele", "shrimp"], [3, "🦀", "Krabbe", "crab"], [6, "🐟", "Fisch", "fish"], [9, "🐬", "Delfin", "dolphin"], [12, "🦈", "Hai", "shark"], [15, "🐳", "Buckelwal", "humpback"], [19, "🐋", "Wal", "whale"]];
   const count = s => PATH.filter(([id]) => done(s, id)).length;
-  function level(n){ let L = LEVELS[0]; for (const l of LEVELS) if (n >= l[0]) L = l; return {n, ico: L[1], name: L[2]}; }
+  function level(n){ let L = LEVELS[0]; for (const l of LEVELS) if (n >= l[0]) L = l; return {n, ico: L[1], name: L[2], art: L[3]}; }
   const calm = false;   // Effekte immer zeigen; viele Firmen-PCs melden "Bewegung reduzieren", obwohl Animationen gewünscht sind
   function confetti(){
     if (calm) return;
@@ -237,7 +357,7 @@ const Lern = (() => {
   function badge(){
     const L = level(count(load())), el = document.querySelector(".lvl") || document.createElement("a");
     el.className = "lvl"; el.href = here ? "../" : "#pth"; el.title = "Dein Sats-Level: mehr Welten schaffen, um aufzusteigen";
-    el.innerHTML = `<span class="li">${L.ico}</span><span><b>${L.name}</b><small>${L.n} von ${PATH.length} Welten</small></span><i><u style="width:${L.n/PATH.length*100}%"></u></i>`;
+    el.innerHTML = `<span class="li">${art(L.art)}</span><span><b>${L.name}</b><small>${L.n} von ${PATH.length} Welten</small></span><i><u style="width:${L.n/PATH.length*100}%"></u></i>`;
     if (!el.parentNode){ const top = document.querySelector(".top"), back = document.querySelector(".wrap > .back");
       if (top) top.insertBefore(el, top.children[1] || null); else if (back) back.after(el); }
   }
@@ -250,8 +370,8 @@ const Lern = (() => {
   }
   const seg = location.pathname.split("/").filter(Boolean), here = PATH.some(([id]) => id === seg[seg.length - 1]) ? seg[seg.length - 1] : "";
   function init(){
-    badge(); reveal(); guide();
-    if (here && ICON[here]){ const h = document.querySelector("h1"); if (h && !h.previousElementSibling){ const i = document.createElement("span"); i.className = "wico"; i.setAttribute("aria-hidden", "true"); i.textContent = ICON[here]; h.before(i);
+    badge(); intro(); reveal(); guide();
+    if (here && ICON[here]){ const h = document.querySelector("h1"); if (h && !h.previousElementSibling){ const i = document.createElement("span"); i.className = "wico"; i.setAttribute("aria-hidden", "true"); i.innerHTML = art(CARD[here]); h.before(i);
       const k = chapterOf(here), c = CHAPTERS[k], p = document.createElement("p"); p.className = "chap"; p.innerHTML = `Kapitel ${k + 1} · ${c[0]} ${c[1]} · Welt ${c[3].indexOf(here) + 1} von ${c[3].length}`; i.after(p); } }
   }
 
@@ -277,5 +397,5 @@ const Lern = (() => {
   }
 
   init();
-  return {PATH, CHAPTERS, ART, art, CARD, cardHTML, daily, streak, say, GK, chapterOf, LEVELS, level, count, load, done, visit, quiz, renderNext, nextAfter, sha256, confetti, toast};
+  return {PATH, CHAPTERS, ART, art, BOSSES, boss, bossWon, bossCard, CARD, cardHTML, daily, streak, say, GK, chapterOf, LEVELS, level, count, load, done, visit, quiz, renderNext, nextAfter, sha256, confetti, toast};
 })();

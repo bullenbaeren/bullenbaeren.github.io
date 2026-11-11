@@ -14,14 +14,14 @@
 <meta property="og:description" content="Bitcoin spielerisch verstehen, mit echten Live-Daten.">
 <meta property="og:image" content="https://satsland.github.io/og.png">
 <meta property="og:url" content="https://satsland.github.io/">
-<link rel="stylesheet" href="lern.css?v=8">
+<link rel="stylesheet" href="lern.css?v=10">
 <style>
 /* Übersicht der Lernwelten: gleiche Farben und Schriften wie das Spiel. */
 .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
 .w{position:relative;display:flex;flex-direction:column;gap:6px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;text-decoration:none;color:inherit;min-height:170px}
 a.w:hover{border-color:rgba(255,201,77,.45);transform:translateY(-2px)}
 a.w{transition:transform .15s, border-color .15s}
-.w .ic{font-size:30px;line-height:1}
+.w .ic{display:block;width:48px;height:48px;line-height:1;filter:drop-shadow(2px 3px 0 rgba(13,18,48,.45))}
 .w b{font:900 18px var(--f-display)}
 .w span{color:var(--muted);font-size:14px}
 .w .tag{position:absolute;top:14px;right:14px;font:700 11px var(--f-body);letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:999px}
@@ -37,7 +37,7 @@ a.w{transition:transform .15s, border-color .15s}
 .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
 .w{min-height:150px;padding:14px}
 .w b{font-size:16px}
-.w .ic{font-size:26px}
+.w .ic{width:44px;height:44px}
 .wrap > .back{align-self:flex-start}
 .path .ph{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
 .cn{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:7px;background:var(--gold);color:#2a1600;font:900 12px var(--f-num);margin-right:4px}
@@ -48,7 +48,7 @@ a:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
 @media (max-width:820px){ .grid{grid-template-columns:repeat(2,minmax(0,1fr))} }
 @media (max-width:480px){ .grid{grid-template-columns:1fr} .w{min-height:0} }
 .lvup{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:4px 0 10px}
-.lvup span{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;font-size:18px;background:rgba(255,255,255,.04);border:1px solid var(--line);filter:grayscale(1);opacity:.45}
+.lvup span{display:grid;place-items:center;width:34px;height:34px;padding:3px;border-radius:50%;font-size:18px;background:rgba(255,255,255,.04);border:1px solid var(--line);filter:grayscale(1);opacity:.45}
 .lvup span.got{filter:none;opacity:.8} .lvup span.on{filter:none;opacity:1;border-color:var(--gold);background:rgba(255,201,77,.15);transform:scale(1.15);box-shadow:0 0 18px -4px rgba(255,201,77,.7)}
 .lvup em{font-style:normal;font-size:14px;color:var(--muted);flex-basis:100%} .lvup em b{color:var(--gold)}
 /* Kapitel im Lernpfad */
@@ -76,7 +76,7 @@ details.fold[open] > summary{margin-bottom:12px}
 <div class="wrap">
   <div class="top"><a class="back" href="spiel/">🐂 Zum Spiel</a></div>
   <div>
-    <span class="wico" aria-hidden="true">🏝️</span>
+    <span class="wico" aria-hidden="true" id="heroIc"></span>
     <h1>Sats<span>land</span></h1>
     <p class="lead">Bitcoin spielerisch verstehen: Lernwelten mit echten Live-Daten, ohne Anmeldung und ohne Tracking.</p>
   </div>
@@ -131,7 +131,7 @@ details.fold[open] > summary{margin-bottom:12px}
   </details>
   <p class="foot">Unterhaltung und Lernen, keine Anlageberatung. Keine Cookies, kein Tracking. <a href="#" id="guideOn" style="color:inherit">Satoshi zurückholen</a></p>
 </div>
-<script src="lern.js?v=9"></script>
+<script src="lern.js?v=10"></script>
 <script>
 // Lernpfad: Fortschritt aus dem eigenen Browser, Häkchen an den Karten, Empfehlung als Nächstes
 (() => {
@@ -145,14 +145,22 @@ details.fold[open] > summary{margin-bottom:12px}
     if (d) card.classList.add("done"); if (nxW && nxW[0] === id) card.classList.add("nx");
     if (d || s[id]){ const x = document.createElement("span"); x.className = "st8"; x.textContent = d ? "✓ geschafft" : "besucht"; card.appendChild(x); }
   });
+  // Comic-Zeichnungen statt Emojis
+  document.getElementById("heroIc").innerHTML = Lern.art("coin");
+  Lern.PATH.forEach(([id, , path]) => { const ic = document.querySelector(`a.w[href="${path}"] .ic`); if (ic) ic.innerHTML = Lern.art(Lern.CARD[id]); });
+  // Kapitel-Boss am Ende jedes Kapitels
+  const won = Lern.bossWon();
+  document.querySelectorAll("details.kap").forEach(d => { const k = +d.dataset.k - 1, c = Lern.CHAPTERS[k], ready = c[3].every(id => Lern.done(s, id)), [img, name] = Lern.BOSSES[k];
+    d.insertAdjacentHTML("beforeend", `<button class="bossbtn ${won[k] ? "won" : ""}" type="button" data-b="${k}" ${ready ? "" : "disabled"}><span class="bi">${Lern.art(img)}</span><span>${won[k] ? "🏆 " + name + " besiegt" : "👹 Boss: " + name}<small>${won[k] ? "Nochmal kämpfen?" : ready ? "5 Fragen auf Zeit. Bereit?" : "🔒 Schaffe erst alle Welten dieses Kapitels"}</small></span></button>`); });
+  document.querySelectorAll(".bossbtn").forEach(b => b.onclick = () => Lern.boss(+b.dataset.b));
   // Kapitel: Fortschrittsbalken und Zähler
   document.querySelectorAll("[data-cnt]").forEach(el => { const c = Lern.CHAPTERS[+el.dataset.cnt - 1], dn = c[3].filter(id => Lern.done(s, id)).length;
     el.querySelector("u").style.width = dn/c[3].length*100 + "%"; el.querySelector("em").textContent = dn === c[3].length ? "✓ geschafft" : `${dn}/${c[3].length}`;
     if (dn === c[3].length) el.closest(".kap").classList.add("full"); });
   Lern.daily(document.getElementById("daily"));
   document.getElementById("guideOn").onclick = e => { e.preventDefault(); try { localStorage.removeItem(Lern.GK); } catch(x){} location.reload(); };
-  document.getElementById("album").innerHTML = Lern.PATH.map(([id]) => Lern.cardHTML(id, s)).join("");
-  document.getElementById("albN").textContent = `${n} von ${Lern.PATH.length}`;
+  document.getElementById("album").innerHTML = Lern.PATH.map(([id]) => Lern.cardHTML(id, s)).join("") + Lern.BOSSES.map((b, k) => Lern.bossCard(k)).join("");
+  document.getElementById("albN").textContent = `${n}/${Lern.PATH.length} · Bosse ${Object.keys(Lern.bossWon()).length}/5`;
   // Klappbereiche: gemerkter Zustand, sonst sinnvoller Standard
   let fold = {}; try { fold = JSON.parse(localStorage.getItem("satsland-fold")) || {}; } catch(e){}
   const nxCh = nxW ? Lern.chapterOf(nxW[0]) + 1 : 1, dly = Lern.streak();
@@ -165,8 +173,8 @@ details.fold[open] > summary{margin-bottom:12px}
   document.getElementById("pathCount").textContent = `${n} von ${Lern.PATH.length} geschafft`;
   // Level-Leiter: aktuelles Tier und wie viele Welten bis zum nächsten
   const L = Lern.level(n), nx = Lern.LEVELS.find(l => l[0] > n);
-  document.getElementById("lvup").innerHTML = Lern.LEVELS.map(l => `<span class="${l[2] === L.name ? "on" : n >= l[0] ? "got" : ""}" title="${l[2]} ab ${l[0]} Welten">${l[1]}</span>`).join("")
-    + `<em>${nx ? `Du bist <b>${L.name}</b>. Noch ${nx[0] - n} Welt${nx[0] - n > 1 ? "en" : ""} bis ${nx[1]} ${nx[2]}.` : "Du bist ein <b>Wal</b>! Alle Welten geschafft."}</em>`;
+  document.getElementById("lvup").innerHTML = Lern.LEVELS.map(l => `<span class="${l[2] === L.name ? "on" : n >= l[0] ? "got" : ""}" title="${l[2]} ab ${l[0]} Welten">${Lern.art(l[3])}</span>`).join("")
+    + `<em>${nx ? `Du bist <b>${L.name}</b>. Noch ${nx[0] - n} Welt${nx[0] - n > 1 ? "en" : ""} bis Level <b>${nx[2]}</b>.` : "Du bist ein <b>Wal</b>! Alle Welten geschafft."}</em>`;
   Lern.renderNext("", "");
 })();
 </script>
