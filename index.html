@@ -14,7 +14,7 @@
 <meta property="og:description" content="Bitcoin spielerisch verstehen, mit echten Live-Daten.">
 <meta property="og:image" content="https://satsland.github.io/og.png">
 <meta property="og:url" content="https://satsland.github.io/">
-<link rel="stylesheet" href="lern.css?v=11">
+<link rel="stylesheet" href="lern.css?v=12">
 <style>
 /* Übersicht der Lernwelten: gleiche Farben und Schriften wie das Spiel. */
 .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
@@ -131,11 +131,11 @@ details.fold[open] > summary{margin-bottom:12px}
   </details>
   <p class="foot">Unterhaltung und Lernen, keine Anlageberatung. Keine Cookies, kein Tracking. <a href="#" id="guideOn" style="color:inherit">Satoshi zurückholen</a></p>
 </div>
-<script src="lern.js?v=11"></script>
+<script src="lern.js?v=12"></script>
 <script>
 // Lernpfad: Fortschritt aus dem eigenen Browser, Häkchen an den Karten, Empfehlung als Nächstes
 (() => {
-  const s = Lern.load(), nxW = Lern.nextAfter("");
+  const s = Lern.load(), nxS = Lern.nextStep(""), nxW = nxS && nxS.w ? [nxS.w] : null;
   let n = 0;
   // Karten: Nummer im Lernpfad, Status, nächste Welt hervorheben
   Lern.PATH.forEach(([id, , path], i) => {
@@ -153,6 +153,9 @@ details.fold[open] > summary{margin-bottom:12px}
   document.querySelectorAll("details.kap").forEach(d => { const k = +d.dataset.k - 1, c = Lern.CHAPTERS[k], ready = c[3].every(id => Lern.done(s, id)), [img, name] = Lern.BOSSES[k];
     d.insertAdjacentHTML("beforeend", `<button class="bossbtn ${won[k] ? "won" : ""}" type="button" data-b="${k}" ${ready ? "" : "disabled"}><span class="bi">${Lern.art(img)}</span><span>${won[k] ? "🏆 " + name + " besiegt" : "👹 Boss: " + name}<small>${won[k] ? "Nochmal kämpfen?" : ready ? "5 Fragen auf Zeit. Bereit?" : "🔒 Schaffe erst alle Welten dieses Kapitels"}</small></span></button>`); });
   document.querySelectorAll(".bossbtn").forEach(b => b.onclick = () => Lern.boss(+b.dataset.b));
+  // Direkt zum Boss über die Empfehlung (#boss1 … #boss5)
+  const bh = location.hash.match(/^#boss(\d)$/);
+  if (bh){ const b = document.querySelector(`.bossbtn[data-b="${+bh[1] - 1}"]`); if (b && !b.disabled){ b.closest("details").open = true; setTimeout(() => { b.scrollIntoView({block: "center"}); Lern.boss(+b.dataset.b); }, 300); history.replaceState(null, "", location.pathname); } }
   // Kapitel: Fortschrittsbalken und Zähler
   document.querySelectorAll("[data-cnt]").forEach(el => { const c = Lern.CHAPTERS[+el.dataset.cnt - 1], dn = c[3].filter(id => Lern.done(s, id)).length;
     el.querySelector("u").style.width = dn/c[3].length*100 + "%"; el.querySelector("em").textContent = dn === c[3].length ? "✓ geschafft" : `${dn}/${c[3].length}`;
@@ -163,7 +166,7 @@ details.fold[open] > summary{margin-bottom:12px}
   document.getElementById("albN").textContent = `${Object.keys(Lern.bossWon()).length} von 5`;
   // Klappbereiche: gemerkter Zustand, sonst sinnvoller Standard
   let fold = {}; try { fold = JSON.parse(localStorage.getItem("satsland-fold")) || {}; } catch(e){}
-  const nxCh = nxW ? Lern.chapterOf(nxW[0]) + 1 : 1, dly = Lern.streak();
+  const nxCh = nxS ? (nxS.w ? Lern.chapterOf(nxS.w) : nxS.b) + 1 : 1, dly = Lern.streak();
   const def = {daily: dly.last !== new Date().toLocaleDateString("sv-SE"), album: false};
   document.querySelectorAll("details.fold").forEach(d => {
     const k = d.dataset.k; d.open = k in fold ? fold[k] : k in def ? def[k] : +k === nxCh;

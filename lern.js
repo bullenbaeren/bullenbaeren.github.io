@@ -23,7 +23,17 @@ const Lern = (() => {
   // Seite als besucht merken
   function visit(id){ const s = load(); s[id] = Object.assign({}, s[id], {seen: Date.now()}); save(s); }
   // Nächste empfohlene Welt (erste noch nicht abgeschlossene, außer der aktuellen)
-  function nextAfter(id){ const s = load(); return PATH.find(([pid]) => pid !== id && !done(s, pid)) || null; }
+  // Nächster Schritt im Lernpfad: Welten in Kapitel-Reihenfolge, nach jedem fertigen Kapitel dessen Boss.
+  // Gesucht wird ab der aktuellen Welt vorwärts (danach von vorn); Bosse zählen erst, wenn ihr Kapitel komplett ist.
+  function nextStep(id){
+    const s = load(), won = bossWon(), seq = [];
+    CHAPTERS.forEach((c, k) => { c[3].forEach(w => seq.push({w})); seq.push({b: k}); });
+    const open = it => it.w ? !done(s, it.w) : !won[it.b] && CHAPTERS[it.b][3].every(w => done(s, w));
+    const start = seq.findIndex(it => it.w === id);
+    for (let n = 1; n <= seq.length; n++){ const it = seq[(start + n + seq.length) % seq.length]; if (it.w !== id && open(it)) return it; }
+    return null;
+  }
+  function nextAfter(id){ const it = nextStep(id); return it && it.w ? PATH.find(p => p[0] === it.w) : null; }
   // Quiz bauen: QUIZ = [[Frage, [Antworten], Index richtig, Erklärung], ...]
   function quiz(box, id, QUIZ, root){
     const answered = {};
@@ -51,16 +61,17 @@ const Lern = (() => {
       if (after.name !== before.name) toast(`${after.ico} Level-Up! Du bist jetzt <b>${after.name}</b>.`);
       else if (first) toast(`✓ Welt geschafft · ${after.n} von ${PATH.length}`);
       if (right === QUIZ.length) say("Alle Fragen richtig! ✨");
-      badge();
+      badge(); renderNext(id, root);
       renderNext(id, root);
     }
   }
   // "Weiter mit …"-Karte am Seitenende
   function renderNext(id, root = ""){
     const el = document.getElementById("next"); if (!el) return;
-    const n = nextAfter(id);
+    const it = nextStep(id), n = it && it.w ? PATH.find(p => p[0] === it.w) : null;
     el.innerHTML = n ? `<span class="muted">Empfohlen als Nächstes</span><b>${n[1]}</b><a href="${root}${n[2]}">Los geht's →</a>`
-                     : `<b>Stark, alle bisherigen Welten geschafft!</b><a href="${root}">Zur Übersicht →</a>`;
+      : it ? `<span class="muted">Kapitel ${it.b + 1} geschafft! Jetzt wartet</span><b>👹 ${BOSSES[it.b][1]}</b><a href="${root}#boss${it.b + 1}">Zum Boss-Kampf →</a>`
+      : `<b>🏆 Alles geschafft, alle Bosse besiegt!</b><a href="${root}">Zur Übersicht →</a>`;
   }
 
 
@@ -391,5 +402,5 @@ const Lern = (() => {
   }
 
   init();
-  return {PATH, CHAPTERS, ART, art, BOSSES, boss, bossWon, bossCard, CARD, daily, streak, say, GK, chapterOf, LEVELS, level, count, load, done, visit, quiz, renderNext, nextAfter, sha256, confetti, toast};
+  return {nextStep, PATH, CHAPTERS, ART, art, BOSSES, boss, bossWon, bossCard, CARD, daily, streak, say, GK, chapterOf, LEVELS, level, count, load, done, visit, quiz, renderNext, nextAfter, sha256, confetti, toast};
 })();
