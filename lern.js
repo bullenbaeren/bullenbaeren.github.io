@@ -442,7 +442,7 @@ const Lern = (() => {
   // Begriffe im Text antippbar machen: je Seite nur das erste Vorkommen, nicht in Überschriften, Knöpfen, Quiz und Szenen
   const BASE = document.querySelector('link[href^="../lern.css"]') ? "../" : "";   // Unterordner-Seite oder Startseite
   function glossify(){
-    const skip = "h1,h2,h3,a,button,.opts,.lbl,.say,.scn,code,input,label,.foot,.top,svg,.tcard,.mode,.num,script,style,.gl,.guide,.toast,.bossbg,.lvup,.cn,.kv,.chainS,.addrs,select,textarea,.ledger,.nd,.pts,table,.nogl";
+    const skip = "h1,h2,h3,a,button,.opts,.lbl,.say,.scn,code,input,label,.foot,.top,svg,.tcard,.mode,.num,script,style,.gl,.guide,.toast,.bossbg,.lvup,.cn,.kv,.chainS,.addrs,select,textarea,.ledger,.nd,.pts,table,.nogl,summary";
     const root = document.querySelector(".wrap"); if (!root || /\/lexikon\//.test(location.pathname)) return;
     const used = new Set(), walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {acceptNode: n => n.nodeValue.trim().length > 2 && !n.parentElement.closest(skip) ? 1 : 2});
     const nodes = []; while (walker.nextNode()) nodes.push(walker.currentNode);

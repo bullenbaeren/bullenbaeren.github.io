@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#0b0f2a">
 <link rel="icon" href="../icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-<link rel="stylesheet" href="../lern.css?v=22">
+<link rel="stylesheet" href="../lern.css?v=23">
 <style>
 /* Lernwelt "Merkle-Baum": nur seitenspezifische Teile, der Rest kommt aus lern.css */
 .idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
@@ -37,7 +37,8 @@
 @keyframes pop{from{transform:scale(.85)}to{transform:none}}
 .ctl .row{display:flex;align-items:center;gap:10px;margin-top:8px} .ctl .row input{flex:1} .ctl .row b{font:900 16px var(--f-num);min-width:6ch;text-align:right}
 .mode2{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-@media (max-width:620px){ .nd{font-size:9px;padding:5px 2px} .nd small{font-size:8px} }
+.nd .sh{display:none}
+@media (max-width:620px){ .mlv{gap:3px} .nd{font-size:10px;padding:5px 1px;border-radius:8px} .nd small{font-size:11px;white-space:normal;line-height:1.15;overflow:visible} .nd .lg{display:none} .nd .sh{display:inline} }
 </style>
 </head>
 <body>
@@ -79,8 +80,8 @@
   <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
 </div>
 
-<script src="../bitlib.js?v=22"></script>
-<script src="../lern.js?v=22"></script>
+<script src="../bitlib.js?v=23"></script>
+<script src="../lern.js?v=23"></script>
 <script>
 /* =====================================================================
    MERKLE-BAUM – Lernwelt von Satsland
@@ -98,7 +99,7 @@ function draw(){
   $("tree").innerHTML = L.slice().reverse().map((lv, ri) => { const l = L.length - 1 - ri;
     return `<div class="mlv" style="grid-template-columns:repeat(${lv.length},minmax(0,1fr))">${lv.map((h, i) => {
       const bad = Bit.hex(h) !== Bit.hex(B[l][i]), cls = ["nd", l === 0 ? "tx" : "", l === L.length - 1 ? "root" : "", bad ? "bad" : "", proof.has(l + ":" + i) ? "proof" : "", mode === "proof" && l === 0 && i === sel ? "sel" : ""].join(" ");
-      return `<div class="${cls}" ${l === 0 ? `data-i="${i}" role="button" tabindex="0"` : ""}><small>${l === 0 ? TX[i] : tags[l] || ""}</small>${sh(h)}</div>`; }).join("")}</div>`; }).join("");
+      return `<div class="${cls}" ${l === 0 ? `data-i="${i}" role="button" tabindex="0"` : ""}><small>${l === 0 ? `<span class="lg">${TX[i]}</span><span class="sh">${TX[i].replace(/(\S)\S* → (\S)\S* ([\d,]+)/, "$1→$2<br>$3")}</span>` : tags[l] || ""}</small>${sh(h)}</div>`; }).join("")}</div>`; }).join("");
   const broken = Bit.hex(L[L.length - 1][0]) !== Bit.hex(B[B.length - 1][0]);
   $("tN").innerHTML = mode === "proof" ? (sel < 0 ? "Tipp eine Zahlung an. Grün leuchten die Hashes, die du für den Beweis brauchst."
       : `Für „<b>${TX[sel]}</b>“ reichen <b>3 grüne Hashes</b> plus die Root. Damit rechnet man den Weg nach oben nach. Die anderen 5 Zahlungen muss man nicht kennen.`)

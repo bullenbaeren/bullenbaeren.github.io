@@ -14,7 +14,7 @@
 <meta property="og:description" content="Bitcoin spielerisch verstehen, mit echten Live-Daten.">
 <meta property="og:image" content="https://satsland.github.io/og.png">
 <meta property="og:url" content="https://satsland.github.io/">
-<link rel="stylesheet" href="lern.css?v=22">
+<link rel="stylesheet" href="lern.css?v=23">
 <style>
 /* Übersicht der Lernwelten: gleiche Farben und Schriften wie das Spiel. */
 .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
@@ -56,6 +56,7 @@ a:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
 .kap[open]{border-color:rgba(255,201,77,.35);background:rgba(255,201,77,.04)}
 .kap > summary .ct{flex:1;min-width:0} .kap > summary .ct b{display:block;font:900 17px var(--f-display)} .kap > summary .ct small{display:block;font-size:13px;color:var(--muted);line-height:1.35}
 .kap > summary .cn{flex:none;width:30px;height:30px;font-size:15px;margin:0}
+@media (max-width:520px){ .kap > summary .cp i{display:none} .kap > summary .ct b{font-size:16px} .kap > summary .ct small{font-size:12.5px} .kap{padding:10px} }
 .kap .cp{flex:none;display:flex;flex-direction:column;align-items:flex-end;gap:4px} .kap .cp i{display:block;width:54px;height:6px;border-radius:3px;background:rgba(255,255,255,.1);overflow:hidden} .kap .cp u{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--bull))} .kap .cp em{font:800 12px var(--f-num);font-style:normal;color:var(--muted)}
 .kap.full .cn{background:var(--bull)} .kap.full .cp em{color:var(--bull)}
 .w .no{position:absolute;top:12px;right:14px;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font:900 12px var(--f-num);background:rgba(255,255,255,.08);color:var(--muted)}
@@ -167,7 +168,7 @@ details.fold[open] > summary{margin-bottom:12px}
   </details>
   <p class="foot">Unterhaltung und Lernen, keine Anlageberatung. Keine Cookies, kein Tracking. <a href="#" id="guideOn" style="color:inherit">Satoshi zurückholen</a></p>
 </div>
-<script src="lern.js?v=22"></script>
+<script src="lern.js?v=23"></script>
 <script>
 // Lernpfad: Fortschritt aus dem eigenen Browser, Häkchen an den Karten, Empfehlung als Nächstes
 (() => {
