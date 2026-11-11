@@ -68,7 +68,7 @@ const Lern = (() => {
   const LEVELS = [[0, "🦠", "Plankton"], [1, "🦐", "Garnele"], [3, "🦀", "Krabbe"], [6, "🐟", "Fisch"], [9, "🐬", "Delfin"], [12, "🦈", "Hai"], [15, "🐳", "Buckelwal"], [19, "🐋", "Wal"]];
   const count = s => PATH.filter(([id]) => done(s, id)).length;
   function level(n){ let L = LEVELS[0]; for (const l of LEVELS) if (n >= l[0]) L = l; return {n, ico: L[1], name: L[2]}; }
-  const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const calm = false;   // Effekte immer zeigen; viele Firmen-PCs melden "Bewegung reduzieren", obwohl Animationen gewünscht sind
   function confetti(){
     if (calm) return;
     const c = document.createElement("canvas"); c.className = "confetti"; document.body.appendChild(c);

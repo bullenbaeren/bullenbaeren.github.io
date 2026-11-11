@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#0b0f2a">
 <link rel="icon" href="../icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-<link rel="stylesheet" href="../lern.css?v=6">
+<link rel="stylesheet" href="../lern.css?v=7">
 <style>
 /* Lernwelt "Geschichte": nur seitenspezifische Teile, der Rest kommt aus lern.css */
 .dots{display:flex;gap:4px;margin-top:12px;overflow-x:auto;padding-bottom:4px;scrollbar-width:thin}
@@ -24,21 +24,24 @@
 .pz{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px} .pz .btn.y{background:rgba(46,204,113,.25);border-color:var(--bull)} .pz .btn.n{opacity:.5}
 .pres{margin-top:10px;font-size:15px;line-height:1.5;min-height:1.4em}
 /* Animierte Szenen: Bühne mit Himmel je Epoche, Figuren als Emojis */
-.stage{position:relative;height:210px;border-radius:18px;overflow:hidden;margin:-4px -4px 14px;border:1px solid rgba(255,255,255,.08)}
+.stage{position:relative;height:220px;border-radius:14px;overflow:hidden;margin:-4px -4px 16px;border:4px solid #0d1230;box-shadow:5px 5px 0 #0d1230,0 0 0 2px rgba(255,255,255,.12)}
+.stage::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;background:radial-gradient(rgba(255,255,255,.09) 1.2px,transparent 1.4px) 0 0/9px 9px}
+.a svg{display:block;overflow:visible;filter:drop-shadow(3px 4px 0 rgba(13,18,48,.45))}
 .stage.night{background:radial-gradient(1.5px 1.5px at 15% 20%,#fff9,transparent),radial-gradient(1.5px 1.5px at 70% 15%,#fff8,transparent),radial-gradient(1.2px 1.2px at 40% 35%,#fff7,transparent),radial-gradient(1.4px 1.4px at 88% 40%,#fff6,transparent),linear-gradient(#0a0f2e,#1c2464)}
 .stage.dawn{background:linear-gradient(#2a2f6e,#7a4a8c 60%,#f7931a)}
 .stage.day{background:linear-gradient(#2f6fd6,#7fb7ff)}
 .stage.dusk{background:linear-gradient(#1b1f4d,#5b2a5e 55%,#c0483a)}
 .stage.gold{background:radial-gradient(circle at 50% 120%,rgba(255,201,77,.6),transparent 60%),linear-gradient(#1a1440,#3b2a10)}
-.stage::after{content:"";position:absolute;left:0;right:0;bottom:0;height:34px;background:rgba(0,0,0,.28)}
+.stage::after{content:"";position:absolute;left:0;right:0;bottom:0;height:34px;background:rgba(13,18,48,.45);border-top:3px solid #0d1230}
 .a{position:absolute;line-height:1;transform:translate(-50%,-50%);z-index:1;animation-fill-mode:both}
-.lbl{position:absolute;transform:translate(-50%,-50%);z-index:2;font:800 13px var(--f-num);color:#fff;background:rgba(0,0,0,.45);padding:3px 8px;border-radius:8px;white-space:nowrap;animation:fin .5s both}
-.paper{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);width:min(78%,330px);background:#f4efe1;color:#222;border-radius:6px;padding:10px 12px;font:700 13px/1.35 Georgia,serif;box-shadow:0 10px 30px -10px #000;z-index:2;animation:drop .7s cubic-bezier(.3,1.4,.5,1) both}
+.lbl{position:absolute;transform:translate(-50%,-50%) rotate(-2deg);z-index:2;font:900 13px var(--f-display);color:#0d1230;background:#fff;border:2.5px solid #0d1230;box-shadow:3px 3px 0 #0d1230;padding:3px 9px;border-radius:10px;white-space:nowrap;animation:fin .5s both}
+.paper{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);width:min(78%,330px);background:#f4efe1;color:#222;border-radius:6px;border:3px solid #0d1230;padding:10px 12px;font:700 13px/1.35 Georgia,serif;box-shadow:0 10px 30px -10px #000;z-index:2;animation:drop .7s cubic-bezier(.3,1.4,.5,1) both}
 .paper small{display:block;font:400 11px Georgia,serif;color:#555;margin-top:4px}
-.type{display:inline-block;max-width:100%;font-size:11.5px;overflow:hidden;white-space:nowrap;border-right:2px solid #333;animation:type 2.2s steps(40) .5s both,blink .8s step-end infinite}
+.type{display:block;font-size:13px;animation:fin2 1.2s ease .5s both}
+@keyframes fin2{from{opacity:0;letter-spacing:.3em}}
 @keyframes type{from{width:0}} @keyframes blink{50%{border-color:transparent}}
 @keyframes drop{from{transform:translate(-50%,-260%) rotate(-8deg);opacity:0}}
-@keyframes fin{from{opacity:0;transform:translate(-50%,-30%)}}
+@keyframes fin{from{opacity:0;transform:translate(-50%,-10%) rotate(-2deg) scale(.6)}}
 @keyframes fly{from{left:var(--fx);top:var(--fy);opacity:0}15%{opacity:1}}
 @keyframes rise{from{transform:translate(-50%,120%);opacity:0}}
 @keyframes grow{from{transform:translate(-50%,-50%) scale(0)}}
@@ -54,7 +57,7 @@ svg.line{position:absolute;inset:0;width:100%;height:100%;z-index:1}
 svg.line path{fill:none;stroke-width:4;stroke-linecap:round;stroke-dasharray:900;stroke-dashoffset:900;animation:draw 2.4s ease .3s forwards}
 @keyframes draw{to{stroke-dashoffset:0}}
 .play{margin-left:auto}
-@media (prefers-reduced-motion:reduce){ .stage *{animation:none!important} .type{width:auto} }
+
 @keyframes pop{from{opacity:0;transform:translateY(6px)}}
 @media (max-width:620px){ .pz{grid-template-columns:1fr} }
 </style>
@@ -97,7 +100,7 @@ svg.line path{fill:none;stroke-width:4;stroke-linecap:round;stroke-dasharray:900
   <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
 </div>
 
-<script src="../lern.js?v=6"></script>
+<script src="../lern.js?v=7"></script>
 <script>
 /* =====================================================================
    ZEITREISE – Lernwelt von Satsland
@@ -125,27 +128,62 @@ const E = [
   ["🏛", "Januar 2024", "Bitcoin-ETFs in den USA", "Große Fondsanbieter dürfen Bitcoin-ETFs verkaufen. Bitcoin kommt an der Wall Street an.", 46000],
   ["💯", "Dezember 2024", "100.000 Dollar", "Erstmals kostet ein Bitcoin mehr als 100.000 $. Aus 10.000 Pizza-Bitcoin wurde ein Milliardenvermögen.", 100000],
 ];
-// ---------- Szenen: je Moment eine kleine Animation ----------
+// ---------- Szenen: je Moment eine kleine Animation im Comic-Stil ----------
+// Comic-Zeichnungen im Satsland-Stil: dicke dunkle Kontur, flache Farben, Glanzpunkt. viewBox 0 0 100 100
+const K = 'stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"';
+const hl = (x, y, rx, ry) => `<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="#fff" opacity=".45"/>`;
+const coinP = (cx, cy, r) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="#ffc94d" ${K}/><circle cx="${cx}" cy="${cy}" r="${r*.72}" fill="none" stroke="#e0a000" stroke-width="3"/><text x="${cx}" y="${cy + r*.36}" font-size="${r}" font-weight="900" text-anchor="middle" fill="#b86e00" font-family="Arial">₿</text>${hl(cx - r*.35, cy - r*.45, r*.3, r*.14)}`;
+const ART = {
+  laptop: `<path d="M20 22h60v40H20z" fill="#2b3478" ${K}/><path d="M26 28h48v28H26z" fill="#7cc4ff"/><text x="50" y="50" font-size="22" font-weight="900" text-anchor="middle" fill="#f7931a" font-family="Arial">₿</text><path d="M8 66h84l-8 12H16z" fill="#c0c0cc" ${K}/>`,
+  letter: `<path d="M12 28h76v48H12z" fill="#fff1c2" ${K}/><path d="M12 28l38 28 38-28" fill="none" ${K}/>${hl(30, 36, 8, 3)}`,
+  news: `<path d="M14 16h72v70H14z" fill="#f4efe1" ${K}/><path d="M22 26h56v10H22z" fill="#0d1230"/><path d="M22 44h26M22 52h26M22 60h26M22 68h26M56 44h22v24H56z" stroke="#7a7a8c" stroke-width="3" fill="#c9cbe0"/>`,
+  block: `<path d="M50 12l34 18v40L50 88 16 70V30z" fill="#f7931a" ${K}/><path d="M16 30l34 18 34-18M50 48v40" fill="none" ${K}/><path d="M50 12l34 18-34 18-34-18z" fill="#ffb04a" ${K}/><text x="34" y="72" font-size="22" font-weight="900" text-anchor="middle" fill="#fff" font-family="Arial">₿</text>`,
+  satoshi: `<path d="M22 96c0-26 12-40 28-40s28 14 28 40z" fill="#3a3f5c" ${K}/><path d="M28 50c0-22 10-36 22-36s22 14 22 36c0 8-10 12-22 12s-22-4-22-12z" fill="#4b5072" ${K}/><ellipse cx="50" cy="46" rx="14" ry="13" fill="#141833"/><circle cx="44" cy="45" r="2.6" fill="#ffc94d"/><circle cx="56" cy="45" r="2.6" fill="#ffc94d"/><text x="50" y="88" font-size="18" font-weight="900" text-anchor="middle" fill="#f7931a" font-family="Arial">₿</text>`,
+  hal: `<path d="M22 96c0-24 12-36 28-36s28 12 28 36z" fill="#34d982" ${K}/><circle cx="50" cy="38" r="20" fill="#ffd0a0" ${K}/><path d="M30 34c2-14 12-18 20-18s18 4 20 18c-6-6-12-8-20-8s-14 2-20 8z" fill="#8a5a2b" ${K}/><circle cx="42" cy="40" r="6" fill="#fff" ${K}/><circle cx="58" cy="40" r="6" fill="#fff" ${K}/><path d="M48 40h4" ${K}/><circle cx="42" cy="40" r="2" fill="#0d1230"/><circle cx="58" cy="40" r="2" fill="#0d1230"/><path d="M43 50q7 6 14 0" fill="none" ${K}/>`,
+  coin: coinP(50, 50, 38),
+  pizza: `<path d="M50 90L14 22q36-16 72 0z" fill="#ffd76a" ${K}/><path d="M14 22q36-16 72 0l-4 9q-32-13-64 0z" fill="#d98a3a" ${K}/><circle cx="40" cy="44" r="7" fill="#ff5c73" ${K}/><circle cx="60" cy="40" r="6" fill="#ff5c73" ${K}/><circle cx="50" cy="64" r="6" fill="#ff5c73" ${K}/>`,
+  ghost: `<path d="M22 90V44c0-18 12-30 28-30s28 12 28 30v46l-9-8-10 8-9-8-9 8-10-8z" fill="#f2f4ff" ${K}/><ellipse cx="41" cy="44" rx="5" ry="7" fill="#0d1230"/><ellipse cx="59" cy="44" rx="5" ry="7" fill="#0d1230"/><ellipse cx="50" cy="62" rx="6" ry="4" fill="#0d1230"/>${hl(36, 28, 7, 3)}`,
+  bag: `<path d="M38 22h24l-6 12h-12z" fill="#c9a26b" ${K}/><path d="M44 34h12c22 8 30 26 26 42-3 10-12 14-32 14s-29-4-32-14c-4-16 4-34 26-42z" fill="#e0b97a" ${K}/><text x="50" y="76" font-size="30" font-weight="900" text-anchor="middle" fill="#8a5a2b" font-family="Arial">₿</text>${hl(34, 50, 5, 9)}`,
+  scale: `<path d="M50 18v62M30 86h40" fill="none" ${K}/><path d="M14 30h72" ${K}/><path d="M14 30l-10 24h20zM86 30l-10 24h20z" fill="#ffc94d" ${K}/><circle cx="50" cy="18" r="5" fill="#ffc94d" ${K}/>`,
+  dollar: `<path d="M10 28h80v44H10z" fill="#9ee6a8" ${K}/><circle cx="50" cy="50" r="13" fill="#34d982" ${K}/><text x="50" y="57" font-size="20" font-weight="900" text-anchor="middle" fill="#0d1230" font-family="Arial">$</text>`,
+  scissors: `<circle cx="28" cy="72" r="12" fill="#ff5c73" ${K}/><circle cx="28" cy="34" r="12" fill="#ff5c73" ${K}/><path d="M38 66L88 30M38 40l50 36" stroke="#c0c0cc" stroke-width="9" stroke-linecap="round"/><path d="M38 66L88 30M38 40l50 36" fill="none" stroke="#0d1230" stroke-width="2"/><circle cx="56" cy="53" r="4" fill="#0d1230"/>`,
+  pick: `<path d="M30 84L68 30" stroke="#8a5a2b" stroke-width="10" stroke-linecap="round"/><path d="M30 84L68 30" fill="none" stroke="#0d1230" stroke-width="2"/><path d="M40 20q30-6 48 22q-22-12-44-6z" fill="#c0c0cc" ${K}/>`,
+  bank2: `<path d="M50 10l40 20H10z" fill="#ffc94d" ${K}/><path d="M14 30h72v6H14zM14 80h72v8H14z" fill="#f2f4ff" ${K}/><path d="M22 38h8v40h-8zM40 38h8v40h-8zM58 38h8v40h-8zM74 38h8v40h-8z" fill="#f2f4ff" ${K}/>`,
+  bank: `<path d="M50 10l40 20H10z" fill="#ffc94d" ${K}/><path d="M14 30h72v6H14zM14 80h72v8H14z" fill="#f2f4ff" ${K}/><path d="M22 38h8v40h-8zM40 38h8v40h-8zM58 38h8v40h-8zM74 38h8v40h-8z" fill="#f2f4ff" ${K}/><path d="M46 46l6 10-5 8 7 12" fill="none" stroke="#ff5c73" stroke-width="3"/>`,
+  split: `<path d="M12 50h30l40-28M42 50l40 28" fill="none" stroke="#0d1230" stroke-width="12" stroke-linecap="round"/><path d="M12 50h30l40-28" fill="none" stroke="#f7931a" stroke-width="6" stroke-linecap="round"/><path d="M42 50l40 28" fill="none" stroke="#9aa2d6" stroke-width="6" stroke-linecap="round"/>`,
+  rocket: `<path d="M50 8c16 14 20 34 14 58H36C30 42 34 22 50 8z" fill="#f2f4ff" ${K}/><circle cx="50" cy="36" r="8" fill="#7cc4ff" ${K}/><path d="M36 54l-12 18 14-4zM64 54l12 18-14-4z" fill="#ff5c73" ${K}/><path d="M42 66q8 22 16 0" fill="#ffc94d" ${K}/>`,
+  volcano: `<path d="M6 92l30-50h28l30 50z" fill="#8a5a2b" ${K}/><path d="M36 42q14 10 28 0l-4 14q-10 6-20 0z" fill="#ff5c73" ${K}/><path d="M44 30q-6-14 4-22M56 30q6-12-2-20" fill="none" stroke="#c9cbe0" stroke-width="5" stroke-linecap="round"/><path d="M58 60l-10 14h8l-6 12 14-18h-8l6-8z" fill="#ffe066" ${K}/>`,
+  flag: `<path d="M18 10v84" ${K}/><path d="M18 14h66v54H18z" fill="#fff" ${K}/><path d="M20 16h62v15H20zM20 51h62v15H20z" fill="#2f6fd6"/><circle cx="51" cy="41" r="6" fill="#ffc94d" stroke="#0d1230" stroke-width="2"/>`,
+  phone: `<path d="M30 8h40v84H30z" fill="#2b3478" ${K} rx="8"/><path d="M35 16h30v62H35z" fill="#7cc4ff"/><path d="M54 26l-12 20h10l-6 18 16-24H52l6-14z" fill="#ffe066" stroke="#0d1230" stroke-width="2"/>`,
+  bolt: `<path d="M58 6L26 54h20l-8 40 36-54H52l10-34z" fill="#ffe066" ${K}/>`,
+  sprout: `<path d="M50 92V48" stroke="#1a9e5a" stroke-width="7" stroke-linecap="round"/><path d="M50 56C30 58 16 44 16 26c22 0 34 12 34 30zM50 46c4-18 18-28 36-26 0 20-16 30-36 26z" fill="#34d982" ${K}/><path d="M22 92h56" ${K}/>`,
+  tower: `<path d="M26 14h48v78H26z" fill="#7cc4ff" ${K}/><path d="M34 24h10v10H34zM56 24h10v10H56zM34 44h10v10H34zM56 44h10v10H56zM34 64h10v10H34zM56 64h10v10H56z" fill="#2b3478"/><path d="M26 14h48v8H26z" fill="#ff5c73" ${K}/>`,
+  boom: `<path d="M50 6l9 22 22-12-8 24 22 6-22 10 14 20-24-6-4 24-12-20-16 18 2-24-22 2 16-18-18-14 24-2-6-24 20 12z" fill="#ffe066" ${K}/><path d="M50 28l5 14 14-6-6 14 12 6-14 4 6 12-14-4-4 12-6-12-10 8 2-12-12-2 10-10-8-10 14 2z" fill="#ff5c73"/>`,
+  bull: `<path d="M24 26q-14-4-14-18 10 4 20 12M76 26q14-4 14-18-10 4-20 12" fill="#fff4d6" ${K}/><circle cx="50" cy="48" r="30" fill="#34d982" ${K}/><ellipse cx="50" cy="64" rx="20" ry="14" fill="#b6f5cf" ${K}/><circle cx="43" cy="62" r="3" fill="#0d1230"/><circle cx="57" cy="62" r="3" fill="#0d1230"/><circle cx="50" cy="80" r="5" fill="none" stroke="#ffc94d" stroke-width="4"/><path d="M34 40h12v8H34zM54 40h12v8H54zM46 43h8" fill="#0d1230" stroke="#0d1230" stroke-width="2"/>${hl(36, 30, 8, 3)}`,
+  trophy: `<path d="M30 14h40v22c0 16-8 26-20 26s-20-10-20-26z" fill="#ffc94d" ${K}/><path d="M30 22H16c0 14 6 20 16 20M70 22h14c0 14-6 20-16 20" fill="none" ${K}/><path d="M44 62h12v12H44zM32 74h36v12H32z" fill="#e0a000" ${K}/><text x="50" y="44" font-size="20" font-weight="900" text-anchor="middle" fill="#b86e00" font-family="Arial">₿</text>${hl(40, 22, 5, 2)}`,
+};
+const art = n => `<svg viewBox="0 0 100 100" width="100%" height="100%" aria-hidden="true">${ART[n]}</svg>`;
+
 // a(Emoji, x %, y %, Größe px, Animation, Verzögerung s, Extra-Style)
-const a = (e, x, y, sz, an = "", d = 0, st = "") => `<span class="a" style="left:${x}%;top:${y}%;font-size:${sz}px;${an ? `animation:${an};animation-delay:${d}s;` : ""}${st}">${e}</span>`;
+const a = (e, x, y, sz, an = "", d = 0, st = "") => { const z = Math.round(sz*1.25); return `<span class="a" style="left:${x}%;top:${y}%;width:${z}px;height:${z}px;${an ? `animation:${an};animation-delay:${d}s;` : ""}${st}">${ART[e] ? art(e) : e}</span>`; };
 const L = (t, x, y, d = 0, st = "") => `<span class="lbl" style="left:${x}%;top:${y}%;animation-delay:${d}s;${st}">${t}</span>`;
 const fly = (e, fx, fy, x, y, sz, d) => a(e, x, y, sz, "fly 1.4s cubic-bezier(.3,.7,.3,1) both", d, `--fx:${fx}%;--fy:${fy}%`);
 const SC = [
-  ["night", a("💻", 18, 70, 46) + `<div class="paper"><span class="type">Bitcoin: A Peer-to-Peer Electronic Cash System</span><small>Satoshi Nakamoto · 9 Seiten · 31.10.2008</small></div>` + a("✉️", 82, 72, 30, "bobA 2s ease-in-out infinite")],
-  ["night", a("📰", 26, 50, 70, "grow .6s both") + L("„Chancellor on brink of second bailout for banks“", 50, 16, .4, "white-space:normal;width:70%;text-align:center") + a("🧱", 72, 140, 64, "drop .9s cubic-bezier(.3,1.4,.5,1) .9s both", 0, "top:58%") + L("Block 0", 72, 84, 1.6)],
-  ["night", a("🧑‍💻", 15, 60, 54) + L("Satoshi", 15, 86) + a("👨‍💻", 85, 60, 54) + L("Hal Finney", 85, 86) + fly("🪙", 15, 55, 85, 40, 34, .4) + L("10 BTC", 50, 30, 1.2) + L("„Running bitcoin“", 85, 16, 1.8)],
-  ["dusk", a("🍕", 70, 52, 58, "grow .5s both", .2) + a("🍕", 84, 58, 50, "grow .5s both", .5) + fly("🪙", 10, 60, 30, 46, 28, .6) + fly("🪙", 10, 60, 22, 58, 28, .8) + fly("🪙", 10, 60, 36, 62, 28, 1) + L('<span data-count="10000">0</span> BTC', 28, 82, .6) + L("≈ 41 $", 76, 84, 1.4)],
-  ["night", a("🧑‍💻", 40, 58, 60, "fade 2.2s ease 1s both") + a("👻", 40, 50, 54, "grow .6s both, bobA 2s ease-in-out 3s infinite", 2.4) + a("💰", 74, 62, 54) + L("≈ 1 Mio. BTC, nie bewegt", 74, 86, 1.2)],
-  ["day", a("⚖️", 50, 52, 96, "tilt 1.6s cubic-bezier(.3,1.6,.5,1) both", .2, "transform:translate(-50%,-50%) rotate(-14deg)") + a("₿", 30, 38, 40, "grow .5s both", .6, "color:#f7931a;font-weight:900") + a("💵", 70, 38, 40, "grow .5s both", .9) + L("1 : 1", 50, 86, 1.6)],
-  ["dawn", L("50 BTC", 24, 50, 0, "font-size:22px") + a("✂️", 50, 50, 46, "cut .6s ease 3", .4) + L("25 BTC", 76, 50, 1.6, "font-size:22px;background:#f7931a;color:#2a1600") + a("⛏", 50, 82, 30)],
-  ["dusk", a("🏦", 50, 50, 96, "shake .5s ease .5s 4") + L("MT. GOX", 50, 18) + [30, 44, 56, 70].map((x, i) => a("🪙", x, 62, 26, "fall 1.6s ease-in both", 2.3 + i*.15)).join("") + L("850.000 BTC fehlen", 50, 86, 2.6)],
-  ["day", `<svg class="line" viewBox="0 0 400 210"><path d="M20 105 H180 L380 50" stroke="#f7931a"/><path d="M180 105 L380 160" stroke="#9aa2d6" style="animation-delay:1.2s"/></svg>` + L("Bitcoin", 86, 18, 2) + L("Bitcoin Cash", 84, 86, 2.4) + a("🍴", 45, 50, 34, "grow .5s both", 1)],
-  ["dusk", `<svg class="line" viewBox="0 0 400 210"><path d="M10 180 C120 175 200 150 250 40 C270 20 280 30 300 150 L390 175" stroke="#f7931a"/></svg>` + a("🚀", 62, 70, 40, "rocket 3s ease-in-out .3s both") + L("fast 20.000 $", 62, 12, 1.2) + L("−80 %", 82, 70, 2.6, "background:#c0483a")],
-  ["day", a("🌋", 22, 60, 76) + a("🇸🇻", 50, 30, 50, "grow .5s both", .3) + a("📱", 74, 62, 44, "bobA 1.6s ease-in-out infinite") + fly("⚡", 74, 62, 50, 64, 30, .8) + L("Gesetzliches Zahlungsmittel", 50, 88, 1.2)],
-  ["dawn", a("🌱", 50, 66, 30, "grow 1.6s cubic-bezier(.3,1.4,.5,1) both", .2, "font-size:90px") + L("Schnorr", 22, 30, 1.2) + L("Privatsphäre", 78, 30, 1.6) + L("über 90 % dafür", 50, 88, 2)],
-  ["dusk", a("🏢", 50, 54, 90, "shake .4s ease .3s 3, fall 1.2s ease-in 1.6s both") + a("💥", 50, 50, 70, "grow .4s both", 1.6) + L("FTX", 50, 16) + L("Kundengeld weg", 50, 86, 2.2)],
-  ["day", a("🏛", 26, 56, 84) + a("🐂", 74, 60, 70, "bobA 1.4s ease-in-out infinite") + L("ETF ✓", 26, 18, .6, "background:#1f8a4c") + L("₿ ▲", 74, 20, 1, "color:#7ff0b2")],
-  ["gold", a("🏆", 50, 46, 76, "grow .6s cubic-bezier(.3,1.6,.5,1) both") + L('<span data-count="100000">0</span> $', 50, 84, .3, "font-size:20px;background:#f7931a;color:#2a1600")],
+  ["night", a("laptop", 18, 72, 60) + `<div class="paper"><span class="type">Bitcoin: A Peer-to-Peer Electronic Cash System</span><small>Satoshi Nakamoto · 9 Seiten · 31.10.2008</small></div>` + a("letter", 82, 74, 42, "bobA 2s ease-in-out infinite")],
+  ["night", a("news", 26, 50, 70, "grow .6s both") + L("„Chancellor on brink of second bailout for banks“", 50, 16, .4, "white-space:normal;width:70%;text-align:center") + a("block", 72, 140, 64, "drop .9s cubic-bezier(.3,1.4,.5,1) .9s both", 0, "top:58%") + L("Block 0", 72, 84, 1.6)],
+  ["night", a("satoshi", 15, 60, 54) + L("Satoshi", 15, 86) + a("hal", 85, 60, 54) + L("Hal Finney", 85, 86) + fly("coin", 15, 55, 85, 40, 34, .4) + L("10 BTC", 50, 30, 1.2) + L("„Running bitcoin“", 70, 16, 1.8)],
+  ["dusk", a("pizza", 70, 52, 58, "grow .5s both", .2) + a("pizza", 84, 58, 50, "grow .5s both", .5) + fly("coin", 10, 60, 30, 46, 28, .6) + fly("coin", 10, 60, 22, 58, 28, .8) + fly("coin", 10, 60, 36, 62, 28, 1) + L('<span data-count="10000">0</span> BTC', 28, 82, .6) + L("≈ 41 $", 76, 84, 1.4)],
+  ["night", a("satoshi", 40, 58, 60, "fade 2.2s ease 1s both") + a("ghost", 40, 50, 54, "grow .6s both, bobA 2s ease-in-out 3s infinite", 2.4) + a("bag", 74, 62, 54) + L("≈ 1 Mio. BTC unberührt", 64, 86, 1.2)],
+  ["day", a("scale", 50, 52, 96, "tilt 1.6s cubic-bezier(.3,1.6,.5,1) both", .2, "transform:translate(-50%,-50%) rotate(-14deg)") + a("coin", 30, 36, 40, "grow .5s both", .6) + a("dollar", 70, 38, 40, "grow .5s both", .9) + L("1 : 1", 50, 86, 1.6)],
+  ["dawn", L("50 BTC", 24, 50, 0, "font-size:22px") + a("scissors", 50, 50, 46, "cut .6s ease 3", .4) + L("25 BTC", 76, 50, 1.6, "font-size:22px;background:#f7931a;color:#2a1600") + a("pick", 50, 82, 30)],
+  ["dusk", a("bank", 50, 50, 96, "shake .5s ease .5s 4") + L("MT. GOX", 50, 18) + [30, 44, 56, 70].map((x, i) => a("coin", x, 62, 26, "fall 1.6s ease-in both", 2.3 + i*.15)).join("") + L("850.000 BTC fehlen", 50, 86, 2.6)],
+  ["day", `<svg class="line" viewBox="0 0 400 210"><path d="M20 105 H180 L380 50" stroke="#f7931a"/><path d="M180 105 L380 160" stroke="#9aa2d6" style="animation-delay:1.2s"/></svg>` + L("Bitcoin", 80, 18, 2) + L("Bitcoin Cash", 76, 86, 2.4) + a("split", 45, 50, 34, "grow .5s both", 1)],
+  ["dusk", `<svg class="line" viewBox="0 0 400 210"><path d="M10 180 C120 175 200 150 250 40 C270 20 280 30 300 150 L390 175" stroke="#f7931a"/></svg>` + a("rocket", 62, 70, 40, "rocket 3s ease-in-out .3s both") + L("fast 20.000 $", 62, 12, 1.2) + L("−80 %", 82, 70, 2.6, "background:#c0483a")],
+  ["day", a("volcano", 22, 60, 76) + a("flag", 50, 30, 50, "grow .5s both", .3) + a("phone", 74, 62, 44, "bobA 1.6s ease-in-out infinite") + fly("bolt", 74, 62, 50, 64, 30, .8) + L("Gesetzliches Zahlungsmittel", 50, 88, 1.2)],
+  ["dawn", a("sprout", 50, 66, 30, "grow 1.6s cubic-bezier(.3,1.4,.5,1) both", .2, "width:110px;height:110px") + L("Schnorr", 22, 30, 1.2) + L("Privatsphäre", 78, 30, 1.6) + L("über 90 % dafür", 50, 88, 2)],
+  ["dusk", a("tower", 50, 54, 90, "shake .4s ease .3s 3, fall 1.2s ease-in 1.6s both") + a("boom", 50, 50, 70, "grow .4s both", 1.6) + L("FTX", 50, 16) + L("Kundengeld weg", 50, 86, 2.2)],
+  ["day", a("bank2", 26, 56, 84) + a("bull", 74, 60, 70, "bobA 1.4s ease-in-out infinite") + L("ETF ✓", 26, 18, .6, "background:#1f8a4c") + L("₿ ▲", 74, 20, 1, "color:#7ff0b2")],
+  ["gold", a("trophy", 50, 46, 76, "grow .6s cubic-bezier(.3,1.6,.5,1) both") + L('<span data-count="100000">0</span> $', 50, 84, .3, "font-size:20px;background:#f7931a;color:#2a1600")],
 ];
 // Zahlen hochzählen lassen
 function counters(root){ root.querySelectorAll("[data-count]").forEach(el => { const end = +el.dataset.count, t0 = performance.now();

@@ -120,4 +120,5 @@ h1 span.btc{background:linear-gradient(90deg,#ffb347,#f7931a 40%,#ffd36b 60%,#f7
 @keyframes up{from{opacity:0;transform:translate(-50%,20px)}}
 .confetti{position:fixed;inset:0;z-index:49;pointer-events:none}
 @media (max-width:520px){ .lvl i{display:none} .lvl small{display:none} }
-@media (prefers-reduced-motion:reduce){ .mode.live::before,body::before,h1 span.btc,.wico{animation:none} *{scroll-behavior:auto} .rv{opacity:1;transform:none} }
+/* Bewegung reduzieren (z. B. Firmen-PCs): nur Endlos-Bewegungen aus, kurze Effekte bleiben */
+@media (prefers-reduced-motion:reduce){ .mode.live::before,body::before,h1 span.btc,.wico{animation:none} *{scroll-behavior:auto} }
