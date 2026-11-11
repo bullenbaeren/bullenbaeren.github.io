@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Seed-Fabrik · Satsland</title>
+<meta name="description" content="Profi-Vertiefung: Vom Seed zur Adresse im Detail. BIP39-Wortliste, PBKDF2, BIP32-Hauptschlüssel und Ableitungspfade, alles echt im Browser gerechnet.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0b0f2a">
+<link rel="icon" href="../icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="stylesheet" href="../lern.css?v=17">
+<style>
+/* Lernwelt "Seed-Fabrik": nur seitenspezifische Teile, der Rest kommt aus lern.css */
+.idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
+.kv{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}
+.kv div{border:1px solid var(--line);border-radius:12px;padding:8px 10px;font-size:12px;color:var(--muted)} .kv b{display:block;font:700 18px var(--f-num);color:var(--ink)} .kv .g{color:var(--gold)}
+.seg{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px} .seg .btn[aria-pressed="true"]{outline:2px solid var(--gold);background:rgba(247,147,26,.15)}
+.res{margin-top:12px;padding:12px 14px;border-radius:14px;border:2px solid var(--line);font-size:15px;line-height:1.5}
+.res strong{display:block;font-size:18px} .res.ok{border-color:var(--bull)} .res.ok strong{color:var(--bull)} .res.bad{border-color:var(--bear)} .res.bad strong{color:var(--bear)} .res.warn{border-color:var(--gold)} .res.warn strong{color:var(--gold)}
+.note{margin:10px 0 0;font-size:14px;color:var(--muted);line-height:1.5} .note b{color:var(--ink)} .note a{color:var(--gold)}
+@media (max-width:620px){ .kv{grid-template-columns:1fr 1fr} }
+.inp{width:100%;font:600 16px var(--f-body);padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:#0b0f2a;color:var(--ink);margin-top:6px}
+.lbl2{display:block;font-size:13px;color:var(--muted);margin-top:12px}
+.hx{font:600 12px/1.45 var(--f-num);word-break:break-all;color:#cfd5ff}
+.warnbox{margin-top:12px;padding:10px 12px;border-radius:12px;border:2px dashed var(--bear);font-size:14px;line-height:1.5} .warnbox b{color:var(--bear)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:8px;font-size:12px;color:var(--muted)} .legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-2px}
+
+.pipe{display:grid;gap:8px;margin-top:12px}
+.pipe > div{display:grid;grid-template-columns:2.2em 1fr;gap:10px;align-items:start;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.025);animation:pop .35s}
+.pipe .n{width:2em;height:2em;border-radius:50%;display:grid;place-items:center;font:900 14px var(--f-num);background:var(--gold);color:#241500}
+.pipe b{display:block;font-size:14px} .pipe small{display:block;font-size:12px;color:var(--muted);margin:2px 0 4px;line-height:1.45}
+@keyframes pop{from{opacity:.2;transform:translateY(6px)}to{opacity:1;transform:none}}
+.path{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;align-items:center;font:900 18px var(--f-num)}
+.path select{font:900 16px var(--f-num);padding:6px 8px;border-radius:10px;border:2px solid var(--gold);background:#0b0f2a;color:var(--ink)}
+.pexp{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-top:8px;font-size:12px;color:var(--muted)} .pexp div{border-top:3px solid var(--gold);padding-top:4px;line-height:1.4} .pexp b{color:var(--ink);display:block}
+.addrs{margin:10px 0 0;padding-left:1.6em;font:600 13px var(--f-num);word-break:break-all;line-height:1.8}
+@media (max-width:620px){ .pexp{grid-template-columns:1fr 1fr} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a class="back" href="../">← Satsland</a><a class="back" href="../lexikon/">📖 Lexikon</a></div>
+  <div>
+    <h1>Vom Seed zur <span class="btc">Adresse</span>, ganz genau</h1>
+    <p class="lead">Deine Wallet rechnet im Hintergrund eine ganze Kette. Hier siehst du jede Station mit <b>echten Werten</b>. Probier die bekannten Test-Wörter: Deine Adressen stimmen exakt mit dem überein, was jede echte Wallet anzeigt.</p>
+  </div>
+
+  <section class="card" aria-labelledby="h1s">
+    <h2 id="h1s">1 · Deine Übungs-Wörter</h2>
+    <div class="row" style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" type="button" id="wNew">🎲 Neue Übungs-Wörter</button><button class="btn" type="button" id="wTest">🧪 Test-Wörter „abandon … about“</button></div>
+    <textarea id="wIn" class="inp nogl" rows="3" spellcheck="false" autocapitalize="off" aria-label="12 Wörter"></textarea>
+    <label class="lbl2" for="pw">Passphrase, das optionale „25. Wort“ (leer lassen = keins)</label>
+    <input id="pw" class="inp" autocomplete="off" spellcheck="false">
+    <div class="warnbox"><b>⚠️ Niemals deinen echten Seed hier eingeben!</b> Nicht hier und auf keiner anderen Webseite. Diese Seite ist nur zum Lernen mit Übungs-Wörtern.</div>
+  </section>
+
+  <section class="card" aria-labelledby="h2s">
+    <h2 id="h2s">2 · Der Pfad: die Hausnummer deines Schlüssels</h2>
+    <p class="muted" style="margin:0">Aus einem Seed entstehen unendlich viele Schlüssel. Welcher gemeint ist, sagt der <b>Ableitungspfad</b>. Das Häkchen ' heißt „gehärtet“: Dieser Zweig ist extra abgeschottet.</p>
+    <div class="path nogl">m / <select id="pP" aria-label="Zweck"><option value="44">44'</option><option value="49">49'</option><option value="84" selected>84'</option><option value="86">86'</option></select> / 0' / <select id="pA" aria-label="Konto"><option>0</option><option>1</option><option>2</option></select>' / <select id="pC" aria-label="Wechselgeld"><option value="0">0</option><option value="1">1</option></select> / <span>0 … 4</span></div>
+    <div class="pexp"><div><b>Zweck</b><span id="pPx"></span></div><div><b>0' = Bitcoin</b>(1' wäre Testnetz)</div><div><b>Konto</b>wie Unterkonten einer Bank</div><div><b>Empfangen / Wechselgeld</b>0 für Empfang, 1 für Rückgeld an dich selbst</div><div><b>Nummer</b>jede neue Adresse zählt eins hoch</div></div>
+  </section>
+
+  <section class="card" aria-labelledby="h3s">
+    <h2 id="h3s">3 · Die Fabrik bei der Arbeit</h2>
+    <div class="pipe nogl" id="pipe"></div>
+    <ol class="addrs nogl" id="addrs" start="0"></ol>
+    <p class="note" id="aN"></p>
+  </section>
+
+  <section class="card" aria-labelledby="hMs">
+    <h2 id="hMs">Das solltest du dir merken</h2>
+    <div class="learn">
+      <div><b>BIP39</b><span>Macht aus Zufall <b>12 oder 24 Wörter</b> aus einer Liste mit 2048 Wörtern, inklusive Prüfsumme.</span></div>
+      <div><b>2048 Runden</b><span>Aus den Wörtern wird mit <b>2048 Runden</b> HMAC-SHA512 ein 512-Bit-Seed. Das bremst Rate-Angriffe.</span></div>
+      <div><b>BIP32</b><span>Aus dem Seed entsteht ein <b>Hauptschlüssel</b>, daraus ein ganzer Baum an Schlüsseln.</span></div>
+      <div><b>Pfad bestimmt Adresstyp</b><span><b>44</b>′ → 1…, <b>49</b>′ → 3…, <b>84</b>′ → bc1q…, <b>86</b>′ → bc1p…. Gleicher Seed, andere Adressen.</span></div>
+    </div>
+    <details class="qz"><summary>Teste dich: 3 Fragen</summary><div id="quiz"></div></details>
+  </section>
+
+  <section class="card next" id="next" aria-label="Weiter"></section>
+  <details class="foot"><summary>Quellen</summary><p><a href="https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki">BIP39</a> · <a href="https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki">BIP32</a> · <a href="https://github.com/bitcoin/bips/blob/master/bip-0084.mediawiki">BIP84</a> · <a href="https://github.com/bitcoin/bips/blob/master/bip-0086.mediawiki">BIP86</a></p></details>
+  <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
+</div>
+
+<script src="../bitlib.js?v=17"></script>
+<script src="../lern.js?v=17"></script>
+<script>
+/* =====================================================================
+   SEED-FABRIK – Lernwelt von Satsland
+   ===================================================================== */
+(() => {
+const $ = id => document.getElementById(id);
+const TEST = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
+const PURP = {44: ["1…  (alt, Legacy)", k => Bit.p2pkh(Bit.pubC(Bit.mul(k)))], 49: ["3…  (SegWit verpackt)", k => Bit.p2shP2wpkh(Bit.pubC(Bit.mul(k)))], 84: ["bc1q…  (SegWit)", k => Bit.p2wpkh(Bit.pubC(Bit.mul(k)))], 86: ["bc1p…  (Taproot)", k => Bit.p2tr(Bit.mul(k))]};
+const cut = (s, n = 24) => s.length > n * 2 ? s.slice(0, n) + "…" + s.slice(-8) : s;
+let run = 0;
+async function calc(){
+  const id = ++run, words = $("wIn").value.trim().toLowerCase().split(/\s+/).filter(Boolean), pass = $("pw").value;
+  const pu = $("pP").value, path = `m/${pu}'/0'/${$("pA").value}'/${$("pC").value}`;
+  $("pPx").textContent = PURP[pu][0];
+  const chk = Bit.checkMnemonic(words), st = [];
+  const S = (t, d, v) => st.push(`<div><span class="n">${st.length + 1}</span><span><b>${t}</b><small>${d}</small><span class="hx">${v}</span></span></div>`);
+  if (!chk.ok){
+    $("pipe").innerHTML = `<div class="res bad"><strong>✗ Diese Wörter ergeben keinen gültigen Seed</strong>${chk.err === "unbekanntes Wort" ? `„${chk.bad}“ steht nicht in der BIP39-Liste.` : chk.err ? "Es müssen 12, 15, 18, 21 oder 24 Wörter sein." : `Die Prüfsumme passt nicht: Das letzte Wort müsste die Bits <b>${chk.want}</b> enthalten, hat aber <b>${chk.have}</b>. So erkennt die Wallet Tippfehler.`}</div>`;
+    $("addrs").innerHTML = ""; $("aN").textContent = ""; return;
+  }
+  S("Zufall (Entropie)", `${chk.ent.length * 8} Bit, die eigentliche Geheimzahl hinter deinen Wörtern`, Bit.hex(chk.ent));
+  S("Prüfsumme ✓", "Die letzten Bits des letzten Wortes passen zu SHA-256 der Entropie", chk.want);
+  $("pipe").innerHTML = st.join("") + `<div><span class="n">…</span><span><b>Rechne 2048 Runden …</b></span></div>`;
+  const seed = await Bit.seedOf(words, pass); if (id !== run) return;
+  S("Seed (512 Bit)", `PBKDF2: 2048 Runden HMAC-SHA512 über die Wörter, Salz = „mnemonic“${pass ? " + deine Passphrase" : ""}`, cut(Bit.hex(seed)));
+  const M = await Bit.master(seed); if (id !== run) return;
+  S("Hauptschlüssel", "HMAC-SHA512 mit dem Schlüssel „Bitcoin seed“: links der Schlüssel, rechts der Kettencode", cut(M.k.toString(16).padStart(64, "0")));
+  const acc = await Bit.derive(seed, path); if (id !== run) return;
+  S(`Zweig ${path}`, "Jeder Schritt im Pfad: wieder HMAC-SHA512 aus dem Eltern-Schlüssel und der Nummer", cut(acc.k.toString(16).padStart(64, "0")));
+  const k0 = (await Bit.child(acc, 0)).k, pub = Bit.pubC(Bit.mul(k0));
+  S(`Privater Schlüssel …/0`, "Der erste Schlüssel in diesem Zweig", cut(k0.toString(16).padStart(64, "0")));
+  S("Öffentlicher Schlüssel", "k × G auf der Kurve secp256k1, als 33 Byte", cut(Bit.hex(pub)));
+  if (pu !== "86") S("Hash160", "RIPEMD-160(SHA-256(öffentlicher Schlüssel)): 20 Byte Fingerabdruck", Bit.hex(Bit.hash160(pub)));
+  else S("Taproot-Schlüssel", "Der öffentliche Schlüssel wird „getweakt“ (verschoben) und steckt direkt in der Adresse", "kein Hash160 nötig");
+  $("pipe").innerHTML = st.join("");
+  const list = []; for (let i = 0; i < 5; i++){ const c = await Bit.child(acc, i); if (id !== run) return; list.push(PURP[pu][1](c.k)); }
+  $("addrs").innerHTML = list.map((a, i) => `<li>${path}/${i} → <b style="color:var(--gold)">${a}</b></li>`).join("");
+  $("aN").innerHTML = words.join(" ") === TEST && !pass ? "✓ Das sind die <b>offiziellen Test-Adressen</b> dieser Wörter. Jede seriöse Wallet zeigt bei denselben Wörtern und demselben Pfad exakt dieselben Adressen. Achtung: Diese Wörter kennt die ganze Welt, dort liegt nie Geld sicher!" : pass ? "Mit Passphrase entsteht eine <b>komplett andere Wallet</b>. Ein einziges Zeichen anders, und alle Adressen sind anders." : "Wechsel oben den <b>Zweck</b>: gleicher Seed, aber ganz andere Adressen.";
+}
+$("wNew").onclick = () => { $("wIn").value = Bit.mnemonic(Bit.rand(16)).join(" "); calc(); };
+$("wTest").onclick = () => { $("wIn").value = TEST; $("pw").value = ""; calc(); };
+let deb; const later = () => { clearTimeout(deb); deb = setTimeout(calc, 350); };
+["wIn", "pw"].forEach(i => $(i).addEventListener("input", later)); ["pP", "pA", "pC"].forEach(i => $(i).addEventListener("change", calc));
+if (!window.crypto || !crypto.subtle) $("pipe").innerHTML = `<div class="res warn"><strong>Dein Browser erlaubt hier keine Krypto-Funktionen.</strong>Öffne die Seite über https.</div>`;
+else $("wTest").onclick();
+
+const QUIZ = [["Wofür steht die 84 im Pfad m/84'/0'/0'/0/0?", ["Für das Jahr 1984", "Für den Adresstyp SegWit (bc1q…)", "Für 84 Wörter", "Für das Konto Nr. 84"], 1, "Die erste Zahl ist der Zweck: 44 = alte 1…-Adressen, 49 = 3…, 84 = bc1q…, 86 = Taproot bc1p…."], ["Was passiert, wenn du eine Passphrase hinzufügst?", ["Nichts", "Es entsteht eine komplett andere Wallet", "Der Seed wird kürzer", "Die Adressen bekommen ein Passwort"], 1, "Die Passphrase fließt in die Seed-Berechnung ein. Ein anderes Zeichen ergibt eine völlig andere Wallet."], ["Warum rechnet man 2048 Runden, bevor der Seed entsteht?", ["Zum Spaß", "Um Rate-Angriffe auf Wörter und Passphrase zu bremsen", "Damit die Wallet schneller wird", "Weil es 2048 Wörter gibt"], 1, "Die vielen Runden machen jeden einzelnen Rateversuch teurer. Das schützt vor allem schwache Passphrasen."]];
+Lern.quiz($("quiz"), "ableitung", QUIZ, "../"); Lern.visit("ableitung"); Lern.renderNext("ableitung", "../");
+})();
+</script>
+</body>
+</html>

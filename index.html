@@ -14,7 +14,7 @@
 <meta property="og:description" content="Bitcoin spielerisch verstehen, mit echten Live-Daten.">
 <meta property="og:image" content="https://satsland.github.io/og.png">
 <meta property="og:url" content="https://satsland.github.io/">
-<link rel="stylesheet" href="lern.css?v=16">
+<link rel="stylesheet" href="lern.css?v=17">
 <style>
 /* Übersicht der Lernwelten: gleiche Farben und Schriften wie das Spiel. */
 .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
@@ -62,6 +62,10 @@ a:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
 .w.done .no{background:var(--bull);color:#04240f} .w.nx{border-color:var(--gold);box-shadow:0 0 0 2px rgba(255,201,77,.35)}
 .path .next{margin:6px 0 4px}
 .kap .w .tag{display:none}
+/* Profi-Pfad: Vertiefungen nach dem Kapitel-Boss */
+details.pro{margin-top:10px;border-radius:14px;border:2px dashed rgba(178,107,255,.55);padding:8px 10px;background:rgba(178,107,255,.06)}
+details.pro > summary b{font:900 15px var(--f-display);color:#d6b8ff;white-space:nowrap} details.pro > summary small{flex:1;text-align:right;font-size:12px;color:var(--muted)}
+details.pro .w{border-color:rgba(178,107,255,.4)} details.pro.lock .w{opacity:.6} details.pro .w .lk{position:absolute;top:12px;right:14px;font-size:14px}
 /* Klappbare Bereiche */
 details.fold > summary{list-style:none;display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none}
 details.fold > summary::-webkit-details-marker{display:none}
@@ -80,7 +84,7 @@ details.fold[open] > summary{margin-bottom:12px}
     <h1>Sats<span>land</span></h1>
     <p class="lead">Bitcoin spielerisch verstehen: Lernwelten mit echten Live-Daten, ohne Anmeldung und ohne Tracking.</p>
   </div>
-  <p class="count"><b>28 Welten</b> in 6 Kapiteln · <b>6 Bosse</b> + Endboss</p>
+  <p class="count"><b>28 Welten</b> in 6 Kapiteln · <b>6 Bosse</b> + Endboss · <b>🔬 8 Profi-Vertiefungen</b></p>
   <details class="card daily fold" data-k="daily"><summary><h2 id="dly">🔥 Tages-Challenge</h2><span class="muted sm" id="dlyS"></span></summary><div id="daily"></div></details>
   <section class="card path" aria-labelledby="pth"><div class="ph"><h2 id="pth">🗺️ Dein Lernpfad</h2><span class="muted" id="pathCount"></span></div>
     <p class="lvup" id="lvup"></p>
@@ -152,7 +156,7 @@ details.fold[open] > summary{margin-bottom:12px}
   </details>
   <p class="foot">Unterhaltung und Lernen, keine Anlageberatung. Keine Cookies, kein Tracking. <a href="#" id="guideOn" style="color:inherit">Satoshi zurückholen</a></p>
 </div>
-<script src="lern.js?v=16"></script>
+<script src="lern.js?v=17"></script>
 <script>
 // Lernpfad: Fortschritt aus dem eigenen Browser, Häkchen an den Karten, Empfehlung als Nächstes
 (() => {
@@ -185,6 +189,15 @@ details.fold[open] > summary{margin-bottom:12px}
   document.querySelectorAll("details.kap").forEach(d => { const k = +d.dataset.k - 1, c = Lern.CHAPTERS[k], ready = c[3].every(id => Lern.done(s, id)), [img, name] = Lern.BOSSES[k];
     d.insertAdjacentHTML("beforeend", `<button class="bossbtn ${won[k] ? "won" : ""}" type="button" data-b="${k}" ${ready ? "" : "disabled"}><span class="bi">${Lern.art(img)}</span><span>${won[k] ? "🏆 " + name + " besiegt" : "👹 Boss: " + name}<small>${won[k] ? "Nochmal kämpfen?" : ready ? "5 Fragen auf Zeit. Bereit?" : "🔒 Schaffe erst alle Welten dieses Kapitels"}</small></span></button>`); });
   document.querySelectorAll(".bossbtn").forEach(b => b.onclick = () => Lern.boss(+b.dataset.b));
+  // Profi-Pfade: nach dem Boss freigeschaltet (vorher sichtbar, aber gedimmt)
+  const PD = {entropie: "Wie sicher ist ein Seed? Würfle dir einen und teste deinen Zufall.", ableitung: "Von 12 Wörtern bis zur Adresse: jede Station echt gerechnet.", sha256: "Die Hash-Maschine aufgeschraubt: 64 Runden Schritt für Schritt.",
+    kurven: "Punkte addieren auf der Kurve und die Einbahnstraße „mal G“.", signaturen: "ECDSA gegen Schnorr: live unterschreiben und Schlüssel bündeln.", adressen: "1…, 3…, bc1q…, bc1p…: Bausteine und Tippfehler-Schutz.",
+    merkle: "Wie tausende Zahlungen in einen einzigen Hash passen.", quanten: "Was Quantencomputer bedrohen und was Bitcoin vorbereitet."};
+  document.querySelectorAll("details.kap").forEach(d => { const k = +d.dataset.k - 1, L = Lern.PRO[k]; if (!L.length) return;
+    const open = won[k], dn = L.filter(id => Lern.done(s, id)).length;
+    d.insertAdjacentHTML("beforeend", `<details class="pro fold ${open ? "" : "lock"}" id="pro${k + 1}" data-k="p${k + 1}"><summary><b>🔬 Profi-Pfad</b><small>${open ? `${dn}/${L.length} geschafft` : "🔒 Empfohlen nach dem Boss"}</small></summary><div class="grid big">${L.map(id => { const [t, path] = Lern.TITLES[id], ok = Lern.done(s, id);
+      return `<a class="w ${ok ? "done" : ""}" href="${path}">${open ? `<span class="no">${ok ? "✓" : "🔬"}</span>` : '<span class="lk">🔒</span>'}<span class="ic" aria-hidden="true">${Lern.art(Lern.CARD[id])}</span><b>${t}</b><span>${PD[id]}</span><span class="go">Vertiefen →</span></a>`; }).join("")}</div></details>`); });
+  { const ph = location.hash.match(/^#pro(\d)$/), el = ph && document.getElementById("pro" + ph[1]); if (el) setTimeout(() => { el.open = true; el.closest("details.kap").open = true; history.replaceState(null, "", location.pathname); setTimeout(() => el.scrollIntoView({block: "start"}), 200); }, 0); }
   // Direkt zum Boss über die Empfehlung (#boss1 … #boss5)
   const bh = location.hash.match(/^#boss(\d)$/);
   if (bh){ const b = document.querySelector(`.bossbtn[data-b="${+bh[1] - 1}"]`); if (b && !b.disabled){ b.closest("details").open = true; setTimeout(() => { b.scrollIntoView({block: "center"}); Lern.boss(+b.dataset.b); }, 300); history.replaceState(null, "", location.pathname); } }

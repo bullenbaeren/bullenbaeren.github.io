@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Merkle-Baum · Satsland</title>
+<meta name="description" content="Profi-Vertiefung: Merkle-Bäume. Wie tausende Zahlungen in einen einzigen Hash passen und wie ein Handy mit wenigen Hashes eine Zahlung beweisen kann.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0b0f2a">
+<link rel="icon" href="../icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="stylesheet" href="../lern.css?v=17">
+<style>
+/* Lernwelt "Merkle-Baum": nur seitenspezifische Teile, der Rest kommt aus lern.css */
+.idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
+.kv{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}
+.kv div{border:1px solid var(--line);border-radius:12px;padding:8px 10px;font-size:12px;color:var(--muted)} .kv b{display:block;font:700 18px var(--f-num);color:var(--ink)} .kv .g{color:var(--gold)}
+.seg{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px} .seg .btn[aria-pressed="true"]{outline:2px solid var(--gold);background:rgba(247,147,26,.15)}
+.res{margin-top:12px;padding:12px 14px;border-radius:14px;border:2px solid var(--line);font-size:15px;line-height:1.5}
+.res strong{display:block;font-size:18px} .res.ok{border-color:var(--bull)} .res.ok strong{color:var(--bull)} .res.bad{border-color:var(--bear)} .res.bad strong{color:var(--bear)} .res.warn{border-color:var(--gold)} .res.warn strong{color:var(--gold)}
+.note{margin:10px 0 0;font-size:14px;color:var(--muted);line-height:1.5} .note b{color:var(--ink)} .note a{color:var(--gold)}
+@media (max-width:620px){ .kv{grid-template-columns:1fr 1fr} }
+.inp{width:100%;font:600 16px var(--f-body);padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:#0b0f2a;color:var(--ink);margin-top:6px}
+.lbl2{display:block;font-size:13px;color:var(--muted);margin-top:12px}
+.hx{font:600 12px/1.45 var(--f-num);word-break:break-all;color:#cfd5ff}
+.warnbox{margin-top:12px;padding:10px 12px;border-radius:12px;border:2px dashed var(--bear);font-size:14px;line-height:1.5} .warnbox b{color:var(--bear)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:8px;font-size:12px;color:var(--muted)} .legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-2px}
+
+.tree{display:grid;gap:10px;margin-top:12px}
+.mlv{display:grid;gap:6px}
+.nd{border:2px solid var(--line);border-radius:10px;padding:6px 4px;text-align:center;font:700 11px var(--f-num);transition:border-color .3s,background .3s;cursor:default;min-width:0}
+.nd small{display:block;font:600 10px var(--f-body);color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nd.tx{cursor:pointer;background:rgba(255,255,255,.03)} .nd.tx:hover{border-color:var(--gold)}
+.nd.bad{border-color:var(--bear);background:rgba(255,92,115,.15);animation:pop .4s} .nd.root{border-color:var(--gold);background:rgba(247,147,26,.12);font-size:13px}
+.nd.root.bad{border-color:var(--bear);background:rgba(255,92,115,.2)}
+.nd.proof{border-color:var(--bull);background:rgba(52,217,130,.15)} .nd.sel{outline:3px solid var(--gold)}
+@keyframes pop{from{transform:scale(.85)}to{transform:none}}
+.ctl .row{display:flex;align-items:center;gap:10px;margin-top:8px} .ctl .row input{flex:1} .ctl .row b{font:900 16px var(--f-num);min-width:6ch;text-align:right}
+.mode2{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+@media (max-width:620px){ .nd{font-size:9px;padding:5px 2px} .nd small{font-size:8px} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a class="back" href="../">← Satsland</a><a class="back" href="../lexikon/">📖 Lexikon</a></div>
+  <div>
+    <h1>Tausende Zahlungen, <span class="btc">ein</span> Hash</h1>
+    <p class="lead">Ein Block enthält oft über 3.000 Zahlungen, aber im kleinen Block-Kopf ist nur Platz für <b>einen</b> Hash. Der Trick: Man hasht die Zahlungen <b>paarweise</b> zusammen, immer wieder, bis nur einer übrig bleibt. Das ergibt einen Baum, der auf dem Kopf steht.</p>
+  </div>
+
+  <section class="card" aria-labelledby="h1s">
+    <h2 id="h1s">1 · Der Baum aus 8 Zahlungen</h2>
+    <div class="mode2 seg" id="md"><button class="btn" type="button" data-m="fake" aria-pressed="true">😈 Fälschen: Zahlung antippen</button><button class="btn" type="button" data-m="proof">📱 Beweisen: Zahlung antippen</button><button class="btn" type="button" id="rs">↺ Zurücksetzen</button></div>
+    <div class="tree nogl" id="tree"></div>
+    <p class="note" id="tN"></p>
+  </section>
+
+  <section class="card" aria-labelledby="h2s">
+    <h2 id="h2s">2 · Warum das so genial ist</h2>
+    <p class="muted" style="margin:0">Um zu beweisen, dass eine Zahlung im Block steckt, braucht man nicht alle Zahlungen, sondern nur die <b>Geschwister-Hashes</b> auf dem Weg nach oben. Bei doppelt so vielen Zahlungen braucht man nur <b>einen Hash mehr</b>.</p>
+    <div class="ctl"><label class="lbl2" for="nt">Zahlungen im Block</label><div class="row"><input id="nt" type="range" min="1" max="20" value="12"><b id="ntV" class="num"></b></div></div>
+    <div class="kv" id="mkv"></div>
+    <p class="note">Genau so prüfen viele Handy-Wallets Zahlungen, ohne die ganze Blockchain zu laden. Satoshi beschrieb das schon im Whitepaper als <b>„vereinfachte Zahlungsprüfung“</b> (SPV).</p>
+  </section>
+
+  <section class="card" aria-labelledby="hMs">
+    <h2 id="hMs">Das solltest du dir merken</h2>
+    <div class="learn">
+      <div><b>Paarweise hashen</b><span>Je zwei Hashes werden zusammengehasht, Ebene für Ebene, bis nur die <b>Merkle-Root</b> bleibt.</span></div>
+      <div><b>Root im Block-Kopf</b><span>Die Merkle-Root steht im <b>Block-Kopf</b>. Ändert sich eine Zahlung, ändert sich die Root, und der Block ist ungültig.</span></div>
+      <div><b>Kurzer Beweis</b><span>Für 4.000 Zahlungen reichen <b>12 Hashes</b>, um eine Zahlung zu beweisen.</span></div>
+      <div><b>Ungerade Anzahl</b><span>Fehlt ein Partner, wird der letzte Hash bei Bitcoin einfach <b>verdoppelt</b>.</span></div>
+    </div>
+    <details class="qz"><summary>Teste dich: 3 Fragen</summary><div id="quiz"></div></details>
+  </section>
+
+  <section class="card next" id="next" aria-label="Weiter"></section>
+  <details class="foot"><summary>Quellen</summary><p><a href="https://bitcoin.org/bitcoin.pdf">Bitcoin-Whitepaper, Abschnitt 7 und 8</a> · <a href="https://developer.bitcoin.org/reference/block_chain.html#merkle-trees">Bitcoin Developer Reference: Merkle Trees</a></p></details>
+  <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
+</div>
+
+<script src="../bitlib.js?v=17"></script>
+<script src="../lern.js?v=17"></script>
+<script>
+/* =====================================================================
+   MERKLE-BAUM – Lernwelt von Satsland
+   ===================================================================== */
+(() => {
+const $ = id => document.getElementById(id);
+const TX0 = ["Anna → Ben 0,1", "Cem → Dana 0,02", "Eva → Finn 1,5", "Gil → Hana 0,3", "Ida → Jan 0,07", "Kai → Lea 2,0", "Max → Nia 0,01", "Ole → Pia 0,4"];
+let TX = TX0.slice(), mode = "fake", sel = -1;
+const H = s => Bit.sha256d(Bit.utf8(s)), sh = u => Bit.hex(u).slice(0, 6);
+let base;
+function build(list){ const L = [list.map(H)]; while (L[L.length - 1].length > 1){ const p = L[L.length - 1], n = []; for (let i = 0; i < p.length; i += 2) n.push(Bit.sha256d(Bit.cat(p[i], p[i + 1] || p[i]))); L.push(n); } return L; }
+function draw(){
+  const L = build(TX), B = base, tags = ["Zahlungen", "Ebene 1", "Ebene 2", "Merkle-Root"];
+  const proof = new Set(); if (mode === "proof" && sel >= 0){ let i = sel; for (let l = 0; l < L.length - 1; l++){ proof.add(l + ":" + (i ^ 1)); i >>= 1; } }
+  $("tree").innerHTML = L.slice().reverse().map((lv, ri) => { const l = L.length - 1 - ri;
+    return `<div class="mlv" style="grid-template-columns:repeat(${lv.length},minmax(0,1fr))">${lv.map((h, i) => {
+      const bad = Bit.hex(h) !== Bit.hex(B[l][i]), cls = ["nd", l === 0 ? "tx" : "", l === L.length - 1 ? "root" : "", bad ? "bad" : "", proof.has(l + ":" + i) ? "proof" : "", mode === "proof" && l === 0 && i === sel ? "sel" : ""].join(" ");
+      return `<div class="${cls}" ${l === 0 ? `data-i="${i}" role="button" tabindex="0"` : ""}><small>${l === 0 ? TX[i] : tags[l] || ""}</small>${sh(h)}</div>`; }).join("")}</div>`; }).join("");
+  const broken = Bit.hex(L[L.length - 1][0]) !== Bit.hex(B[B.length - 1][0]);
+  $("tN").innerHTML = mode === "proof" ? (sel < 0 ? "Tipp eine Zahlung an. Grün leuchten die Hashes, die du für den Beweis brauchst."
+      : `Für „<b>${TX[sel]}</b>“ reichen <b>3 grüne Hashes</b> plus die Root. Damit rechnet man den Weg nach oben nach. Die anderen 5 Zahlungen muss man nicht kennen.`)
+    : broken ? "😱 Eine Zahlung geändert, und die rote Spur läuft <b>bis ganz nach oben</b>. Die Merkle-Root passt nicht mehr zum Block-Kopf, jede Node lehnt den Block ab." : "Tipp eine Zahlung an, um ihren Betrag heimlich zu ändern.";
+}
+$("tree").addEventListener("click", e => { const n = e.target.closest("[data-i]"); if (!n) return; const i = +n.dataset.i;
+  if (mode === "fake"){ TX[i] = TX[i].replace(/[\d,]+$/, v => (parseFloat(v.replace(",", ".")) * 10).toLocaleString("de-DE")); } else sel = i; draw(); });
+$("tree").addEventListener("keydown", e => { if (e.key === "Enter") e.target.click(); });
+$("md").addEventListener("click", e => { const b = e.target.closest("[data-m]"); if (!b) return; mode = b.dataset.m; $("md").querySelectorAll("[data-m]").forEach(x => x.setAttribute("aria-pressed", x === b)); TX = TX0.slice(); sel = -1; draw(); });
+$("rs").onclick = () => { TX = TX0.slice(); sel = -1; draw(); };
+base = build(TX0); draw();
+// Rechner
+function calc(){ const n = 2 ** +$("nt").value, h = Math.ceil(Math.log2(n));
+  $("ntV").textContent = n.toLocaleString("de-DE");
+  $("mkv").innerHTML = `<div>Zahlungen<b>${n.toLocaleString("de-DE")}</b></div><div>Hashes für den Beweis<b class="g">${h}</b></div><div>Beweis-Größe<b>${h * 32} Byte</b></div>`; }
+$("nt").oninput = calc; calc();
+
+const QUIZ = [["Was steht im Block-Kopf?", ["Alle Zahlungen", "Nur die Merkle-Root, ein einziger Hash über alle Zahlungen", "Die Namen der Absender", "Nichts über Zahlungen"], 1, "Der Block-Kopf enthält die Merkle-Root. Sie fasst alle Zahlungen des Blocks in einem Hash zusammen."], ["Was passiert, wenn jemand eine Zahlung im Block ändert?", ["Nichts", "Nur ihr eigener Hash ändert sich", "Alle Hashes bis zur Root ändern sich, der Block wird ungültig", "Die Zahlung wird doppelt gezählt"], 2, "Jede Änderung zieht sich bis zur Merkle-Root durch. Die passt dann nicht mehr zum Block-Kopf."], ["Wie viele Hashes braucht ein Beweis bei etwa 4.000 Zahlungen?", ["4.000", "2.000", "Etwa 12", "1"], 2, "Jede Ebene halbiert die Anzahl. 2 hoch 12 sind 4.096, also reichen 12 Hashes."]];
+Lern.quiz($("quiz"), "merkle", QUIZ, "../"); Lern.visit("merkle"); Lern.renderNext("merkle", "../");
+})();
+</script>
+</body>
+</html>

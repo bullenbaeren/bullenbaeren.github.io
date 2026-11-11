@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Würfel-Seed · Satsland</title>
+<meta name="description" content="Profi-Vertiefung: Wie sicher ist ein Seed? Entropie anschaulich, Übungs-Seed mit Würfeln erzeugen und testen, ob du ein guter Zufallsgenerator bist.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0b0f2a">
+<link rel="icon" href="../icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="stylesheet" href="../lern.css?v=17">
+<style>
+/* Lernwelt "Würfel-Seed": nur seitenspezifische Teile, der Rest kommt aus lern.css */
+.idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
+.kv{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}
+.kv div{border:1px solid var(--line);border-radius:12px;padding:8px 10px;font-size:12px;color:var(--muted)} .kv b{display:block;font:700 18px var(--f-num);color:var(--ink)} .kv .g{color:var(--gold)}
+.seg{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px} .seg .btn[aria-pressed="true"]{outline:2px solid var(--gold);background:rgba(247,147,26,.15)}
+.res{margin-top:12px;padding:12px 14px;border-radius:14px;border:2px solid var(--line);font-size:15px;line-height:1.5}
+.res strong{display:block;font-size:18px} .res.ok{border-color:var(--bull)} .res.ok strong{color:var(--bull)} .res.bad{border-color:var(--bear)} .res.bad strong{color:var(--bear)} .res.warn{border-color:var(--gold)} .res.warn strong{color:var(--gold)}
+.note{margin:10px 0 0;font-size:14px;color:var(--muted);line-height:1.5} .note b{color:var(--ink)} .note a{color:var(--gold)}
+@media (max-width:620px){ .kv{grid-template-columns:1fr 1fr} }
+.inp{width:100%;font:600 16px var(--f-body);padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:#0b0f2a;color:var(--ink);margin-top:6px}
+.lbl2{display:block;font-size:13px;color:var(--muted);margin-top:12px}
+.hx{font:600 12px/1.45 var(--f-num);word-break:break-all;color:#cfd5ff}
+.warnbox{margin-top:12px;padding:10px 12px;border-radius:12px;border:2px dashed var(--bear);font-size:14px;line-height:1.5} .warnbox b{color:var(--bear)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:8px;font-size:12px;color:var(--muted)} .legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-2px}
+
+.ctl .row{display:flex;align-items:center;gap:10px;margin-top:8px} .ctl .row input{flex:1} .ctl .row b{font:900 18px var(--f-num);min-width:5ch;text-align:right}
+.cmp{display:grid;gap:6px;margin-top:12px}
+.cmp div{display:grid;grid-template-columns:10em 1fr 5em;gap:8px;align-items:center;font-size:13px}
+.cmp i{display:block;height:14px;border-radius:7px;background:rgba(255,255,255,.07);overflow:hidden} .cmp u{display:block;height:100%;border-radius:7px;transition:width .5s}
+.cmp em{font:700 12px var(--f-num);font-style:normal;text-align:right}
+.dice{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;margin-top:12px}
+.dice button{aspect-ratio:1;border-radius:14px;border:3px solid #0d1230;background:#fff;padding:4px;cursor:pointer;box-shadow:0 4px 0 #0d1230;transition:transform .1s} .dice svg{width:100%;height:100%;display:block}
+.dice button:active{transform:translateY(3px);box-shadow:0 1px 0 #0d1230}
+.prog{height:16px;border-radius:8px;background:rgba(255,255,255,.07);overflow:hidden;margin-top:12px} .prog u{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--bull));transition:width .3s}
+.rolls{margin-top:8px;font:700 14px var(--f-num);letter-spacing:2px;word-break:break-all;color:var(--muted)}
+.words{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-top:12px}
+.words div{border:1px solid var(--line);border-radius:10px;padding:6px 8px;font-size:14px} .words div small{color:var(--muted);font:700 11px var(--f-num);display:block}
+.words div.cs{border-color:var(--gold);background:rgba(247,147,26,.1)}
+.coin{display:flex;gap:10px;margin-top:12px} .coin button{flex:1;font-size:18px}
+.bad3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px}
+.bad3 div{border:2px solid rgba(255,92,115,.45);border-radius:14px;padding:10px 12px;font-size:14px;line-height:1.5} .bad3 b{display:block;font-family:var(--f-display)}
+@media (max-width:620px){ .words{grid-template-columns:repeat(3,minmax(0,1fr))} .bad3{grid-template-columns:1fr} .cmp div{grid-template-columns:7.5em 1fr 4em} .dice{gap:5px} .dice button{border-radius:10px;padding:2px} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a class="back" href="../">← Satsland</a><a class="back" href="../lexikon/">📖 Lexikon</a></div>
+  <div>
+    <h1>Wie sicher ist ein <span class="btc">Seed</span>?</h1>
+    <p class="lead">Deine 12 Wörter sind nur so stark wie der <b>Zufall</b>, aus dem sie entstanden sind. Diesen Zufall misst man in <b>Bit</b>, das nennt man <b>Entropie</b>. Hier würfelst du dir einen Übungs-Seed und siehst, warum Menschen schlechte Zufallsgeneratoren sind.</p>
+  </div>
+
+  <section class="card" aria-labelledby="h1s">
+    <h2 id="h1s">1 · Wie groß ist „128 Bit“?</h2>
+    <p class="muted" style="margin:0">Jedes Bit verdoppelt die Zahl der Möglichkeiten. Schieb den Regler und sieh, wie lange ein Angreifer mit <b>einer Billion Versuchen pro Sekunde</b> zum Durchprobieren bräuchte.</p>
+    <div class="ctl"><label class="lbl2" for="eb">Bits Zufall</label><div class="row"><input id="eb" type="range" min="4" max="256" value="128"><b id="ebV" class="num">128</b></div></div>
+    <div class="kv" id="ekv"></div>
+    <div class="cmp" id="cmp"></div>
+  </section>
+
+  <section class="card" aria-labelledby="h2s">
+    <h2 id="h2s">2 · Würfle dir einen Übungs-Seed</h2>
+    <p class="muted" style="margin:0">Ein Würfelwurf bringt rund <b>2,6 Bit</b> Zufall. Für 128 Bit brauchst du also <b>50 Würfe</b>. Tipp die Augenzahl deines echten Würfels an oder lass den Computer würfeln.</p>
+    <div class="dice" id="dice"></div>
+    <div class="row" style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn" type="button" id="auto">🎲 Rest automatisch würfeln</button><button class="btn" type="button" id="reset">↺ Neu anfangen</button></div>
+    <div class="prog"><u id="pg"></u></div>
+    <p class="note" id="pgN"></p>
+    <div class="rolls nogl" id="rolls"></div>
+    <div id="out"></div>
+    <div class="warnbox"><b>⚠️ Nur zum Üben!</b> Erzeuge echte Seeds nie auf einer Webseite. Für echtes Geld nur eine Hardware-Wallet benutzen, die Würfel-Eingabe kann sie meist selbst.</div>
+  </section>
+
+  <section class="card" aria-labelledby="h3s">
+    <h2 id="h3s">3 · Bist du ein guter Zufallsgenerator?</h2>
+    <p class="muted" style="margin:0">Tipp <b>30 Mal</b> so zufällig wie möglich auf Kopf oder Zahl, ohne eine Münze zu werfen. Danach prüfen wir dich.</p>
+    <div class="coin"><button class="btn" type="button" data-c="K">🙂 Kopf</button><button class="btn" type="button" data-c="Z">🔢 Zahl</button></div>
+    <div class="rolls nogl" id="coins"></div>
+    <div id="cRes"></div>
+  </section>
+
+  <section class="card" aria-labelledby="h4s">
+    <h2 id="h4s">4 · Wenn der Zufall schlecht ist</h2>
+    <div class="bad3">
+      <div><b>🧠 Selbst ausgedacht</b>Lieblingswörter, Songzeilen oder „Brainwallets“ aus einem Satz. Angreifer probieren Milliarden bekannter Sätze durch. Solche Wallets wurden reihenweise leergeräumt.</div>
+      <div><b>🐛 Kaputter Generator</b>2013 lieferte ein Android-Fehler schwachen Zufall, 2023 erzeugte ein Werkzeug („Milk Sad“) Seeds aus nur 32 Bit. Beides führte zu gestohlenen Bitcoin.</div>
+      <div><b>✅ Was hilft</b>Seeds von einer guten Hardware-Wallet erzeugen lassen oder echte Würfel nutzen. Und den Seed nie abtippen, fotografieren oder in eine Webseite eingeben.</div>
+    </div>
+  </section>
+
+  <section class="card" aria-labelledby="hMs">
+    <h2 id="hMs">Das solltest du dir merken</h2>
+    <div class="learn">
+      <div><b>Entropie in Bit</b><span>Jedes Bit <b>verdoppelt</b> die Möglichkeiten. 12 Wörter = 128 Bit, 24 Wörter = 256 Bit.</span></div>
+      <div><b>128 Bit reichen</b><span>Selbst mit einer Billion Versuchen pro Sekunde dauert das Raten <b>milliardenfach länger als das Universum alt ist</b>.</span></div>
+      <div><b>Letztes Wort = Prüfsumme</b><span>Ein Teil des letzten Wortes wird aus den anderen berechnet. So fallen <b>Tippfehler</b> auf.</span></div>
+      <div><b>Menschen sind kein Zufall</b><span>Selbst ausgedachte Wörter und Sätze sind <b>vorhersagbar</b>. Echte Würfel oder eine gute Hardware-Wallet nutzen.</span></div>
+    </div>
+    <details class="qz"><summary>Teste dich: 3 Fragen</summary><div id="quiz"></div></details>
+  </section>
+
+  <section class="card next" id="next" aria-label="Weiter"></section>
+  <details class="foot"><summary>Quellen</summary><p><a href="https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki">BIP39</a> · <a href="https://milksad.info/">Milk Sad (2023)</a> · <a href="https://bitcoin.org/en/alert/2013-08-11-android">bitcoin.org: Android-Zufallsfehler 2013</a></p></details>
+  <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
+</div>
+
+<script src="../bitlib.js?v=17"></script>
+<script src="../lern.js?v=17"></script>
+<script>
+/* =====================================================================
+   WÜRFEL-SEED – Lernwelt von Satsland
+   ===================================================================== */
+(() => {
+const $ = id => document.getElementById(id);
+// 1) Größenordnungen
+const fmt = n => { if (n < 1e6) return Math.round(n).toLocaleString("de-DE"); const [m, e] = n.toExponential(1).split("e+"); return `${m.replace(".", ",")} × 10<sup>${e}</sup>`; };
+const AGE = 13.8e9 * 365.25 * 86400;
+function ent(){
+  const b = +$("eb").value, n = 2 ** b, sec = n / 2 / 1e12;
+  $("ebV").textContent = b;
+  const t = sec < 1 ? "sofort" : sec < 3600 ? Math.round(sec) + " Sekunden" : sec < 86400 * 365 ? Math.round(sec / 86400) + " Tage" : sec < AGE ? fmt(sec / 31557600) + " Jahre" : fmt(sec / AGE) + " × Alter des Universums";
+  $("ekv").innerHTML = `<div>Möglichkeiten<b>${fmt(n)}</b></div><div>Würfelwürfe dafür<b>${Math.ceil(b / Math.log2(6))}</b></div><div>Raten dauert im Schnitt<b class="${sec > AGE ? "g" : ""}" style="font:800 15px var(--f-body)">${t}</b></div>`;
+  $("cmp").innerHTML = [["4-stellige PIN", 13.3, "#ff5c73"], ["Passwort, 8 Zeichen", 52, "#ff9a6a"], ["12 Wörter", 128, "#ffc94d"], ["24 Wörter", 256, "#34d982"], ["Dein Regler", b, "#7cc4ff"]]
+    .map(([n, v, c]) => `<div><span>${n}</span><i><u style="width:${v / 2.56}%;background:${c}"></u></i><em>${Math.round(v)} Bit</em></div>`).join("");
+}
+$("eb").oninput = ent; ent();
+// 2) Würfel-Seed
+let rolls = [];
+const PIPS = [[50], [28, 72], [28, 50, 72], [24, 30, 70, 76], [24, 30, 50, 70, 76], [24, 30, 44, 56, 70, 76]], POS = {24: [28, 28], 28: [28, 28], 30: [72, 28], 44: [28, 50], 50: [50, 50], 56: [72, 50], 70: [28, 72], 72: [72, 72], 76: [72, 72]};
+const face = n => `<svg viewBox="0 0 100 100" aria-hidden="true">${PIPS[n - 1].map(q => { const [x, y] = n === 2 || n === 3 ? [q, q] : POS[q]; return `<circle cx="${x}" cy="${y}" r="10" fill="${n === 1 ? "#ff5c73" : "#0d1230"}"/>`; }).join("")}</svg>`;
+$("dice").innerHTML = [1, 2, 3, 4, 5, 6].map(i => `<button type="button" data-d="${i}" aria-label="Augenzahl ${i}">${face(i)}</button>`).join("");
+function roll(d){ if (rolls.length < 50){ rolls.push(d); dice(); } }
+$("dice").onclick = e => { const b = e.target.closest("[data-d]"); if (b) roll(+b.dataset.d); };
+$("auto").onclick = () => { const t = setInterval(() => { if (rolls.length >= 50) return clearInterval(t); roll(1 + Bit.rand(1)[0] % 6); }, 40); };
+$("reset").onclick = () => { rolls = []; dice(); };
+function dice(){
+  const n = rolls.length, bits = n * Math.log2(6);
+  $("pg").style.width = Math.min(100, n * 2) + "%";
+  $("pgN").innerHTML = `<b>${n} von 50</b> Würfen · ${bits.toFixed(1).replace(".", ",")} Bit Zufall gesammelt`;
+  $("rolls").textContent = rolls.join("");
+  if (n < 50){ $("out").innerHTML = ""; return; }
+  // Wie bei Hardware-Wallets: SHA-256 über die Würfelfolge, die ersten 128 Bit sind die Entropie
+  const ent = Bit.sha256(Bit.utf8(rolls.join(""))).slice(0, 16), w = Bit.mnemonic(ent), bits2 = Bit.toBits(ent), cs = Bit.toBits(Bit.sha256(ent)).slice(0, 4);
+  $("out").innerHTML = `<p class="note">Aus deinen Würfen wird per SHA-256 eine Zahl mit <b>128 Bit</b>. Die wird in <b>12 Stücke à 11 Bit</b> geteilt, jedes Stück ist eine Nummer zwischen 0 und 2047 in der offiziellen Liste mit <b>2048 Wörtern</b>.</p>
+    <div class="words nogl">${w.map((x, i) => `<div class="${i === 11 ? "cs" : ""}"><small>${i + 1} · Nr. ${Bit.WORDS.indexOf(x)}</small>${x}</div>`).join("")}</div>
+    <p class="note">Das <b style="color:var(--gold)">12. Wort</b> ist besonders: Es enthält nur 7 Bit Zufall. Die letzten <b>4 Bit (${cs})</b> sind eine <b>Prüfsumme</b>, berechnet aus den anderen Wörtern. Darum ist nur jedes 16. Wort als letztes Wort gültig, und Tippfehler fallen auf.</p>`;
+  Lern.confetti && Lern.confetti();
+}
+dice();
+// 3) Münz-Test
+let coins = "";
+document.querySelectorAll("[data-c]").forEach(b => b.onclick = () => { if (coins.length >= 30) coins = ""; coins += b.dataset.c; cTest(); });
+function cTest(){
+  $("coins").textContent = coins.replace(/K/g, "🙂").replace(/Z/g, "🔢");
+  if (coins.length < 30){ $("cRes").innerHTML = `<p class="note">${coins.length} von 30</p>`; return; }
+  const runs = coins.match(/K+|Z+/g), longest = Math.max(...runs.map(r => r.length)), sw = runs.length - 1;
+  const human = longest <= 3 || sw >= 19;
+  $("cRes").innerHTML = `<div class="res ${human ? "warn" : "ok"}"><strong>${human ? "Ertappt: typisch Mensch!" : "Nicht schlecht, fast wie Zufall!"}</strong>Längste Serie: <b>${longest}</b> (echter Zufall: meist <b>5 oder mehr</b>). Wechsel: <b>${sw}</b> (echter Zufall: etwa <b>15</b>). Menschen wechseln zu oft und meiden lange Serien, weil sich das „zufälliger anfühlt“. Genau deshalb sollen sich Menschen keinen Seed ausdenken.</div>`;
+}
+cTest();
+
+const QUIZ = [["Wie viele Bit Zufall stecken in einem Seed aus 12 Wörtern?", ["12 Bit", "128 Bit", "2048 Bit", "64 Bit"], 1, "12 Wörter enthalten 128 Bit Zufall plus 4 Bit Prüfsumme. 24 Wörter enthalten 256 Bit."], ["Warum ist das letzte Wort besonders?", ["Es ist immer gleich", "Es enthält eine Prüfsumme, die aus den anderen Wörtern berechnet wird", "Es ist das Passwort", "Es kann man weglassen"], 1, "Ein Teil des letzten Wortes ist eine Prüfsumme. Darum ist nicht jedes beliebige Wort am Ende gültig und Tippfehler fallen auf."], ["Warum soll man sich keinen Seed selbst ausdenken?", ["Weil es zu lange dauert", "Weil Menschen vorhersagbar sind und Angreifer solche Wörter durchprobieren", "Weil Wallets das verbieten", "Ist kein Problem"], 1, "Menschen sind schlechte Zufallsgeneratoren. Ausgedachte Wörter und Sätze werden von Angreifern massenhaft durchprobiert."]];
+Lern.quiz($("quiz"), "entropie", QUIZ, "../"); Lern.visit("entropie"); Lern.renderNext("entropie", "../");
+})();
+</script>
+</body>
+</html>

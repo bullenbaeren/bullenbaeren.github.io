@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SHA-256 von innen · Satsland</title>
+<meta name="description" content="Profi-Vertiefung: Wie SHA-256 wirklich rechnet. Auffüllen, Bit-Werkzeuge und 64 Runden, Schritt für Schritt animiert mit echten Werten.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0b0f2a">
+<link rel="icon" href="../icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="stylesheet" href="../lern.css?v=17">
+<style>
+/* Lernwelt "SHA-256 von innen": nur seitenspezifische Teile, der Rest kommt aus lern.css */
+.idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
+.kv{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}
+.kv div{border:1px solid var(--line);border-radius:12px;padding:8px 10px;font-size:12px;color:var(--muted)} .kv b{display:block;font:700 18px var(--f-num);color:var(--ink)} .kv .g{color:var(--gold)}
+.seg{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px} .seg .btn[aria-pressed="true"]{outline:2px solid var(--gold);background:rgba(247,147,26,.15)}
+.res{margin-top:12px;padding:12px 14px;border-radius:14px;border:2px solid var(--line);font-size:15px;line-height:1.5}
+.res strong{display:block;font-size:18px} .res.ok{border-color:var(--bull)} .res.ok strong{color:var(--bull)} .res.bad{border-color:var(--bear)} .res.bad strong{color:var(--bear)} .res.warn{border-color:var(--gold)} .res.warn strong{color:var(--gold)}
+.note{margin:10px 0 0;font-size:14px;color:var(--muted);line-height:1.5} .note b{color:var(--ink)} .note a{color:var(--gold)}
+@media (max-width:620px){ .kv{grid-template-columns:1fr 1fr} }
+.inp{width:100%;font:600 16px var(--f-body);padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:#0b0f2a;color:var(--ink);margin-top:6px}
+.lbl2{display:block;font-size:13px;color:var(--muted);margin-top:12px}
+.hx{font:600 12px/1.45 var(--f-num);word-break:break-all;color:#cfd5ff}
+.warnbox{margin-top:12px;padding:10px 12px;border-radius:12px;border:2px dashed var(--bear);font-size:14px;line-height:1.5} .warnbox b{color:var(--bear)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:8px;font-size:12px;color:var(--muted)} .legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-2px}
+
+.bitgrid{display:grid;grid-template-columns:repeat(32,1fr);gap:2px;margin-top:12px}
+.bitgrid i{display:block;aspect-ratio:1;border-radius:2px;opacity:.28;transition:opacity .3s} .bitgrid i.on{opacity:1}
+.bitgrid i.m{background:var(--gold)} .bitgrid i.e{background:var(--bull)} .bitgrid i.z{background:#3a4070} .bitgrid i.l{background:#7cc4ff}
+.bitrows{margin-top:12px;display:grid;gap:6px}
+.bitrows div{display:grid;grid-template-columns:6.5em repeat(8,minmax(0,1fr)) 3.5em;gap:4px;align-items:center;font-size:13px;color:var(--muted)}
+.bitrows b{display:grid;place-items:center;height:30px;border-radius:7px;font:900 15px var(--f-num);background:rgba(255,255,255,.06);color:var(--muted);transition:background .3s,transform .3s}
+.bitrows b.one{background:rgba(247,147,26,.25);color:var(--ink)} .bitrows .res b.one{background:var(--bull);color:#04240f} .bitrows .res b{animation:pop .35s}
+.bitrows em{font:700 13px var(--f-num);font-style:normal;text-align:right;color:var(--ink)}
+@keyframes pop{from{transform:scale(.6)}to{transform:none}}
+.regs{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:6px;margin-top:12px}
+.regs div{border:2px solid var(--line);border-radius:10px;padding:6px 2px;text-align:center;transition:border-color .3s,background .3s}
+.regs div small{display:block;font:900 14px var(--f-display);color:var(--gold)} .regs div span{display:block;font:600 11px var(--f-num);word-break:break-all}
+.regs div.new{border-color:var(--bull);background:rgba(52,217,130,.12);animation:pop .35s}
+.regs div.mv span{animation:slide .35s} @keyframes slide{from{transform:translateX(-40%);opacity:.3}to{transform:none;opacity:1}}
+.ctl .row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:12px} .ctl .row input{flex:1 1 100%;order:-1}
+.rnd{font:900 16px var(--f-num);text-align:center;margin-top:8px}
+.calc{display:grid;gap:5px;margin-top:10px;font-size:13px}
+.calc div{display:grid;grid-template-columns:1fr 6.5em;gap:8px;align-items:center;padding:6px 10px;border-radius:9px;background:rgba(255,255,255,.04)}
+.calc div > b{font:700 12px var(--f-num);text-align:right} .calc div.sum{background:rgba(52,217,130,.1)} .calc div.sum2{background:rgba(247,147,26,.12)}
+.final{margin-top:12px}
+.aval{margin-top:12px} .aval svg{width:100%;height:auto;display:block}
+@media (max-width:620px){ .regs{grid-template-columns:repeat(4,minmax(0,1fr))} .bitrows div{grid-template-columns:4.8em repeat(8,minmax(0,1fr)) 2.8em;gap:3px} .bitrows b{height:26px;font-size:13px} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a class="back" href="../">← Satsland</a><a class="back" href="../lexikon/">📖 Lexikon</a></div>
+  <div>
+    <h1>SHA-256 <span class="btc">von innen</span></h1>
+    <p class="lead">In der Welt Hashing war SHA-256 eine geheimnisvolle Maschine. Jetzt schrauben wir sie auf. Drinnen gibt es nur <b>ganz einfache Bit-Tricks</b>, die aber <b>64 Mal</b> hintereinander laufen. Alle Werte hier sind echt und werden live in deinem Browser berechnet.</p>
+  </div>
+
+  <section class="card" aria-labelledby="h1s">
+    <h2 id="h1s">1 · Aus Text werden 512 Bits</h2>
+    <p class="muted" style="margin:0">Computer rechnen mit Nullen und Einsen. Jeder Buchstabe wird zu <b>8 Bits</b>. Dann wird der Text auf genau <b>512 Bits</b> aufgefüllt: erst eine <b>1</b> als Endmarke, dann Nullen und ganz am Ende die Länge des Textes.</p>
+    <label class="lbl2" for="msg">Dein Text (bis 55 Zeichen, dann passt er in einen Block)</label>
+    <input id="msg" class="inp" maxlength="55" value="Satsland" autocomplete="off" spellcheck="false">
+    <div class="bitgrid nogl" id="bg" aria-hidden="true"></div>
+    <div class="legend"><span><i style="background:var(--gold)"></i>Dein Text</span><span><i style="background:var(--bull)"></i>Die „1“ als Endmarke</span><span><i style="background:#3a4070"></i>Nullen zum Auffüllen</span><span><i style="background:#7cc4ff"></i>Länge des Textes</span></div>
+    <p class="note" id="bgN"></p>
+  </section>
+
+  <section class="card" aria-labelledby="h2s">
+    <h2 id="h2s">2 · Die Werkzeuge im Inneren</h2>
+    <p class="muted" style="margin:0">SHA-256 kennt nur ein paar einfache Bit-Tricks. Probier sie an zwei kleinen Zahlen mit 8 Bits aus. Die echte Maschine macht dasselbe mit 32 Bits auf einmal.</p>
+    <div class="seg" id="ops"><button class="btn" type="button" data-op="xor" aria-pressed="true">XOR</button><button class="btn" type="button" data-op="and">UND</button><button class="btn" type="button" data-op="not">NICHT</button><button class="btn" type="button" data-op="rot">Drehen ↻</button><button class="btn" type="button" data-op="add">Plus</button><button class="btn" type="button" id="brNew">🎲 Neue Zahlen</button></div>
+    <div class="bitrows nogl" id="br"></div>
+    <p class="note" id="brN"></p>
+  </section>
+
+  <section class="card" aria-labelledby="h3s">
+    <h2 id="h3s">3 · 64 Runden Durchmischen</h2>
+    <p class="muted" style="margin:0">Acht Kästen <b>a bis h</b> starten mit festen Werten. In jeder Runde bekommen nur <b>a</b> und <b>e</b> neue Werte, alle anderen <b>rutschen einen Kasten weiter</b>. Nach 64 Runden ist von deinem Text nichts mehr wiederzuerkennen.</p>
+    <div class="regs nogl" id="regs"></div>
+    <div class="rnd" id="rnd"></div>
+    <div class="ctl"><div class="row"><button class="btn" id="rPrev" type="button" aria-label="Runde zurück">◀</button><input type="range" id="rS" min="0" max="64" value="0" aria-label="Runde"><button class="btn" id="rNext" type="button" aria-label="Nächste Runde">▶</button><button class="btn" id="rPlay" type="button">▶▶ Abspielen</button></div></div>
+    <div class="calc nogl" id="calc"></div>
+    <div class="final" id="fin"></div>
+  </section>
+
+  <section class="card" aria-labelledby="h4s">
+    <h2 id="h4s">4 · Der Lawinen-Effekt, Runde für Runde</h2>
+    <p class="muted" style="margin:0">Wir rechnen deinen Text zweimal: einmal normal, einmal mit <b>nur einem gekippten Bit</b>. Die Kurve zeigt, wie viele der 256 Bits in den Kästen sich nach jeder Runde unterscheiden.</p>
+    <div class="aval" id="aval"></div>
+    <p class="note" id="avalN"></p>
+  </section>
+
+  <section class="card" aria-labelledby="hMs">
+    <h2 id="hMs">Das solltest du dir merken</h2>
+    <div class="learn">
+      <div><b>Erst auffüllen</b><span>Jeder Text wird auf Blöcke von <b>512 Bits</b> gebracht: Text, eine 1, Nullen, Länge.</span></div>
+      <div><b>Nur einfache Tricks</b><span>XOR, UND, NICHT, Drehen und Plus. Mehr steckt nicht drin, aber <b>64 Runden</b> davon.</span></div>
+      <div><b>Zwei neue Werte pro Runde</b><span>Nur <b>a</b> und <b>e</b> werden neu berechnet, der Rest rutscht weiter.</span></div>
+      <div><b>Lawine nach wenigen Runden</b><span>Schon nach <b>weniger als 10 Runden</b> ist die Hälfte aller Bits anders. Der Rest ist Sicherheitspuffer.</span></div>
+    </div>
+    <details class="qz"><summary>Teste dich: 3 Fragen</summary><div id="quiz"></div></details>
+  </section>
+
+  <section class="card next" id="next" aria-label="Weiter"></section>
+  <details class="foot"><summary>Quellen</summary><p><a href="https://csrc.nist.gov/pubs/fips/180-4/upd1/final">NIST FIPS 180-4 (Secure Hash Standard)</a> · Alle Werte werden live im Browser berechnet.</p></details>
+  <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
+</div>
+
+<script src="../bitlib.js?v=17"></script>
+<script src="../lern.js?v=17"></script>
+<script>
+/* =====================================================================
+   SHA-256 VON INNEN – Lernwelt von Satsland
+   ===================================================================== */
+(() => {
+const $ = id => document.getElementById(id);
+const hx = x => (x >>> 0).toString(16).padStart(8, "0");
+const NAMES = "abcdefgh";
+let T, step = 0, timer = 0;
+// 1) Auffüllen sichtbar machen
+function grid(){
+  const m = Bit.utf8($("msg").value), p = T.padded, L = m.length * 8;
+  $("bg").innerHTML = Array.from({length: 512}, (_, i) => {
+    const bit = p[i >> 3] >> (7 - (i & 7)) & 1, c = i < L ? "m" : i === L ? "e" : i >= 448 ? "l" : "z";
+    return `<i class="${c}${bit ? " on" : ""}"></i>`; }).join("");
+  $("bgN").innerHTML = `Dein Text: <b>${m.length} Zeichen = ${L} Bits</b>. Dazu die Endmarke, <b>${448 - L - 1} Nullen</b> und 64 Bits für die Länge (${L}). Zusammen genau <b>512 Bits</b>. Helle Kästchen sind Einsen.`;
+}
+// 2) Bit-Werkzeuge an 8-Bit-Zahlen
+let X = 0b10110010, Y = 0b01101011, op = "xor";
+const b8 = v => Array.from({length: 8}, (_, i) => v >> (7 - i) & 1);
+const row = (name, v, cls = "") => `<div class="${cls}"><span>${name}</span>${b8(v).map(b => `<b class="${b ? "one" : ""}">${b}</b>`).join("")}<em>${v}</em></div>`;
+const OPS = {
+  xor: [(x, y) => x ^ y, "<b>XOR</b>: Sind die Bits <b>verschieden</b>, kommt 1 heraus. Sind sie gleich, 0. Der wichtigste Misch-Trick."],
+  and: [(x, y) => x & y, "<b>UND</b>: Nur wenn <b>beide</b> Bits 1 sind, kommt 1 heraus. Damit baut SHA-256 die „Wähler“-Funktion: Wo e eine 1 hat, nimm das Bit von f, sonst von g."],
+  not: [x => ~x & 255, "<b>NICHT</b>: Jedes Bit wird <b>umgedreht</b>, aus 0 wird 1 und aus 1 wird 0."],
+  rot: [x => (x >>> 3 | x << 5) & 255, "<b>Drehen</b>: Alle Bits rücken 3 Plätze nach rechts. Was rechts rausfällt, kommt links wieder rein. Nichts geht verloren, aber alles verschiebt sich."],
+  add: [(x, y) => (x + y) & 255, "<b>Plus</b>: Normales Addieren. Was über 8 Bits hinausgeht, fällt weg (bei SHA-256: über 32 Bits). Das macht die Rechnung unumkehrbar schwer."]
+};
+function bits(){
+  const [f, t] = OPS[op], one = op === "not" || op === "rot";
+  $("br").innerHTML = row("Zahl A", X) + (one ? "" : row("Zahl B", Y)) + row("Ergebnis", f(X, Y), "res");
+  $("brN").innerHTML = t;
+}
+$("ops").addEventListener("click", e => { const b = e.target.closest("[data-op]"); if (!b) return; op = b.dataset.op; $("ops").querySelectorAll("[data-op]").forEach(x => x.setAttribute("aria-pressed", x === b)); bits(); });
+$("brNew").onclick = () => { X = Math.random() * 256 | 0; Y = Math.random() * 256 | 0; bits(); };
+// 3) Runden
+function regs(){
+  const B = T.blocks[0], v = step ? B.R[step - 1].v : B.before;
+  $("regs").innerHTML = v.map((x, i) => `<div class="${step && (i === 0 || i === 4) ? "new" : step ? "mv" : ""}"><small>${NAMES[i]}</small><span>${hx(x)}</span></div>`).join("");
+  $("rS").value = step;
+  $("rnd").textContent = step ? `Runde ${step} von 64` : "Start: feste Werte (Nachkommastellen der Wurzeln der ersten 8 Primzahlen)";
+  if (!step){ $("calc").innerHTML = `<div><span>Drück ▶, um die erste Runde zu rechnen.</span><b></b></div>`; $("fin").innerHTML = ""; return; }
+  const r = B.R[step - 1], i = step - 1;
+  $("calc").innerHTML = [
+    ["<b>Σ1</b>: e dreimal gedreht und mit XOR gemischt", r.S1],
+    ["<b>Wähler</b>: wo e eine 1 hat, Bit von f, sonst von g", r.ch],
+    [`<b>K${i}</b>: feste Rundenzahl (aus Kubikwurzeln von Primzahlen)`, KC[i]],
+    [`<b>W${i}</b>: ${i < 16 ? "ein Stück deines Textes" : "aus früheren Stücken gemischt"}`, B.W[i]],
+    ["<b>T1</b> = h + Σ1 + Wähler + K + W", r.t1, "sum"],
+    ["<b>Σ0</b>: a dreimal gedreht und gemischt", r.S0],
+    ["<b>Mehrheit</b>: welches Bit kommt in a, b, c öfter vor?", r.maj],
+    ["<b>T2</b> = Σ0 + Mehrheit", r.t2, "sum"],
+    ["Neues <b>e</b> = d + T1 · neues <b>a</b> = T1 + T2", null, "sum2"]
+  ].map(([t, v, c]) => `<div class="${c || ""}"><span>${t}</span><b>${v == null ? "" : hx(v)}</b></div>`).join("");
+  if (step === 64){
+    const out = Bit.hex(T.out);
+    $("fin").innerHTML = `<div class="res ok"><strong>Fertig! Startwerte + Ergebnis = Hash</strong><span class="hx nogl">${out}</span><br><span class="muted" style="font-size:13px">Zum Vergleich mit der normalen SHA-256-Funktion: ${out === Lern.sha256($("msg").value) ? "✓ identisch" : "✗ abweichend"}</span></div>`;
+    Lern.confetti && Lern.confetti();
+  } else $("fin").innerHTML = "";
+}
+const go = n => { step = Math.max(0, Math.min(64, n)); regs(); };
+$("rPrev").onclick = () => go(step - 1); $("rNext").onclick = () => go(step + 1); $("rS").oninput = e => go(+e.target.value);
+$("rPlay").onclick = () => { clearInterval(timer); if (step >= 64) step = 0; $("rPlay").disabled = true; timer = setInterval(() => { go(step + 1); if (step >= 64){ clearInterval(timer); $("rPlay").disabled = false; } }, 160); };
+// 4) Lawine
+function aval(){
+  const m = Bit.utf8($("msg").value || " "), m2 = m.slice(); m2[m2.length - 1] ^= 1;
+  const A = Bit.sha256(m, true).blocks[0].R, B = Bit.sha256(m2, true).blocks[0].R;
+  const pc = x => { let c = 0; while (x){ x &= x - 1; c++; } return c; };
+  const d = A.map((r, i) => r.v.reduce((n, x, k) => n + pc((x ^ B[i].v[k]) >>> 0), 0));
+  const W = 640, H = 300, px = i => 44 + i * (W - 60) / 63, py = v => H - 30 - v / 256 * (H - 50);
+  const half = d.findIndex(v => v >= 100) + 1;
+  $("aval").innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Unterschiedliche Bits pro Runde"><line x1="30" x2="${W - 10}" y1="${py(128)}" y2="${py(128)}" stroke="#34d982" stroke-dasharray="6 6"/><text x="${W - 12}" y="${py(128) - 10}" fill="#34d982" font-size="22" font-weight="700" text-anchor="end">128 = perfekt gemischt</text><polyline fill="none" stroke="#ffc94d" stroke-width="5" points="${d.map((v, i) => px(i) + "," + py(v)).join(" ")}"/>${d.map((v, i) => i % 8 === 7 ? `<text x="${px(i)}" y="${H - 4}" fill="#8890b8" font-size="20" text-anchor="middle">${i + 1}</text>` : "").join("")}<text x="0" y="${py(256) + 16}" fill="#8890b8" font-size="18">256</text><text x="8" y="${py(0) + 6}" fill="#8890b8" font-size="18">0</text></svg>`;
+  $("avalN").innerHTML = `Am Anfang ist fast alles gleich. Schon nach <b>${half} Runden</b> ist rund die Hälfte der Bits anders, danach bleibt es zufällig um <b>128</b> herum. Die restlichen Runden sind <b>Sicherheitspuffer</b>.`;
+}
+function all(){ T = Bit.sha256(Bit.utf8($("msg").value), true); grid(); go(step); aval(); }
+const KC = [0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2];
+$("msg").addEventListener("input", all);
+bits(); all();
+
+const QUIZ = [["Warum wird der Text auf 512 Bits aufgefüllt?", ["Damit er schöner aussieht", "Weil SHA-256 immer in festen Blöcken von 512 Bits rechnet", "Um ihn zu verschlüsseln", "Damit er kürzer wird"], 1, "SHA-256 verarbeitet Daten in Blöcken von genau 512 Bits. Endmarke, Nullen und Länge sorgen dafür, dass jeder Text eindeutig passt."], ["Wie viele Kästen bekommen pro Runde einen neuen Wert?", ["Alle acht", "Keiner", "Zwei: a und e", "Nur h"], 2, "Nur a und e werden neu berechnet. Die anderen rutschen einen Kasten weiter. Nach 64 Runden ist alles gründlich vermischt."], ["Was macht XOR?", ["Gibt 1, wenn die Bits verschieden sind", "Addiert zwei Zahlen", "Löscht alle Bits", "Dreht die Reihenfolge um"], 0, "XOR liefert 1 bei verschiedenen Bits und 0 bei gleichen. Es ist der wichtigste Misch-Trick in SHA-256."]];
+Lern.quiz($("quiz"), "sha256", QUIZ, "../"); Lern.visit("sha256"); Lern.renderNext("sha256", "../");
+})();
+</script>
+</body>
+</html>

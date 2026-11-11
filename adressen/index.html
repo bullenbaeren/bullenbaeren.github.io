@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Adress-Zoo · Satsland</title>
+<meta name="description" content="Profi-Vertiefung: Adressformate 1…, 3…, bc1q…, bc1p…, ihre Bausteine RIPEMD-160, Base58 und Bech32, und warum Tippfehler per Prüfsumme auffallen.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0b0f2a">
+<link rel="icon" href="../icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="stylesheet" href="../lern.css?v=17">
+<style>
+/* Lernwelt "Adress-Zoo": nur seitenspezifische Teile, der Rest kommt aus lern.css */
+.idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
+.kv{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}
+.kv div{border:1px solid var(--line);border-radius:12px;padding:8px 10px;font-size:12px;color:var(--muted)} .kv b{display:block;font:700 18px var(--f-num);color:var(--ink)} .kv .g{color:var(--gold)}
+.seg{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px} .seg .btn[aria-pressed="true"]{outline:2px solid var(--gold);background:rgba(247,147,26,.15)}
+.res{margin-top:12px;padding:12px 14px;border-radius:14px;border:2px solid var(--line);font-size:15px;line-height:1.5}
+.res strong{display:block;font-size:18px} .res.ok{border-color:var(--bull)} .res.ok strong{color:var(--bull)} .res.bad{border-color:var(--bear)} .res.bad strong{color:var(--bear)} .res.warn{border-color:var(--gold)} .res.warn strong{color:var(--gold)}
+.note{margin:10px 0 0;font-size:14px;color:var(--muted);line-height:1.5} .note b{color:var(--ink)} .note a{color:var(--gold)}
+@media (max-width:620px){ .kv{grid-template-columns:1fr 1fr} }
+.inp{width:100%;font:600 16px var(--f-body);padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:#0b0f2a;color:var(--ink);margin-top:6px}
+.lbl2{display:block;font-size:13px;color:var(--muted);margin-top:12px}
+.hx{font:600 12px/1.45 var(--f-num);word-break:break-all;color:#cfd5ff}
+.warnbox{margin-top:12px;padding:10px 12px;border-radius:12px;border:2px dashed var(--bear);font-size:14px;line-height:1.5} .warnbox b{color:var(--bear)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:8px;font-size:12px;color:var(--muted)} .legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-2px}
+
+.zoo{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:12px}
+.zoo div{border:2px solid var(--line);border-radius:14px;padding:10px;font-size:13px;line-height:1.45}
+.zoo b{display:block;font:900 20px var(--f-num);color:var(--gold)} .zoo em{display:block;font-style:normal;font-weight:700;color:var(--ink);margin-bottom:4px}
+.zoo i{display:block;height:8px;border-radius:4px;background:var(--bear);margin-top:6px}
+.det{margin-top:12px} .chars{font:700 15px var(--f-num);word-break:break-all;line-height:1.7;margin-top:8px} .chars span.x{background:var(--bear);color:#fff;border-radius:3px} .chars span.f{background:var(--bull);color:#04240f;border-radius:3px}
+.pipe{display:grid;gap:6px;margin-top:12px}
+.pipe div{display:grid;grid-template-columns:10em 1fr 4em;gap:10px;align-items:center;padding:8px 10px;border-radius:10px;background:rgba(255,255,255,.04);font-size:13px}
+.pipe div em{font:700 12px var(--f-num);font-style:normal;color:var(--muted);text-align:right} .pipe div.out{background:rgba(247,147,26,.12);border:1px solid var(--gold)}
+.abc{font:700 16px var(--f-num);letter-spacing:3px;word-break:break-all;line-height:1.7;margin-top:8px} .abc s{color:var(--bear)}
+@media (max-width:720px){ .zoo{grid-template-columns:1fr 1fr} .pipe div{grid-template-columns:1fr;gap:2px} .pipe div em{text-align:left} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a class="back" href="../">← Satsland</a><a class="back" href="../lexikon/">📖 Lexikon</a></div>
+  <div>
+    <h1>Willkommen im <span class="btc">Adress-Zoo</span></h1>
+    <p class="lead">Bitcoin-Adressen sehen je nach Alter ganz unterschiedlich aus. Alle funktionieren noch, aber neuere sind <b>günstiger</b> und <b>sicherer gegen Tippfehler</b>. Hier lernst du jede Art kennen und baust selbst eine Adresse zusammen.</p>
+  </div>
+
+  <section class="card" aria-labelledby="h1s">
+    <h2 id="h1s">1 · Die vier Arten</h2>
+    <div class="zoo">
+      <div><b>1…</b><em>Legacy (P2PKH), 2009</em>Die Ur-Adresse. Funktioniert überall, aber am teuersten.<i style="width:100%"></i><small class="muted">148 vByte pro Eingang</small></div>
+      <div><b>3…</b><em>Script (P2SH), 2012</em>Für Mehrfach-Unterschriften und als Verpackung für SegWit.<i style="width:61%"></i><small class="muted">91 vByte</small></div>
+      <div><b>bc1q…</b><em>SegWit (Bech32), 2017</em>Günstiger und mit starker Tippfehler-Erkennung.<i style="width:46%"></i><small class="muted">68 vByte</small></div>
+      <div><b>bc1p…</b><em>Taproot (Bech32m), 2021</em>Am günstigsten, mit Schnorr, und Gruppen sehen aus wie Einzelne.<i style="width:39%"></i><small class="muted">57,5 vByte</small></div>
+    </div>
+    <p class="note">Der rote Balken zeigt, wie viel Platz das Ausgeben kostet. Weniger Platz = <b>weniger Gebühr</b>. Alle Arten können sich gegenseitig Geld schicken.</p>
+  </section>
+
+  <section class="card" aria-labelledby="h2s">
+    <h2 id="h2s">2 · Der Adress-Detektor</h2>
+    <p class="muted" style="margin:0">Füg eine Adresse ein oder nimm ein Beispiel. Dann bau einen Tippfehler ein und sieh, wie die <b>Prüfsumme</b> ihn erwischt.</p>
+    <input id="ad" class="inp nogl" spellcheck="false" autocomplete="off" aria-label="Bitcoin-Adresse">
+    <div class="seg" id="ex"></div>
+    <div class="row" style="display:flex;gap:8px;margin-top:8px"><button class="btn" type="button" id="typo">😬 Tippfehler einbauen</button></div>
+    <div class="det" id="det"></div>
+  </section>
+
+  <section class="card" aria-labelledby="h3s">
+    <h2 id="h3s">3 · Bau dir eine Adresse: die Bausteine</h2>
+    <p class="muted" style="margin:0">Aus einem öffentlichen Schlüssel wird so eine Adresse. Jede Zeile ist echt gerechnet.</p>
+    <button class="btn" type="button" id="bNew" style="margin-top:10px">🎲 Neuer Schlüssel</button>
+    <div class="pipe nogl" id="pipe"></div>
+    <h3 style="margin:16px 0 4px">Base58: 58 Zeichen ohne Verwechsler</h3>
+    <div class="abc nogl">123456789ABCDEFGH<s>I</s>JKLMN<s>O</s>PQRSTUVWXYZabcdefghijk<s>l</s>mnopqrstuvwxyz <s>0</s></div>
+    <p class="note">Weg sind <b>0, O, I und l</b>, weil man sie leicht verwechselt. Die Prüfsumme am Ende (4 Byte) verpasst einen Fehler nur mit Wahrscheinlichkeit <b>1 zu 4,3 Milliarden</b>.</p>
+    <h3 style="margin:16px 0 4px">Bech32: nur Kleinbuchstaben und Ziffern</h3>
+    <div class="abc nogl">qpzry9x8gf2tvdw0s3jn54khce6mua7l</div>
+    <p class="note">32 Zeichen ohne <b>1, b, i, o</b>. Die 6 Zeichen Prüfsumme sind so gebaut, dass bis zu <b>4 Tippfehler garantiert</b> auffallen. Oft lässt sich sogar sagen, <b>wo</b> der Fehler steckt.</p>
+  </section>
+
+  <section class="card" aria-labelledby="hMs">
+    <h2 id="hMs">Das solltest du dir merken</h2>
+    <div class="learn">
+      <div><b>Vier Adressarten</b><span><b>1…</b> Legacy, <b>3…</b> Script, <b>bc1q…</b> SegWit, <b>bc1p…</b> Taproot. Alle können untereinander senden.</span></div>
+      <div><b>Neuer = günstiger</b><span>bc1-Adressen brauchen weniger Platz im Block und kosten darum <b>weniger Gebühr</b>.</span></div>
+      <div><b>Prüfsumme</b><span>Jede Adresse enthält eine Prüfsumme. Ein Tippfehler macht die Adresse <b>ungültig</b>, statt Geld ins Nichts zu schicken.</span></div>
+      <div><b>Die Bausteine</b><span>Schlüssel → <b>SHA-256</b> → <b>RIPEMD-160</b> → Prüfsumme → <b>Base58</b> oder <b>Bech32</b>.</span></div>
+    </div>
+    <details class="qz"><summary>Teste dich: 3 Fragen</summary><div id="quiz"></div></details>
+  </section>
+
+  <section class="card next" id="next" aria-label="Weiter"></section>
+  <details class="foot"><summary>Quellen</summary><p><a href="https://github.com/bitcoin/bips/blob/master/bip-0173.mediawiki">BIP173 (Bech32)</a> · <a href="https://github.com/bitcoin/bips/blob/master/bip-0350.mediawiki">BIP350 (Bech32m)</a> · <a href="https://en.bitcoin.it/wiki/Base58Check_encoding">Bitcoin Wiki: Base58Check</a> · Beispiel-Adressen: offizielle Testvektoren aus BIP44/49/84/86.</p></details>
+  <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
+</div>
+
+<script src="../bitlib.js?v=17"></script>
+<script src="../lern.js?v=17"></script>
+<script>
+/* =====================================================================
+   ADRESS-ZOO – Lernwelt von Satsland
+   ===================================================================== */
+(() => {
+const $ = id => document.getElementById(id);
+const EX = [["1…", "1LqBGSKuX5yYUonjxT5qGfpUsXKYYWeabA"], ["3…", "37VucYSaXLCAsxYyAPfbSi9eh4iEcbShgf"], ["bc1q…", "bc1qcr8te4kr609gcawutmrza0j4xv80jy8z306fyu"], ["bc1p…", "bc1p5cyxnuxmeuwuvkwfem96lqzszd02n6xdcjrs20cac6yqjjwudpxqkedrcr"]];
+$("ex").innerHTML = EX.map(([n, a]) => `<button class="btn" type="button" data-a="${a}">${n}</button>`).join("");
+$("ex").onclick = e => { const b = e.target.closest("[data-a]"); if (b){ $("ad").value = b.dataset.a; detect(); } };
+let typoAt = -1;
+function chars(a, bad, fix){ return [...a].map((c, i) => `<span class="${i === bad ? "x" : i === fix ? "f" : ""}">${c}</span>`).join(""); }
+function detect(){
+  const a = $("ad").value.trim(); let r;
+  if (!a){ $("det").innerHTML = ""; return; }
+  if (/^bc1/i.test(a)){
+    const d = Bit.segwitDecode(a);
+    if (d.ok) r = `<div class="res ok"><strong>✓ Gültige ${d.ver === 0 ? (d.prog.length === 20 ? "SegWit-Adresse (bc1q…, P2WPKH)" : "SegWit-Script-Adresse (P2WSH)") : d.ver === 1 ? "Taproot-Adresse (bc1p…)" : "SegWit-Adresse Version " + d.ver}</strong>Kodierung: <b>${d.ver ? "Bech32m" : "Bech32"}</b> · Inhalt: <b>${d.prog.length} Byte</b> ${d.ver === 1 ? "(direkt der Taproot-Schlüssel)" : "(Fingerabdruck des Schlüssels)"}<div class="hx nogl">${Bit.hex(d.prog)}</div></div>`;
+    else { const f = d.err === "Prüfsumme passt nicht" ? Bit.segwitFix(a) : null;
+      r = `<div class="res bad"><strong>✗ Ungültig: ${d.err}</strong>${f ? `Bech32 kann sogar sagen, wo: Zeichen Nr. <b>${f.i + 1}</b> müsste <b>„${f.c}“</b> sein.<div class="chars nogl">${chars(a, f.i)}</div>Korrigiert: <div class="chars nogl">${chars(f.fixed, -1, f.i)}</div>` : "Eine Wallet würde diese Adresse ablehnen. Kein Geld geht verloren."}</div>`; }
+  } else if (/^[13]/.test(a)){
+    const d = Bit.b58decode(a);
+    if (d.ok) r = `<div class="res ok"><strong>✓ Gültige ${a[0] === "1" ? "Legacy-Adresse (P2PKH)" : "Script-Adresse (P2SH)"}</strong>Kodierung: <b>Base58Check</b> · Versions-Byte <b>${d.body[0]}</b> · 20 Byte Fingerabdruck + Prüfsumme <b>${d.sum}</b></div>`;
+    else r = `<div class="res bad"><strong>✗ Ungültig: ${d.bad ? `das Zeichen „${d.bad}“ gibt es in Base58 nicht` : "Prüfsumme passt nicht"}</strong>${d.want ? `In der Adresse steht <b>${d.sum}</b>, berechnet wäre <b>${d.want}</b>. ` : ""}Base58 erkennt den Fehler, kann aber nicht sagen, wo er steckt.${typoAt >= 0 ? `<div class="chars nogl">${chars(a, typoAt)}</div>` : ""}</div>`;
+  } else r = `<div class="res warn"><strong>Das sieht nicht nach einer Bitcoin-Adresse aus.</strong>Bitcoin-Adressen beginnen mit 1, 3 oder bc1.</div>`;
+  $("det").innerHTML = r;
+}
+$("ad").addEventListener("input", () => { typoAt = -1; detect(); });
+$("typo").onclick = () => {
+  let a = $("ad").value.trim(); if (!a){ a = EX[2][1]; }
+  const bech = /^bc1/i.test(a), abc = bech ? Bit.CH : Bit.B58, start = bech ? 4 : 1, i = start + Bit.rand(1)[0] % (a.length - start);
+  let c; do { c = abc[Bit.rand(1)[0] % abc.length]; } while (c === a[i]);
+  typoAt = i; $("ad").value = a.slice(0, i) + c + a.slice(i + 1); detect();
+};
+$("ad").value = EX[2][1]; detect();
+// Bausteine
+function build(){
+  const k = Bit.mod(Bit.big(Bit.rand(32)), Bit.N), pub = Bit.pubC(Bit.mul(k)), s = Bit.sha256(pub), h = Bit.ripemd160(s);
+  const v = Bit.cat(new Uint8Array([0]), h), cs = Bit.sha256d(v).slice(0, 4);
+  const R = [["Öffentlicher Schlüssel", Bit.hex(pub), "33 B"], ["→ SHA-256", Bit.hex(s), "32 B"], ["→ RIPEMD-160", Bit.hex(h), "20 B"],
+    ["Version 00 davor", "<b style='color:var(--gold)'>00</b>" + Bit.hex(h), "21 B"], ["Prüfsumme: 2× SHA-256, erste 4 Byte", Bit.hex(cs), "4 B"],
+    ["→ Base58 = alte Adresse", Bit.p2pkh(pub), "", "out"], ["oder → Bech32 = neue Adresse", Bit.p2wpkh(pub), "", "out"]];
+  $("pipe").innerHTML = R.map(([t, v, n, c]) => `<div class="${c || ""}"><span>${t}</span><span class="hx">${v}</span><em>${n}</em></div>`).join("");
+}
+$("bNew").onclick = build; build();
+
+const QUIZ = [["Welche Adresse ist die modernste?", ["1…", "3…", "bc1q…", "bc1p…"], 3, "bc1p… sind Taproot-Adressen von 2021. Sie nutzen Schnorr-Signaturen und sind am günstigsten."], ["Was passiert bei einem Tippfehler in einer Adresse?", ["Das Geld geht an eine fremde Person", "Die Prüfsumme passt nicht, die Wallet lehnt die Adresse ab", "Bitcoin korrigiert ihn automatisch beim Senden", "Nichts, Tippfehler sind egal"], 1, "Die eingebaute Prüfsumme macht die Adresse ungültig. Die Wallet verweigert das Senden."], ["Warum fehlen in Base58 die Zeichen 0, O, I und l?", ["Aus Versehen", "Weil man sie leicht verwechselt", "Weil sie Unglück bringen", "Weil sie zu breit sind"], 1, "Diese Zeichen sehen sich zu ähnlich. Ohne sie passieren beim Abschreiben weniger Fehler."]];
+Lern.quiz($("quiz"), "adressen", QUIZ, "../"); Lern.visit("adressen"); Lern.renderNext("adressen", "../");
+})();
+</script>
+</body>
+</html>

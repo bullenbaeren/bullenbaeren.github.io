@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kurven-Labor · Satsland</title>
+<meta name="description" content="Profi-Vertiefung: Elliptische Kurven (secp256k1) anschaulich. Punkte addieren, „mal G“ als Einbahnstraße und der echte Bitcoin-Schlüssel.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0b0f2a">
+<link rel="icon" href="../icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="stylesheet" href="../lern.css?v=17">
+<style>
+/* Lernwelt "Kurven-Labor": nur seitenspezifische Teile, der Rest kommt aus lern.css */
+.idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
+.kv{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}
+.kv div{border:1px solid var(--line);border-radius:12px;padding:8px 10px;font-size:12px;color:var(--muted)} .kv b{display:block;font:700 18px var(--f-num);color:var(--ink)} .kv .g{color:var(--gold)}
+.seg{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px} .seg .btn[aria-pressed="true"]{outline:2px solid var(--gold);background:rgba(247,147,26,.15)}
+.res{margin-top:12px;padding:12px 14px;border-radius:14px;border:2px solid var(--line);font-size:15px;line-height:1.5}
+.res strong{display:block;font-size:18px} .res.ok{border-color:var(--bull)} .res.ok strong{color:var(--bull)} .res.bad{border-color:var(--bear)} .res.bad strong{color:var(--bear)} .res.warn{border-color:var(--gold)} .res.warn strong{color:var(--gold)}
+.note{margin:10px 0 0;font-size:14px;color:var(--muted);line-height:1.5} .note b{color:var(--ink)} .note a{color:var(--gold)}
+@media (max-width:620px){ .kv{grid-template-columns:1fr 1fr} }
+.inp{width:100%;font:600 16px var(--f-body);padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:#0b0f2a;color:var(--ink);margin-top:6px}
+.lbl2{display:block;font-size:13px;color:var(--muted);margin-top:12px}
+.hx{font:600 12px/1.45 var(--f-num);word-break:break-all;color:#cfd5ff}
+.warnbox{margin-top:12px;padding:10px 12px;border-radius:12px;border:2px dashed var(--bear);font-size:14px;line-height:1.5} .warnbox b{color:var(--bear)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:8px;font-size:12px;color:var(--muted)} .legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-2px}
+
+.plot{margin-top:12px;border-radius:14px;background:#0b0f2a;border:1px solid var(--line);overflow:hidden} .plot svg{width:100%;height:auto;display:block}
+.ctl .row{display:flex;align-items:center;gap:10px;margin-top:8px} .ctl .row input{flex:1} .ctl .row b{font:900 16px var(--f-num);min-width:4ch;text-align:right}
+.steps3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px;font-size:13px}
+.steps3 div{border:1px solid var(--line);border-radius:12px;padding:8px 10px;line-height:1.45} .steps3 b{display:block;font-family:var(--f-display)}
+.kv b.hx{font:600 13px/1.45 var(--f-num)}
+.guess{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap} .guess input{width:7em}
+@media (max-width:620px){ .steps3{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a class="back" href="../">← Satsland</a><a class="back" href="../lexikon/">📖 Lexikon</a></div>
+  <div>
+    <h1>Die Kurve hinter jedem <span class="btc">Schlüssel</span></h1>
+    <p class="lead">Bitcoin-Schlüssel beruhen auf einer Kurve mit der Formel <b>y² = x³ + 7</b>. Auf ihr kann man Punkte „addieren“. Das klingt seltsam, hat aber eine geniale Eigenschaft: <b>vorwärts leicht, rückwärts unmöglich</b>.</p>
+  </div>
+
+  <section class="card" aria-labelledby="h1s">
+    <h2 id="h1s">1 · Punkte addieren auf der Kurve</h2>
+    <p class="muted" style="margin:0">So geht „Plus“ auf einer Kurve: Zieh eine Gerade durch zwei Punkte. Sie trifft die Kurve an <b>genau einer dritten Stelle</b>. Spiegle diese Stelle an der Mittellinie, fertig ist die Summe.</p>
+    <div class="plot nogl" id="real"></div>
+    <div class="ctl"><label class="lbl2" for="qx">Punkt Q verschieben</label><div class="row"><input id="qx" type="range" min="-180" max="300" value="150"><button class="btn" type="button" id="dbl">P + P (Tangente)</button></div></div>
+    <div class="steps3"><div><b style="color:#34d982">① Gerade</b>durch P und Q ziehen</div><div><b style="color:#ff5c73">② Dritter Treffer</b>wo die Gerade die Kurve schneidet</div><div><b style="color:#ffc94d">③ Spiegeln</b>an der Mittellinie: das ist P + Q</div></div>
+  </section>
+
+  <section class="card" aria-labelledby="h2s">
+    <h2 id="h2s">2 · „Mal G“: die Einbahnstraße</h2>
+    <p class="muted" style="margin:0">Bitcoin rechnet nicht mit Kommazahlen, sondern mit ganzen Zahlen „modulo“ einer Primzahl. Dann wird aus der Kurve eine <b>Punktwolke</b>. Hier eine Mini-Version mit nur <b>79 Punkten</b>. Starte bei <b>G</b> und addiere immer wieder G dazu: 2G, 3G, 4G …</p>
+    <div class="plot nogl" id="toy"></div>
+    <div class="ctl"><label class="lbl2" for="kk">k (dein „privater Schlüssel“)</label><div class="row"><input id="kk" type="range" min="1" max="78" value="7"><b id="kV" class="num">7</b></div></div>
+    <p class="note" id="toyN"></p>
+    <h3 style="margin:16px 0 4px">Rätsel: Welches k führt zum roten Punkt?</h3>
+    <p class="muted" style="margin:0;font-size:14px">Die Sprünge sind völlig chaotisch. Es gibt keinen Trick, nur Durchprobieren.</p>
+    <div class="guess"><input class="inp" id="gIn" type="number" min="1" max="78" aria-label="Dein Tipp für k"><button class="btn" type="button" id="gGo">Prüfen</button><button class="btn" type="button" id="gNew">Neues Rätsel</button></div>
+    <p class="note" id="gN"></p>
+  </section>
+
+  <section class="card" aria-labelledby="h3s">
+    <h2 id="h3s">3 · Jetzt in echt: secp256k1</h2>
+    <p class="muted" style="margin:0">Die echte Bitcoin-Kurve heißt <b>secp256k1</b>. Statt 79 Punkten hat sie rund <b>10<sup>77</sup></b>, fast so viele wie Atome im Universum. Dein privater Schlüssel ist ein k, dein öffentlicher Schlüssel der Punkt <b>k × G</b>.</p>
+    <div class="row" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"><button class="btn" type="button" id="kR">🎲 Zufälliger Schlüssel</button><button class="btn" type="button" id="k1">k = 1</button><button class="btn" type="button" id="k2">k = 2</button></div>
+    <div class="kv" id="sk" style="grid-template-columns:1fr"></div>
+    <p class="note" id="skN"></p>
+  </section>
+
+  <section class="card" aria-labelledby="hMs">
+    <h2 id="hMs">Das solltest du dir merken</h2>
+    <div class="learn">
+      <div><b>Plus auf der Kurve</b><span>Gerade durch zwei Punkte, dritter Treffer, <b>spiegeln</b>. Das Ergebnis liegt wieder auf der Kurve.</span></div>
+      <div><b>Öffentlicher Schlüssel</b><span>Ist einfach <b>k × G</b>: der Startpunkt G, k-mal zu sich selbst addiert.</span></div>
+      <div><b>Einbahnstraße</b><span>Aus k den Punkt zu berechnen dauert Millisekunden. Aus dem Punkt k zu finden, dauert <b>länger als das Universum alt ist</b>.</span></div>
+      <div><b>secp256k1</b><span>Der Name der Bitcoin-Kurve: <b>y² = x³ + 7</b> über einer riesigen Primzahl.</span></div>
+    </div>
+    <details class="qz"><summary>Teste dich: 3 Fragen</summary><div id="quiz"></div></details>
+  </section>
+
+  <section class="card next" id="next" aria-label="Weiter"></section>
+  <details class="foot"><summary>Quellen</summary><p><a href="https://www.secg.org/sec2-v2.pdf">SEC 2: secp256k1-Parameter</a> · <a href="https://en.bitcoin.it/wiki/Secp256k1">Bitcoin Wiki: secp256k1</a></p></details>
+  <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
+</div>
+
+<script src="../bitlib.js?v=17"></script>
+<script src="../lern.js?v=17"></script>
+<script>
+/* =====================================================================
+   KURVEN-LABOR – Lernwelt von Satsland
+   ===================================================================== */
+(() => {
+const $ = id => document.getElementById(id);
+// 1) Reelle Kurve y² = x³ + 7
+const W = 600, H = 400, X0 = -2.3, X1 = 3.2, Y = 7.5, sx = x => (x - X0) / (X1 - X0) * W, sy = y => H / 2 - y / Y * (H / 2 - 10);
+const fy = x => Math.sqrt(Math.max(0, x ** 3 + 7));
+const Px = -1.4, P = [Px, fy(Px)];
+let dbl = false;
+function curvePath(sign){ let d = ""; for (let x = -1.913; x <= X1; x += 0.02) d += (d ? "L" : "M") + sx(x).toFixed(1) + "," + sy(sign * fy(x)).toFixed(1); return d; }
+const CURVE = `<path d="${curvePath(1)}" fill="none" stroke="#7cc4ff" stroke-width="5"/><path d="${curvePath(-1)}" fill="none" stroke="#7cc4ff" stroke-width="5"/><line x1="0" x2="${W}" y1="${H / 2}" y2="${H / 2}" stroke="#3a4070" stroke-dasharray="4 6"/>`;
+const dot = (p, c, l) => `<circle cx="${sx(p[0])}" cy="${sy(p[1])}" r="12" fill="${c}" stroke="#0d1230" stroke-width="4"/><text x="${sx(p[0]) + 16}" y="${sy(p[1]) - 14}" fill="${c}" font-size="28" font-weight="900" paint-order="stroke" stroke="#0b0f2a" stroke-width="6">${l}</text>`;
+function real(){
+  const qx = +$("qx").value / 100, Q = dbl ? P : [qx, fy(qx)];
+  const l = dbl ? 3 * P[0] ** 2 / (2 * P[1]) : (Q[1] - P[1]) / (Q[0] - P[0]);
+  const x3 = l * l - P[0] - Q[0], y3 = l * (P[0] - x3) - P[1], R = [x3, -y3], S = [x3, y3];
+  const lx = [X0, X1], line = lx.map(x => [x, P[1] + l * (x - P[0])]);
+  const ok = isFinite(x3) && Math.abs(y3) < Y * 1.4;
+  $("real").innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Punktaddition auf der Kurve">${CURVE}
+    ${ok ? `<line x1="${sx(line[0][0])}" y1="${sy(line[0][1])}" x2="${sx(line[1][0])}" y2="${sy(line[1][1])}" stroke="#34d982" stroke-width="4"/>
+    <line x1="${sx(x3)}" y1="${sy(R[1])}" x2="${sx(x3)}" y2="${sy(S[1])}" stroke="#ffc94d" stroke-width="4" stroke-dasharray="10 8"/>
+    ${dot(R, "#ff5c73", "")}${dot(S, "#ffc94d", dbl ? "2P" : "P+Q")}` : ""}
+    ${dot(P, "#34d982", "P")}${dbl ? "" : dot(Q, "#34d982", "Q")}</svg>`;
+  $("dbl").setAttribute("aria-pressed", dbl);
+}
+$("qx").oninput = () => { dbl = false; real(); }; $("dbl").onclick = () => { dbl = !dbl; real(); };
+real();
+// 2) Mini-Kurve modulo 67 (79 Punkte, jeder Punkt erzeugt alle)
+const p = 67, md = a => ((a % p) + p) % p, iv = a => { for (let i = 1; i < p; i++) if (md(a * i) === 1) return i; };
+function add(A, B){ if (!A) return B; if (!B) return A; if (A[0] === B[0] && md(A[1] + B[1]) === 0) return null;
+  const l = A[0] === B[0] ? md(3 * A[0] * A[0] * iv(2 * A[1])) : md((B[1] - A[1]) * iv(md(B[0] - A[0]))); const x = md(l * l - A[0] - B[0]); return [x, md(l * (A[0] - x) - A[1])]; }
+const PTS = []; for (let x = 0; x < p; x++) for (let y = 0; y < p; y++) if (md(y * y - x ** 3 - 7) === 0) PTS.push([x, y]);
+const Gp = [2, 22], MUL = [null]; { let R = null; for (let k = 1; k < 79; k++){ R = add(R, Gp); MUL.push(R); } }
+const TS = 330 / p, tx = x => 15 + x * TS, ty = y => 345 - y * TS;
+let target = 0;
+function toy(){
+  const k = +$("kk").value; $("kV").textContent = k;
+  const path = MUL.slice(1, k + 1).map(q => tx(q[0]) + "," + ty(q[1])).join(" ");
+  const T = target ? MUL[target] : null;
+  $("toy").innerHTML = `<svg viewBox="0 0 360 360" role="img" aria-label="Punktwolke der Mini-Kurve">${PTS.map(q => `<circle cx="${tx(q[0])}" cy="${ty(q[1])}" r="2.6" fill="#3a4a8a"/>`).join("")}
+    <polyline points="${path}" fill="none" stroke="#ffc94d" stroke-width="1.2" opacity=".55"/>
+    ${T ? `<circle cx="${tx(T[0])}" cy="${ty(T[1])}" r="8" fill="none" stroke="#ff5c73" stroke-width="3"/>` : ""}
+    <circle cx="${tx(Gp[0])}" cy="${ty(Gp[1])}" r="6" fill="#34d982" stroke="#0d1230" stroke-width="2"/><text x="${tx(Gp[0]) + 8}" y="${ty(Gp[1]) - 6}" fill="#34d982" font-size="13" font-weight="900">G</text>
+    <circle cx="${tx(MUL[k][0])}" cy="${ty(MUL[k][1])}" r="6" fill="#ffc94d" stroke="#0d1230" stroke-width="2"/><text x="${tx(MUL[k][0]) + 8}" y="${ty(MUL[k][1]) + 16}" fill="#ffc94d" font-size="13" font-weight="900">${k}G</text></svg>`;
+  $("toyN").innerHTML = `<b>${k} × G</b> = Punkt (${MUL[k][0]}, ${MUL[k][1]}). Die gelbe Spur zeigt alle Sprünge: kein Muster, keine Abkürzung. Vorwärts brauchst du nur ${Math.ceil(Math.log2(k + 1)) + 1} Rechenschritte (Verdoppeln und Addieren), rückwärts nur Raten.`;
+}
+$("kk").oninput = toy;
+let tries = 0;
+function newTarget(){ target = 2 + Bit.rand(1)[0] % 76; tries = 0; $("gN").textContent = "Der rote Kreis ist k × G. Finde k zwischen 1 und 78."; $("gIn").value = ""; toy(); }
+$("gNew").onclick = newTarget;
+$("gGo").onclick = () => { const g = +$("gIn").value; if (!g) return; tries++; $("kk").value = g; toy();
+  $("gN").innerHTML = g === target ? `🎉 <b>Richtig nach ${tries} Versuchen!</b> Bei 79 Punkten geht das noch. Bei Bitcoin müsstest du bis zu <b>10<sup>77</sup></b> Mal raten.` : `Versuch ${tries}: Leider nicht. Die gelbe Spur zeigt, wo ${g} × G landet.`;
+  if (g === target){ Lern.confetti && Lern.confetti(); } };
+newTarget();
+// 3) Echte Kurve
+function real256(k){
+  const Q = Bit.mul(k), h = n => n.toString(16).padStart(64, "0");
+  $("sk").innerHTML = `<div>Privater Schlüssel k (geheim!)<b class="hx nogl">${h(k)}</b></div><div>Öffentlicher Schlüssel: x-Wert<b class="hx nogl g">${h(Q.x)}</b></div><div>Öffentlicher Schlüssel: y-Wert<b class="hx nogl">${h(Q.y)}</b></div><div>Kurz-Form (33 Byte, wie in Bitcoin)<b class="hx nogl">${Bit.hex(Bit.pubC(Q))}</b></div>`;
+  $("skN").innerHTML = k === 1n ? "k = 1: Das ist der Startpunkt <b>G</b> selbst, für alle Bitcoin-Nutzer derselbe." : k === 2n ? "k = 2: Das ist G + G. Obwohl k nur 1 größer ist, sieht der Punkt völlig anders aus." : "Dein Browser hat gerade <b>rund 256 Verdopplungen und Additionen</b> gerechnet. Den Weg zurück schafft kein Computer der Welt.";
+}
+$("kR").onclick = () => real256(Bit.mod(Bit.big(Bit.rand(32)), Bit.N) || 1n);
+$("k1").onclick = () => real256(1n); $("k2").onclick = () => real256(2n);
+$("kR").onclick();
+
+const QUIZ = [["Wie addiert man zwei Punkte auf der Kurve?", ["Die Koordinaten zusammenzählen", "Gerade durch beide Punkte, dritten Treffer suchen, spiegeln", "Den Mittelpunkt nehmen", "Gar nicht, das geht nicht"], 1, "Die Gerade durch zwei Punkte trifft die Kurve an einer dritten Stelle. Gespiegelt ergibt das die Summe."], ["Was ist dein öffentlicher Schlüssel?", ["Dein privater Schlüssel rückwärts", "Der Punkt k × G", "Dein Seed", "Eine zufällige Zahl"], 1, "Der öffentliche Schlüssel ist der Startpunkt G, k-mal addiert. k ist dein privater Schlüssel."], ["Warum kann niemand aus dem öffentlichen Schlüssel k berechnen?", ["Weil es verboten ist", "Weil die Sprünge chaotisch sind und man bei 10^77 Möglichkeiten nur raten kann", "Weil der Schlüssel versteckt ist", "Weil Computer zu langsam für Plus sind"], 1, "Es gibt keine bekannte Abkürzung. Man müsste raten, und dafür reicht nicht die Zeit des Universums."]];
+Lern.quiz($("quiz"), "kurven", QUIZ, "../"); Lern.visit("kurven"); Lern.renderNext("kurven", "../");
+})();
+</script>
+</body>
+</html>

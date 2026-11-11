@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Quanten-Check · Satsland</title>
+<meta name="description" content="Profi-Vertiefung: Quantencomputer und Bitcoin. Was Shor und Grover bedrohen, welche Coins gefährdet wären, wie weit die Technik ist und was Bitcoin vorbereitet.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0b0f2a">
+<link rel="icon" href="../icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="stylesheet" href="../lern.css?v=17">
+<style>
+/* Lernwelt "Quanten-Check": nur seitenspezifische Teile, der Rest kommt aus lern.css */
+.idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
+.kv{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}
+.kv div{border:1px solid var(--line);border-radius:12px;padding:8px 10px;font-size:12px;color:var(--muted)} .kv b{display:block;font:700 18px var(--f-num);color:var(--ink)} .kv .g{color:var(--gold)}
+.seg{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px} .seg .btn[aria-pressed="true"]{outline:2px solid var(--gold);background:rgba(247,147,26,.15)}
+.res{margin-top:12px;padding:12px 14px;border-radius:14px;border:2px solid var(--line);font-size:15px;line-height:1.5}
+.res strong{display:block;font-size:18px} .res.ok{border-color:var(--bull)} .res.ok strong{color:var(--bull)} .res.bad{border-color:var(--bear)} .res.bad strong{color:var(--bear)} .res.warn{border-color:var(--gold)} .res.warn strong{color:var(--gold)}
+.note{margin:10px 0 0;font-size:14px;color:var(--muted);line-height:1.5} .note b{color:var(--ink)} .note a{color:var(--gold)}
+@media (max-width:620px){ .kv{grid-template-columns:1fr 1fr} }
+.inp{width:100%;font:600 16px var(--f-body);padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:#0b0f2a;color:var(--ink);margin-top:6px}
+.lbl2{display:block;font-size:13px;color:var(--muted);margin-top:12px}
+.hx{font:600 12px/1.45 var(--f-num);word-break:break-all;color:#cfd5ff}
+.warnbox{margin-top:12px;padding:10px 12px;border-radius:12px;border:2px dashed var(--bear);font-size:14px;line-height:1.5} .warnbox b{color:var(--bear)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:8px;font-size:12px;color:var(--muted)} .legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-2px}
+
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.two div{border:2px solid var(--line);border-radius:14px;padding:10px 12px;font-size:14px;line-height:1.5} .two div > b:first-child{display:block;font-family:var(--f-display);font-size:16px}
+.two .r{border-color:rgba(255,92,115,.55)} .two .g{border-color:rgba(52,217,130,.55)}
+.qs{margin-top:12px} .qs label{display:block;font-size:14px;margin-top:8px} .qs select{width:100%;margin-top:4px;font:600 15px var(--f-body);padding:9px 10px;border-radius:10px;border:1px solid var(--line);background:#0b0f2a;color:var(--ink)}
+.meter{margin-top:12px;display:grid;gap:8px}
+.meter div{display:grid;grid-template-columns:11em 1fr 6.5em;gap:8px;align-items:center;font-size:13px}
+.meter i{display:block;height:18px;border-radius:9px;background:rgba(255,255,255,.07);overflow:hidden} .meter u{display:block;height:100%;width:0;border-radius:9px;transition:width 1.2s}
+.meter em{font:700 12px var(--f-num);font-style:normal;text-align:right}
+.plan{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px}
+.plan div{border:1px solid var(--line);border-radius:14px;padding:10px 12px;font-size:14px;line-height:1.5} .plan div > b:first-child{display:block}
+@media (max-width:620px){ .two,.plan{grid-template-columns:1fr} .meter div{grid-template-columns:7em 1fr 5em} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a class="back" href="../">← Satsland</a><a class="back" href="../lexikon/">📖 Lexikon</a></div>
+  <div>
+    <h1>Quantencomputer: <span class="btc">Panik</span> oder Popcorn?</h1>
+    <p class="lead">Quantencomputer rechnen nach anderen Regeln als normale Computer. Für bestimmte Aufgaben wären sie unvorstellbar schnell, darunter leider das Knacken von Signaturen. Schauen wir nüchtern hin: <b>Was wäre gefährdet, wie weit ist die Technik, und was kann Bitcoin tun?</b></p>
+  </div>
+
+  <section class="card" aria-labelledby="h1s">
+    <h2 id="h1s">1 · Zwei Quanten-Tricks, zwei Gefahren</h2>
+    <div class="two">
+      <div class="r"><b>⚠️ Shor-Algorithmus</b>Könnte aus einem <b>öffentlichen Schlüssel den privaten</b> berechnen, also die Einbahnstraße der Kurve umkehren. Das betrifft <b>Signaturen</b> (ECDSA und Schnorr). Das ist die echte Gefahr.</div>
+      <div class="g"><b>😌 Grover-Algorithmus</b>Beschleunigt das Durchprobieren nur „quadratisch“. SHA-256 hätte dann noch <b>128 Bit</b> Sicherheit, immer noch unknackbar. <b>Hashes und Mining</b> bleiben sicher.</div>
+    </div>
+  </section>
+
+  <section class="card" aria-labelledby="h2s">
+    <h2 id="h2s">2 · Wäre dein Schlüssel sichtbar?</h2>
+    <p class="muted" style="margin:0">Ein Quantenangreifer braucht deinen <b>öffentlichen Schlüssel</b>. Bei vielen Adressen ist der hinter einem Hash versteckt, bis du das erste Mal davon ausgibst.</p>
+    <div class="qs">
+      <label for="qT">Adresstyp</label><select id="qT"><option value="pk">Sehr alt (P2PK, Satoshi-Zeit)</option><option value="h" selected>1…, 3… oder bc1q…</option><option value="tr">bc1p… (Taproot)</option></select>
+      <label for="qS">Schon einmal von dieser Adresse ausgegeben?</label><select id="qS"><option value="0">Nein, nur empfangen</option><option value="1">Ja, und es liegt noch etwas drauf</option></select>
+    </div>
+    <div id="qR"></div>
+  </section>
+
+  <section class="card" aria-labelledby="h3s">
+    <h2 id="h3s">3 · Wie weit ist die Technik? <span class="mode">Stand 2026</span></h2>
+    <div class="meter" id="meter"></div>
+    <p class="note">Logarithmische Skala: Jeder Strich ist zehnmal mehr. Eine Studie von Google Quantum AI (März 2026) schätzt, dass weniger als <b>500.000 physische Qubits</b> reichen könnten, etwa 20-mal weniger als frühere Schätzungen. Heutige Chips haben <b>einige hundert bis gut tausend</b>, und dazu noch viel zu fehleranfällige. Das ist eine Lücke von mehreren Größenordnungen, aber sie schrumpft.</p>
+  </section>
+
+  <section class="card" aria-labelledby="h4s">
+    <h2 id="h4s">4 · Was Bitcoin tun kann</h2>
+    <div class="plan">
+      <div><b>🧪 Neue Adressen</b>Vorschläge wie <b>BIP-360</b> (2026) bereiten quantensichere Adresstypen vor. Ein Upgrade per Soft Fork, wie bei SegWit und Taproot.</div>
+      <div><b>⏳ Zeit für den Umzug</b>Bestehende Coins müssen auf neue Adressen umziehen. Das dauert Jahre, darum beginnt die Arbeit jetzt, lange bevor es ernst wird.</div>
+      <div><b>🙋 Was du tun kannst</b>Adressen <b>nicht wiederverwenden</b>, eine Wallet nutzen, die Updates bekommt. Und keine Panik: Banken, Messenger und das Internet hätten dasselbe Problem.</div>
+    </div>
+    <p class="note">Laut der Google-Studie liegen rund <b>6,9 Millionen BTC</b> auf Adressen mit sichtbarem Schlüssel, davon etwa <b>1,7 Millionen</b> auf uralten P2PK-Adressen, auch Satoshis Coins. Was mit diesen Coins passieren soll, wird in der Community heftig diskutiert.</p>
+  </section>
+
+  <section class="card" aria-labelledby="hMs">
+    <h2 id="hMs">Das solltest du dir merken</h2>
+    <div class="learn">
+      <div><b>Shor bedroht Signaturen</b><span>Ein großer Quantencomputer könnte aus dem <b>öffentlichen</b> den <b>privaten</b> Schlüssel berechnen.</span></div>
+      <div><b>Hashes bleiben sicher</b><span>Grover halbiert nur die Bit-Stärke: SHA-256 hätte noch <b>128 Bit</b>. Mining bleibt sicher.</span></div>
+      <div><b>Sichtbare Schlüssel</b><span>Gefährdet wären vor allem Adressen, deren Schlüssel schon <b>sichtbar</b> ist: alte P2PK, wiederverwendete Adressen, Taproot.</span></div>
+      <div><b>Noch weit entfernt</b><span>Nötig wären geschätzt <b>Hunderttausende</b> stabile Qubits. Bitcoin kann sich per Upgrade wappnen.</span></div>
+    </div>
+    <details class="qz"><summary>Teste dich: 3 Fragen</summary><div id="quiz"></div></details>
+  </section>
+
+  <section class="card next" id="next" aria-label="Weiter"></section>
+  <details class="foot"><summary>Quellen</summary><p><a href="https://thequantuminsider.com/2026/07/29/growing-quantum-security-challenge-bitcoin-digital-assets/">The Quantum Insider (Juli 2026)</a> · <a href="https://coin360.com/news/bitcoin-moves-toward-post-quantum-defense-with-bip-360-as-coin-shares-says-only-10-230-btc-face-near-term-risk">Coin360: BIP-360</a> · <a href="https://magazine.cointelegraph.com/?p=57600">Cointelegraph: Upgrade-Dauer</a></p></details>
+  <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
+</div>
+
+<script src="../bitlib.js?v=17"></script>
+<script src="../lern.js?v=17"></script>
+<script>
+/* =====================================================================
+   QUANTEN-CHECK – Lernwelt von Satsland
+   ===================================================================== */
+(() => {
+const $ = id => document.getElementById(id);
+const QR = {
+  pk: ["bad", "Schlüssel offen sichtbar", "Bei den ganz alten P2PK-Adressen steht der öffentliche Schlüssel direkt in der Blockchain. Ein großer Quantencomputer könnte sie als Erstes angreifen."],
+  h0: ["ok", "Gut versteckt", "Bisher kennt die Welt nur den <b>Hash</b> deines Schlüssels. Daraus kann auch ein Quantencomputer nichts machen. Erst beim Ausgeben wird der Schlüssel kurz sichtbar."],
+  h1: ["warn", "Schlüssel sichtbar", "Beim Ausgeben hast du deinen öffentlichen Schlüssel gezeigt. Der Rest auf dieser Adresse wäre angreifbar. Darum: <b>Adressen nicht wiederverwenden</b>, gute Wallets machen das automatisch."],
+  tr: ["warn", "Schlüssel in der Adresse", "Bei Taproot steckt der (verschobene) öffentliche Schlüssel direkt in der Adresse. Heute ist das sicher und bringt viele Vorteile, gegen Quantencomputer wäre er aber sichtbar."]
+};
+function q(){ const t = $("qT").value, k = t === "h" ? "h" + $("qS").value : t, [c, h, x] = QR[k];
+  $("qR").innerHTML = `<div class="res ${c}"><strong>${c === "ok" ? "🛡️ " : "👀 "}${h}</strong>${x}</div>`; }
+["qT", "qS"].forEach(i => $(i).onchange = q); q();
+const M = [["Größter Chip heute (ca.)", 1100, "#7cc4ff", "~1.100"], ["Schätzung März 2026", 500000, "#ff5c73", "< 500.000"], ["Frühere Schätzungen", 10000000, "#9aa2b8", "~10 Mio."]];
+const lg = v => Math.log10(v) / 7 * 100;
+$("meter").innerHTML = M.map(([n, v, c, t]) => `<div><span>${n}</span><i><u style="background:${c}" data-w="${lg(v)}"></u></i><em>${t} Qubits</em></div>`).join("");
+setTimeout(() => document.querySelectorAll("#meter u").forEach(u => u.style.width = u.dataset.w + "%"), 300);
+
+const QUIZ = [["Was könnte ein großer Quantencomputer bei Bitcoin angreifen?", ["Das Mining", "Die Signaturen: aus dem öffentlichen den privaten Schlüssel berechnen", "Die Anzahl von 21 Millionen", "Das Internet"], 1, "Der Shor-Algorithmus bedroht Signaturen. Hashes und Mining bleiben dank 128 Bit Rest-Sicherheit sicher."], ["Welche Coins wären zuerst gefährdet?", ["Alle gleich", "Coins auf Adressen, deren öffentlicher Schlüssel schon sichtbar ist", "Nur neue Coins", "Keine"], 1, "Wo der öffentliche Schlüssel sichtbar ist, etwa bei alten P2PK-Adressen oder wiederverwendeten Adressen, könnte ein Angreifer ansetzen."], ["Was ist eine sinnvolle Vorsorge für dich?", ["Alles sofort verkaufen", "Adressen nicht wiederverwenden und Wallet-Updates nutzen", "Den Seed online speichern", "Nichts, es ist unmöglich"], 1, "Keine Adressen wiederverwenden und eine gepflegte Wallet nutzen. Kommen quantensichere Adressen, kann man umziehen."]];
+Lern.quiz($("quiz"), "quanten", QUIZ, "../"); Lern.visit("quanten"); Lern.renderNext("quanten", "../");
+})();
+</script>
+</body>
+</html>

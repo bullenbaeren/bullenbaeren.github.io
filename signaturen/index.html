@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Signatur-Duell · Satsland</title>
+<meta name="description" content="Profi-Vertiefung: ECDSA gegen Schnorr. Live unterschreiben, Größen vergleichen und sehen, wie Schnorr mehrere Schlüssel zu einem vereint.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0b0f2a">
+<link rel="icon" href="../icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="stylesheet" href="../lern.css?v=17">
+<style>
+/* Lernwelt "Signatur-Duell": nur seitenspezifische Teile, der Rest kommt aus lern.css */
+.idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
+.kv{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}
+.kv div{border:1px solid var(--line);border-radius:12px;padding:8px 10px;font-size:12px;color:var(--muted)} .kv b{display:block;font:700 18px var(--f-num);color:var(--ink)} .kv .g{color:var(--gold)}
+.seg{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px} .seg .btn[aria-pressed="true"]{outline:2px solid var(--gold);background:rgba(247,147,26,.15)}
+.res{margin-top:12px;padding:12px 14px;border-radius:14px;border:2px solid var(--line);font-size:15px;line-height:1.5}
+.res strong{display:block;font-size:18px} .res.ok{border-color:var(--bull)} .res.ok strong{color:var(--bull)} .res.bad{border-color:var(--bear)} .res.bad strong{color:var(--bear)} .res.warn{border-color:var(--gold)} .res.warn strong{color:var(--gold)}
+.note{margin:10px 0 0;font-size:14px;color:var(--muted);line-height:1.5} .note b{color:var(--ink)} .note a{color:var(--gold)}
+@media (max-width:620px){ .kv{grid-template-columns:1fr 1fr} }
+.inp{width:100%;font:600 16px var(--f-body);padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:#0b0f2a;color:var(--ink);margin-top:6px}
+.lbl2{display:block;font-size:13px;color:var(--muted);margin-top:12px}
+.hx{font:600 12px/1.45 var(--f-num);word-break:break-all;color:#cfd5ff}
+.warnbox{margin-top:12px;padding:10px 12px;border-radius:12px;border:2px dashed var(--bear);font-size:14px;line-height:1.5} .warnbox b{color:var(--bear)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:8px;font-size:12px;color:var(--muted)} .legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-2px}
+
+.duel{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}
+.duel > div{border:2px solid var(--line);border-radius:14px;padding:10px 12px}
+.duel h3{margin:0 0 6px;font-size:17px} .duel .sz{font:900 22px var(--f-num)} .duel .ok{color:var(--bull);font-weight:900} .duel .no{color:var(--bear);font-weight:900}
+.tbl{width:100%;border-collapse:collapse;margin-top:12px;font-size:14px} .tbl th,.tbl td{padding:8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top} .tbl th{color:var(--muted);font-size:12px} .tbl td b{color:var(--gold)}
+.keys{display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) 2em minmax(0,1.3fr);gap:8px;align-items:center;margin-top:12px}
+.keys > div{border:1px solid var(--line);border-radius:12px;padding:8px;text-align:center;font-size:13px} .keys > div b{display:block;font-size:22px}
+.keys .sum{border:2px solid var(--gold);background:rgba(247,147,26,.1)} .keys .eq{text-align:center;font:900 22px var(--f-display);border:0}
+.formula{margin-top:10px;padding:10px 12px;border-radius:12px;background:#0b0f2a;border:1px solid var(--line);font:700 14px var(--f-num);line-height:1.7}
+@media (max-width:620px){ .duel{grid-template-columns:1fr} .keys{grid-template-columns:repeat(3,minmax(0,1fr))} .keys .eq{display:none} .keys .sum{grid-column:1/-1} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a class="back" href="../">← Satsland</a><a class="back" href="../lexikon/">📖 Lexikon</a></div>
+  <div>
+    <h1>ECDSA gegen <span class="btc">Schnorr</span></h1>
+    <p class="lead">Bitcoin kennt zwei Arten zu unterschreiben. <b>ECDSA</b> ist seit 2009 dabei, <b>Schnorr</b> kam 2021 mit dem Taproot-Upgrade. Beide nutzen dieselbe Kurve, aber Schnorr ist kleiner, eleganter und kann einen Trick, den ECDSA nicht kann.</p>
+  </div>
+
+  <section class="card" aria-labelledby="h1s">
+    <h2 id="h1s">1 · Live-Duell: Beide unterschreiben dieselbe Nachricht</h2>
+    <label class="lbl2" for="sm">Nachricht</label>
+    <input id="sm" class="inp" value="Zahle 0,01 BTC an Anna" autocomplete="off">
+    <div class="row" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"><button class="btn" type="button" id="sGo">✍️ Unterschreiben</button><button class="btn" type="button" id="sBad">😈 Nachricht nachträglich ändern</button></div>
+    <div class="duel" id="duel"></div>
+  </section>
+
+  <section class="card" aria-labelledby="h2s">
+    <h2 id="h2s">2 · Der Vergleich</h2>
+    <div style="overflow-x:auto"><table class="tbl">
+      <tr><th></th><th>ECDSA</th><th>Schnorr</th></tr>
+      <tr><td>Seit</td><td>2009 (Start)</td><td><b>2021</b> (Taproot)</td></tr>
+      <tr><td>Größe</td><td>70–72 Byte</td><td><b>64 Byte</b>, immer gleich</td></tr>
+      <tr><td>Mathe</td><td>mit Teilen durch k, kompliziert</td><td><b>nur Plus und Mal</b>, „linear“</td></tr>
+      <tr><td>Schlüssel bündeln</td><td>nein</td><td><b>ja</b>, viele Schlüssel sehen aus wie einer</td></tr>
+      <tr><td>Viele auf einmal prüfen</td><td>einzeln</td><td><b>gebündelt schneller</b></td></tr>
+      <tr><td>Sicherheitsbeweis</td><td>schwieriger</td><td><b>einfach und sauber</b></td></tr>
+    </table></div>
+    <p class="note">Warum nicht von Anfang an Schnorr? Das Verfahren war bis <b>2008 patentiert</b>, und es gab keinen fertigen Standard. Satoshi nahm das bewährte ECDSA.</p>
+  </section>
+
+  <section class="card" aria-labelledby="h3s">
+    <h2 id="h3s">3 · Der Schnorr-Trick: Schlüssel zusammenrechnen</h2>
+    <p class="muted" style="margin:0">Weil Schnorr „linear“ ist, kann man öffentliche Schlüssel einfach <b>addieren</b>. Drei Personen bekommen so einen gemeinsamen Schlüssel. Unterschreiben geht nur, wenn <b>alle drei</b> mitmachen. Nach außen sieht das aus wie eine ganz normale Einzel-Unterschrift: <b>günstiger und privater</b>.</p>
+    <div class="keys nogl" id="keys"></div>
+    <div class="formula" id="form"></div>
+    <p class="note">In echt nutzt man dafür das Verfahren <b>MuSig2</b>. Es rechnet noch Schutzfaktoren ein, damit niemand die anderen austricksen kann. Das Prinzip bleibt: viele Schlüssel, eine Unterschrift.</p>
+  </section>
+
+  <section class="card" aria-labelledby="hMs">
+    <h2 id="hMs">Das solltest du dir merken</h2>
+    <div class="learn">
+      <div><b>Zwei Verfahren</b><span><b>ECDSA</b> seit 2009, <b>Schnorr</b> seit Taproot 2021. Gleiche Kurve, andere Rechnung.</span></div>
+      <div><b>Schnorr ist kleiner</b><span>Immer <b>64 Byte</b> statt 70 bis 72. Spart Platz im Block und damit Gebühren.</span></div>
+      <div><b>Schlüssel bündeln</b><span>Bei Schnorr lassen sich Schlüssel <b>addieren</b>. Eine Gruppe unterschreibt wie eine Person.</span></div>
+      <div><b>Ändern unmöglich</b><span>Wird die Nachricht nach dem Unterschreiben geändert, schlagen <b>beide</b> Prüfungen fehl.</span></div>
+    </div>
+    <details class="qz"><summary>Teste dich: 3 Fragen</summary><div id="quiz"></div></details>
+  </section>
+
+  <section class="card next" id="next" aria-label="Weiter"></section>
+  <details class="foot"><summary>Quellen</summary><p><a href="https://github.com/bitcoin/bips/blob/master/bip-0340.mediawiki">BIP340 (Schnorr)</a> · <a href="https://github.com/bitcoin/bips/blob/master/bip-0327.mediawiki">BIP327 (MuSig2)</a> · <a href="https://en.wikipedia.org/wiki/Schnorr_signature">Wikipedia: Schnorr-Signatur</a></p></details>
+  <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
+</div>
+
+<script src="../bitlib.js?v=17"></script>
+<script src="../lern.js?v=17"></script>
+<script>
+/* =====================================================================
+   SIGNATUR-DUELL – Lernwelt von Satsland
+   ===================================================================== */
+(() => {
+const $ = id => document.getElementById(id);
+let key = Bit.mod(Bit.big(Bit.rand(32)), Bit.N), msg = "", sigE, sigS, tampered = false;
+function sign(){
+  msg = $("sm").value; tampered = false;
+  const z = Bit.sha256(Bit.utf8(msg));
+  sigE = Bit.ecdsaSign(key, Bit.big(z)); sigS = Bit.schnorrSign(key, z);
+  show();
+}
+function show(){
+  const m = tampered ? msg.replace(/\d+,\d+|Anna/, x => /Anna/.test(x) ? "Mallory" : "9,99") : msg;
+  const z = Bit.sha256(Bit.utf8(m)), Q = Bit.mul(key), der = Bit.der(sigE);
+  const okE = Bit.ecdsaVerify(Q, Bit.big(z), sigE), okS = Bit.schnorrVerify(Bit.b32(Q.x), z, sigS);
+  const box = (t, sig, n, ok, extra) => `<div><h3>${t}</h3><div class="sz">${n} Byte</div><p class="hx nogl" style="margin:6px 0">${Bit.hex(sig)}</p><p style="margin:0">${ok ? '<span class="ok">✓ Unterschrift gültig</span>' : '<span class="no">✗ Unterschrift passt nicht!</span>'}</p><p class="muted" style="font-size:12px;margin:6px 0 0">${extra}</p></div>`;
+  $("duel").innerHTML = (tampered ? `<p class="note" style="grid-column:1/-1">Geprüft wird jetzt: „<b>${m}</b>“</p>` : "") +
+    box("ECDSA", der, der.length, okE, "Format DER: zwei Zahlen r und s mit Verpackung. Länge schwankt.") +
+    box("Schnorr", sigS, 64, okS, "Ein Punkt R (32 Byte) und eine Zahl s (32 Byte). Immer genau 64.");
+  if (!tampered) Lern.say && Lern.say("Beide gültig! Jetzt ändere mal die Nachricht …", 3000);
+}
+$("sGo").onclick = sign; $("sBad").onclick = () => { if (!sigS) sign(); tampered = true; show(); };
+sign();
+// Schlüssel zusammenrechnen
+const P3 = ["🙋‍♀️ Anna", "🙋 Ben", "🧑 Cem"].map(n => [n, Bit.mod(Bit.big(Bit.rand(32)), Bit.N)]);
+const sum = P3.reduce((A, [, k]) => Bit.add(A, Bit.mul(k)), null), short = x => x.toString(16).slice(0, 8) + "…";
+$("keys").innerHTML = P3.map(([n, k]) => `<div><b>${n.split(" ")[0]}</b>${n.split(" ")[1]}<br><span class="hx">${short(Bit.mul(k).x)}</span></div>`).join("") +
+  `<div class="eq">=</div><div class="sum"><b>🔑</b>Gemeinsamer Schlüssel<br><span class="hx">${short(sum.x)}</span><br><span class="hx" style="font-size:10px">${Bit.p2tr(sum)}</span></div>`;
+$("form").innerHTML = `Schnorr: <span style="color:var(--gold)">s = k + e · d</span> → prüfen: s·G = R + e·P<br>Drei Personen: s₁ + s₂ + s₃ passt zu P₁ + P₂ + P₃. <span style="color:var(--bull)">Plus bleibt Plus.</span><br>ECDSA: s = (z + r · d) ÷ k → das Teilen verhindert so einfaches Zusammenzählen.`;
+
+const QUIZ = [["Wann kam die Schnorr-Signatur zu Bitcoin?", ["2009 beim Start", "2017 mit SegWit", "2021 mit Taproot", "Noch gar nicht"], 2, "Schnorr-Signaturen wurden 2021 mit dem Taproot-Upgrade aktiviert."], ["Was kann Schnorr, was ECDSA nicht kann?", ["Ohne Schlüssel unterschreiben", "Mehrere Schlüssel zu einem zusammenrechnen", "Nachrichten verschlüsseln", "Bitcoin erzeugen"], 1, "Weil Schnorr linear ist, lassen sich Schlüssel und Unterschriften addieren. Eine Gruppe sieht aus wie eine Person."], ["Was passiert, wenn jemand die Nachricht nach dem Unterschreiben ändert?", ["Nichts", "Nur ECDSA merkt es", "Beide Prüfungen schlagen fehl", "Die Unterschrift passt sich an"], 2, "Die Unterschrift gilt nur für genau diese Nachricht. Jede Änderung macht sie ungültig, bei beiden Verfahren."]];
+Lern.quiz($("quiz"), "signaturen", QUIZ, "../"); Lern.visit("signaturen"); Lern.renderNext("signaturen", "../");
+})();
+</script>
+</body>
+</html>

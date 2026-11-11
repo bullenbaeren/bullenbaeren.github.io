@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#0b0f2a">
 <link rel="icon" href="../icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-<link rel="stylesheet" href="../lern.css?v=16">
+<link rel="stylesheet" href="../lern.css?v=17">
 <style>
 /* Lexikon: Suche, Buchstaben-Leiste, aufklappbare Einträge */
 .search{width:100%;box-sizing:border-box;padding:12px 14px;border-radius:14px;border:2px solid var(--line);background:#0b0f2a;color:var(--ink);font:16px var(--f-body)}
@@ -27,7 +27,7 @@
 </head>
 <body>
 <div class="wrap">
-  <div class="top"><a class="back" href="../">← Satsland</a><a class="back" href="../spiel/">Zum Spiel</a></div>
+  <div class="top"><a class="back" href="../">← Satsland</a><a class="back" href="../lexikon/">📖 Lexikon</a></div>
   <div>
     <h1>Bitcoin-<span class="btc">Lexikon</span></h1>
     <p class="lead">Alle wichtigen Begriffe, einfach erklärt. Tipp: In jeder Welt sind diese Wörter <b style="border-bottom:2px dotted var(--gold)">gepunktet unterstrichen</b>. Antippen zeigt die Erklärung.</p>
@@ -39,13 +39,13 @@
   </section>
   <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
 </div>
-<script src="../lern.js?v=16"></script>
+<script src="../lern.js?v=17"></script>
 <script>
 /* Lexikon: alle Begriffe aus Lern.GLOSSAR, alphabetisch, mit Suche */
 (() => {
 const $ = id => document.getElementById(id);
 const G = [...Lern.GLOSSAR].sort((a, b) => a[0].localeCompare(b[0], "de")), letter = t => t[0].toUpperCase().replace(/[0-9]/, "#");
-const TITLE = Object.fromEntries(Lern.PATH.map(p => [p[0], p[1]]));
+const TITLE = Object.fromEntries(Object.entries(Lern.TITLES).map(([k, v]) => [k, v[0]]));
 function draw(q = ""){
   const ql = q.toLowerCase(), byName = G.filter(g => g[0].toLowerCase().includes(ql));   // erst im Begriff suchen, sonst in den Erklärungen
   const f = !q ? G : byName.length ? byName : G.filter(g => g[2].toLowerCase().includes(ql)), have = new Set(f.map(g => letter(g[0])));
