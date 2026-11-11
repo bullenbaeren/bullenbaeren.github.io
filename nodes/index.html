@@ -9,9 +9,12 @@
 <meta name="theme-color" content="#0b0f2a">
 <link rel="icon" href="../icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-<link rel="stylesheet" href="../lern.css?v=12">
+<link rel="stylesheet" href="../lern.css?v=13">
 <style>
 /* Lernwelt "Nodes": nur seitenspezifische Teile, der Rest kommt aus lern.css */
+.dev{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:4px}
+.dev div{border:1px solid var(--line);border-radius:14px;padding:10px 12px;font-size:14px;line-height:1.45;color:var(--muted);background:rgba(255,255,255,.03)} .dev b{color:var(--ink)} .dev div > b:first-child{display:block;margin-bottom:2px;font-family:var(--f-display)}
+@media (max-width:620px){ .dev{grid-template-columns:1fr} }
 .src{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
 .src div{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;padding:10px 12px}
 .src small{display:block;font-size:12px;color:var(--muted)}
@@ -92,6 +95,15 @@
     <ul class="ftl" id="fTl"></ul>
   </section>
 
+  <section class="card" aria-labelledby="hDs">
+    <h2 id="hDs">Wer entwickelt Bitcoin eigentlich?</h2>
+    <div class="dev">
+      <div><b>👩‍💻 Open Source</b>Der Code ist <b>öffentlich</b>. Jeder kann ihn lesen, prüfen und Verbesserungen vorschlagen. Die bekannteste Software heißt <b>Bitcoin Core</b>, gepflegt von Freiwilligen und gesponserten Entwicklern weltweit.</div>
+      <div><b>📝 Vorschläge (BIPs)</b>Größere Änderungen werden als <b>Bitcoin Improvement Proposal</b> aufgeschrieben und oft jahrelang öffentlich diskutiert und getestet.</div>
+      <div><b>🗳️ Die Nodes entscheiden</b>Entwickler können nichts erzwingen. Erst wenn <b>Nutzer ihre Node aktualisieren</b> und Miner mitziehen, wird eine Änderung zur Regel. Deshalb ist Bitcoin bewusst langsam.</div>
+    </div>
+  </section>
+
   <section class="card" aria-labelledby="h3s">
     <h2 id="h3s">Das solltest du dir merken</h2>
     <div class="learn">
@@ -108,7 +120,7 @@
   <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
 </div>
 
-<script src="../lern.js?v=12"></script>
+<script src="../lern.js?v=13"></script>
 <script>
 /* =====================================================================
    NODE-WACHE – Lernwelt von Satsland

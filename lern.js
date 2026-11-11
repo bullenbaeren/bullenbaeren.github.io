@@ -7,14 +7,14 @@ const Lern = (() => {
   // Empfohlene Reihenfolge für Einsteiger: [id, Titel, Pfad]
   // Kapitel für Einsteiger: [Symbol, Titel, Kurzbeschreibung, Welten in Reihenfolge]
   const CHAPTERS = [
-    ["🌱", "Warum Bitcoin?", "Was gutes Geld ausmacht und warum Bitcoin anders ist.", ["eigenschaften", "inflation", "halving", "geschichte"]],
-    ["🛡️", "Sicher starten", "Bevor du Bitcoin kaufst: Wallet, Seed und Betrug.", ["wallets", "seed", "betrug", "krypto"]],
+    ["🌱", "Warum Bitcoin?", "Was gutes Geld ausmacht, warum Bitcoin Wert hat und wie alles anfing.", ["doppelt", "eigenschaften", "inflation", "wert", "halving", "geschichte"]],
+    ["🛡️", "Sicher starten", "Bevor du Bitcoin kaufst: Wallet, Seed, Betrug und echte Risiken.", ["wallets", "seed", "betrug", "krypto", "risiken"]],
     ["🧠", "Klug investieren", "Sparplan statt Bauchgefühl, und Finger weg vom Hebel.", ["sparplan", "fomo", "hebel"]],
     ["💸", "Bezahlen & Senden", "Wie eine Zahlung wirklich abläuft, schnell und günstig.", ["utxo", "bahnhof", "lightning"]],
-    ["⚙️", "Unter der Haube", "Für Neugierige: die Technik hinter Bitcoin.", ["hashing", "schluessel", "blockchain", "mining", "nodes"]]
+    ["⚙️", "Unter der Haube", "Die Technik hinter Bitcoin, am Ende als großes Gesamtbild.", ["hashing", "schluessel", "blockchain", "mining", "nodes", "reise"]]
   ];
   // Lernpfad = alle Welten in Kapitel-Reihenfolge: [id, Titel, Pfad]
-  const TITLES = {eigenschaften: ["Geld-Duell", "eigenschaften/"], inflation: ["Geld & Inflation", "inflation/"], halving: ["Knappheit & Halving", "halving/"], geschichte: ["Zeitreise", "geschichte/"], wallets: ["Wallet-Check", "wallets/"], seed: ["Seed-Trainer", "seed/"], betrug: ["Betrug erkennen", "betrug/"], krypto: ["Coin-Check", "krypto/"], sparplan: ["Sparplan", "sparplan/"], fomo: ["Gefühls-Achterbahn", "fomo/"], hebel: ["Hebel-Falle", "hebel/"], utxo: ["Wechselgeld-Kasse", "utxo/"], bahnhof: ["Mempool-Bahnhof", "bahnhof/"], lightning: ["Lightning", "lightning/"], hashing: ["Fingerabdruck-Maschine", "hashing/"], schluessel: ["Schlüssel-Labor", "schluessel/"], blockchain: ["Blockchain", "blockchain/"], mining: ["Mining-Werkstatt", "mining/"], nodes: ["Node-Wache", "nodes/"]};
+  const TITLES = {doppelt: ["Kopier-Problem", "doppelt/"], wert: ["Wert-Waage", "wert/"], risiken: ["Risiko-Radar", "risiken/"], reise: ["Reise einer Zahlung", "reise/"], eigenschaften: ["Geld-Duell", "eigenschaften/"], inflation: ["Geld & Inflation", "inflation/"], halving: ["Knappheit & Halving", "halving/"], geschichte: ["Zeitreise", "geschichte/"], wallets: ["Wallet-Check", "wallets/"], seed: ["Seed-Trainer", "seed/"], betrug: ["Betrug erkennen", "betrug/"], krypto: ["Coin-Check", "krypto/"], sparplan: ["Sparplan", "sparplan/"], fomo: ["Gefühls-Achterbahn", "fomo/"], hebel: ["Hebel-Falle", "hebel/"], utxo: ["Wechselgeld-Kasse", "utxo/"], bahnhof: ["Mempool-Bahnhof", "bahnhof/"], lightning: ["Lightning", "lightning/"], hashing: ["Fingerabdruck-Maschine", "hashing/"], schluessel: ["Schlüssel-Labor", "schluessel/"], blockchain: ["Blockchain", "blockchain/"], mining: ["Mining-Werkstatt", "mining/"], nodes: ["Node-Wache", "nodes/"]};
   const PATH = CHAPTERS.flatMap(c => c[3].map(id => [id, ...TITLES[id]]));
   const chapterOf = id => CHAPTERS.findIndex(c => c[3].includes(id));
   const load = () => { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch(e){ return {}; } };
@@ -81,6 +81,8 @@ const Lern = (() => {
   const hl = (x, y, rx, ry) => `<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="#fff" opacity=".45"/>`;
   const coinP = (cx, cy, r) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="#ffc94d" ${SK}/><circle cx="${cx}" cy="${cy}" r="${r*.72}" fill="none" stroke="#e0a000" stroke-width="3"/><text x="${cx}" y="${cy + r*.36}" font-size="${r}" font-weight="900" text-anchor="middle" fill="#b86e00" font-family="Arial">₿</text>${hl(cx - r*.35, cy - r*.45, r*.3, r*.14)}`;
   const ART = {
+    copy: `<path d="M14 22h44v58H14z" fill="#f4efe1" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><path d="M42 14h44v58H42z" fill="#fff1c2" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="64" cy="40" r="12" fill="#ffc94d" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><text x="64" y="45" font-size="14" font-weight="900" text-anchor="middle" fill="#b86e00" font-family="Arial">₿</text><circle cx="36" cy="52" r="12" fill="#ffc94d" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><text x="36" y="57" font-size="14" font-weight="900" text-anchor="middle" fill="#b86e00" font-family="Arial">₿</text><path d="M58 84l8 8 8-8" fill="none" stroke="#ff5c73" stroke-width="5" stroke-linecap="round"/>`,
+    eye: `<path d="M6 50q44-44 88 0-44 44-88 0z" fill="#fff" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="50" cy="50" r="18" fill="#7cc4ff" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="50" cy="50" r="8" fill="#0d1230"/><circle cx="44" cy="44" r="4" fill="#fff"/><path d="M18 26l-6-8M50 18V8M82 26l6-8" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>`,
     plankton: `<path d="M50 18c18 0 30 14 30 32S68 84 50 84 20 70 20 50s12-32 30-32z" fill="#7ad890" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="36" cy="40" r="4" fill="#34d982"/><circle cx="62" cy="64" r="5" fill="#34d982"/><circle cx="58" cy="34" r="3" fill="#34d982"/><circle cx="44" cy="52" r="6" fill="#fff" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="45" cy="52" r="2.7" fill="#0d1230"/><circle cx="58" cy="50" r="5" fill="#fff" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="59" cy="50" r="2.25" fill="#0d1230"/><path d="M20 50l-10-4M80 50l10-4M50 18l2-10M50 84l-2 10" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>`,
     shrimp: `<path d="M78 30c-4 32-26 52-52 46-8-2-10-10-4-14 18 4 34-6 38-30z" fill="#ff9a6a" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><path d="M60 40l8 4M52 52l8 6M42 62l6 8" stroke="#c9374f" stroke-width="3" stroke-linecap="round"/><path d="M76 30q4-18 18-22M74 30q-6-16 2-26" fill="none" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="72" cy="30" r="5" fill="#fff" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="73" cy="30" r="2.25" fill="#0d1230"/><path d="M22 66l-12 4 4 10" fill="#ff9a6a" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>`,
     crab: `<ellipse cx="50" cy="58" rx="30" ry="20" fill="#ff5c73" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><path d="M24 52q-14-10-10-26 12 2 14 14M76 52q14-10 10-26-12 2-14 14" fill="#ff5c73" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><path d="M14 26l8 4M86 26l-8 4" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="40" cy="40" r="6" fill="#fff" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="41" cy="40" r="2.7" fill="#0d1230"/><circle cx="60" cy="40" r="6" fill="#fff" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="61" cy="40" r="2.7" fill="#0d1230"/><path d="M30 74l-8 10M42 78l-4 10M58 78l4 10M70 74l8 10" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><path d="M42 60q8 6 16 0" fill="none" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><ellipse cx="40" cy="50" rx="8" ry="3" fill="#fff" opacity=".45"/>`,
@@ -132,11 +134,14 @@ const Lern = (() => {
   const art = n => `<svg viewBox="0 0 100 100" width="100%" height="100%" aria-hidden="true">${ART[n]}</svg>`;
 
   // Zeichnung je Welt (Weltsymbol und Karte im Lernpfad)
-  const CARD = {eigenschaften: "scale", inflation: "dollar", halving: "scissors", geschichte: "pizza", wallets: "bank2", seed: "letter", betrug: "mask", krypto: "rocket",
+  const CARD = {doppelt: "copy", wert: "coin", risiken: "eye", reise: "phone", eigenschaften: "scale", inflation: "dollar", halving: "scissors", geschichte: "pizza", wallets: "bank2", seed: "letter", betrug: "mask", krypto: "rocket",
     sparplan: "pig", fomo: "boom", hebel: "volcano", utxo: "bag", bahnhof: "train", lightning: "bolt", hashing: "finger", schluessel: "key", blockchain: "chain", mining: "pick", nodes: "server"};
 
   // ---------- Tages-Challenge mit Serie ----------
   const DAILY = [
+    ["Was ist das Doppelausgabe-Problem?", ["Digitales Geld könnte kopiert und zweimal ausgegeben werden", "Man zahlt doppelte Gebühren", "Man braucht zwei Wallets"], 0, "Bitcoin löst es mit einem gemeinsamen Kassenbuch, das alle prüfen."],
+    ["Ist Bitcoin anonym?", ["Nein, pseudonym: Adressen statt Namen, aber alles öffentlich", "Ja, komplett", "Nur bei Lightning"], 0, "Wird eine Adresse dir zugeordnet, ist deine Geschichte sichtbar."],
+    ["Wie viele neue Bitcoin entstehen derzeit ungefähr pro Tag?", ["Etwa 450", "Etwa 45.000", "Etwa 5"], 0, "144 Blöcke × 3,125 BTC."],
     ["Wie viele Bitcoin wird es höchstens geben?", ["21 Millionen", "100 Millionen", "Unbegrenzt"], 0, "Die Obergrenze von 21 Millionen steht fest im Code."],
     ["Wie heißt die kleinste Bitcoin-Einheit?", ["Satoshi (Sat)", "Bit", "Cent"], 0, "1 Bitcoin = 100 Millionen Sats, benannt nach dem Erfinder."],
     ["Wie oft halbiert sich die Belohnung für Miner?", ["Etwa alle 4 Jahre", "Jedes Jahr", "Nie"], 0, "Alle 210.000 Blöcke, das sind ungefähr 4 Jahre."],
@@ -191,7 +196,11 @@ const Lern = (() => {
   // ---------- Satoshi als Begleiter ----------
   const TIPS = {
     "": "Willkommen in Satsland! Mach die Tages-Challenge und besiege alle 5 Bosse.",
-    eigenschaften: "Hi, ich bin Satoshi! Rate, welches Geld gewinnt. Tipp: Gold ist ein harter Gegner.",
+    doppelt: "Hi, ich bin Satoshi! Versuch mal, eine Münze zweimal auszugeben.",
+    wert: "Warum zahlen Menschen für Bitcoin? Kipp mal die Waage.",
+    risiken: "Bitcoin ist nicht anonym. Spiel Detektiv und sieh selbst.",
+    reise: "Begleite deine Zahlung durch alle 7 Stationen. Das ist das große Ganze!",
+    eigenschaften: "Rate, welches Geld gewinnt. Tipp: Gold ist ein harter Gegner.",
     inflation: "Schau, wie dein Einkaufswagen schrumpft. Genau das ist Inflation.",
     halving: "Alle 4 Jahre halbiert sich die Belohnung. Das macht Bitcoin knapp.",
     geschichte: "Drück auf ▶ Abspielen, dann zeige ich dir meine Geschichte.",
@@ -238,6 +247,9 @@ const Lern = (() => {
   const sl = (t, x, y, d = 0) => `<span class="lbl" style="left:${x}%;top:${y}%;animation-delay:${d}s">${t}</span>`;
   const sf = (n, fx, fy, x, y, z, d) => sa(n, x, y, z, "fly 1.3s cubic-bezier(.3,.7,.3,1) both", d, `--fx:${fx}%;--fy:${fy}%`);
   const INTRO = {
+    doppelt: ["night", "Kopieren? Strg+C, Strg+V …", sa("coin", 30, 58, 64) + sa("copy", 66, 58, 76, "grow .5s both", .6) + sl("Aus 1 werden 2?!", 66, 88, 1.2)],
+    wert: ["day", "Was ist Bitcoin wert?", sa("scale", 50, 56, 96, "tilt 1.6s cubic-bezier(.3,1.6,.5,1) both", .2, "transform:translate(-50%,-50%) rotate(-12deg)") + sa("bag", 26, 40, 40, "grow .4s both", .6) + sa("coin", 74, 40, 40, "grow .4s both", .9) + sl("Angebot ⚖️ Nachfrage", 50, 88, 1.4)],
+    risiken: ["night", "Wer schaut da zu?", sa("eye", 50, 50, 90, "grow .6s both", .2) + sa("mask", 18, 64, 50, "bobA 1.6s ease-in-out infinite") + sl("Alles öffentlich", 76, 86, 1)],
     eigenschaften: ["day", "Wer ist das beste Geld?", sa("dollar", 22, 60, 64, "grow .5s both", .2) + sa("trophy", 50, 56, 74, "grow .5s both", .5) + sa("coin", 78, 60, 64, "grow .5s both", .8) + sl("Das Duell beginnt!", 50, 88, 1.2)],
     inflation: ["dusk", "Alles wird teurer …", sa("dollar", 34, 60, 84, "shrink 2.4s ease .6s both") + sa("bag", 72, 60, 64) + sl("Kaufkraft schrumpft", 50, 88, 1)],
     halving: ["night", "Schnipp, schnapp: halbiert!", sa("coin", 24, 62, 70) + sa("scissors", 50, 58, 60, "cut .6s ease 3", .3) + sa("coin", 76, 66, 40, "grow .5s both", 1.8) + sl("50 → 25 → … → 3,125", 50, 88, 1.4)],
@@ -259,7 +271,7 @@ const Lern = (() => {
   };
   function intro(){
     const I = INTRO[here], h = document.querySelector("h1"); if (!I || !h) return;
-    const st = document.createElement("div"); st.className = `stage intro ${I[0]}`; st.setAttribute("aria-hidden", "true"); st.title = "Nochmal abspielen";
+    const st = document.createElement("div"); st.className = `scn intro ${I[0]}`; st.setAttribute("aria-hidden", "true"); st.title = "Nochmal abspielen";
     const play = () => { st.innerHTML = `<span class="say">${I[1]}</span>` + I[2]; };
     play(); st.onclick = play; h.parentElement.after(st);
   }
@@ -342,7 +354,7 @@ const Lern = (() => {
   // ---------- Spaß-Schicht: Level, Konfetti, Einblenden ----------
   const ICON = {eigenschaften: "⚔️", inflation: "🛒", halving: "⏳", hashing: "🧬", blockchain: "🔗", bahnhof: "🚉", seed: "🔑", betrug: "🕵️", sparplan: "🐷", lightning: "⚡", mining: "⛏", nodes: "🖥", schluessel: "🔐", utxo: "👛", wallets: "🗄", fomo: "🎢", hebel: "💥", geschichte: "📜", krypto: "🟠"};
   // Sats-Level nach geschafften Welten (angelehnt an die Bitcoin-Tierwelt von Garnele bis Wal)
-  const LEVELS = [[0, "🦠", "Plankton", "plankton"], [1, "🦐", "Garnele", "shrimp"], [3, "🦀", "Krabbe", "crab"], [6, "🐟", "Fisch", "fish"], [9, "🐬", "Delfin", "dolphin"], [12, "🦈", "Hai", "shark"], [15, "🐳", "Buckelwal", "humpback"], [19, "🐋", "Wal", "whale"]];
+  const LEVELS = [[0, "🦠", "Plankton", "plankton"], [1, "🦐", "Garnele", "shrimp"], [3, "🦀", "Krabbe", "crab"], [6, "🐟", "Fisch", "fish"], [10, "🐬", "Delfin", "dolphin"], [14, "🦈", "Hai", "shark"], [18, "🐳", "Buckelwal", "humpback"], [23, "🐋", "Wal", "whale"]];
   const count = s => PATH.filter(([id]) => done(s, id)).length;
   function level(n){ let L = LEVELS[0]; for (const l of LEVELS) if (n >= l[0]) L = l; return {n, ico: L[1], name: L[2], art: L[3]}; }
   const calm = false;   // Effekte immer zeigen; viele Firmen-PCs melden "Bewegung reduzieren", obwohl Animationen gewünscht sind

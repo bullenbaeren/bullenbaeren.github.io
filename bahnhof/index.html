@@ -13,7 +13,7 @@
 <meta property="og:description" content="So kommt deine Bitcoin-Überweisung in einen Block. Der echte Mempool als Bahnhof, live.">
 <meta property="og:image" content="https://satsland.github.io/og.png">
 <meta property="og:url" content="https://satsland.github.io/bahnhof/">
-<link rel="stylesheet" href="../lern.css?v=12">
+<link rel="stylesheet" href="../lern.css?v=13">
 <style>
 /* Lernwelt "Mempool-Bahnhof": gleiche Farben und Schriften wie das Spiel. Nur Systemschriften, keine Cookies, kein Tracking. */
 .card > .mode{margin-bottom:8px}
@@ -28,6 +28,10 @@ canvas{display:block;width:100%;height:clamp(300px,52vw,430px)}
 .you h2,.how h2{margin:0 0 6px;font:900 18px var(--f-display)}
 .you p{margin:0;color:var(--muted);font-size:14px}
 .ctrl{display:flex;flex-direction:column;gap:10px}
+.cfRow{display:flex;align-items:center;gap:12px;margin-top:10px} .cfRow input{flex:1} .cfRow b{font:900 22px var(--f-num);min-width:2ch;text-align:right}
+.cfBlocks{display:flex;gap:6px;margin-top:8px;align-items:flex-end;min-height:44px} .cfBlocks span{width:36px;height:36px;border-radius:8px;border:2px solid #0d1230;display:grid;place-items:center;font:900 12px var(--f-num);background:#f7931a;color:#2a1600;animation:pop .25s}
+.cfBlocks span.me{background:#34d982;color:#04240f}
+.cfT{margin:8px 0 0;font-size:15px;line-height:1.5}
 .feeRow{display:flex;align-items:center;gap:12px}
 .feeVal{font:600 20px var(--f-num);min-width:7.5ch;text-align:right}
 .feeVal small{font-size:12px;color:var(--muted)}
@@ -95,6 +99,14 @@ canvas{display:block;width:100%;height:clamp(300px,52vw,430px)}
     <details class="qz"><summary>Teste dich: 3 Fragen</summary><div id="quiz"></div></details>
   </section>
 
+  <section class="card" aria-labelledby="hCs">
+    <h2 id="hCs" style="margin:0 0 6px;font:900 18px var(--f-display)">Wann ist meine Zahlung sicher?</h2>
+    <p class="muted" style="margin:0;font-size:14px">Ist deine Zahlung in einem Block, hat sie <b>1 Bestätigung</b>. Jeder weitere Block obendrauf ist eine weitere. Schieb den Regler und sieh, wie sicher sie wird.</p>
+    <div class="cfRow"><input id="cf" type="range" min="0" max="6" value="0" aria-label="Bestätigungen"><b id="cfV" class="num">0</b></div>
+    <div class="cfBlocks" id="cfB"></div>
+    <p class="cfT" id="cfT"></p>
+  </section>
+
   <section class="card next" id="next" aria-label="Weiter"></section>
   <p class="foot">Live-Daten von mempool.space. Unterhaltung und Lernen, keine Anlageberatung.</p>
   <details class="foot priv"><summary>Datenschutz</summary>
@@ -102,7 +114,7 @@ canvas{display:block;width:100%;height:clamp(300px,52vw,430px)}
   </details>
 </div>
 
-<script src="../lern.js?v=12"></script>
+<script src="../lern.js?v=13"></script>
 <script>
 /* =====================================================================
    MEMPOOL-BAHNHOF – Lernwelt von Satsland
@@ -392,6 +404,21 @@ function frame(now){
   draw();
   requestAnimationFrame(frame);
 }
+// Bestätigungen: wie sicher ist die Zahlung nach n Blöcken?
+{
+  const T = ["⏳ <b>0 Bestätigungen:</b> Die Zahlung wartet noch in der Mempool. Theoretisch könnte sie noch durch eine andere ersetzt werden. Für einen Kaffee oft okay, für ein Auto nicht.",
+    "✅ <b>1 Bestätigung:</b> Die Zahlung steht in einem Block. Für kleine Beträge reicht das meist.",
+    "✅ <b>2 Bestätigungen:</b> Ein Block liegt schon obendrauf. Eine Umkehr wäre extrem teuer.",
+    "✅ <b>3 Bestätigungen:</b> Viele Händler sind jetzt zufrieden.",
+    "✅ <b>4 Bestätigungen:</b> Ein Angreifer müsste 4 Blöcke neu rechnen und schneller als alle anderen sein.",
+    "✅ <b>5 Bestätigungen:</b> Fast geschafft.",
+    "🛡️ <b>6 Bestätigungen (ca. 1 Stunde):</b> Gilt seit den Anfängen als praktisch unumkehrbar. Viele Börsen warten so lange bei großen Beträgen."];
+  const draw = () => { const v = +document.getElementById("cf").value; document.getElementById("cfV").textContent = v;
+    document.getElementById("cfB").innerHTML = v ? Array.from({length: v}, (_, i) => `<span class="${i === 0 ? "me" : ""}">${i === 0 ? "Du" : "+" + i}</span>`).join("") : '<span style="background:transparent;border-style:dashed;color:var(--muted)">?</span>';
+    document.getElementById("cfT").innerHTML = T[v] + (v ? ' <span class="muted">Warum? Wer eine bestätigte Zahlung rückgängig machen will, müsste alle Blöcke danach neu minen und das ehrliche Netz überholen.</span>' : ""); };
+  document.getElementById("cf").addEventListener("input", draw); draw();
+}
+
 const QUIZ = [
   ["Wovon hängt ab, wie schnell deine Überweisung bestätigt wird?", ["Von der Höhe des Betrags", "Von der Gebühr pro Platz (sat/vB), wenn viel los ist", "Von der Uhrzeit"], 1, "Miner füllen jeden Block zuerst mit den Transaktionen, die pro vByte am meisten zahlen. Der Betrag selbst spielt keine Rolle."],
   ["Wie oft kommt im Schnitt ein neuer Block?", ["Jede Minute", "Etwa alle 10 Minuten", "Einmal pro Stunde"], 1, "Im Schnitt alle 10 Minuten, aber das ist Zufall: Manchmal kommen zwei Blöcke in einer Minute, manchmal dauert es eine halbe Stunde."],

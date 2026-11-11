@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Risiko-Radar · Satsland</title>
+<meta name="description" content="Lernwelt: Ist Bitcoin anonym? Was jeder auf der Blockchain sehen kann, und welche Risiken es bei Bitcoin wirklich gibt.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0b0f2a">
+<link rel="icon" href="../icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="stylesheet" href="../lern.css?v=13">
+<style>
+/* Lernwelt "Risiko-Radar": nur seitenspezifische Teile, der Rest kommt aus lern.css */
+.idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
+.kv{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}
+.kv div{border:1px solid var(--line);border-radius:12px;padding:8px 10px;font-size:12px;color:var(--muted)} .kv b{display:block;font:700 18px var(--f-num);color:var(--ink)} .kv .g{color:var(--gold)}
+.seg{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px} .seg .btn[aria-pressed="true"]{outline:2px solid var(--gold);background:rgba(247,147,26,.15)}
+.res{margin-top:12px;padding:12px 14px;border-radius:14px;border:2px solid var(--line);font-size:15px;line-height:1.5}
+.res strong{display:block;font-size:18px} .res.ok{border-color:var(--bull)} .res.ok strong{color:var(--bull)} .res.bad{border-color:var(--bear)} .res.bad strong{color:var(--bear)} .res.warn{border-color:var(--gold)} .res.warn strong{color:var(--gold)}
+.note{margin:10px 0 0;font-size:14px;color:var(--muted);line-height:1.5} .note b{color:var(--ink)} .note a{color:var(--gold)}
+@media (max-width:620px){ .kv{grid-template-columns:1fr 1fr} }
+.graph{position:relative;height:230px;margin-top:12px;border-radius:14px;border:3px solid #0d1230;background:#141a48 radial-gradient(rgba(255,255,255,.07) 1.2px,transparent 1.4px) 0 0/10px 10px;overflow:hidden}
+.graph svg{position:absolute;inset:0;width:100%;height:100%}
+.nd{position:absolute;transform:translate(-50%,-50%);text-align:center;font:800 11px var(--f-num);color:var(--ink);z-index:2}
+.nd i{display:block;width:46px;height:46px;margin:0 auto 2px;border-radius:50%;border:3px solid #0d1230;background:#2b3478;display:grid;place-items:center;font-style:normal;font-size:20px;transition:background .3s,box-shadow .3s}
+.nd.hot i{background:#ff5c73;box-shadow:0 0 0 5px rgba(255,92,115,.3)} .nd.kyc i{background:#ffc94d}
+.risks{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.rk{border:2px solid var(--line);border-radius:14px;padding:10px 12px;background:rgba(255,255,255,.03);font:inherit;color:var(--ink);text-align:left;cursor:pointer}
+.rk b{display:block;font:900 15px var(--f-display)} .rk .lv{display:inline-block;margin-top:4px;font-size:12px;font-weight:800;padding:1px 8px;border-radius:999px}
+.rk .lv.h{background:rgba(255,92,115,.2);color:#ff9aa8} .rk .lv.m{background:rgba(255,201,77,.18);color:var(--gold)} .rk .lv.l{background:rgba(52,217,130,.18);color:#7ff0b2}
+.rk .a{display:none;margin-top:8px;font-size:14px;line-height:1.45;color:var(--muted)} .rk.open{border-color:rgba(255,201,77,.5)} .rk.open .a{display:block}
+@media (max-width:620px){ .risks{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a class="back" href="../">← Satsland</a><a class="back" href="../spiel/">Zum Spiel</a></div>
+  <div>
+    <h1><span class="btc">Risiko</span>-Radar</h1>
+    <p class="lead">Bitcoin hat Stärken, aber auch echte Risiken. Und es ist <b>nicht anonym</b>, wie oft behauptet wird. Hier lernst du beides kennen, ehrlich und ohne Panik.</p>
+  </div>
+
+  <section class="card" aria-labelledby="h1s">
+    <h2 id="h1s">Spiel Blockchain-Detektiv</h2>
+    <div class="idea">Jede Bitcoin-Zahlung ist <b>für immer öffentlich</b>: Absender-Adresse, Empfänger-Adresse, Betrag. Namen stehen nicht dabei. Aber kann man trotzdem herausfinden, wem was gehört? Probier's aus.</div>
+    <div class="seg" id="mode">
+      <button class="btn ghost" data-m="0" type="button" aria-pressed="true">🔁 Immer dieselbe Adresse</button>
+      <button class="btn ghost" data-m="1" type="button" aria-pressed="false">✨ Für jede Zahlung eine neue</button>
+    </div>
+    <div class="graph" id="graph"></div>
+    <div class="seg"><button class="btn" id="spy" type="button">🔍 Detektiv: Börse verrät einen Namen</button></div>
+    <div class="res" id="res" hidden></div>
+  </section>
+
+  <section class="card" aria-labelledby="h2s">
+    <h2 id="h2s">Die echten Risiken</h2>
+    <p class="muted" style="margin:0">Tippe ein Risiko an. Du siehst, wie ernst es ist und was du dagegen tun kannst.</p>
+    <div class="risks" id="risks"></div>
+  </section>
+
+  <section class="card" aria-labelledby="hMs">
+    <h2 id="hMs">Das solltest du dir merken</h2>
+    <div class="learn">
+      <div><b>Pseudonym, nicht anonym</b><span>Auf der Blockchain stehen <b>Adressen, keine Namen</b>. Wird eine Adresse dir zugeordnet, ist deine Geschichte sichtbar.</span></div>
+      <div><b>Neue Adresse je Zahlung</b><span>Gute Wallets erzeugen <b>automatisch neue Adressen</b>. Das erschwert die Verknüpfung.</span></div>
+      <div><b>Börsen kennen dich</b><span>Wer auf einer Börse kauft, hat sich <b>ausgewiesen</b>. Die Börse weiß, an welche Adresse du abhebst.</span></div>
+      <div><b>Größtes Risiko: du selbst</b><span>Die meisten Verluste entstehen durch <b>verlorene Seeds, Betrug oder Panik</b>, nicht durch Bitcoin selbst.</span></div>
+    </div>
+    <details class="qz"><summary>Teste dich: 3 Fragen</summary><div id="quiz"></div></details>
+  </section>
+
+  <section class="card next" id="next" aria-label="Weiter"></section>
+  <details class="foot"><summary>Quellen</summary><p>Allgemeine Einordnung, vereinfacht. Bekannte Fälle: Software-Fehler „Value Overflow“ (August 2010), Börsen-Pleiten Mt. Gox (2014) und FTX (2022). Das Detektiv-Spiel ist ein vereinfachtes Beispiel für Blockchain-Analyse.</p></details>
+  <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
+</div>
+
+<script src="../lern.js?v=13"></script>
+<script>
+/* =====================================================================
+   RISIKO-RADAR – Lernwelt von Satsland
+   ===================================================================== */
+(() => {
+const $ = id => document.getElementById(id);
+let mode = 0;
+// Knoten: [x %, y %, Beschriftung, Symbol, gehört dir?]
+const N0 = [[18, 30, "Börse", "🏦", 0], [50, 22, "Adresse A", "₿", 1], [82, 30, "Laden", "🛒", 0], [50, 70, "Adresse A", "₿", 1], [18, 78, "Freund", "🙂", 0], [82, 78, "Spende", "🎁", 0]];
+const N1 = [[18, 30, "Börse", "🏦", 0], [44, 22, "Adresse A", "₿", 1], [82, 30, "Laden", "🛒", 0], [56, 70, "Adresse B", "₿", 1], [18, 78, "Freund", "🙂", 0], [82, 78, "Spende", "🎁", 0]];
+const E = [[0, 1], [1, 2], [3, 4], [3, 5]];
+function draw(hot){
+  const N = mode ? N1 : N0, g = $("graph");
+  const same = !mode;   // gleiche Adresse: Knoten 1 und 3 sind dieselbe
+  const links = same ? E.concat([[1, 3]]) : E;
+  g.innerHTML = `<svg viewBox="0 0 100 100" preserveAspectRatio="none">${links.map(([a, b]) => `<line x1="${N[a][0]}" y1="${N[a][1]}" x2="${N[b][0]}" y2="${N[b][1]}" stroke="${hot && (same || a < 3 && b < 3) && (N[a][4] || N[b][4]) ? "#ff5c73" : "#7cc4ff"}" stroke-width="${a === 1 && b === 3 ? 1.6 : .8}" stroke-dasharray="${a === 1 && b === 3 ? "2 2" : ""}" vector-effect="non-scaling-stroke"/>`).join("")}</svg>`
+    + N.map(([x, y, t, ic, mine], i) => `<span class="nd ${hot && mine && (same || i === 1) ? "hot" : ""} ${hot && i === 0 ? "kyc" : ""}" style="left:${x}%;top:${y}%"><i>${ic}</i>${t}</span>`).join("");
+}
+$("mode").onclick = e => { const b = e.target.closest("button"); if (!b) return; mode = +b.dataset.m; [...$("mode").children].forEach(x => x.setAttribute("aria-pressed", x === b)); $("res").hidden = true; draw(false); };
+$("spy").onclick = () => {
+  draw(true); const R = $("res"); R.hidden = false;
+  if (!mode){ R.className = "res bad"; R.innerHTML = `<strong>🔍 Erwischt: alles verknüpft</strong>Die Börse weiß, dass Adresse A <b>dir</b> gehört. Weil du A überall benutzt hast, sieht der Detektiv jetzt auch deinen Einkauf, die Zahlung vom Freund und die Spende, für immer.`; }
+  else { R.className = "res ok"; R.innerHTML = `<strong>🔍 Nur eine Spur</strong>Die Börse kennt Adresse A. Aber Freund und Spende liefen über die neue Adresse B, die <b>nicht direkt verknüpft</b> ist. Ganz unsichtbar bist du trotzdem nicht: Profis werten Muster aus. Neue Adressen sind ein guter Anfang.`; }
+};
+draw(false);
+// Risiken: [Titel, Stufe h/m/l, Text]
+const RK = [
+  ["📉 Starke Kursschwankungen", "h", "Minus 70 bis 80 % kam mehrmals vor. <b>Dagegen:</b> nur Geld nutzen, das du lange nicht brauchst, Sparplan statt Timing, kein Hebel."],
+  ["🔑 Schlüssel verloren", "h", "Ohne Seed sind Bitcoin für immer weg, niemand kann helfen. <b>Dagegen:</b> Seed offline aufschreiben, zweite Kopie an anderem Ort, Notfall-Plan."],
+  ["🎣 Betrug", "h", "Falsche Support-Mitarbeiter, Fake-Apps, Rendite-Versprechen. <b>Dagegen:</b> Seed niemals eingeben oder teilen, keine „garantierten Gewinne“ glauben."],
+  ["🏚 Börsen-Pleite", "m", "Mt. Gox und FTX zeigen: Geld auf Börsen kann weg sein. <b>Dagegen:</b> nach dem Kauf auf die eigene Wallet abheben."],
+  ["⚖️ Regulierung und Verbote", "m", "Staaten können Börsen regulieren oder Bitcoin einschränken, einige haben das versucht. Das Netz selbst lief weiter, aber Kaufen kann schwerer werden."],
+  ["⛏ Mining-Konzentration", "m", "Wenige große Mining-Pools bündeln viel Rechenleistung. Sie könnten Zahlungen verzögern, aber <b>keine Regeln ändern</b>, weil Nodes prüfen."],
+  ["🐛 Software-Fehler", "l", "2010 gab es einen schweren Fehler, der schnell behoben wurde. Bitcoin Core wird sehr vorsichtig entwickelt, ein Restrisiko bleibt."],
+  ["⚛️ Quantencomputer", "l", "Könnten in ferner Zukunft heutige Signaturen angreifen. Forscher arbeiten an quantensicheren Verfahren, ein Upgrade wäre per Soft Fork möglich."],
+];
+const LV = {h: "hoch", m: "mittel", l: "eher gering"};
+$("risks").innerHTML = RK.map(([t, l, a]) => `<button class="rk" type="button"><b>${t}</b><span class="lv ${l}">Risiko: ${LV[l]}</span><span class="a">${a}</span></button>`).join("");
+$("risks").onclick = e => { const r = e.target.closest(".rk"); if (r) r.classList.toggle("open"); };
+
+const QUIZ = [["Ist Bitcoin anonym?", ["Nein, pseudonym: Adressen statt Namen, aber alles ist öffentlich", "Ja, niemand kann etwas sehen", "Nur große Beträge sind sichtbar"], 0, "Wird eine Adresse dir zugeordnet, ist deine ganze Geschichte sichtbar."], ["Was hilft am meisten für mehr Privatsphäre?", ["Für jede Zahlung eine neue Adresse", "Immer dieselbe Adresse nutzen", "Den Seed online speichern"], 0, "Gute Wallets machen das automatisch."], ["Wodurch verlieren die meisten Menschen Bitcoin?", ["Verlorene Seeds, Betrug oder Panikverkäufe", "Durch Hacker, die Bitcoin selbst knacken", "Durch Quantencomputer"], 0, "Bitcoin selbst wurde nie gehackt. Die Risiken liegen meist beim Menschen."]];
+Lern.quiz($("quiz"), "risiken", QUIZ, "../"); Lern.visit("risiken"); Lern.renderNext("risiken", "../");
+})();
+</script>
+</body>
+</html>

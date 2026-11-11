@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#0b0f2a">
 <link rel="icon" href="../icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-<link rel="stylesheet" href="../lern.css?v=12">
+<link rel="stylesheet" href="../lern.css?v=13">
 <style>
 /* Lernwelt "Seed-Trainer": nur seitenspezifische Teile, der Rest kommt aus lern.css */
 .warn{border-color:rgba(255,92,115,.45);background:rgba(255,92,115,.07)}
@@ -23,6 +23,13 @@
 .ask label{font-size:13px;color:var(--muted)}
 .ask input{width:100%;font:600 16px var(--f-body);padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:#0b0f2a;color:var(--ink)}
 .ask input.ok{border-color:var(--bull)} .ask input.no{border-color:var(--bear)}
+.chainS{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:12px}
+.chainS div{position:relative;border-radius:12px;padding:8px;text-align:center;font-size:12px;border:2px solid var(--line);background:rgba(255,255,255,.03)} .chainS b{display:block;font:900 13px var(--f-display);margin-bottom:2px}
+.chainS code{display:block;font:11px var(--f-num);color:var(--muted);word-break:break-all}
+.chainS div:not(:last-child)::after{content:"→";position:absolute;right:-9px;top:50%;transform:translateY(-50%);color:var(--gold);font-weight:900}
+.addrs{margin:10px 0 0;padding-left:22px;display:grid;gap:4px;font:13px var(--f-num)} .addrs li{animation:pop .3s}
+.addrs b{color:var(--gold)}
+@media (max-width:620px){ .chainS{grid-template-columns:1fr 1fr} .chainS div:nth-child(2)::after{display:none} }
 .msg{margin:8px 0 0;font-weight:700;min-height:1.5em}
 .msg.ok{color:var(--bull)} .msg.no{color:var(--bear)}
 .sort{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:10px}
@@ -67,6 +74,15 @@
   </section>
 
   <!-- 3 · Merksätze und Quiz -->
+  <section class="card" aria-labelledby="hAs">
+    <h2 id="hAs">3 · Vom Seed zu deinen Adressen</h2>
+    <p class="muted" style="margin:0">Aus deinen Wörtern berechnet die Wallet <b>einen Hauptschlüssel</b>, daraus beliebig viele <b>private Schlüssel</b>, daraus die <b>öffentlichen Schlüssel</b> und daraus die <b>Adressen</b>. Immer gleich, auf jedem Gerät. Darum reicht der Seed als Backup für alles.</p>
+    <div class="chainS" id="chainS"></div>
+    <div class="row" style="margin-top:10px"><button class="btn" id="nextAddr" type="button">➕ Nächste Adresse ableiten</button><span class="muted" style="font-size:13px">Neue Adresse, gleicher Seed</span></div>
+    <ol class="addrs" id="addrs"></ol>
+    <p class="muted" style="font-size:13px;margin:8px 0 0">Vereinfachte Rechnung zum Zeigen. Echte Wallets nutzen dafür die Standards BIP39 und BIP32, das Prinzip ist dasselbe: <b>Seed weg = alle Adressen weg, Seed da = alles wiederherstellbar.</b></p>
+  </section>
+
   <section class="card" aria-labelledby="h3s">
     <h2 id="h3s">Das solltest du dir merken</h2>
     <div class="learn">
@@ -82,7 +98,7 @@
   <p class="foot">Lernen und Unterhaltung, keine Anlage- oder Sicherheitsberatung. Die Übungswörter stammen nicht aus der echten Bitcoin-Wortliste.</p>
 </div>
 
-<script src="../lern.js?v=12"></script>
+<script src="../lern.js?v=13"></script>
 <script>
 /* =====================================================================
    SEED-TRAINER – Lernwelt von Satsland
@@ -133,6 +149,22 @@ $("sort").querySelectorAll("button").forEach(b => b.addEventListener("click", ()
   answered++; if (ok) pts++;
   if (answered === ITEMS.length) $("score").textContent = `${pts} von ${ITEMS.length} richtig eingeschätzt.`;
 }));
+
+// Vom Seed zur Adresse (vereinfacht mit SHA-256 aus lern.js, Prinzip wie BIP32); nutzt die Übungswörter von oben
+{
+  const H = Lern.sha256, addr = h => "bc1q" + h.slice(0, 30);
+  let n = 0, master = "";
+  const build = () => {
+    const ws = (words && words.length ? words : ["Übungswörter"]).join(" ");
+    master = H("seed:" + ws); n = 0; $("addrs").innerHTML = "";
+    $("chainS").innerHTML = [["📝 Seed", ws.split(" ").slice(0, 3).join(" ") + " …"], ["🔑 Hauptschlüssel", master.slice(0, 16) + "…"], ["🔒 Privater Schlüssel #1", H(master + 0).slice(0, 16) + "…"], ["📬 Adresse #1", addr(H(H(master + 0))).slice(0, 18) + "…"]].map(([t, v]) => `<div><b>${t}</b><code>${v}</code></div>`).join("");
+    add();
+  };
+  const add = () => { const a = addr(H(H(master + n))); $("addrs").insertAdjacentHTML("beforeend", `<li>Adresse <b>#${n + 1}</b>: ${a.slice(0, 22)}…</li>`); n++; };
+  $("nextAddr").onclick = add;
+  new MutationObserver(build).observe($("words"), {childList: true});   // neue Übungswörter = neue Adressen
+  build();
+}
 
 const QUIZ = [
   ["Ein Mitarbeiter deiner Börse schreibt dir und braucht deine 12 Wörter, um dein Konto zu „retten“. Was tust du?", ["Ich gebe sie ihm, er will ja helfen", "Nichts verraten, das ist Betrug", "Ich schicke nur die Hälfte"], 1, "Niemand Seriöses fragt nach dem Seed. Wer ihn hat, kann sofort alles abziehen, auch mit der Hälfte der Wörter wird es gefährlich."],

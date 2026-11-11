@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Reise einer Zahlung · Satsland</title>
+<meta name="description" content="Lernwelt: Wie eine Bitcoin-Zahlung von A bis Z abläuft: Unterschrift, Mempool, Mining, Block, Bestätigungen.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0b0f2a">
+<link rel="icon" href="../icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="stylesheet" href="../lern.css?v=13">
+<style>
+/* Lernwelt "Reise einer Zahlung": nur seitenspezifische Teile, der Rest kommt aus lern.css */
+.idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
+.kv{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}
+.kv div{border:1px solid var(--line);border-radius:12px;padding:8px 10px;font-size:12px;color:var(--muted)} .kv b{display:block;font:700 18px var(--f-num);color:var(--ink)} .kv .g{color:var(--gold)}
+.seg{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px} .seg .btn[aria-pressed="true"]{outline:2px solid var(--gold);background:rgba(247,147,26,.15)}
+.res{margin-top:12px;padding:12px 14px;border-radius:14px;border:2px solid var(--line);font-size:15px;line-height:1.5}
+.res strong{display:block;font-size:18px} .res.ok{border-color:var(--bull)} .res.ok strong{color:var(--bull)} .res.bad{border-color:var(--bear)} .res.bad strong{color:var(--bear)} .res.warn{border-color:var(--gold)} .res.warn strong{color:var(--gold)}
+.note{margin:10px 0 0;font-size:14px;color:var(--muted);line-height:1.5} .note b{color:var(--ink)} .note a{color:var(--gold)}
+@media (max-width:620px){ .kv{grid-template-columns:1fr 1fr} }
+.track{display:flex;gap:4px;margin-top:12px} .track i{flex:1;height:8px;border-radius:4px;background:rgba(255,255,255,.08);transition:background .3s} .track i.d{background:var(--gold)} .track i.c{background:#fff}
+.st{margin-top:12px;animation:rin .35s}
+.st .scn{height:180px}
+.st h3{margin:12px 0 4px;font:900 20px var(--f-display)} .st .k{font-size:13px;color:var(--muted)}
+.st p{margin:0;font-size:15px;line-height:1.55} .st .lk{display:inline-block;margin-top:8px;font-weight:800;color:var(--gold)}
+.st .live{margin-top:10px;padding:8px 12px;border-radius:12px;background:rgba(52,217,130,.1);border:1px solid rgba(52,217,130,.35);font-size:14px}
+.nav{display:flex;gap:8px;margin-top:12px} .nav .btn{flex:1}
+.conf{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:10px} .conf span{aspect-ratio:1;border-radius:8px;display:grid;place-items:center;font:900 13px var(--f-num);background:rgba(255,255,255,.06);border:2px solid var(--line)}
+.conf span.on{background:rgba(52,217,130,.25);border-color:var(--bull);color:var(--bull)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a class="back" href="../">← Satsland</a><a class="back" href="../spiel/">Zum Spiel</a></div>
+  <div>
+    <h1>Die <span class="btc">Reise</span> einer Zahlung</h1>
+    <p class="lead">Du schickst Anna Bitcoin. Was passiert jetzt eigentlich? Hier begleitest du deine Zahlung durch <b>alle 7 Stationen</b>, mit echten Daten von gerade eben. Das ist das Gesamtbild aller Welten.</p>
+  </div>
+
+  <section class="card" aria-labelledby="h1s">
+    <h2 id="h1s">Deine Zahlung: 0,001 BTC an Anna <span class="mode" id="mode">Verbinde …</span></h2>
+    <div class="track" id="track"></div>
+    <div id="st"></div>
+    <div class="nav"><button class="btn ghost" id="prev" type="button">← Zurück</button><button class="btn" id="nextS" type="button">Weiter →</button></div>
+  </section>
+
+  <section class="card" aria-labelledby="hMs">
+    <h2 id="hMs">Das solltest du dir merken</h2>
+    <div class="learn">
+      <div><b>Unterschrift</b><span>Deine Wallet unterschreibt mit dem <b>privaten Schlüssel</b>. Niemand kann die Zahlung danach ändern.</span></div>
+      <div><b>Warteraum</b><span>In der <b>Mempool</b> wartet die Zahlung. Höhere Gebühr heißt früher dran.</span></div>
+      <div><b>Block</b><span>Ein Miner packt sie in einen <b>Block</b> und findet per Proof of Work den passenden Hash.</span></div>
+      <div><b>Bestätigungen</b><span>Jeder weitere Block ist eine Bestätigung. Ab etwa <b>6</b> gilt eine Zahlung als praktisch unumkehrbar.</span></div>
+    </div>
+    <details class="qz"><summary>Teste dich: 3 Fragen</summary><div id="quiz"></div></details>
+  </section>
+
+  <section class="card next" id="next" aria-label="Weiter"></section>
+  <details class="foot"><summary>Quellen</summary><p>Gebühren, Mempool, Blockhöhe und Blockzeit live von <a href="https://mempool.space">mempool.space</a>. Die Faustregel von 6 Bestätigungen stammt aus der Anfangszeit von Bitcoin und ist bis heute verbreitet.</p></details>
+  <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
+</div>
+
+<script src="../lern.js?v=13"></script>
+<script>
+/* =====================================================================
+   REISE EINER ZAHLUNG – Lernwelt von Satsland
+   ===================================================================== */
+(() => {
+const $ = id => document.getElementById(id);
+let L = {fee: 0, mem: 0, h: 0, time: 10, live: false}, i = 0;
+const sa = (n, x, y, z, an = "", d = 0, st = "") => `<span class="a" style="left:${x}%;top:${y}%;width:${z}px;height:${z}px;${an ? `animation:${an};animation-delay:${d}s;` : ""}${st}">${Lern.art(n)}</span>`;
+const sl = (t, x, y, d = 0) => `<span class="lbl" style="left:${x}%;top:${y}%;animation-delay:${d}s">${t}</span>`;
+const sf = (n, fx, fy, x, y, z, d) => sa(n, x, y, z, "fly 1.3s cubic-bezier(.3,.7,.3,1) both", d, `--fx:${fx}%;--fy:${fy}%`);
+const n = v => Math.round(v).toLocaleString("de-DE");
+// Stationen: [Himmel, Titel, Szene, Text, Live-Zeile, Link, Name der Welt]
+const S = () => [
+  ["dawn", "Die Wallet baut die Zahlung", sa("phone", 30, 58, 76) + sa("bag", 72, 60, 60, "grow .5s both", .4) + sl("0,001 BTC → Anna", 50, 16, .6),
+    "Deine Wallet sucht passende <b>Münzen (UTXOs)</b> aus, die dir gehören, und baut daraus eine Zahlung: Diese Münzen rein, 0,001 BTC an Annas Adresse raus, der Rest als <b>Wechselgeld</b> zurück an dich.", "", "utxo/", "Wechselgeld-Kasse"],
+  ["dawn", "Unterschreiben", sa("key", 30, 58, 70, "bobA 1.4s ease-in-out infinite") + sa("letter", 70, 60, 66, "grow .5s both", .4) + sl("✍️ signiert", 70, 26, 1),
+    "Die Wallet unterschreibt die Zahlung mit deinem <b>privaten Schlüssel</b>. Der Schlüssel verlässt dabei nie dein Gerät. Jeder kann später mit deinem öffentlichen Schlüssel prüfen, dass die Unterschrift echt ist. Änderst du danach ein Zeichen, ist sie ungültig.", "", "schluessel/", "Schlüssel-Labor"],
+  ["night", "Ab ins Netz", sa("phone", 14, 60, 54) + sf("letter", 14, 60, 40, 40, 30, .3) + sf("letter", 14, 60, 66, 70, 30, .6) + sf("letter", 14, 60, 88, 40, 30, .9) + sa("server", 40, 62, 44) + sa("server", 66, 40, 44) + sa("server", 88, 66, 44) + sl("✓ geprüft", 66, 86, 1.6),
+    "Die Zahlung geht an ein paar <b>Nodes</b>, die sie an ihre Nachbarn weitergeben. In Sekunden kennt sie fast das ganze Netz. Jede Node prüft: Ist die Unterschrift echt? Gehören die Münzen wirklich dir und sind sie <b>noch nicht ausgegeben</b>?", "", "doppelt/", "Kopier-Problem"],
+  ["night", "Warten in der Mempool", sa("train", 50, 64, 90) + sl("Warteraum", 50, 18, .3),
+    "Jetzt wartet die Zahlung im <b>Warteraum (Mempool)</b>. Miner suchen sich die Zahlungen mit der höchsten Gebühr pro Byte aus. Wer mehr zahlt, ist früher dran.", `🚉 Gerade warten <b>${n(L.mem)}</b> Zahlungen. Für den nächsten Block reichen etwa <b>${L.fee}</b> sat/vB.`, "bahnhof/", "Mempool-Bahnhof"],
+  ["dusk", "Ein Miner findet den Block", sa("pick", 30, 58, 70, "swing .5s ease-in-out 4") + sa("block", 70, 60, 64, "grow .5s both", 2) + sl("Hash mit genug Nullen!", 50, 18, 2.2),
+    "Miner packen Zahlungen in einen <b>Block</b> und raten Milliarden Zahlen, bis der Block-Hash genug Nullen hat (<b>Proof of Work</b>). Wer zuerst trifft, bekommt neue Bitcoin plus alle Gebühren. Im Schnitt dauert das etwa 10 Minuten.", `⛏ Die letzten Blöcke kamen im Schnitt alle <b>${L.time.toLocaleString("de-DE", {maximumFractionDigits: 1})} Minuten</b>.`, "mining/", "Mining-Werkstatt"],
+  ["night", "Alle prüfen den Block", sa("block", 22, 60, 56) + sa("chain", 44, 62, 40) + sa("server", 64, 60, 44, "grow .4s both", .4) + sa("server", 84, 60, 44, "grow .4s both", .7) + sl("✓ ✓ angehängt", 74, 22, 1.2),
+    "Der Miner verschickt seinen Block. Jede Node prüft ihn komplett nach den Regeln und hängt ihn an <b>ihre Kopie der Blockchain</b>. Deine Zahlung steht jetzt fest im Kassenbuch: <b>1 Bestätigung</b>.", `🧱 Der neueste Block hat die Nummer <b>${n(L.h)}</b>.`, "blockchain/", "Blockchain"],
+  ["gold", "Bestätigungen sammeln", sa("trophy", 50, 54, 76, "grow .6s cubic-bezier(.3,1.6,.5,1) both") + sl("Anna hat ihr Geld!", 50, 88, .6),
+    "Jeder neue Block obendrauf ist eine weitere <b>Bestätigung</b>. Je mehr Blöcke darüber liegen, desto unmöglicher wird es, die Zahlung rückgängig zu machen. Kleine Beträge gelten oft schon nach 1 Bestätigung als sicher, große nach etwa <b>6</b> (ungefähr eine Stunde).", "", "nodes/", "Node-Wache"],
+];
+function draw(){
+  const all = S(), [sky, t, sc, txt, lv, link, wn] = all[i];
+  $("track").innerHTML = all.map((_, k) => `<i class="${k < i ? "d" : k === i ? "c" : ""}"></i>`).join("");
+  $("st").innerHTML = `<div class="st"><div class="scn ${sky}" aria-hidden="true">${sc}</div><span class="k">Station ${i + 1} von ${all.length}</span><h3>${t}</h3><p>${txt}</p>${lv ? `<div class="live">${lv}</div>` : ""}`
+    + (i === all.length - 1 ? `<div class="conf" id="conf">${[0, 1, 2, 3, 4, 5, 6].map(c => `<span>${c}</span>`).join("")}</div>` : "")
+    + `<a class="lk" href="../${link}">Mehr dazu: ${wn} →</a></div>`;
+  if (i === all.length - 1){ [...$("conf").children].forEach((s, c) => setTimeout(() => s.classList.add("on"), 300 + c*350)); }
+  $("prev").disabled = i === 0; $("nextS").textContent = i === all.length - 1 ? "Von vorn ↺" : "Weiter →";
+}
+$("prev").onclick = () => { if (i > 0){ i--; draw(); } };
+$("nextS").onclick = () => { i = i === 6 ? 0 : i + 1; draw(); };
+const MP = "https://mempool.space/api/";
+Promise.allSettled([
+  fetch(MP + "v1/fees/recommended").then(r => r.json()).then(j => { L.fee = j.fastestFee; }),
+  fetch(MP + "mempool").then(r => r.json()).then(j => { L.mem = j.count; }),
+  fetch(MP + "blocks/tip/height").then(r => r.text()).then(t => { L.h = +t; }),
+  fetch(MP + "v1/difficulty-adjustment").then(r => r.json()).then(j => { L.time = j.timeAvg/60000; }),
+]).then(rs => { L.live = rs.some(r => r.status === "fulfilled");
+  if (!L.fee){ L.fee = 3; } if (!L.mem){ L.mem = 20000; } if (!L.h){ L.h = 925000; }
+  $("mode").className = "mode " + (L.live ? "live" : "demo"); $("mode").textContent = L.live ? "Live" : "Beispielwerte"; draw(); });
+draw();
+
+const QUIZ = [["Womit wird eine Bitcoin-Zahlung unterschrieben?", ["Mit dem privaten Schlüssel deiner Wallet", "Mit Annas Adresse", "Von einem Miner"], 0, "Die Unterschrift beweist, dass die Münzen dir gehören."], ["Wo wartet eine Zahlung, bevor sie in einen Block kommt?", ["In der Mempool", "Bei der Bank", "Auf Annas Handy"], 0, "Miner wählen dort die Zahlungen mit der höchsten Gebühr pro Byte."], ["Ab wie vielen Bestätigungen gilt eine große Zahlung als praktisch unumkehrbar?", ["Etwa 6", "1", "100"], 0, "6 Blöcke dauern ungefähr eine Stunde. Kleine Beträge brauchen oft weniger."]];
+Lern.quiz($("quiz"), "reise", QUIZ, "../"); Lern.visit("reise"); Lern.renderNext("reise", "../");
+})();
+</script>
+</body>
+</html>

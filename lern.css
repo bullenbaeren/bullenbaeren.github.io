@@ -149,15 +149,15 @@ h1 span.btc{background:linear-gradient(90deg,#ffb347,#f7931a 40%,#ffd36b 60%,#f7
 @keyframes flame{50%{transform:scale(1.06)}}
 .daily .dq{margin:12px 0 8px;font:800 18px/1.35 var(--f-display)}
 /* Comic-Szenen (Zeitreise und Welt-Intros): Bühne mit Himmel, Figuren als Zeichnungen */
-.stage{position:relative;height:220px;border-radius:14px;overflow:hidden;margin:-4px -4px 16px;border:4px solid #0d1230;box-shadow:5px 5px 0 #0d1230,0 0 0 2px rgba(255,255,255,.12)}
-.stage::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;background:radial-gradient(rgba(255,255,255,.09) 1.2px,transparent 1.4px) 0 0/9px 9px}
+.scn{position:relative;height:220px;border-radius:14px;overflow:hidden;margin:-4px -4px 16px;border:4px solid #0d1230;box-shadow:5px 5px 0 #0d1230,0 0 0 2px rgba(255,255,255,.12)}
+.scn::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;background:radial-gradient(rgba(255,255,255,.09) 1.2px,transparent 1.4px) 0 0/9px 9px}
 .a svg{display:block;overflow:visible;filter:drop-shadow(3px 4px 0 rgba(13,18,48,.45))}
-.stage.night{background:radial-gradient(1.5px 1.5px at 15% 20%,#fff9,transparent),radial-gradient(1.5px 1.5px at 70% 15%,#fff8,transparent),radial-gradient(1.2px 1.2px at 40% 35%,#fff7,transparent),radial-gradient(1.4px 1.4px at 88% 40%,#fff6,transparent),linear-gradient(#0a0f2e,#1c2464)}
-.stage.dawn{background:linear-gradient(#2a2f6e,#7a4a8c 60%,#f7931a)}
-.stage.day{background:linear-gradient(#2f6fd6,#7fb7ff)}
-.stage.dusk{background:linear-gradient(#1b1f4d,#5b2a5e 55%,#c0483a)}
-.stage.gold{background:radial-gradient(circle at 50% 120%,rgba(255,201,77,.6),transparent 60%),linear-gradient(#1a1440,#3b2a10)}
-.stage::after{content:"";position:absolute;left:0;right:0;bottom:0;height:34px;background:rgba(13,18,48,.45);border-top:3px solid #0d1230}
+.scn.night{background:radial-gradient(1.5px 1.5px at 15% 20%,#fff9,transparent),radial-gradient(1.5px 1.5px at 70% 15%,#fff8,transparent),radial-gradient(1.2px 1.2px at 40% 35%,#fff7,transparent),radial-gradient(1.4px 1.4px at 88% 40%,#fff6,transparent),linear-gradient(#0a0f2e,#1c2464)}
+.scn.dawn{background:linear-gradient(#2a2f6e,#7a4a8c 60%,#f7931a)}
+.scn.day{background:linear-gradient(#2f6fd6,#7fb7ff)}
+.scn.dusk{background:linear-gradient(#1b1f4d,#5b2a5e 55%,#c0483a)}
+.scn.gold{background:radial-gradient(circle at 50% 120%,rgba(255,201,77,.6),transparent 60%),linear-gradient(#1a1440,#3b2a10)}
+.scn::after{content:"";position:absolute;left:0;right:0;bottom:0;height:34px;background:rgba(13,18,48,.45);border-top:3px solid #0d1230}
 .a{position:absolute;line-height:1;transform:translate(-50%,-50%);z-index:1;animation-fill-mode:both}
 .lbl{position:absolute;transform:translate(-50%,-50%);z-index:2;font:900 13px var(--f-display);color:#0d1230;background:#fff;border:2.5px solid #0d1230;box-shadow:3px 3px 0 #0d1230;padding:3px 9px;border-radius:10px;white-space:nowrap;animation:fin .5s both}
 .paper{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);width:min(78%,330px);background:#f4efe1;color:#222;border-radius:6px;border:3px solid #0d1230;padding:10px 12px;font:700 13px/1.35 Georgia,serif;box-shadow:0 10px 30px -10px #000;z-index:2;animation:drop .7s cubic-bezier(.3,1.4,.5,1) both}
@@ -181,8 +181,8 @@ h1 span.btc{background:linear-gradient(90deg,#ffb347,#f7931a 40%,#ffd36b 60%,#f7
 svg.line{position:absolute;inset:0;width:100%;height:100%;z-index:1}
 svg.line path{fill:none;stroke-width:4;stroke-linecap:round;stroke-dasharray:900;stroke-dashoffset:900;animation:draw 2.4s ease .3s forwards}
 @keyframes draw{to{stroke-dashoffset:0}}
-.stage.intro{height:170px;margin:0;cursor:pointer}
-.stage.intro .say{position:absolute;left:12px;top:12px;z-index:3;max-width:62%;font:900 14px/1.25 var(--f-display);color:#0d1230;background:#fff;border:3px solid #0d1230;box-shadow:3px 3px 0 #0d1230;padding:6px 10px;border-radius:12px;animation:fin .5s both .2s}
+.scn.intro{height:170px;margin:0;cursor:pointer}
+.scn.intro .say{position:absolute;left:12px;top:12px;z-index:3;max-width:62%;font:900 14px/1.25 var(--f-display);color:#0d1230;background:#fff;border:3px solid #0d1230;box-shadow:3px 3px 0 #0d1230;padding:6px 10px;border-radius:12px;animation:fin .5s both .2s}
 @keyframes rin{from{opacity:0;transform:translateY(8px)}}
 @keyframes drive{from{left:-20%}to{left:120%}}
 @keyframes shrink{to{transform:translate(-50%,-50%) scale(.45)}}

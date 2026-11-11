@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kopier-Problem · Satsland</title>
+<meta name="description" content="Lernwelt: Warum digitales Geld so schwer ist. Das Doppelausgabe-Problem und wie Bitcoin es ohne Bank löst.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0b0f2a">
+<link rel="icon" href="../icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="stylesheet" href="../lern.css?v=13">
+<style>
+/* Lernwelt "Kopier-Problem": nur seitenspezifische Teile, der Rest kommt aus lern.css */
+.idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
+.kv{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}
+.kv div{border:1px solid var(--line);border-radius:12px;padding:8px 10px;font-size:12px;color:var(--muted)} .kv b{display:block;font:700 18px var(--f-num);color:var(--ink)} .kv .g{color:var(--gold)}
+.seg{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px} .seg .btn[aria-pressed="true"]{outline:2px solid var(--gold);background:rgba(247,147,26,.15)}
+.res{margin-top:12px;padding:12px 14px;border-radius:14px;border:2px solid var(--line);font-size:15px;line-height:1.5}
+.res strong{display:block;font-size:18px} .res.ok{border-color:var(--bull)} .res.ok strong{color:var(--bull)} .res.bad{border-color:var(--bear)} .res.bad strong{color:var(--bear)} .res.warn{border-color:var(--gold)} .res.warn strong{color:var(--gold)}
+.note{margin:10px 0 0;font-size:14px;color:var(--muted);line-height:1.5} .note b{color:var(--ink)} .note a{color:var(--gold)}
+@media (max-width:620px){ .kv{grid-template-columns:1fr 1fr} }
+.who{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:14px;align-items:end;text-align:center}
+.who div{position:relative} .who .p{width:72px;height:72px;margin:0 auto} .who b{display:block;font:900 14px var(--f-display);margin-top:4px}
+.who .bal{display:inline-block;margin-top:4px;padding:2px 10px;border-radius:999px;font:800 13px var(--f-num);background:rgba(255,255,255,.08)}
+.coinfly{position:absolute;width:40px;height:40px;left:50%;top:10px;transform:translateX(-50%);z-index:3}
+@keyframes toL{to{left:-110%;top:10px}} @keyframes toR{to{left:210%;top:10px}}
+.ledger{margin-top:12px;border-radius:14px;border:3px solid #0d1230;box-shadow:3px 3px 0 #0d1230;background:#f4efe1;color:#0d1230;padding:10px 12px;font:14px/1.5 Georgia,serif}
+.ledger b{font-family:var(--f-display)} .ledger .x{color:#c0392b;text-decoration:line-through} .ledger .ok{color:#1a7a44}
+.nodes{display:grid;grid-template-columns:repeat(12,1fr);gap:4px;margin-top:10px} .nodes span{aspect-ratio:1;border-radius:6px;background:#2b3478;display:grid;place-items:center;font-size:10px;font-weight:900}
+.nodes span.y{background:rgba(52,217,130,.3);color:var(--bull)} .nodes span.n{background:rgba(255,92,115,.3);color:var(--bear)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a class="back" href="../">← Satsland</a><a class="back" href="../spiel/">Zum Spiel</a></div>
+  <div>
+    <h1>Das <span class="btc">Kopier</span>-Problem</h1>
+    <p class="lead">Ein Foto kannst du so oft kopieren, wie du willst. Wäre Geld eine einfache Datei, könntest du es auch kopieren und <b>zweimal ausgeben</b>. Genau dieses Problem musste Bitcoin lösen.</p>
+  </div>
+
+  <section class="card" aria-labelledby="h1s">
+    <h2 id="h1s">Versuch, eine Münze zweimal auszugeben</h2>
+    <div class="idea">Du hast <b>1 digitale Münze</b>. Du schickst sie gleichzeitig an <b>Anna</b> und an <b>Ben</b>. Wähle, wer aufpasst:</div>
+    <div class="seg" id="mode">
+      <button class="btn ghost" data-m="0" type="button" aria-pressed="true">📁 Niemand (nur eine Datei)</button>
+      <button class="btn ghost" data-m="1" type="button" aria-pressed="false">🏦 Eine Bank</button>
+      <button class="btn ghost" data-m="2" type="button" aria-pressed="false">₿ Bitcoin</button>
+    </div>
+    <div class="who" id="who"></div>
+    <div class="acts" style="display:flex;margin-top:12px"><button class="btn" id="go" type="button">💸 An beide gleichzeitig senden</button></div>
+    <div id="ledger"></div>
+    <div class="res" id="res" hidden></div>
+  </section>
+
+  <section class="card" aria-labelledby="h2s">
+    <h2 id="h2s">Die Lösung in einem Satz <span class="mode" id="lmode">Verbinde …</span></h2>
+    <p class="muted" style="margin:0">Statt einer Bank führen <b>Tausende Computer dasselbe Kassenbuch</b>. Jede Zahlung wird von allen geprüft. Die Reihenfolge legen Miner fest, indem sie Zahlungen in <b>Blöcke</b> packen. Was zuerst im Block steht, gilt. Die zweite Ausgabe derselben Münze lehnt jeder ab.</p>
+    <div class="kv">
+      <div>Im neuesten Block geprüft<b class="num g" id="kTx">–</b></div>
+      <div>Blöcke seit 2009<b class="num" id="kH">–</b></div>
+      <div>Kassenbuch-Kopien weltweit<b class="num">ca. 20.000+</b></div>
+    </div>
+    <p class="note">Deshalb gibt es <a href="../blockchain/">die Blockchain</a> (das gemeinsame Kassenbuch), <a href="../mining/">Mining</a> (die Reihenfolge) und <a href="../nodes/">Nodes</a> (die Prüfer). Alles andere baut darauf auf.</p>
+  </section>
+
+  <section class="card" aria-labelledby="hMs">
+    <h2 id="hMs">Das solltest du dir merken</h2>
+    <div class="learn">
+      <div><b>Kopieren ist das Problem</b><span>Digitale Dinge lassen sich <b>beliebig kopieren</b>. Geld darf man aber nur einmal ausgeben.</span></div>
+      <div><b>Bank als Aufpasser</b><span>Bisher löste das eine <b>Bank</b>. Sie führt das Kassenbuch, kann aber auch sperren oder Fehler machen.</span></div>
+      <div><b>Ein Kassenbuch für alle</b><span>Bei Bitcoin hat <b>jede Node eine Kopie</b> und prüft jede Zahlung selbst.</span></div>
+      <div><b>Wer zuerst kommt</b><span>Miner legen die <b>Reihenfolge</b> fest. Die zweite Ausgabe derselben Münze ist ungültig.</span></div>
+    </div>
+    <details class="qz"><summary>Teste dich: 3 Fragen</summary><div id="quiz"></div></details>
+  </section>
+
+  <section class="card next" id="next" aria-label="Weiter"></section>
+  <details class="foot"><summary>Quellen</summary><p>Neuester Block und Blockhöhe live von <a href="https://mempool.space">mempool.space</a>. Die Zahl der Nodes ist eine grobe Schätzung erreichbarer Nodes. Das Doppelausgabe-Problem beschreibt Satoshi Nakamoto im Bitcoin-Whitepaper (2008).</p></details>
+  <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
+</div>
+
+<script src="../lern.js?v=13"></script>
+<script>
+/* =====================================================================
+   KOPIER-PROBLEM – Lernwelt von Satsland
+   ===================================================================== */
+(() => {
+const $ = id => document.getElementById(id);
+const P = [["satoshi", "Du"], ["hal", "Anna"], ["phisher", "Ben"]];
+let mode = 0, busy = false;
+function who(bal){ $("who").innerHTML = P.map(([a, n], i) => `<div data-i="${i}"><div class="p">${Lern.art(a)}</div><b>${n}</b><span class="bal">${bal[i]} Münze${bal[i] === 1 ? "" : "n"}</span></div>`).join(""); }
+function reset(){ who([1, 0, 0]); $("res").hidden = true; $("ledger").innerHTML = ""; busy = false; $("go").disabled = false; }
+$("mode").onclick = e => { const b = e.target.closest("button"); if (!b) return; mode = +b.dataset.m; [...$("mode").children].forEach(x => x.setAttribute("aria-pressed", x === b)); reset(); };
+$("go").onclick = () => {
+  if (busy) return; busy = true; $("go").disabled = true;
+  const me = $("who").children[0];
+  me.insertAdjacentHTML("beforeend", `<span class="coinfly" style="animation:toR 1s ease forwards">${Lern.art("coin")}</span><span class="coinfly" style="animation:toL 1s ease forwards">${Lern.art("coin")}</span>`);
+  setTimeout(() => {
+    const R = $("res"); R.hidden = false;
+    if (mode === 0){ who([1, 1, 1]); R.className = "res bad";
+      R.innerHTML = `<strong>✗ Beide haben eine Münze, und du hast deine auch noch!</strong>Aus 1 Münze wurden 3. Niemand hat aufgepasst, die Datei wurde einfach kopiert. So wäre das Geld nach kurzer Zeit wertlos.`; }
+    else if (mode === 1){ who([0, 1, 0]);
+      $("ledger").innerHTML = `<div class="ledger"><b>🏦 Kassenbuch der Bank</b><br><span class="ok">10:00:01 Du → Anna: 1 Münze ✓</span><br><span class="x">10:00:01 Du → Ben: 1 Münze</span> (schon ausgegeben)</div>`;
+      R.className = "res warn"; R.innerHTML = `<strong>✓ Die Bank verhindert es, aber …</strong>… du musst der Bank <b>vertrauen</b>. Sie kann Konten sperren, Fehler machen oder pleitegehen. Und sie sieht alle deine Zahlungen.`; }
+    else { who([0, 1, 0]);
+      $("ledger").innerHTML = `<div class="ledger"><b>₿ Block 1 (für alle gleich)</b><br><span class="ok">Du → Anna: 1 Münze ✓</span><br><span class="x">Du → Ben: 1 Münze</span> (Münze schon im Block ausgegeben)</div><div class="nodes" id="nd"></div>`;
+      const nd = $("nd"); for (let i = 0; i < 24; i++) nd.insertAdjacentHTML("beforeend", `<span style="animation:pop .3s both ${i*.04}s">✓</span>`);
+      setTimeout(() => nd.querySelectorAll("span").forEach(s => s.className = "y"), 300);
+      R.className = "res ok"; R.innerHTML = `<strong>✓ Ohne Bank verhindert!</strong>Tausende Nodes haben dasselbe Kassenbuch. Die Zahlung an Anna steht zuerst im Block. Die an Ben lehnt <b>jede Node</b> ab. Niemand muss einer einzelnen Firma vertrauen.`; }
+  }, 1100);
+};
+reset();
+Promise.all([fetch("https://mempool.space/api/v1/blocks").then(r => r.json()), fetch("https://mempool.space/api/blocks/tip/height").then(r => r.text())]).then(([bl, h]) => {
+  $("kTx").textContent = (bl[0].tx_count || 0).toLocaleString("de-DE") + " Zahlungen"; $("kH").textContent = (+h).toLocaleString("de-DE");
+  $("lmode").className = "mode live"; $("lmode").textContent = "Live";
+}).catch(() => { $("kTx").textContent = "einige Tausend Zahlungen"; $("kH").textContent = "über 900.000"; $("lmode").className = "mode demo"; $("lmode").textContent = "Ohne Live-Daten"; });
+
+const QUIZ = [["Warum ist digitales Geld schwer zu bauen?", ["Weil man Dateien beliebig kopieren kann", "Weil Computer zu langsam sind", "Weil es zu teuer ist"], 0, "Ohne Aufpasser könnte man dieselbe Münze mehrmals ausgeben."], ["Wer verhindert bei Bitcoin, dass eine Münze zweimal ausgegeben wird?", ["Tausende Nodes mit demselben Kassenbuch", "Eine Bitcoin-Bank", "Der Erfinder Satoshi"], 0, "Jede Node prüft jede Zahlung. Die zweite Ausgabe ist ungültig."], ["Was ist der Nachteil, wenn eine Bank aufpasst?", ["Man muss ihr vertrauen, sie kann sperren oder Fehler machen", "Es funktioniert gar nicht", "Es ist zu schnell"], 0, "Bitcoin ersetzt dieses Vertrauen durch Regeln, die alle prüfen."]];
+Lern.quiz($("quiz"), "doppelt", QUIZ, "../"); Lern.visit("doppelt"); Lern.renderNext("doppelt", "../");
+})();
+</script>
+</body>
+</html>

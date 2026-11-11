@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#0b0f2a">
 <link rel="icon" href="../icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-<link rel="stylesheet" href="../lern.css?v=12">
+<link rel="stylesheet" href="../lern.css?v=13">
 <style>
 /* Lernwelt "Geschichte": nur seitenspezifische Teile, der Rest kommt aus lern.css */
 .dots{display:flex;gap:4px;margin-top:12px;overflow-x:auto;padding-bottom:4px;scrollbar-width:thin}
@@ -67,7 +67,7 @@
   <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
 </div>
 
-<script src="../lern.js?v=12"></script>
+<script src="../lern.js?v=13"></script>
 <script>
 /* =====================================================================
    ZEITREISE – Lernwelt von Satsland
@@ -128,7 +128,7 @@ function draw(){
   $("dots").innerHTML = E.map((e, i) => `<button type="button" data-i="${i}" aria-current="${i === k}" class="${i < k ? "seen" : ""}">${e[1].match(/\d{4}/)[0]}</button>`).join("");
   $("dots").children[k].scrollIntoView({block: "nearest", inline: "center"});
   const x100 = p && now ? now/p : 0;
-  $("ev").innerHTML = `<div class="ev"><div class="stage ${SC[k][0]}" aria-hidden="true">${SC[k][1]}</div><div class="d">${k + 1} von ${E.length} · ${d}</div><h3>${t}</h3><p>${x}</p>
+  $("ev").innerHTML = `<div class="ev"><div class="scn ${SC[k][0]}" aria-hidden="true">${SC[k][1]}</div><div class="d">${k + 1} von ${E.length} · ${d}</div><h3>${t}</h3><p>${x}</p>
     <div class="kv"><div>1 Bitcoin kostete damals<b class="num">${p ? usd(p) : "noch nichts"}</b></div><div>${x100 ? "100 $ von damals wären heute" : k < 2 ? "Blöcke seit dem ersten" : "Kurs heute"}<b class="num g">${x100 ? usd(100*x100) : k < 2 ? (height ? height.toLocaleString("de-DE") : "–") : now ? usd(now) : "–"}</b></div></div></div>`;
   counters($("ev"));
   $("prev").disabled = k === 0; $("nextE").textContent = k === E.length - 1 ? "Von vorn ↺" : "Weiter →";

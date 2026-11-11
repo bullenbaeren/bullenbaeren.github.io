@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Wert-Waage · Satsland</title>
+<meta name="description" content="Lernwelt: Warum hat Bitcoin einen Preis? Angebot, Nachfrage, Knappheit und warum der Kurs schwankt.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0b0f2a">
+<link rel="icon" href="../icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="stylesheet" href="../lern.css?v=13">
+<style>
+/* Lernwelt "Wert-Waage": nur seitenspezifische Teile, der Rest kommt aus lern.css */
+.idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
+.kv{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}
+.kv div{border:1px solid var(--line);border-radius:12px;padding:8px 10px;font-size:12px;color:var(--muted)} .kv b{display:block;font:700 18px var(--f-num);color:var(--ink)} .kv .g{color:var(--gold)}
+.seg{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px} .seg .btn[aria-pressed="true"]{outline:2px solid var(--gold);background:rgba(247,147,26,.15)}
+.res{margin-top:12px;padding:12px 14px;border-radius:14px;border:2px solid var(--line);font-size:15px;line-height:1.5}
+.res strong{display:block;font-size:18px} .res.ok{border-color:var(--bull)} .res.ok strong{color:var(--bull)} .res.bad{border-color:var(--bear)} .res.bad strong{color:var(--bear)} .res.warn{border-color:var(--gold)} .res.warn strong{color:var(--gold)}
+.note{margin:10px 0 0;font-size:14px;color:var(--muted);line-height:1.5} .note b{color:var(--ink)} .note a{color:var(--gold)}
+@media (max-width:620px){ .kv{grid-template-columns:1fr 1fr} }
+.scale{position:relative;height:210px;margin-top:12px}
+.beam{position:absolute;left:10%;right:10%;top:118px;height:8px;border-radius:4px;background:#ffc94d;border:3px solid #0d1230;transform-origin:50% 50%;transition:transform .5s cubic-bezier(.3,1.4,.5,1)}
+.pan{position:absolute;top:8px;width:42%;text-align:center;font:800 13px var(--f-display)} .pan .ic{width:58px;height:58px;margin:0 auto}
+.pan.l{left:0} .pan.r{right:0}
+.post{position:absolute;left:50%;top:122px;width:10px;height:80px;margin-left:-5px;background:#c0c0cc;border:3px solid #0d1230;border-top:0}
+.ctl{margin-top:8px} .ctl label{display:block;font-size:13px;color:var(--muted)} .ctl .row{display:flex;align-items:center;gap:10px} .ctl .row input{flex:1} .ctl .row b{font:800 16px var(--f-num);min-width:8ch;text-align:right}
+.why3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+.why3 div{border:1px solid var(--line);border-radius:14px;padding:10px 12px;font-size:14px;line-height:1.45;color:var(--muted)} .why3 b{display:block;color:var(--ink);margin-bottom:2px}
+.net{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px} .net span{width:26px;height:26px}
+@media (max-width:620px){ .why3{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a class="back" href="../">← Satsland</a><a class="back" href="../spiel/">Zum Spiel</a></div>
+  <div>
+    <h1>Warum hat Bitcoin <span class="btc">Wert</span>?</h1>
+    <p class="lead">Bitcoin ist nicht durch Gold oder einen Staat gedeckt. Trotzdem zahlen Menschen viel Geld dafür. Warum? Die kurze Antwort: <b>Begrenztes Angebot trifft auf Nachfrage.</b></p>
+  </div>
+
+  <section class="card" aria-labelledby="h1s">
+    <h2 id="h1s">Die Preis-Waage <span class="mode" id="mode">Verbinde …</span></h2>
+    <div class="idea">Jeden Tag entstehen nur etwa <b>450 neue Bitcoin</b>. Stell ein, wie viel Geld pro Tag Menschen dafür ausgeben wollen, und schau, wohin der Preis kippt.</div>
+    <div class="scale"><div class="post"></div><div class="beam" id="beam"></div>
+      <div class="pan l" id="panL"><div class="ic" id="icL"></div>Nachfrage<br><span class="num" id="vL"></span></div>
+      <div class="pan r" id="panR"><div class="ic" id="icR"></div>Neues Angebot<br><span class="num">ca. 450 BTC/Tag</span></div></div>
+    <div class="ctl"><label for="dem">Geld, das täglich neu in Bitcoin fließen will</label><div class="row"><input id="dem" type="range" min="0" max="100" value="50"><b id="demV" class="num">–</b></div></div>
+    <div class="res" id="res"></div>
+  </section>
+
+  <section class="card" aria-labelledby="h2s">
+    <h2 id="h2s">Woher kommt die Nachfrage?</h2>
+    <div class="why3">
+      <div><b>🔒 Knapp und unabhängig</b>Niemand kann mehr Bitcoin drucken. Für viele ist das ein Schutz gegen <a href="../inflation/" style="color:var(--gold)">Inflation</a>.</div>
+      <div><b>🌍 Nützlich</b>Ohne Bank weltweit senden und selbst verwahren. Besonders wertvoll in Ländern mit schwacher Währung.</div>
+      <div><b>📞 Netzwerkeffekt</b>Ein Telefon allein ist nutzlos. Je mehr Menschen Bitcoin nutzen, desto nützlicher wird es für alle.</div>
+    </div>
+    <div class="net" id="net" aria-hidden="true"></div>
+    <p class="note"><b>Wie bei Gold:</b> Auch Gold hat keinen „inneren“ Wert, der seinen Preis erklärt. Sein Wert entsteht, weil viele Menschen es als knapp und verlässlich ansehen. Bei Bitcoin ist das genauso, nur digital und viel jünger.</p>
+  </section>
+
+  <section class="card" aria-labelledby="h3s">
+    <h2 id="h3s">Und warum schwankt der Preis so stark?</h2>
+    <p class="muted" style="margin:0">Das Angebot ist <b>fest</b> und kann nicht auf mehr Nachfrage reagieren. Ändert sich die Nachfrage, muss sich der <b>Preis</b> bewegen. Dazu kommt: Bitcoin ist noch jung, der Markt ist kleiner als bei Gold oder Aktien, und Nachrichten lösen schnell Gefühle aus (<a href="../fomo/" style="color:var(--gold)">FOMO und FUD</a>).</p>
+    <p class="note">Ob Bitcoin seinen Wert behält, weiß niemand sicher. Kritiker sagen, ohne Erträge oder Deckung könne der Preis auch stark fallen. Deshalb: <b>nur investieren, was du lange entbehren kannst.</b></p>
+  </section>
+
+  <section class="card" aria-labelledby="hMs">
+    <h2 id="hMs">Das solltest du dir merken</h2>
+    <div class="learn">
+      <div><b>Angebot fest</b><span>Die Menge neuer Bitcoin ist im Code festgelegt und <b>sinkt</b> mit jedem Halving.</span></div>
+      <div><b>Preis = Nachfrage</b><span>Weil das Angebot nicht reagiert, bewegt sich der <b>Preis</b>, wenn sich die Nachfrage ändert.</span></div>
+      <div><b>Wert durch Vertrauen</b><span>Wie bei Gold entsteht Wert, weil <b>viele Menschen</b> es als knapp und nützlich ansehen.</span></div>
+      <div><b>Keine Garantie</b><span>Der Preis kann auch stark fallen. Bitcoin ist <b>jung und schwankend</b>.</span></div>
+    </div>
+    <details class="qz"><summary>Teste dich: 3 Fragen</summary><div id="quiz"></div></details>
+  </section>
+
+  <section class="card next" id="next" aria-label="Weiter"></section>
+  <details class="foot"><summary>Quellen</summary><p>Kurs live von Coinbase. Neue Bitcoin pro Tag: 144 Blöcke × 3,125 BTC ≈ 450 BTC (seit dem Halving 2024). Die Waage ist ein stark vereinfachtes Modell.</p></details>
+  <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
+</div>
+
+<script src="../lern.js?v=13"></script>
+<script>
+/* =====================================================================
+   WERT-WAAGE – Lernwelt von Satsland
+   ===================================================================== */
+(() => {
+const $ = id => document.getElementById(id);
+let price = 0, live = false;
+$("icL").innerHTML = Lern.art("bag"); $("icR").innerHTML = Lern.art("coin");
+for (let i = 0; i < 18; i++) $("net").insertAdjacentHTML("beforeend", `<span style="opacity:${.25 + i/24}">${Lern.art(i % 3 ? "phone" : "hal")}</span>`);
+const usd = v => v >= 1e9 ? (v/1e9).toLocaleString("de-DE", {maximumFractionDigits: 1}) + " Mrd. $" : (v/1e6).toLocaleString("de-DE", {maximumFractionDigits: 0}) + " Mio. $";
+function calc(){
+  const base = price || 100000, today = 450*base, v = +$("dem").value, dem = today*Math.pow(4, (v - 50)/50);   // Regler: ein Viertel bis Vierfaches von heute
+  const p = dem/450, tilt = Math.max(-14, Math.min(14, Math.log(dem/today)/Math.log(4)*14));
+  $("beam").style.transform = `rotate(${-tilt}deg)`; $("demV").textContent = usd(dem); $("vL").textContent = usd(dem) + "/Tag";
+  $("panL").style.transform = `translateY(${tilt*2.2}px)`; $("panR").style.transform = `translateY(${-tilt*2.2}px)`;
+  const R = $("res"), up = p > base*1.05, down = p < base*.95;
+  R.className = "res " + (up ? "ok" : down ? "bad" : "warn");
+  R.innerHTML = `<strong>${up ? "📈 Der Preis steigt" : down ? "📉 Der Preis fällt" : "⚖️ Gleichgewicht"}: ca. ${Math.round(p).toLocaleString("de-DE")} $</strong>`
+    + (up ? "Mehr Geld will rein, als neue Bitcoin entstehen. Die Käufer überbieten sich gegenseitig." : down ? "Weniger Nachfrage, aber die neuen Bitcoin müssen trotzdem verkauft werden. Die Verkäufer gehen mit dem Preis runter." : `So ungefähr ist es heute${live ? " (Live-Kurs)" : ""}: Nachfrage und neues Angebot halten sich die Waage.`)
+    + ` <span class="muted">Stark vereinfacht: Auch bestehende Besitzer kaufen und verkaufen.</span>`;
+}
+$("dem").addEventListener("input", calc);
+fetch("https://api.coinbase.com/v2/prices/BTC-USD/spot").then(r => r.json()).then(j => { price = +j.data.amount || 0; live = price > 0; }).catch(() => {})
+  .finally(() => { $("mode").className = "mode " + (live ? "live" : "demo"); $("mode").textContent = live ? "Live-Kurs" : "Kurs geschätzt"; calc(); });
+calc();
+
+const QUIZ = [["Warum steigt der Preis, wenn mehr Menschen Bitcoin kaufen wollen?", ["Weil das Angebot fest ist und nicht mitwachsen kann", "Weil dann mehr Bitcoin gedruckt werden", "Weil die Gebühren steigen"], 0, "Bei festem Angebot muss sich der Preis bewegen."], ["Was meint „Netzwerkeffekt“?", ["Je mehr Menschen es nutzen, desto nützlicher wird es für alle", "Das Internet wird schneller", "Miner verdienen mehr"], 0, "Wie beim Telefon: Allein ist es nutzlos."], ["Ist ein steigender Bitcoin-Preis garantiert?", ["Nein, der Preis kann auch stark fallen", "Ja, wegen der 21 Millionen", "Ja, wegen der Halvings"], 0, "Knappheit allein garantiert keinen Preis. Ohne Nachfrage fällt er."]];
+Lern.quiz($("quiz"), "wert", QUIZ, "../"); Lern.visit("wert"); Lern.renderNext("wert", "../");
+})();
+</script>
+</body>
+</html>
