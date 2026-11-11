@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tausch-Insel · Satsland</title>
+<meta name="description" content="Lernwelt: Was ist Geld? Warum Tauschhandel scheitert und welche drei Aufgaben Geld erfüllt.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0b0f2a">
+<link rel="icon" href="../icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="stylesheet" href="../lern.css?v=16">
+<style>
+/* Lernwelt "Tausch-Insel": nur seitenspezifische Teile, der Rest kommt aus lern.css */
+.idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
+.kv{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}
+.kv div{border:1px solid var(--line);border-radius:12px;padding:8px 10px;font-size:12px;color:var(--muted)} .kv b{display:block;font:700 18px var(--f-num);color:var(--ink)} .kv .g{color:var(--gold)}
+.seg{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px} .seg .btn[aria-pressed="true"]{outline:2px solid var(--gold);background:rgba(247,147,26,.15)}
+.res{margin-top:12px;padding:12px 14px;border-radius:14px;border:2px solid var(--line);font-size:15px;line-height:1.5}
+.res strong{display:block;font-size:18px} .res.ok{border-color:var(--bull)} .res.ok strong{color:var(--bull)} .res.bad{border-color:var(--bear)} .res.bad strong{color:var(--bear)} .res.warn{border-color:var(--gold)} .res.warn strong{color:var(--gold)}
+.note{margin:10px 0 0;font-size:14px;color:var(--muted);line-height:1.5} .note b{color:var(--ink)} .note a{color:var(--gold)}
+@media (max-width:620px){ .kv{grid-template-columns:1fr 1fr} }
+.isle{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
+.pp{border:2px solid var(--line);border-radius:14px;padding:8px;text-align:center;background:rgba(255,255,255,.03);font:inherit;color:var(--ink);cursor:pointer;transition:transform .15s,border-color .2s}
+.pp:hover{transform:translateY(-3px)} .pp .e{font-size:30px;display:block} .pp b{display:block;font:900 13px var(--f-display)} .pp small{display:block;font-size:11px;color:var(--muted);line-height:1.3}
+.pp.hit{border-color:var(--bull);background:rgba(52,217,130,.12)} .pp.miss{border-color:var(--bear);animation:shake .4s}
+.inv{margin-top:12px;font-size:15px} .inv b{font-family:var(--f-display)}
+.fn{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.fn div{border:2px dashed var(--line);border-radius:14px;padding:10px;min-height:70px;font-size:13px;color:var(--muted)} .fn div b{display:block;color:var(--ink);font:900 14px var(--f-display);margin-bottom:4px}
+.cards2{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px} .cards2 button{border:2px solid var(--line);border-radius:12px;padding:8px 10px;background:rgba(255,255,255,.04);color:var(--ink);font:inherit;font-size:14px;cursor:pointer;text-align:left}
+.cards2 button.sel{border-color:var(--gold);background:rgba(255,201,77,.12)} .fn div.drop{border-color:var(--gold);cursor:pointer}
+.fn .ok{color:var(--bull);font-size:13px;margin-top:4px;display:block}
+@media (max-width:620px){ .isle{grid-template-columns:1fr 1fr} .fn{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a class="back" href="../">← Satsland</a><a class="back" href="../spiel/">Zum Spiel</a></div>
+  <div>
+    <h1>Was ist <span class="btc">Geld</span>?</h1>
+    <p class="lead">Bevor es um Bitcoin geht: Was ist Geld überhaupt? Auf einer kleinen Insel ohne Geld findest du es heraus.</p>
+  </div>
+
+  <section class="card" aria-labelledby="h1s">
+    <h2 id="h1s">1 · Tauschen ohne Geld</h2>
+    <div class="idea">Du bist <b>Fischer</b> und hast Hunger auf <b>Brot</b>. Geld gibt es nicht, nur Tausch. Tippe die Person an, mit der du als Nächstes tauschen willst.</div>
+    <div class="isle" id="isle"></div>
+    <p class="inv" id="inv"></p>
+    <div class="res" id="res" hidden></div>
+  </section>
+
+  <section class="card" aria-labelledby="h2s">
+    <h2 id="h2s">2 · Die drei Aufgaben von Geld</h2>
+    <p class="muted" style="margin:0">Tippe eine Aussage an und dann die passende Aufgabe.</p>
+    <div class="cards2" id="st"></div>
+    <div class="fn" id="fn"></div>
+  </section>
+
+  <section class="card" aria-labelledby="hMs">
+    <h2 id="hMs">Das solltest du dir merken</h2>
+    <div class="learn">
+      <div><b>Tausch ist mühsam</b><span>Ohne Geld muss man jemanden finden, der <b>genau das will</b>, was man hat. Das klappt selten.</span></div>
+      <div><b>Tauschmittel</b><span>Geld nimmt jeder an. Damit kann man <b>alles gegen alles</b> tauschen.</span></div>
+      <div><b>Wertspeicher</b><span>Gutes Geld behält seinen Wert, damit man <b>heute sparen</b> und später ausgeben kann.</span></div>
+      <div><b>Recheneinheit</b><span>Mit Geld kann man Preise <b>vergleichen</b>: Ein Brot kostet 3 €, ein Fisch 5 €.</span></div>
+    </div>
+    <details class="qz"><summary>Teste dich: 3 Fragen</summary><div id="quiz"></div></details>
+  </section>
+
+  <section class="card next" id="next" aria-label="Weiter"></section>
+  <details class="foot"><summary>Quellen</summary><p>Die drei Geldfunktionen sind Lehrbuchwissen der Volkswirtschaft. Die Tausch-Insel ist ein vereinfachtes Beispiel. Historiker diskutieren, wie verbreitet reiner Tauschhandel wirklich war, oft gab es auch Schuld-Notizen und Vertrauen.</p></details>
+  <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
+</div>
+
+<script src="../lern.js?v=16"></script>
+<script>
+/* =====================================================================
+   TAUSCH-INSEL – Lernwelt von Satsland
+   ===================================================================== */
+(() => {
+const $ = id => document.getElementById(id);
+// Insel: [Symbol, Name, hat, will]
+const P = [["🍞", "Bäckerin", "Brot", "Holz"], ["🪵", "Holzfäller", "Holz", "Schuhe"], ["👞", "Schuster", "Schuhe", "Fisch"], ["🧀", "Käser", "Käse", "Wein"]], IC = {Fisch: "🐟", Brot: "🍞", Holz: "🪵", Schuhe: "👞"};
+let have = "Fisch", steps = 0;
+function draw(){
+  $("isle").innerHTML = P.map(([e, n, h, w], i) => `<button class="pp" type="button" data-i="${i}"><span class="e">${e}</span><b>${n}</b><small>hat ${h}<br>will ${w}</small></button>`).join("");
+  $("inv").innerHTML = `Du hast: <b>${IC[have]} ${have}</b>${have === "Brot" ? " 🎉" : ""} · Tauschversuche: <b>${steps}</b>`;
+}
+$("isle").onclick = e => {
+  const b = e.target.closest(".pp"); if (!b || have === "Brot") return;
+  const [, n, h, w] = P[+b.dataset.i]; steps++;
+  if (w === have){ b.classList.add("hit"); have = h; } else { b.classList.remove("miss"); void b.offsetWidth; b.classList.add("miss"); }
+  draw();
+  if (have === "Brot"){ const R = $("res"); R.hidden = false; R.className = "res ok";
+    R.innerHTML = `<strong>Endlich Brot! Nach ${steps} Versuchen.</strong>Du musstest Fisch gegen Schuhe, Schuhe gegen Holz und Holz gegen Brot tauschen. Genau dafür wurde <b>Geld</b> erfunden: Ein Gut, das <b>jeder</b> annimmt. Dann verkaufst du deinen Fisch einfach und kaufst Brot.`; }
+};
+draw();
+// Aufgaben zuordnen
+const F = [["Tauschmittel", "Damit bezahlt man."], ["Wertspeicher", "Damit spart man für später."], ["Recheneinheit", "Damit vergleicht man Preise."]];
+const ST = [["Du bezahlst den Bäcker für ein Brot.", 0], ["Du legst Geld für den Urlaub im nächsten Jahr zurück.", 1], ["Auf dem Schild steht: Brot 3 €, Fisch 5 €.", 2], ["Der Schuster nimmt dein Geld, obwohl er keinen Fisch will.", 0], ["Dein Erspartes ist in 10 Jahren hoffentlich noch genauso viel wert.", 1], ["Du rechnest aus, ob ein Auto teurer ist als ein Fahrrad.", 2]];
+let sel = -1, done = 0;
+$("fn").innerHTML = F.map(([t, d], i) => `<div data-f="${i}"><b>${t}</b>${d}</div>`).join("");
+$("st").innerHTML = ST.map(([t], i) => `<button type="button" data-s="${i}">${t}</button>`).join("");
+$("st").onclick = e => { const b = e.target.closest("button"); if (!b) return; sel = +b.dataset.s; [...$("st").children].forEach(x => x.classList.toggle("sel", x === b)); $("fn").querySelectorAll("div").forEach(d => d.classList.add("drop")); };
+$("fn").onclick = e => {
+  const d = e.target.closest("div[data-f]"); if (!d || sel < 0) return;
+  const ok = ST[sel][1] === +d.dataset.f, b = $("st").querySelector(`[data-s="${sel}"]`);
+  if (ok){ d.insertAdjacentHTML("beforeend", `<span class="ok">✓ ${ST[sel][0]}</span>`); b.remove(); done++; if (done === ST.length) Lern.confetti(); }
+  else { b.classList.remove("sel"); Lern.toast("Nicht ganz. Überleg nochmal: bezahlen, sparen oder vergleichen?"); }
+  sel = -1; $("fn").querySelectorAll("div").forEach(x => x.classList.remove("drop"));
+};
+
+const QUIZ = [["Warum ist reiner Tauschhandel so mühsam?", ["Man muss jemanden finden, der genau das will, was man hat", "Weil Tauschen verboten ist", "Weil es zu viele Waren gibt"], 0, "Ökonomen nennen das die „doppelte Übereinstimmung der Wünsche“."], ["Du sparst für ein Auto in drei Jahren. Welche Aufgabe von Geld nutzt du?", ["Wertspeicher", "Recheneinheit", "Tauschmittel"], 0, "Gutes Geld muss seinen Wert über die Zeit halten."], ["„Ein Brot kostet 3 €.“ Welche Aufgabe erfüllt Geld hier?", ["Recheneinheit", "Wertspeicher", "Tauschmittel"], 0, "Geld macht Preise vergleichbar."]];
+Lern.quiz($("quiz"), "geld", QUIZ, "../"); Lern.visit("geld"); Lern.renderNext("geld", "../");
+})();
+</script>
+</body>
+</html>

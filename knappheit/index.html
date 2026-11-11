@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Knappheits-Messer · Satsland</title>
+<meta name="description" content="Lernwelt: Stock-to-Flow erklärt. Wie knapp ist Bitcoin im Vergleich zu Gold, und was taugen Knappheitsmodelle für Preisprognosen?">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0b0f2a">
+<link rel="icon" href="../icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="stylesheet" href="../lern.css?v=16">
+<style>
+/* Lernwelt "Knappheits-Messer": nur seitenspezifische Teile, der Rest kommt aus lern.css */
+.idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
+.kv{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}
+.kv div{border:1px solid var(--line);border-radius:12px;padding:8px 10px;font-size:12px;color:var(--muted)} .kv b{display:block;font:700 18px var(--f-num);color:var(--ink)} .kv .g{color:var(--gold)}
+.seg{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px} .seg .btn[aria-pressed="true"]{outline:2px solid var(--gold);background:rgba(247,147,26,.15)}
+.res{margin-top:12px;padding:12px 14px;border-radius:14px;border:2px solid var(--line);font-size:15px;line-height:1.5}
+.res strong{display:block;font-size:18px} .res.ok{border-color:var(--bull)} .res.ok strong{color:var(--bull)} .res.bad{border-color:var(--bear)} .res.bad strong{color:var(--bear)} .res.warn{border-color:var(--gold)} .res.warn strong{color:var(--gold)}
+.note{margin:10px 0 0;font-size:14px;color:var(--muted);line-height:1.5} .note b{color:var(--ink)} .note a{color:var(--gold)}
+@media (max-width:620px){ .kv{grid-template-columns:1fr 1fr} }
+.sf{margin-top:12px} .sf div{display:grid;grid-template-columns:7.5em 1fr 4.5em;align-items:center;gap:8px;margin-top:8px;font-size:14px}
+.sf i{display:block;height:18px;border-radius:9px;background:rgba(255,255,255,.07);overflow:hidden} .sf u{display:block;height:100%;transition:width .6s;border-radius:9px}
+.sf b{font:900 15px var(--f-num);text-align:right}
+.ctl{margin-top:14px} .ctl label{display:block;font-size:13px;color:var(--muted)} .ctl .row{display:flex;align-items:center;gap:10px} .ctl .row input{flex:1} .ctl .row b{font:900 18px var(--f-num);min-width:4ch;text-align:right}
+.formula{margin-top:12px;padding:10px 12px;border-radius:12px;background:#0b0f2a;border:1px solid var(--line);font:700 15px var(--f-num);text-align:center}
+.crit{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px} .crit div{border:2px solid var(--line);border-radius:14px;padding:10px 12px;font-size:14px;line-height:1.5} .crit .p{border-color:rgba(52,217,130,.5)} .crit .c{border-color:rgba(255,92,115,.5)} .crit b{display:block;font-family:var(--f-display)}
+@media (max-width:620px){ .crit{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a class="back" href="../">← Satsland</a><a class="back" href="../spiel/">Zum Spiel</a></div>
+  <div>
+    <h1>Wie knapp ist <span class="btc">Bitcoin</span>?</h1>
+    <p class="lead">Knappheit kann man messen: Wie viel gibt es schon, und wie viel kommt jedes Jahr dazu? Diese Zahl heißt <b>Stock-to-Flow</b>. Sie zeigt, wie schwer es ist, ein Gut zu verwässern.</p>
+  </div>
+
+  <section class="card" aria-labelledby="h1s">
+    <h2 id="h1s">Der Knappheits-Messer <span class="mode" id="mode">Verbinde …</span></h2>
+    <div class="formula">Stock-to-Flow = <span style="color:var(--gold)">Bestand</span> ÷ <span style="color:var(--bull)">neue Menge pro Jahr</span></div>
+    <p class="note">Bedeutung: So viele <b>Jahre</b> müsste man produzieren, um den heutigen Bestand noch einmal zu erzeugen. Je höher, desto knapper.</p>
+    <div class="ctl"><label for="yr">Jahr für Bitcoin</label><div class="row"><input id="yr" type="range" min="2010" max="2040" value="2026"><b id="yrV" class="num">2026</b></div></div>
+    <div class="sf" id="sf"></div>
+    <div class="kv" id="kv"></div>
+  </section>
+
+  <section class="card" aria-labelledby="h2s">
+    <h2 id="h2s">Kann man damit den Preis vorhersagen?</h2>
+    <p class="muted" style="margin:0">2019 wurde ein bekanntes <b>Stock-to-Flow-Modell</b> veröffentlicht. Es behauptete: Steigt die Knappheit nach jedem Halving, steigt der Preis nach einer festen Formel mit. Es wurde sehr populär, und dann ziemlich falsch.</p>
+    <div class="crit">
+      <div class="p"><b>👍 Was stimmt</b>Bitcoin wird mit jedem Halving messbar knapper. Ab etwa 2028 ist er nach dieser Rechnung knapper als Gold. Knappheit ist eine Voraussetzung für Wert.</div>
+      <div class="c"><b>👎 Was nicht stimmt</b>Knappheit allein macht keinen Preis, es braucht auch <b>Nachfrage</b>. Bekannte Prognosen des Modells, etwa 100.000 $ bis Ende 2021, trafen nicht ein. Ein Zusammenhang in der Vergangenheit ist keine Garantie.</div>
+    </div>
+    <p class="note">Merke: Modelle sind Werkzeuge zum Nachdenken, keine Kristallkugel. Mehr zum Preis in der Welt <a href="../wert/">Warum hat Bitcoin Wert?</a></p>
+  </section>
+
+  <section class="card" aria-labelledby="hMs">
+    <h2 id="hMs">Das solltest du dir merken</h2>
+    <div class="learn">
+      <div><b>Stock-to-Flow</b><span><b>Bestand ÷ neue Menge pro Jahr</b>. Je höher, desto schwerer lässt sich das Gut verwässern.</span></div>
+      <div><b>Halving verdoppelt</b><span>Jedes Halving <b>verdoppelt</b> die Knappheit von Bitcoin ungefähr.</span></div>
+      <div><b>Knapper als Gold</b><span>Ab etwa <b>2028</b> wird Bitcoin nach dieser Rechnung knapper als Gold sein.</span></div>
+      <div><b>Kein Preisorakel</b><span>Knappheit ohne Nachfrage macht keinen Preis. Das Modell lag mit Prognosen <b>daneben</b>.</span></div>
+    </div>
+    <details class="qz"><summary>Teste dich: 3 Fragen</summary><div id="quiz"></div></details>
+  </section>
+
+  <section class="card next" id="next" aria-label="Weiter"></section>
+  <details class="foot"><summary>Quellen</summary><p>Bitcoin-Bestand exakt aus der Blockhöhe berechnet (live von <a href="https://mempool.space">mempool.space</a>), zukünftige Jahre geschätzt mit rund 52.560 Blöcken pro Jahr. Gold gerundet: Bestand rund 216.000 t, Förderung rund 3.600 t pro Jahr (World Gold Council). Stock-to-Flow-Modell: PlanB, 2019.</p></details>
+  <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
+</div>
+
+<script src="../lern.js?v=16"></script>
+<script>
+/* =====================================================================
+   KNAPPHEITS-MESSER – Lernwelt von Satsland
+   ===================================================================== */
+(() => {
+const $ = id => document.getElementById(id);
+let height = 0, live = false;
+// Belohnung pro Block nach Halving-Epoche; Bestand aus Blockhöhe exakt berechnet
+const reward = e => 50/Math.pow(2, e);
+function supplyAt(h){ let s = 0; for (let e = 0; e < 34; e++){ const lo = e*210000, hi = (e + 1)*210000; if (h <= lo) break; s += (Math.min(h, hi) - lo)*reward(e); } return s; }
+// Ungefähre Blockhöhe zu Jahresbeginn (2009: 0, danach ca. 52.560 Blöcke/Jahr); heute aus Live-Höhe
+const hAt = y => { const now = new Date().getFullYear() + new Date().getMonth()/12; return height && Math.abs(y - now) < .5 ? height : Math.max(0, Math.round((height || 925000) + (y - now)*52560)); };
+const GOLD = {stock: 216000, flow: 3600};   // Tonnen, gerundet
+function draw(){
+  const y = +$("yr").value, h = hAt(y), st = supplyAt(h), fl = supplyAt(h + 52560) - st, sfB = st/fl, sfG = GOLD.stock/GOLD.flow;
+  $("yrV").textContent = y;
+  const max = Math.max(sfB, sfG, 130);
+  $("sf").innerHTML = [["🥇 Gold", sfG, "#ffc94d"], ["₿ Bitcoin " + y, sfB, "#f7931a"]].map(([n, v, c]) => `<div><span>${n}</span><i><u style="width:${Math.min(100, v/max*100)}%;background:${c}"></u></i><b>${Math.round(v).toLocaleString("de-DE")}</b></div>`).join("");
+  $("kv").innerHTML = `<div>Bitcoin-Bestand ${y}<b class="num">${(st/1e6).toLocaleString("de-DE", {maximumFractionDigits: 2})} Mio.</b></div><div>Neu pro Jahr<b class="num">${Math.round(fl).toLocaleString("de-DE")} BTC</b></div><div>Knapper als Gold?<b class="num ${sfB > sfG ? "g" : ""}">${sfB > sfG ? "Ja ✓" : "Noch nicht"}</b></div>`;
+}
+$("yr").addEventListener("input", draw);
+fetch("https://mempool.space/api/blocks/tip/height").then(r => r.text()).then(t => { height = +t || 0; live = height > 0; }).catch(() => {})
+  .finally(() => { $("mode").className = "mode " + (live ? "live" : "demo"); $("mode").textContent = live ? "Live-Blockhöhe" : "geschätzt"; draw(); });
+draw();
+
+const QUIZ = [["Was misst Stock-to-Flow?", ["Bestand geteilt durch die neue Menge pro Jahr", "Den Preis pro Gramm", "Die Zahl der Nutzer"], 0, "Je höher die Zahl, desto schwerer ist das Gut zu verwässern."], ["Was passiert mit der Knappheit von Bitcoin bei jedem Halving?", ["Sie verdoppelt sich ungefähr", "Sie halbiert sich", "Sie bleibt gleich"], 0, "Die neue Menge pro Jahr halbiert sich, der Bestand bleibt fast gleich."], ["Hat das Stock-to-Flow-Modell den Preis zuverlässig vorhergesagt?", ["Nein, bekannte Prognosen trafen nicht ein", "Ja, auf den Dollar genau", "Ja, aber nur bei Gold"], 0, "Knappheit allein macht keinen Preis, es braucht Nachfrage."]];
+Lern.quiz($("quiz"), "knappheit", QUIZ, "../"); Lern.visit("knappheit"); Lern.renderNext("knappheit", "../");
+})();
+</script>
+</body>
+</html>

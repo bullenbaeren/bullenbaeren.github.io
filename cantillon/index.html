@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Geldfluss · Satsland</title>
+<meta name="description" content="Lernwelt: Der Cantillon-Effekt. Wer neues Geld zuerst bekommt, profitiert. Wer es zuletzt bekommt, zahlt drauf.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0b0f2a">
+<link rel="icon" href="../icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="stylesheet" href="../lern.css?v=16">
+<style>
+/* Lernwelt "Geldfluss": nur seitenspezifische Teile, der Rest kommt aus lern.css */
+.idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
+.kv{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}
+.kv div{border:1px solid var(--line);border-radius:12px;padding:8px 10px;font-size:12px;color:var(--muted)} .kv b{display:block;font:700 18px var(--f-num);color:var(--ink)} .kv .g{color:var(--gold)}
+.seg{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px} .seg .btn[aria-pressed="true"]{outline:2px solid var(--gold);background:rgba(247,147,26,.15)}
+.res{margin-top:12px;padding:12px 14px;border-radius:14px;border:2px solid var(--line);font-size:15px;line-height:1.5}
+.res strong{display:block;font-size:18px} .res.ok{border-color:var(--bull)} .res.ok strong{color:var(--bull)} .res.bad{border-color:var(--bear)} .res.bad strong{color:var(--bear)} .res.warn{border-color:var(--gold)} .res.warn strong{color:var(--gold)}
+.note{margin:10px 0 0;font-size:14px;color:var(--muted);line-height:1.5} .note b{color:var(--ink)} .note a{color:var(--gold)}
+@media (max-width:620px){ .kv{grid-template-columns:1fr 1fr} }
+.flow{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-top:14px;align-items:end}
+.fp{position:relative;border:2px solid var(--line);border-radius:14px;padding:8px 4px;text-align:center;background:rgba(255,255,255,.03);transition:border-color .3s,background .3s}
+.fp .e{font-size:28px;display:block} .fp b{display:block;font:900 12px var(--f-display);line-height:1.2} .fp small{display:block;font:800 12px var(--f-num);margin-top:4px;color:var(--muted)}
+.fp.got{border-color:var(--gold);background:rgba(255,201,77,.1)} .fp .k{display:block;margin-top:4px;font:900 13px var(--f-num)} .fp .k.up{color:var(--bull)} .fp .k.dn{color:var(--bear)}
+.fp .coin{position:absolute;left:50%;top:-12px;width:26px;height:26px;transform:translateX(-50%);animation:pop .4s}
+.price{margin-top:14px;display:flex;align-items:center;gap:10px;font-size:14px;color:var(--muted)} .price i{flex:1;height:14px;border-radius:7px;background:rgba(255,255,255,.08);overflow:hidden} .price u{display:block;height:100%;width:20%;background:linear-gradient(90deg,var(--gold),var(--bear));transition:width .6s}
+.price b{font:900 16px var(--f-num);color:var(--ink);min-width:4.5ch;text-align:right}
+@media (max-width:520px){ .flow{gap:4px} .fp{padding:6px 2px} .fp .e{font-size:20px} .fp b{font-size:10px;word-break:break-word} .fp small{display:none} .fp .k{font-size:11px} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a class="back" href="../">← Satsland</a><a class="back" href="../spiel/">Zum Spiel</a></div>
+  <div>
+    <h1>Wer bekommt das neue <span class="btc">Geld</span> zuerst?</h1>
+    <p class="lead">Neues Geld landet nicht bei allen gleichzeitig. Es fließt nach und nach durch die Wirtschaft, und die <b>Preise steigen unterwegs</b>. Das nennt man den <b>Cantillon-Effekt</b>, nach dem Ökonomen Richard Cantillon (um 1730).</p>
+  </div>
+
+  <section class="card" aria-labelledby="h1s">
+    <h2 id="h1s">Neues Geld fließt durch die Stadt</h2>
+    <div class="idea">Die Zentralbank bringt <b>neues Geld</b> in Umlauf. Es landet erst bei den Banken, dann bei großen Firmen, dann bei Händlern und erst zum Schluss bei Arbeitern und Rentnern. Bei jedem Schritt <b>steigen die Preise</b> ein Stück.</div>
+    <div class="flow" id="flow"></div>
+    <div class="price"><span>Preise</span><i><u id="pu"></u></i><b id="pv">100</b></div>
+    <div class="seg"><button class="btn" id="go" type="button">🖨 Neues Geld in Umlauf bringen</button><button class="btn ghost" id="again" type="button" hidden>↺ Nochmal</button></div>
+    <div class="res" id="res" hidden></div>
+  </section>
+
+  <section class="card" aria-labelledby="h2s">
+    <h2 id="h2s">Was das im echten Leben heißt</h2>
+    <div class="learn">
+      <div><b>📈 Vermögen steigt zuerst</b><span>Neues Geld fließt oft zuerst in <b>Aktien und Immobilien</b>. Wer schon viel besitzt, profitiert früh.</span></div>
+      <div><b>🧾 Löhne kommen zuletzt</b><span>Gehälter und Renten werden meist <b>erst später</b> angepasst, wenn die Preise schon gestiegen sind.</span></div>
+    </div>
+    <p class="note">Wie stark der Effekt ist, wird unter Ökonomen diskutiert. Viele Bitcoiner sehen darin einen Grund für eine <b>feste Geldmenge</b>: Wenn niemand neues Geld schaffen kann, bekommt es auch niemand zuerst. Kritiker antworten, dass eine flexible Geldmenge in Krisen Arbeitsplätze retten kann.</p>
+  </section>
+
+  <section class="card" aria-labelledby="hMs">
+    <h2 id="hMs">Das solltest du dir merken</h2>
+    <div class="learn">
+      <div><b>Nicht alle gleichzeitig</b><span>Neues Geld kommt <b>schrittweise</b> bei den Menschen an.</span></div>
+      <div><b>Früh = Vorteil</b><span>Wer das Geld zuerst bekommt, kauft noch zu <b>alten Preisen</b>.</span></div>
+      <div><b>Spät = Nachteil</b><span>Wer es zuletzt bekommt, zahlt schon die <b>höheren Preise</b>.</span></div>
+      <div><b>Bitcoin</b><span>Bei einer festen Menge gibt es <b>kein neues Geld</b>, das jemand zuerst bekommen könnte.</span></div>
+    </div>
+    <details class="qz"><summary>Teste dich: 3 Fragen</summary><div id="quiz"></div></details>
+  </section>
+
+  <section class="card next" id="next" aria-label="Weiter"></section>
+  <details class="foot"><summary>Quellen</summary><p>Richard Cantillon, „Essai sur la nature du commerce en général“ (um 1730). Das Fluss-Beispiel ist vereinfacht und zeigt das Prinzip, keine echten Messwerte. Die Stärke des Effekts ist in der Forschung umstritten.</p></details>
+  <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
+</div>
+
+<script src="../lern.js?v=16"></script>
+<script>
+/* =====================================================================
+   GELDFLUSS – Lernwelt von Satsland
+   ===================================================================== */
+(() => {
+const $ = id => document.getElementById(id);
+// [Symbol, Name, Kaufkraft-Effekt in %]
+const F = [["🏦", "Banken", 8], ["🏢", "Große Firmen", 5], ["🛒", "Händler", 1], ["👷", "Arbeiter", -4], ["👵", "Rentner", -7]];
+let busy = false;
+function base(){ $("flow").innerHTML = F.map(([e, n]) => `<div class="fp"><span class="e">${e}</span><b>${n}</b><small>Kaufkraft</small><span class="k">±0 %</span></div>`).join(""); $("pu").style.width = "20%"; $("pv").textContent = "100"; $("res").hidden = true; }
+$("go").onclick = () => {
+  if (busy) return; busy = true; $("go").disabled = true; base();
+  F.forEach(([, , eff], i) => setTimeout(() => {
+    const el = $("flow").children[i]; el.classList.add("got"); el.insertAdjacentHTML("beforeend", `<span class="coin">${Lern.art("coin")}</span>`);
+    const k = el.querySelector(".k"); k.textContent = (eff > 0 ? "+" : "") + eff + " %"; k.className = "k " + (eff >= 0 ? "up" : "dn");
+    const p = 100 + (i + 1)*2; $("pu").style.width = 20 + (i + 1)*16 + "%"; $("pv").textContent = p;
+    if (i === F.length - 1){ const R = $("res"); R.hidden = false; R.className = "res warn";
+      R.innerHTML = `<strong>Die Preise stiegen von 100 auf 110.</strong>Die <b>Banken</b> konnten noch zu alten Preisen kaufen und gewinnen Kaufkraft. Bei <b>Arbeitern und Rentnern</b> kam das Geld erst an, als alles schon teurer war: Sie verlieren. Die Zahlen sind ein vereinfachtes Beispiel.`;
+      $("again").hidden = false; busy = false; }
+  }, 500 + i*900));
+};
+$("again").onclick = () => { $("go").disabled = false; $("again").hidden = true; base(); };
+base();
+
+const QUIZ = [["Was beschreibt der Cantillon-Effekt?", ["Wer neues Geld zuerst bekommt, profitiert, wer es zuletzt bekommt, verliert", "Geld wird gleichmäßig verteilt", "Preise sinken durch neues Geld"], 0, "Neues Geld fließt schrittweise, Preise steigen unterwegs."], ["Wer bekommt neues Geld meist zuletzt?", ["Arbeiter und Rentner", "Banken", "Große Firmen"], 0, "Löhne und Renten werden oft erst später angepasst."], ["Warum spielt der Effekt bei Bitcoin keine Rolle?", ["Weil die Menge fest ist und niemand neues Geld zuerst bekommt", "Weil Bitcoin schneller ist", "Weil Bitcoin Zinsen zahlt"], 0, "Neue Bitcoin entstehen nur nach festem Plan beim Mining."]];
+Lern.quiz($("quiz"), "cantillon", QUIZ, "../"); Lern.visit("cantillon"); Lern.renderNext("cantillon", "../");
+})();
+</script>
+</body>
+</html>

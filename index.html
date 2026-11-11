@@ -14,7 +14,7 @@
 <meta property="og:description" content="Bitcoin spielerisch verstehen, mit echten Live-Daten.">
 <meta property="og:image" content="https://satsland.github.io/og.png">
 <meta property="og:url" content="https://satsland.github.io/">
-<link rel="stylesheet" href="lern.css?v=15">
+<link rel="stylesheet" href="lern.css?v=16">
 <style>
 /* Übersicht der Lernwelten: gleiche Farben und Schriften wie das Spiel. */
 .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
@@ -80,22 +80,31 @@ details.fold[open] > summary{margin-bottom:12px}
     <h1>Sats<span>land</span></h1>
     <p class="lead">Bitcoin spielerisch verstehen: Lernwelten mit echten Live-Daten, ohne Anmeldung und ohne Tracking.</p>
   </div>
-  <p class="count"><b>23 Welten</b> in 5 Kapiteln · <b>5 Bosse</b></p>
+  <p class="count"><b>28 Welten</b> in 6 Kapiteln · <b>6 Bosse</b> + Endboss</p>
   <details class="card daily fold" data-k="daily"><summary><h2 id="dly">🔥 Tages-Challenge</h2><span class="muted sm" id="dlyS"></span></summary><div id="daily"></div></details>
   <section class="card path" aria-labelledby="pth"><div class="ph"><h2 id="pth">🗺️ Dein Lernpfad</h2><span class="muted" id="pathCount"></span></div>
     <p class="lvup" id="lvup"></p>
     <div class="next" id="next"></div>
-    <details class="kap fold" data-k="1"><summary><span class="cn">1</span><span class="ct"><b>🌱 Warum Bitcoin?</b><small>Was gutes Geld ausmacht, warum Bitcoin Wert hat und wie alles anfing.</small></span><span class="cp" data-cnt="1"><i><u></u></i><em></em></span></summary>
+    <details class="kap fold" data-k="1"><summary><span class="cn">1</span><span class="ct"><b>🏦 Geld verstehen</b><small>Was Geld ist, woher es kommt und warum es an Wert verliert.</small></span><span class="cp" data-cnt="1"><i><u></u></i><em></em></span></summary>
+      <div class="grid big">
+        <a class="w" href="geld/"><span class="tag live">Neu</span><span class="ic" aria-hidden="true"></span><b>Was ist Geld?</b><span>Tausch-Insel und die drei Aufgaben von Geld.</span><span class="go">Tausch-Insel →</span></a>
+        <a class="w" href="geldgeschichte/"><span class="tag live">Neu</span><span class="ic" aria-hidden="true"></span><b>Geldgeschichte</b><span>Muscheln, Gold, Papier, 1971 und Bitcoin in 9 Szenen.</span><span class="go">Geld-Zeitreise →</span></a>
+        <a class="w" href="geldschoepfung/"><span class="tag live">Neu</span><span class="ic" aria-hidden="true"></span><b>Wie Geld entsteht</b><span>Spiel Bank: Warum jeder Kredit neues Geld erschafft.</span><span class="go">Geld-Maschine →</span></a>
+        <a class="w" href="cantillon/"><span class="tag live">Neu</span><span class="ic" aria-hidden="true"></span><b>Cantillon-Effekt</b><span>Wer neues Geld zuerst bekommt, gewinnt. Wer zuletzt, verliert.</span><span class="go">Geldfluss →</span></a>
+        <a class="w" href="inflation/"><span class="tag live">Live</span><span class="ic" aria-hidden="true">💶</span><b>Geld &amp; Inflation</b><span>Warum verliert der Euro an Wert, und was ist bei Bitcoin anders?</span><span class="go">Kaufkraft-Supermarkt →</span></a>
+      </div>
+    </details>
+    <details class="kap fold" data-k="2"><summary><span class="cn">2</span><span class="ct"><b>🌱 Warum Bitcoin?</b><small>Das Kopier-Problem, gutes Geld, Knappheit und wie alles anfing.</small></span><span class="cp" data-cnt="2"><i><u></u></i><em></em></span></summary>
       <div class="grid big">
         <a class="w" href="doppelt/"><span class="tag live">Neu</span><span class="ic" aria-hidden="true"></span><b>Das Kopier-Problem</b><span>Warum digitales Geld so schwer ist und wie Bitcoin es ohne Bank löst.</span><span class="go">Kopier-Problem →</span></a>
         <a class="w" href="eigenschaften/"><span class="tag live">Start</span><span class="ic" aria-hidden="true">⚔️</span><b>Was macht Bitcoin aus?</b><span>Euro, Gold und Bitcoin im Duell um 10 Eigenschaften von gutem Geld.</span><span class="go">Geld-Duell →</span></a>
-        <a class="w" href="inflation/"><span class="tag live">Live</span><span class="ic" aria-hidden="true">💶</span><b>Geld &amp; Inflation</b><span>Warum verliert der Euro an Wert, und was ist bei Bitcoin anders?</span><span class="go">Kaufkraft-Supermarkt →</span></a>
         <a class="w" href="wert/"><span class="tag live">Neu</span><span class="ic" aria-hidden="true"></span><b>Warum hat Bitcoin Wert?</b><span>Angebot, Nachfrage und warum der Kurs so schwankt.</span><span class="go">Wert-Waage →</span></a>
         <a class="w" href="halving/"><span class="tag live">Live</span><span class="ic" aria-hidden="true">⏳</span><b>Knappheit &amp; Halving</b><span>Nur 21 Millionen, Halving-Countdown und wer die Miner danach bezahlt.</span><span class="go">Halving-Uhr →</span></a>
+        <a class="w" href="knappheit/"><span class="tag live">Neu</span><span class="ic" aria-hidden="true"></span><b>Knappheits-Modelle</b><span>Stock-to-Flow: Wie knapp ist Bitcoin im Vergleich zu Gold?</span><span class="go">Knappheits-Messer →</span></a>
         <a class="w" href="geschichte/"><span class="tag live">Live</span><span class="ic" aria-hidden="true">📜</span><b>Geschichte</b><span>Vom Whitepaper bis 100.000 $: Bitcoin in 15 Momenten.</span><span class="go">Zeitreise →</span></a>
       </div>
     </details>
-    <details class="kap fold" data-k="2"><summary><span class="cn">2</span><span class="ct"><b>🛡️ Sicher starten</b><small>Bevor du Bitcoin kaufst: Wallet, Seed, Betrug und echte Risiken.</small></span><span class="cp" data-cnt="2"><i><u></u></i><em></em></span></summary>
+    <details class="kap fold" data-k="3"><summary><span class="cn">3</span><span class="ct"><b>🛡️ Sicher starten</b><small>Bevor du Bitcoin kaufst: Wallet, Seed, Betrug und echte Risiken.</small></span><span class="cp" data-cnt="3"><i><u></u></i><em></em></span></summary>
       <div class="grid big">
         <a class="w" href="wallets/"><span class="tag live">Neu</span><span class="ic" aria-hidden="true">🗄</span><b>Wallets &amp; Backup</b><span>Welche Wallet schützt wovor, und dein Notfall-Plan fürs Erbe.</span><span class="go">Wallet-Check →</span></a>
         <a class="w" href="seed/"><span class="tag live">Live</span><span class="ic" aria-hidden="true">🔑</span><b>Selbstverwahrung</b><span>12 Wörter, die alles sind: aufschreiben, prüfen, sicher aufbewahren.</span><span class="go">Seed-Trainer →</span></a>
@@ -104,21 +113,21 @@ details.fold[open] > summary{margin-bottom:12px}
         <a class="w" href="risiken/"><span class="tag live">Neu</span><span class="ic" aria-hidden="true"></span><b>Risiken & Privatsphäre</b><span>Ist Bitcoin anonym? Spiel Detektiv und lerne die echten Risiken.</span><span class="go">Risiko-Radar →</span></a>
       </div>
     </details>
-    <details class="kap fold" data-k="3"><summary><span class="cn">3</span><span class="ct"><b>🧠 Klug investieren</b><small>Sparplan statt Bauchgefühl, und Finger weg vom Hebel.</small></span><span class="cp" data-cnt="3"><i><u></u></i><em></em></span></summary>
+    <details class="kap fold" data-k="4"><summary><span class="cn">4</span><span class="ct"><b>🧠 Klug investieren</b><small>Sparplan statt Bauchgefühl, und Finger weg vom Hebel.</small></span><span class="cp" data-cnt="4"><i><u></u></i><em></em></span></summary>
       <div class="grid big">
         <a class="w" href="sparplan/"><span class="tag live">Live</span><span class="ic" aria-hidden="true">🗓</span><b>Sparplan (DCA)</b><span>Was wäre aus jeden Monat 50 $ geworden? Mit Steuer-Grundregeln.</span><span class="go">Sparplan-Simulator →</span></a>
         <a class="w" href="fomo/"><span class="tag live">Live</span><span class="ic" aria-hidden="true">🎢</span><b>FOMO &amp; FUD</b><span>8 echte Momente: Kannst du deinen Gefühlen widerstehen?</span><span class="go">Gefühls-Achterbahn →</span></a>
         <a class="w" href="hebel/"><span class="tag live">Live</span><span class="ic" aria-hidden="true">💥</span><b>Hebel &amp; Liquidationen</b><span>Teste eine gehebelte Wette mit echten Kursen der letzten Tage.</span><span class="go">Hebel-Falle →</span></a>
       </div>
     </details>
-    <details class="kap fold" data-k="4"><summary><span class="cn">4</span><span class="ct"><b>💸 Bezahlen & Senden</b><small>Wie eine Zahlung wirklich abläuft, schnell und günstig.</small></span><span class="cp" data-cnt="4"><i><u></u></i><em></em></span></summary>
+    <details class="kap fold" data-k="5"><summary><span class="cn">5</span><span class="ct"><b>💸 Bezahlen & Senden</b><small>Wie eine Zahlung wirklich abläuft, schnell und günstig.</small></span><span class="cp" data-cnt="5"><i><u></u></i><em></em></span></summary>
       <div class="grid big">
         <a class="w" href="utxo/"><span class="tag live">Live</span><span class="ic" aria-hidden="true">👛</span><b>Adressen &amp; UTXO</b><span>Mit Bitcoin-Münzen bezahlen und sehen, woher das Wechselgeld kommt.</span><span class="go">Wechselgeld-Kasse →</span></a>
         <a class="w" href="bahnhof/"><span class="tag live">Live</span><span class="ic" aria-hidden="true">🚉</span><b>Transaktionen &amp; Gebühren</b><span>Wie eine Überweisung in einen Block kommt.</span><span class="go">Mempool-Bahnhof →</span></a>
         <a class="w" href="lightning/"><span class="tag live">Live</span><span class="ic" aria-hidden="true">⚡</span><b>Lightning</b><span>Kaffee bezahlen: Blockchain gegen Lightning im Rennen.</span><span class="go">Lightning-Rennen →</span></a>
       </div>
     </details>
-    <details class="kap fold" data-k="5"><summary><span class="cn">5</span><span class="ct"><b>⚙️ Unter der Haube</b><small>Die Technik hinter Bitcoin, am Ende als großes Gesamtbild.</small></span><span class="cp" data-cnt="5"><i><u></u></i><em></em></span></summary>
+    <details class="kap fold" data-k="6"><summary><span class="cn">6</span><span class="ct"><b>⚙️ Unter der Haube</b><small>Die Technik hinter Bitcoin, am Ende als großes Gesamtbild.</small></span><span class="cp" data-cnt="6"><i><u></u></i><em></em></span></summary>
       <div class="grid big">
         <a class="w" href="hashing/"><span class="tag live">Live</span><span class="ic" aria-hidden="true">🧬</span><b>Hashing</b><span>Der digitale Fingerabdruck: ein Zeichen ändern, alles ändert sich.</span><span class="go">Fingerabdruck-Maschine →</span></a>
         <a class="w" href="schluessel/"><span class="tag live">Echt</span><span class="ic" aria-hidden="true">🔐</span><b>Schlüssel &amp; Signaturen</b><span>Selbst unterschreiben, fälschen versuchen und scheitern.</span><span class="go">Schlüssel-Labor →</span></a>
@@ -143,7 +152,7 @@ details.fold[open] > summary{margin-bottom:12px}
   </details>
   <p class="foot">Unterhaltung und Lernen, keine Anlageberatung. Keine Cookies, kein Tracking. <a href="#" id="guideOn" style="color:inherit">Satoshi zurückholen</a></p>
 </div>
-<script src="lern.js?v=15"></script>
+<script src="lern.js?v=16"></script>
 <script>
 // Lernpfad: Fortschritt aus dem eigenen Browser, Häkchen an den Karten, Empfehlung als Nächstes
 (() => {
@@ -186,10 +195,10 @@ details.fold[open] > summary{margin-bottom:12px}
   Lern.daily(document.getElementById("daily"));
   document.getElementById("guideOn").onclick = e => { e.preventDefault(); try { localStorage.removeItem(Lern.GK); } catch(x){} location.reload(); };
   document.getElementById("album").innerHTML = Lern.BOSSES.map((b, k) => Lern.bossCard(k)).join("") + Lern.finalCard();
-  { const w5 = Lern.bossWon(), ready5 = [0, 1, 2, 3, 4].every(k => w5[k]);
-    document.getElementById("album").insertAdjacentHTML("afterend", `<button class="bossbtn ${w5[5] ? "won" : ""}" id="finalBtn" type="button" ${ready5 ? "" : "disabled"}><span class="bi">${Lern.art("satoshi")}</span><span>${w5[5] ? "👑 Satoshis Rätsel gelöst" : "★ Endboss: Satoshis Rätsel"}<small>${ready5 ? "10 Fragen aus allen Kapiteln, 12 Sekunden je Frage" : "🔒 Besiege erst alle 5 Kapitel-Bosse"}</small></span></button>`);
-    document.getElementById("finalBtn").onclick = () => Lern.boss(5); }
-  document.getElementById("albN").textContent = `${[0, 1, 2, 3, 4].filter(k => Lern.bossWon()[k]).length} von 5${Lern.bossWon()[5] ? " · 👑" : ""}`;
+  { const w5 = Lern.bossWon(), ready5 = Lern.BOSSES.every((x, k) => w5[k]);
+    document.getElementById("album").insertAdjacentHTML("afterend", `<button class="bossbtn ${w5.f ? "won" : ""}" id="finalBtn" type="button" ${ready5 ? "" : "disabled"}><span class="bi">${Lern.art("satoshi")}</span><span>${w5.f ? "👑 Satoshis Rätsel gelöst" : "★ Endboss: Satoshis Rätsel"}<small>${ready5 ? "10 Fragen aus allen Kapiteln, 12 Sekunden je Frage" : "🔒 Besiege erst alle 6 Kapitel-Bosse"}</small></span></button>`);
+    document.getElementById("finalBtn").onclick = () => Lern.boss("f"); }
+  document.getElementById("albN").textContent = `${Lern.BOSSES.filter((x, k) => Lern.bossWon()[k]).length} von ${Lern.BOSSES.length}${Lern.bossWon().f ? " · 👑" : ""}`;
   // Klappbereiche: gemerkter Zustand, sonst sinnvoller Standard
   let fold = {}; try { fold = JSON.parse(localStorage.getItem("satsland-fold")) || {}; } catch(e){}
   const nxCh = nxS ? (nxS.w ? Lern.chapterOf(nxS.w) : nxS.b) + 1 : 1, dly = Lern.streak();

@@ -7,14 +7,15 @@ const Lern = (() => {
   // Empfohlene Reihenfolge für Einsteiger: [id, Titel, Pfad]
   // Kapitel für Einsteiger: [Symbol, Titel, Kurzbeschreibung, Welten in Reihenfolge]
   const CHAPTERS = [
-    ["🌱", "Warum Bitcoin?", "Was gutes Geld ausmacht, warum Bitcoin Wert hat und wie alles anfing.", ["doppelt", "eigenschaften", "inflation", "wert", "halving", "geschichte"]],
+    ["🏦", "Geld verstehen", "Was Geld ist, woher es kommt und warum es an Wert verliert.", ["geld", "geldgeschichte", "geldschoepfung", "cantillon", "inflation"]],
+    ["🌱", "Warum Bitcoin?", "Das Kopier-Problem, gutes Geld, Knappheit und wie alles anfing.", ["doppelt", "eigenschaften", "wert", "halving", "knappheit", "geschichte"]],
     ["🛡️", "Sicher starten", "Bevor du Bitcoin kaufst: Wallet, Seed, Betrug und echte Risiken.", ["wallets", "seed", "betrug", "krypto", "risiken"]],
     ["🧠", "Klug investieren", "Sparplan statt Bauchgefühl, und Finger weg vom Hebel.", ["sparplan", "fomo", "hebel"]],
     ["💸", "Bezahlen & Senden", "Wie eine Zahlung wirklich abläuft, schnell und günstig.", ["utxo", "bahnhof", "lightning"]],
     ["⚙️", "Unter der Haube", "Die Technik hinter Bitcoin, am Ende als großes Gesamtbild.", ["hashing", "schluessel", "blockchain", "mining", "nodes", "reise"]]
   ];
   // Lernpfad = alle Welten in Kapitel-Reihenfolge: [id, Titel, Pfad]
-  const TITLES = {doppelt: ["Kopier-Problem", "doppelt/"], wert: ["Wert-Waage", "wert/"], risiken: ["Risiko-Radar", "risiken/"], reise: ["Reise einer Zahlung", "reise/"], eigenschaften: ["Geld-Duell", "eigenschaften/"], inflation: ["Geld & Inflation", "inflation/"], halving: ["Knappheit & Halving", "halving/"], geschichte: ["Zeitreise", "geschichte/"], wallets: ["Wallet-Check", "wallets/"], seed: ["Seed-Trainer", "seed/"], betrug: ["Betrug erkennen", "betrug/"], krypto: ["Coin-Check", "krypto/"], sparplan: ["Sparplan", "sparplan/"], fomo: ["Gefühls-Achterbahn", "fomo/"], hebel: ["Hebel-Falle", "hebel/"], utxo: ["Wechselgeld-Kasse", "utxo/"], bahnhof: ["Mempool-Bahnhof", "bahnhof/"], lightning: ["Lightning", "lightning/"], hashing: ["Fingerabdruck-Maschine", "hashing/"], schluessel: ["Schlüssel-Labor", "schluessel/"], blockchain: ["Blockchain", "blockchain/"], mining: ["Mining-Werkstatt", "mining/"], nodes: ["Node-Wache", "nodes/"]};
+  const TITLES = {geld: ["Tausch-Insel", "geld/"], geldgeschichte: ["Geld-Zeitreise", "geldgeschichte/"], geldschoepfung: ["Geld-Maschine", "geldschoepfung/"], cantillon: ["Geldfluss", "cantillon/"], knappheit: ["Knappheits-Messer", "knappheit/"], doppelt: ["Kopier-Problem", "doppelt/"], wert: ["Wert-Waage", "wert/"], risiken: ["Risiko-Radar", "risiken/"], reise: ["Reise einer Zahlung", "reise/"], eigenschaften: ["Geld-Duell", "eigenschaften/"], inflation: ["Geld & Inflation", "inflation/"], halving: ["Knappheit & Halving", "halving/"], geschichte: ["Zeitreise", "geschichte/"], wallets: ["Wallet-Check", "wallets/"], seed: ["Seed-Trainer", "seed/"], betrug: ["Betrug erkennen", "betrug/"], krypto: ["Coin-Check", "krypto/"], sparplan: ["Sparplan", "sparplan/"], fomo: ["Gefühls-Achterbahn", "fomo/"], hebel: ["Hebel-Falle", "hebel/"], utxo: ["Wechselgeld-Kasse", "utxo/"], bahnhof: ["Mempool-Bahnhof", "bahnhof/"], lightning: ["Lightning", "lightning/"], hashing: ["Fingerabdruck-Maschine", "hashing/"], schluessel: ["Schlüssel-Labor", "schluessel/"], blockchain: ["Blockchain", "blockchain/"], mining: ["Mining-Werkstatt", "mining/"], nodes: ["Node-Wache", "nodes/"]};
   const PATH = CHAPTERS.flatMap(c => c[3].map(id => [id, ...TITLES[id]]));
   const chapterOf = id => CHAPTERS.findIndex(c => c[3].includes(id));
   const load = () => { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch(e){ return {}; } };
@@ -82,6 +83,8 @@ const Lern = (() => {
   const hl = (x, y, rx, ry) => `<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="#fff" opacity=".45"/>`;
   const coinP = (cx, cy, r) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="#ffc94d" ${SK}/><circle cx="${cx}" cy="${cy}" r="${r*.72}" fill="none" stroke="#e0a000" stroke-width="3"/><text x="${cx}" y="${cy + r*.36}" font-size="${r}" font-weight="900" text-anchor="middle" fill="#b86e00" font-family="Arial">₿</text>${hl(cx - r*.35, cy - r*.45, r*.3, r*.14)}`;
   const ART = {
+    shell: `<path d="M50 88C30 86 10 70 10 48 10 26 28 12 50 12s40 14 40 36c0 22-20 38-40 40z" fill="#ffd0f0" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><path d="M50 88V20M50 88L26 26M50 88L74 26M50 88L14 46M50 88L86 46" fill="none" stroke="#c97aa8" stroke-width="3"/><path d="M38 88h24v6H38z" fill="#ffb3c8" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>`,
+    gauge: `<path d="M12 70a38 38 0 0 1 76 0z" fill="#f2f4ff" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><path d="M18 66a32 32 0 0 1 20-26" fill="none" stroke="#34d982" stroke-width="7"/><path d="M40 38a32 32 0 0 1 22 0" fill="none" stroke="#ffc94d" stroke-width="7"/><path d="M64 40a32 32 0 0 1 18 26" fill="none" stroke="#ff5c73" stroke-width="7"/><path d="M50 70L74 42" stroke="#0d1230" stroke-width="6" stroke-linecap="round"/><circle cx="50" cy="70" r="7" fill="#f7931a" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><text x="50" y="92" font-size="14" font-weight="900" text-anchor="middle" fill="#fff" font-family="Arial">S2F</text>`,
     copy: `<path d="M14 22h44v58H14z" fill="#f4efe1" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><path d="M42 14h44v58H42z" fill="#fff1c2" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="64" cy="40" r="12" fill="#ffc94d" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><text x="64" y="45" font-size="14" font-weight="900" text-anchor="middle" fill="#b86e00" font-family="Arial">₿</text><circle cx="36" cy="52" r="12" fill="#ffc94d" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><text x="36" y="57" font-size="14" font-weight="900" text-anchor="middle" fill="#b86e00" font-family="Arial">₿</text><path d="M58 84l8 8 8-8" fill="none" stroke="#ff5c73" stroke-width="5" stroke-linecap="round"/>`,
     eye: `<path d="M6 50q44-44 88 0-44 44-88 0z" fill="#fff" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="50" cy="50" r="18" fill="#7cc4ff" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="50" cy="50" r="8" fill="#0d1230"/><circle cx="44" cy="44" r="4" fill="#fff"/><path d="M18 26l-6-8M50 18V8M82 26l6-8" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>`,
     plankton: `<path d="M50 18c18 0 30 14 30 32S68 84 50 84 20 70 20 50s12-32 30-32z" fill="#7ad890" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="36" cy="40" r="4" fill="#34d982"/><circle cx="62" cy="64" r="5" fill="#34d982"/><circle cx="58" cy="34" r="3" fill="#34d982"/><circle cx="44" cy="52" r="6" fill="#fff" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="45" cy="52" r="2.7" fill="#0d1230"/><circle cx="58" cy="50" r="5" fill="#fff" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="59" cy="50" r="2.25" fill="#0d1230"/><path d="M20 50l-10-4M80 50l10-4M50 18l2-10M50 84l-2 10" stroke="#0d1230" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>`,
@@ -135,7 +138,7 @@ const Lern = (() => {
   const art = n => `<svg viewBox="0 0 100 100" width="100%" height="100%" aria-hidden="true">${ART[n]}</svg>`;
 
   // Zeichnung je Welt (Weltsymbol und Karte im Lernpfad)
-  const CARD = {doppelt: "copy", wert: "coin", risiken: "eye", reise: "phone", eigenschaften: "scale", inflation: "dollar", halving: "scissors", geschichte: "pizza", wallets: "bank2", seed: "letter", betrug: "mask", krypto: "rocket",
+  const CARD = {geld: "shell", geldgeschichte: "trophy", geldschoepfung: "printer", cantillon: "tower", knappheit: "gauge", doppelt: "copy", wert: "coin", risiken: "eye", reise: "phone", eigenschaften: "scale", inflation: "dollar", halving: "scissors", geschichte: "pizza", wallets: "bank2", seed: "letter", betrug: "mask", krypto: "rocket",
     sparplan: "pig", fomo: "boom", hebel: "volcano", utxo: "bag", bahnhof: "train", lightning: "bolt", hashing: "finger", schluessel: "key", blockchain: "chain", mining: "pick", nodes: "server"};
 
   // ---------- Tages-Challenge mit Serie ----------
@@ -196,8 +199,13 @@ const Lern = (() => {
 
   // ---------- Satoshi als Begleiter ----------
   const TIPS = {
-    "": "Willkommen in Satsland! Mach die Tages-Challenge und besiege alle 5 Bosse.",
-    doppelt: "Hi, ich bin Satoshi! Versuch mal, eine Münze zweimal auszugeben.",
+    "": "Willkommen in Satsland! Mach die Tages-Challenge und besiege alle Bosse.",
+    geld: "Hi, ich bin Satoshi! Bevor es um Bitcoin geht: Was ist eigentlich Geld?",
+    geldgeschichte: "5.000 Jahre Geld in 9 Stationen. Achte darauf, was immer wieder schiefging.",
+    geldschoepfung: "Spiel Bank und vergib einen Kredit. Du wirst staunen, woher das Geld kommt.",
+    cantillon: "Wer bekommt neues Geld zuerst? Schau genau hin.",
+    knappheit: "Knapper als Gold? Schieb mal das Jahr nach vorne.",
+    doppelt: "Versuch mal, eine Münze zweimal auszugeben.",
     wert: "Warum zahlen Menschen für Bitcoin? Kipp mal die Waage.",
     risiken: "Bitcoin ist nicht anonym. Spiel Detektiv und sieh selbst.",
     reise: "Begleite deine Zahlung durch alle 7 Stationen. Das ist das große Ganze!",
@@ -248,6 +256,10 @@ const Lern = (() => {
   const sl = (t, x, y, d = 0) => `<span class="lbl" style="left:${x}%;top:${y}%;animation-delay:${d}s">${t}</span>`;
   const sf = (n, fx, fy, x, y, z, d) => sa(n, x, y, z, "fly 1.3s cubic-bezier(.3,.7,.3,1) both", d, `--fx:${fx}%;--fy:${fy}%`);
   const INTRO = {
+    geld: ["day", "Fisch gegen Brot? Schwierig …", sa("shell", 24, 60, 56, "grow .5s both", .2) + sa("bag", 50, 56, 66, "grow .5s both", .6) + sa("coin", 78, 60, 56, "grow .5s both", 1) + sl("Was ist Geld?", 50, 88, 1.4)],
+    geldschoepfung: ["night", "Woher kommt eigentlich Geld?", sa("bank2", 30, 60, 76) + sf("dollar", 30, 60, 74, 56, 56, .8) + sl("Kredit = neues Geld", 70, 88, 1.6)],
+    cantillon: ["dusk", "Das neue Geld kommt …", sa("printer", 16, 60, 56) + sf("coin", 16, 60, 40, 56, 30, .5) + sf("coin", 16, 60, 62, 60, 30, 1) + sf("coin", 16, 60, 84, 64, 30, 1.5) + sl("… nicht bei allen gleich", 60, 88, 2)],
+    knappheit: ["night", "Wie knapp ist knapp?", sa("gauge", 34, 56, 86, "grow .5s both") + sa("coin", 74, 60, 56, "bobA 1.4s ease-in-out infinite") + sl("Bestand ÷ Neues", 70, 88, 1)],
     doppelt: ["night", "Kopieren? Strg+C, Strg+V …", sa("coin", 30, 58, 64) + sa("copy", 66, 58, 76, "grow .5s both", .6) + sl("Aus 1 werden 2?!", 66, 88, 1.2)],
     wert: ["day", "Was ist Bitcoin wert?", sa("scale", 50, 56, 96, "tilt 1.6s cubic-bezier(.3,1.6,.5,1) both", .2, "transform:translate(-50%,-50%) rotate(-12deg)") + sa("bag", 26, 40, 40, "grow .4s both", .6) + sa("coin", 74, 40, 40, "grow .4s both", .9) + sl("Angebot ⚖️ Nachfrage", 50, 88, 1.4)],
     risiken: ["night", "Wer schaut da zu?", sa("eye", 50, 50, 90, "grow .6s both", .2) + sa("mask", 18, 64, 50, "bobA 1.6s ease-in-out infinite") + sl("Alles öffentlich", 76, 86, 1)],
@@ -280,11 +292,17 @@ const Lern = (() => {
   // ---------- Kapitel-Bosse: 5 Fragen auf Zeit, Boss hat 4 Leben, du 2 ----------
   const BOSSES = [
     ["printer", "Der Gelddrucker", "Ich drucke einfach mehr Geld. Hahaha!", [
-      ["Es wird mehr Geld gedruckt, aber nicht mehr hergestellt. Was passiert meist?", ["Die Preise steigen", "Die Preise fallen", "Nichts"], "Mehr Geld für gleich viele Waren: Jeder Euro kauft weniger."],
+      ["Warum ist reiner Tauschhandel so mühsam?", ["Man muss jemanden finden, der genau das will, was man hat", "Weil Tauschen verboten ist", "Weil es zu viele Waren gibt"], "Genau dafür wurde Geld erfunden."],
+      ["Du sparst für die Zukunft. Welche Aufgabe von Geld ist das?", ["Wertspeicher", "Recheneinheit", "Tauschmittel"], "Gutes Geld behält seinen Wert."],
+      ["Was endete am 15. August 1971?", ["Der Umtausch von Dollar in Gold", "Die D-Mark", "Der Tauschhandel"], "Seitdem ist Geld nur noch durch Vertrauen gedeckt."],
+      ["Wie entsteht der größte Teil unseres Geldes?", ["Wenn Banken Kredite vergeben", "Durch Gelddruckmaschinen", "Durch Mining"], "Ein Kredit schreibt neues Guthaben auf ein Konto."],
+      ["Wer verliert beim Cantillon-Effekt meist?", ["Wer das neue Geld zuletzt bekommt", "Wer es zuerst bekommt", "Niemand"], "Er zahlt schon die höheren Preise."]]],
+    ["ghost", "Der Doppel-Geist", "Ich gebe jede Münze zweimal aus. Mindestens!", [
+      ["Wie verhindert Bitcoin, dass eine Münze zweimal ausgegeben wird?", ["Alle Nodes prüfen dasselbe Kassenbuch, die zweite Ausgabe ist ungültig", "Eine Bank passt auf", "Gar nicht"], "Was zuerst im Block steht, gilt."],
       ["Wie viele Bitcoin gibt es höchstens?", ["21 Millionen", "21 Milliarden", "Unbegrenzt"], "Die Grenze steht fest im Code."],
-      ["Was halbiert sich beim Halving?", ["Die neuen Bitcoin pro Block", "Der Bitcoin-Preis", "Die Zahl der Nodes"], "Die Belohnung für Miner halbiert sich etwa alle 4 Jahre."],
-      ["Wo hat Gold einen Vorteil gegenüber Bitcoin?", ["Es ist seit Jahrtausenden bewährt", "Es ist leichter zu verschicken", "Es ist besser teilbar"], "Bitcoin gibt es erst seit 2009."],
-      ["Wer kann neue Euro erschaffen?", ["Zentralbank und Banken", "Jeder Bürger", "Niemand"], "Bei Bitcoin kann das dagegen niemand."]]],
+      ["Was halbiert sich beim Halving?", ["Die neuen Bitcoin pro Block", "Der Bitcoin-Preis", "Die Zahl der Nodes"], "Etwa alle 4 Jahre."],
+      ["Was misst Stock-to-Flow?", ["Bestand geteilt durch neue Menge pro Jahr", "Den Preis pro Gramm", "Die Zahl der Wallets"], "Je höher, desto knapper."],
+      ["Wo hat Gold einen Vorteil gegenüber Bitcoin?", ["Es ist seit Jahrtausenden bewährt", "Es ist leichter zu verschicken", "Es ist besser teilbar"], "Bitcoin gibt es erst seit 2009."]]],
     ["phisher", "Phishing-Phil", "Gib mir mal kurz deine Seed-Wörter …", [
       ["Der „Support“ fragt im Chat nach deinen Seed-Wörtern. Was tust du?", ["Niemals herausgeben, das ist Betrug", "Herausgeben, er will helfen", "Nur die Hälfte schicken"], "Echter Support fragt nie nach dem Seed."],
       ["Wo bewahrst du Seed-Wörter am besten auf?", ["Offline auf Papier oder Metall", "Als Foto in der Cloud", "In einer E-Mail an dich selbst"], "Alles Digitale kann gehackt werden."],
@@ -311,10 +329,13 @@ const Lern = (() => {
       ["Warum braucht Bitcoin-Mining Strom?", ["Weil Miner raten müssen, bis ein Hash passt", "Für die Kühlung von Börsen", "Für das Drucken von Coins"], "Proof of Work: echter Aufwand schützt das Netz."]]],
   ];
   const FINAL = ["satoshi", "Satoshis Rätsel", "Du hast alle besiegt. Aber kennst du wirklich ALLES über Bitcoin?", []];
-  const BK = "satsland-boss", bossWon = () => { try { return JSON.parse(localStorage.getItem(BK)) || {}; } catch(e){ return {}; } };
+  const BK = "satsland-boss";
+  function bossWon(){ let o = {}; try { o = JSON.parse(localStorage.getItem(BK)) || {}; } catch(e){}
+    if (!o.v2){ const n = {v2: 1}; Object.entries(o).forEach(([k, v]) => { if (k === "5") n.f = v; else if (/^\d$/.test(k)) n[+k + 1] = v; }); o = n; try { localStorage.setItem(BK, JSON.stringify(o)); } catch(e){} }
+    return o; }
   function boss(k){
     // k = 0–4: Kapitel-Boss (5 Fragen, 4 Leben, du 2, 15 s) · k = 5: Endboss (10 Fragen aus allen Kapiteln, 8 Leben, du 3, 12 s)
-    const fin = k === 5, [img, name, taunt, Q] = fin ? FINAL : BOSSES[k], HP = fin ? 8 : 4, LIVES = fin ? 3 : 2, TIME = fin ? 12 : 15;
+    const fin = k === "f", [img, name, taunt, Q] = fin ? FINAL : BOSSES[k], HP = fin ? 8 : 4, LIVES = fin ? 3 : 2, TIME = fin ? 12 : 15;
     const bg = document.createElement("div"); bg.className = "bossbg";
     let i = 0, hp = HP, lives = LIVES, t = 0, timer = 0, lock = false;
     const order = (fin ? BOSSES.flatMap(b => [...b[3]].sort(() => Math.random() - .5).slice(0, 2)) : Q.map(q => q)).sort(() => Math.random() - .5);
@@ -352,8 +373,8 @@ const Lern = (() => {
     }
     hud(); setTimeout(ask, 1400);
   }
-  function finalCard(){ const won = bossWon()[5];
-    return `<span class="tcard bosscard goldcard ${won ? "got" : "lock"}"><span class="tn">★</span><span class="tart">${won ? art("satoshi") : "?"}</span><b>${won ? "Satoshis Rätsel" : "Endboss"}</b><small>${won ? "👑 Goldene Karte" : "Alle 5 Bosse besiegen"}</small></span>`; }
+  function finalCard(){ const won = bossWon().f;
+    return `<span class="tcard bosscard goldcard ${won ? "got" : "lock"}"><span class="tn">★</span><span class="tart">${won ? art("satoshi") : "?"}</span><b>${won ? "Satoshis Rätsel" : "Endboss"}</b><small>${won ? "👑 Goldene Karte" : "Alle Bosse besiegen"}</small></span>`; }
   function bossCard(k){ const won = bossWon()[k], [img, name] = BOSSES[k];
     return `<span class="tcard bosscard ${won ? "got" : "lock"} ${won === "perfect" ? "shiny" : ""}"><span class="tn">B${k + 1}</span><span class="tart">${won ? art(img) : "?"}</span><b>${won ? name : "Boss " + (k + 1)}</b><small>${won === "perfect" ? "✨ Glanzkarte" : won ? "🏆 besiegt" : "Kapitel " + (k + 1)}</small></span>`; }
 
@@ -402,10 +423,10 @@ const Lern = (() => {
     ["🍕", "Pizza-Kenner", "Die Zeitreise geschafft", (s) => done(s, "geschichte")],
     ["🔥", "Funkenschlag", "3 Tage Tages-Challenge in Folge", (s, d) => (d.best || 0) >= 3],
     ["☄️", "Dauerbrenner", "7 Tage Tages-Challenge in Folge", (s, d) => (d.best || 0) >= 7],
-    ["👹", "Bossjäger", "Den ersten Boss besiegt", (s, d, b) => [0, 1, 2, 3, 4].some(k => b[k])],
-    ["✨", "Glanzsammler", "3 Glanz-Bosskarten", (s, d, b) => [0, 1, 2, 3, 4].filter(k => b[k] === "perfect").length >= 3],
-    ["🏆", "Bezwinger", "Alle 5 Kapitel-Bosse besiegt", (s, d, b) => [0, 1, 2, 3, 4].every(k => b[k])],
-    ["👑", "Satoshis Erbe", "Den Endboss besiegt", (s, d, b) => !!b[5]],
+    ["👹", "Bossjäger", "Den ersten Boss besiegt", (s, d, b) => BOSSES.some((x, k) => b[k])],
+    ["✨", "Glanzsammler", "3 Glanz-Bosskarten", (s, d, b) => BOSSES.filter((x, k) => b[k] === "perfect").length >= 3],
+    ["🏆", "Bezwinger", "Alle Kapitel-Bosse besiegt", (s, d, b) => BOSSES.every((x, k) => b[k])],
+    ["👑", "Satoshis Erbe", "Den Endboss besiegt", (s, d, b) => !!b.f],
     ["🐋", "Wal", "Alle Welten geschafft", (s) => PATH.every(([id]) => done(s, id))],
     ["📚", "Wortschatz", "10 Begriffe im Lexikon nachgeschlagen", (s, d, b, t) => (t.words || 0) >= 10],
     ["🦉", "Nachteule", "Zwischen Mitternacht und 4 Uhr gelernt", (s, d, b, t) => !!t.owl],
@@ -433,7 +454,7 @@ const Lern = (() => {
     if (!o || typeof o !== "object") return false;
     const get = k => { try { return JSON.parse(localStorage.getItem(k)) || {}; } catch(e){ return {}; } }, put = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} };
     const L = get("bvb-lernen"); Object.entries(o["bvb-lernen"] || {}).forEach(([id, v]) => { const a = L[id] || {}; L[id] = Object.assign({}, a, v, {quiz: Math.max(a.quiz || 0, v.quiz || 0) || undefined, total: v.total || a.total}); }); put("bvb-lernen", L);
-    const B = get("satsland-boss"); Object.entries(o["satsland-boss"] || {}).forEach(([k, v]) => { if (v === "perfect" || !B[k]) B[k] = v; }); put("satsland-boss", B);
+    const B = get("satsland-boss"); const B0 = bossWon(); localStorage.setItem("satsland-boss", JSON.stringify(Object.assign({}, o["satsland-boss"] || {}))); const B1 = bossWon(); Object.entries(B1).forEach(([k, v]) => { if (v === "perfect" || !B0[k]) B0[k] = v; }); put("satsland-boss", B0);
     const D = get("satsland-daily"), d2 = o["satsland-daily"] || {}; if ((d2.last || "") > (D.last || "") || (d2.streak || 0) > (D.streak || 0)) put("satsland-daily", Object.assign({}, D, d2, {best: Math.max(D.best || 0, d2.best || 0)}));
     const T = get("satsland-titles"), t2 = o["satsland-titles"] || {}; T.got = Object.assign({}, t2.got || {}, T.got || {}); T.words = Math.max(T.words || 0, t2.words || 0); T.owl = T.owl || t2.owl; put("satsland-titles", T);
     return true;
@@ -442,7 +463,7 @@ const Lern = (() => {
   // ---------- Spaß-Schicht: Level, Konfetti, Einblenden ----------
   const ICON = {eigenschaften: "⚔️", inflation: "🛒", halving: "⏳", hashing: "🧬", blockchain: "🔗", bahnhof: "🚉", seed: "🔑", betrug: "🕵️", sparplan: "🐷", lightning: "⚡", mining: "⛏", nodes: "🖥", schluessel: "🔐", utxo: "👛", wallets: "🗄", fomo: "🎢", hebel: "💥", geschichte: "📜", krypto: "🟠"};
   // Sats-Level nach geschafften Welten (angelehnt an die Bitcoin-Tierwelt von Garnele bis Wal)
-  const LEVELS = [[0, "🦠", "Plankton", "plankton"], [1, "🦐", "Garnele", "shrimp"], [3, "🦀", "Krabbe", "crab"], [6, "🐟", "Fisch", "fish"], [10, "🐬", "Delfin", "dolphin"], [14, "🦈", "Hai", "shark"], [18, "🐳", "Buckelwal", "humpback"], [23, "🐋", "Wal", "whale"]];
+  const LEVELS = [[0, "🦠", "Plankton", "plankton"], [1, "🦐", "Garnele", "shrimp"], [3, "🦀", "Krabbe", "crab"], [7, "🐟", "Fisch", "fish"], [12, "🐬", "Delfin", "dolphin"], [17, "🦈", "Hai", "shark"], [22, "🐳", "Buckelwal", "humpback"], [28, "🐋", "Wal", "whale"]];
   const count = s => PATH.filter(([id]) => done(s, id)).length;
   function level(n){ let L = LEVELS[0]; for (const l of LEVELS) if (n >= l[0]) L = l; return {n, ico: L[1], name: L[2], art: L[3]}; }
   const calm = false;   // Effekte immer zeigen; viele Firmen-PCs melden "Bewegung reduzieren", obwohl Animationen gewünscht sind

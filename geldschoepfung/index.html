@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Geld-Maschine · Satsland</title>
+<meta name="description" content="Lernwelt: Wie Geld entsteht. Zentralbank, Geschäftsbanken und warum jeder Kredit neues Geld erschafft.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0b0f2a">
+<link rel="icon" href="../icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="stylesheet" href="../lern.css?v=16">
+<style>
+/* Lernwelt "Geld-Maschine": nur seitenspezifische Teile, der Rest kommt aus lern.css */
+.idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
+.kv{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}
+.kv div{border:1px solid var(--line);border-radius:12px;padding:8px 10px;font-size:12px;color:var(--muted)} .kv b{display:block;font:700 18px var(--f-num);color:var(--ink)} .kv .g{color:var(--gold)}
+.seg{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px} .seg .btn[aria-pressed="true"]{outline:2px solid var(--gold);background:rgba(247,147,26,.15)}
+.res{margin-top:12px;padding:12px 14px;border-radius:14px;border:2px solid var(--line);font-size:15px;line-height:1.5}
+.res strong{display:block;font-size:18px} .res.ok{border-color:var(--bull)} .res.ok strong{color:var(--bull)} .res.bad{border-color:var(--bear)} .res.bad strong{color:var(--bear)} .res.warn{border-color:var(--gold)} .res.warn strong{color:var(--gold)}
+.note{margin:10px 0 0;font-size:14px;color:var(--muted);line-height:1.5} .note b{color:var(--ink)} .note a{color:var(--gold)}
+@media (max-width:620px){ .kv{grid-template-columns:1fr 1fr} }
+.bal{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.bal div{border:3px solid #0d1230;border-radius:14px;padding:10px 12px;background:#f4efe1;color:#0d1230;box-shadow:3px 3px 0 #0d1230}
+.bal h3{margin:0 0 6px;font:900 14px var(--f-display)} .bal ul{list-style:none;margin:0;padding:0;font:14px/1.6 Georgia,serif} .bal li{display:flex;justify-content:space-between;gap:6px;animation:pop .3s}
+.bal li b{font-family:var(--f-num)} .bal .new{color:#1a7a44;font-weight:700}
+.m3{margin-top:14px} .m3 svg{width:100%;height:auto;display:block}
+.who3{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px} .who3 div{border:1px solid var(--line);border-radius:14px;padding:10px 12px;font-size:14px;line-height:1.45;color:var(--muted)} .who3 b{display:block;color:var(--ink);font-family:var(--f-display)}
+@media (max-width:620px){ .who3,.bal{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a class="back" href="../">← Satsland</a><a class="back" href="../spiel/">Zum Spiel</a></div>
+  <div>
+    <h1>Wie entsteht <span class="btc">Geld</span>?</h1>
+    <p class="lead">Die meisten denken: Die Zentralbank druckt Geld. Tatsächlich entsteht der größte Teil unseres Geldes ganz anders, nämlich <b>immer dann, wenn eine Bank einen Kredit vergibt</b>.</p>
+  </div>
+
+  <section class="card" aria-labelledby="h1s">
+    <h2 id="h1s">Du bist die Bank</h2>
+    <div class="idea">Lena möchte ein Auto für <b>20.000 €</b> kaufen und braucht einen Kredit. Schau ins <b>Kassenbuch der Bank</b>, was passiert, wenn du „Ja“ sagst.</div>
+    <div class="bal"><div><h3>Die Bank hat (Forderungen)</h3><ul id="aL"></ul></div><div><h3>Die Bank schuldet (Guthaben der Kunden)</h3><ul id="pL"></ul></div></div>
+    <div class="seg"><button class="btn" id="loan" type="button">✅ Kredit über 20.000 € geben</button><button class="btn ghost" id="repay" type="button" disabled>💸 Lena zahlt zurück</button></div>
+    <div class="res" id="res" hidden></div>
+  </section>
+
+  <section class="card" aria-labelledby="h2s">
+    <h2 id="h2s">So viel Euro gibt es <span class="mode demo">gerundet</span></h2>
+    <p class="muted" style="margin:0">Die Geldmenge M3 umfasst Bargeld, Kontoguthaben und kurzfristige Ersparnisse im Euroraum. Sie ist seit dem Start des Euro um ein Vielfaches gewachsen:</p>
+    <div class="m3" id="m3"></div>
+  </section>
+
+  <section class="card" aria-labelledby="h3s">
+    <h2 id="h3s">Wer macht was?</h2>
+    <div class="who3">
+      <div><b>🏛 Die Zentralbank (EZB)</b>Gibt Bargeld heraus, legt den Leitzins fest und versorgt die Banken mit Reserven. In Krisen kauft sie auch Anleihen und bringt so viel Geld in Umlauf.</div>
+      <div><b>🏦 Die Geschäftsbanken</b>Erschaffen das meiste Geld, wenn sie Kredite vergeben. Wie viel, hängt von Zinsen, Regeln und der Nachfrage nach Krediten ab.</div>
+    </div>
+    <p class="note">Bei Bitcoin gibt es nichts davon: Neue Bitcoin entstehen <b>nur</b> beim Mining, nach festem Plan. Kein Kredit, keine Zentralbank kann die Menge erhöhen.</p>
+  </section>
+
+  <section class="card" aria-labelledby="hMs">
+    <h2 id="hMs">Das solltest du dir merken</h2>
+    <div class="learn">
+      <div><b>Kredit = neues Geld</b><span>Vergibt eine Bank einen Kredit, schreibt sie dem Kunden Geld gut, das es <b>vorher nicht gab</b>.</span></div>
+      <div><b>Rückzahlung = Geld verschwindet</b><span>Wird der Kredit getilgt, wird das Geld wieder <b>gelöscht</b>.</span></div>
+      <div><b>Zentralbank steuert</b><span>Über den <b>Leitzins</b> beeinflusst die EZB, wie viele Kredite vergeben werden.</span></div>
+      <div><b>Bitcoin anders</b><span>Die Bitcoin-Menge folgt einem <b>festen Plan</b>. Niemand kann sie per Kredit oder Beschluss erhöhen.</span></div>
+    </div>
+    <details class="qz"><summary>Teste dich: 3 Fragen</summary><div id="quiz"></div></details>
+  </section>
+
+  <section class="card next" id="next" aria-label="Weiter"></section>
+  <details class="foot"><summary>Quellen</summary><p>Geldmenge M3 des Euroraums gerundet nach Daten der EZB (Januar 2026: rund 17,3 Billionen €, <a href="https://tradingeconomics.com/euro-area/money-supply-m3/news/513983">Trading Economics</a>; Monatsberichte der Bundesbank). Zur Geldschöpfung durch Kredite siehe z. B. Bank of England, „Money creation in the modern economy“ (2014). Die Bank-Bilanz ist ein vereinfachtes Beispiel.</p></details>
+  <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
+</div>
+
+<script src="../lern.js?v=16"></script>
+<script>
+/* =====================================================================
+   GELD-MASCHINE – Lernwelt von Satsland
+   ===================================================================== */
+(() => {
+const $ = id => document.getElementById(id);
+let loan = false;
+const eur = v => v.toLocaleString("de-DE") + " €";
+function draw(){
+  $("aL").innerHTML = `<li><span>Reserven bei der EZB</span><b>5.000 €</b></li><li><span>Alte Kredite</span><b>95.000 €</b></li>` + (loan ? `<li class="new"><span>➕ Kredit an Lena</span><b>20.000 €</b></li>` : "");
+  $("pL").innerHTML = `<li><span>Guthaben anderer Kunden</span><b>90.000 €</b></li><li><span>Eigenkapital</span><b>10.000 €</b></li>` + (loan ? `<li class="new"><span>➕ Guthaben von Lena</span><b>20.000 €</b></li>` : "");
+}
+$("loan").onclick = () => { loan = true; draw(); $("loan").disabled = true; $("repay").disabled = false; const R = $("res"); R.hidden = false; R.className = "res warn";
+  R.innerHTML = `<strong>✨ 20.000 € neues Geld!</strong>Die Bank hat Lena das Geld nicht von anderen Kunden weggenommen. Sie hat einfach <b>beide Seiten des Kassenbuchs verlängert</b>: eine Forderung an Lena und ein neues Guthaben auf Lenas Konto. Lena kann damit sofort das Auto bezahlen. Die Geldmenge ist gewachsen.`; };
+$("repay").onclick = () => { loan = false; draw(); $("repay").disabled = true; $("loan").disabled = false; const R = $("res"); R.className = "res ok";
+  R.innerHTML = `<strong>Und weg ist es wieder.</strong>Zahlt Lena den Kredit zurück, verschwinden Forderung und Guthaben. Das Geld wird <b>gelöscht</b>. Weil aber ständig neue Kredite vergeben werden, wächst die Geldmenge insgesamt meist weiter. Die Zinsen behält die Bank als Einnahme.`; };
+draw();
+// Geldmenge M3 Euroraum, gerundet in Billionen €
+const D = [[1999, 4.5], [2004, 6.0], [2008, 9.3], [2012, 9.8], [2016, 11.2], [2020, 14.3], [2022, 16.0], [2026, 17.3]];
+const X = i => 30 + i/(D.length - 1)*440, Y = v => 150 - v/18*130;
+$("m3").innerHTML = `<svg viewBox="0 0 500 175" aria-label="Geldmenge M3 von 4,5 auf 17,3 Billionen Euro">
+  ${D.map(([y, v], i) => `<rect x="${X(i) - 16}" y="${Y(v)}" width="32" height="${150 - Y(v)}" rx="5" fill="#f7931a" stroke="#0d1230" stroke-width="2.5"><animate attributeName="height" from="0" to="${150 - Y(v)}" dur=".8s" begin="${i*.1}s" fill="freeze"/><animate attributeName="y" from="150" to="${Y(v)}" dur=".8s" begin="${i*.1}s" fill="freeze"/></rect>
+  <text x="${X(i)}" y="${Y(v) - 6}" font-size="12" font-weight="800" text-anchor="middle" fill="#fff" font-family="Arial">${v.toLocaleString("de-DE")}</text><text x="${X(i)}" y="168" font-size="11" text-anchor="middle" fill="#9aa2d6" font-family="Arial">${y}</text>`).join("")}
+  <text x="4" y="14" font-size="11" fill="#9aa2d6" font-family="Arial">Billionen €</text></svg>
+  <p class="note">Von etwa <b>4,5 Billionen €</b> (1999) auf etwa <b>17,3 Billionen €</b> (Januar 2026), also fast das <b>Vierfache</b>.</p>`;
+
+const QUIZ = [["Was passiert, wenn eine Bank einen Kredit vergibt?", ["Es entsteht neues Geld auf dem Konto des Kunden", "Die Bank nimmt Geld von anderen Kunden weg", "Die Zentralbank druckt Scheine"], 0, "Die Bank verlängert beide Seiten ihrer Bilanz. So entsteht der größte Teil unseres Geldes."], ["Was passiert mit dem Geld, wenn ein Kredit zurückgezahlt wird?", ["Es wird gelöscht", "Es geht an die Zentralbank", "Es bleibt für immer"], 0, "Forderung und Guthaben verschwinden wieder."], ["Wie entstehen neue Bitcoin?", ["Nur beim Mining, nach festem Plan", "Durch Kredite", "Durch Beschluss einer Zentralbank"], 0, "Die Menge ist im Code festgelegt."]];
+Lern.quiz($("quiz"), "geldschoepfung", QUIZ, "../"); Lern.visit("geldschoepfung"); Lern.renderNext("geldschoepfung", "../");
+})();
+</script>
+</body>
+</html>

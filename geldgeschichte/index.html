@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Geld-Zeitreise · Satsland</title>
+<meta name="description" content="Lernwelt: Die Geschichte des Geldes von Muscheln über Gold und Papiergeld bis zum Ende des Goldstandards 1971 und zu Bitcoin.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0b0f2a">
+<link rel="icon" href="../icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="stylesheet" href="../lern.css?v=16">
+<style>
+/* Lernwelt "Geld-Zeitreise": nur seitenspezifische Teile, der Rest kommt aus lern.css */
+.idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
+.kv{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}
+.kv div{border:1px solid var(--line);border-radius:12px;padding:8px 10px;font-size:12px;color:var(--muted)} .kv b{display:block;font:700 18px var(--f-num);color:var(--ink)} .kv .g{color:var(--gold)}
+.seg{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px} .seg .btn[aria-pressed="true"]{outline:2px solid var(--gold);background:rgba(247,147,26,.15)}
+.res{margin-top:12px;padding:12px 14px;border-radius:14px;border:2px solid var(--line);font-size:15px;line-height:1.5}
+.res strong{display:block;font-size:18px} .res.ok{border-color:var(--bull)} .res.ok strong{color:var(--bull)} .res.bad{border-color:var(--bear)} .res.bad strong{color:var(--bear)} .res.warn{border-color:var(--gold)} .res.warn strong{color:var(--gold)}
+.note{margin:10px 0 0;font-size:14px;color:var(--muted);line-height:1.5} .note b{color:var(--ink)} .note a{color:var(--gold)}
+@media (max-width:620px){ .kv{grid-template-columns:1fr 1fr} }
+.eras{display:flex;gap:4px;margin-top:12px;overflow-x:auto;padding-bottom:4px} .eras button{flex:none;border:1px solid var(--line);background:rgba(255,255,255,.03);color:var(--muted);border-radius:999px;padding:5px 10px;font:800 12px var(--f-num);cursor:pointer}
+.eras button[aria-current="true"]{background:var(--gold);color:#2a1600;border-color:var(--gold)}
+.era{margin-top:12px;animation:rin .35s} .era .scn{height:170px} .era h3{margin:12px 0 4px;font:900 20px var(--f-display)} .era .y{font-size:13px;color:var(--muted)} .era p{margin:0;font-size:15px;line-height:1.55}
+.era .les{margin-top:10px;padding:8px 12px;border-radius:12px;background:rgba(255,201,77,.1);border:1px solid rgba(255,201,77,.35);font-size:14px}
+.nav{display:flex;gap:8px;margin-top:12px} .nav .btn{flex:1}
+.gold{margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:10px} .gold div{border:2px solid var(--line);border-radius:14px;padding:10px 12px;text-align:center;font-size:13px;color:var(--muted)} .gold b{display:block;font:900 26px var(--f-num);color:var(--ink)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a class="back" href="../">← Satsland</a><a class="back" href="../spiel/">Zum Spiel</a></div>
+  <div>
+    <h1>Die <span class="btc">Geschichte</span> des Geldes</h1>
+    <p class="lead">Muscheln, Salz, Gold, Papier, Zahlen auf dem Bildschirm: Geld hat sich immer wieder verändert. Und jedes Mal ging es um dieselbe Frage: <b>Kann man ihm trauen?</b></p>
+  </div>
+
+  <section class="card" aria-labelledby="h1s">
+    <h2 id="h1s">Reise durch 5.000 Jahre Geld</h2>
+    <div class="eras" id="eras"></div>
+    <div id="era"></div>
+    <div class="nav"><button class="btn ghost" id="prev" type="button">← Zurück</button><button class="btn" id="nextE" type="button">Weiter →</button></div>
+  </section>
+
+  <section class="card" aria-labelledby="h2s">
+    <h2 id="h2s">Der Tag, an dem das Gold verschwand</h2>
+    <p class="muted" style="margin:0">Bis 1971 konnten Staaten ihre Dollar bei den USA gegen Gold eintauschen, zu einem <b>festen Preis</b>. Am 15. August 1971 beendete US-Präsident Nixon das. Seitdem ist kein großes Geld der Welt mehr an Gold gebunden.</p>
+    <div class="gold"><div>1 Unze Gold, bis 1971<b>35 $</b>fester Preis</div><div>1 Unze Gold, heute<b>ein Vielfaches</b>mehrere Tausend Dollar</div></div>
+    <p class="note">Seitdem können Zentralbanken die Geldmenge frei steuern. Befürworter sagen: Das hilft in Krisen. Kritiker sagen: Das führt zu Inflation und Schulden. Bitcoin ist für viele eine Antwort darauf, weil seine Menge <b>fest</b> ist.</p>
+  </section>
+
+  <section class="card" aria-labelledby="hMs">
+    <h2 id="hMs">Das solltest du dir merken</h2>
+    <div class="learn">
+      <div><b>Geld war immer etwas Knappes</b><span>Muscheln, Salz, Gold: Gutes Geld war <b>schwer herzustellen</b>.</span></div>
+      <div><b>Papier = Versprechen</b><span>Papiergeld war anfangs ein <b>Gutschein für Gold</b>. Man musste der Bank vertrauen.</span></div>
+      <div><b>1971</b><span>Seit dem Ende des Goldstandards ist Geld <b>nur noch durch Vertrauen</b> in Staat und Zentralbank gedeckt.</span></div>
+      <div><b>Bitcoin</b><span>Knapp wie Gold, digital wie Kontogeld, aber <b>ohne Bank</b>, der man vertrauen muss.</span></div>
+    </div>
+    <details class="qz"><summary>Teste dich: 3 Fragen</summary><div id="quiz"></div></details>
+  </section>
+
+  <section class="card next" id="next" aria-label="Weiter"></section>
+  <details class="foot"><summary>Quellen</summary><p>Gerundete Jahreszahlen nach gängigen Darstellungen der Geldgeschichte (u. a. Münzen in Lydien um 600 v. Chr., Papiergeld in China um 1000 n. Chr., Bretton-Woods-Abkommen 1944, Ende der Gold-Konvertibilität am 15.08.1971, Euro als Buchgeld 1999 und Bargeld 2002).</p></details>
+  <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
+</div>
+
+<script src="../lern.js?v=16"></script>
+<script>
+/* =====================================================================
+   GELD-ZEITREISE – Lernwelt von Satsland
+   ===================================================================== */
+(() => {
+const $ = id => document.getElementById(id);
+const sa = (n, x, y, z, an = "", d = 0, st = "") => `<span class="a" style="left:${x}%;top:${y}%;width:${z}px;height:${z}px;${an ? `animation:${an};animation-delay:${d}s;` : ""}${st}">${Lern.ART[n] ? Lern.art(n) : `<span style="font-size:${z*.8}px">${n}</span>`}</span>`;
+const sl = (t, x, y, d = 0) => `<span class="lbl" style="left:${x}%;top:${y}%;animation-delay:${d}s">${t}</span>`;
+// [Jahr-Kurz, Zeit, Titel, Himmel, Szene, Text, Lehre]
+const E = [
+  ["Tausch", "vor über 10.000 Jahren", "Tauschhandel", "dawn", sa("🐟", 25, 55, 56, "grow .5s both") + sa("🍞", 75, 55, 56, "grow .5s both", .5) + sl("Fisch gegen Brot?", 50, 88, 1),
+    "Am Anfang tauschten Menschen Waren direkt, oder sie merkten sich, wer wem etwas schuldet. Das funktionierte in kleinen Dörfern, aber nicht mit Fremden.", "Ohne gemeinsames Geld ist Handeln mühsam."],
+  ["Muscheln", "ab ca. 1.200 v. Chr.", "Muscheln, Salz und Perlen", "day", sa("🐚", 30, 58, 60, "grow .5s both") + sa("🧂", 70, 58, 56, "grow .5s both", .4) + sl("Selten = wertvoll", 50, 88, 1),
+    "In vielen Kulturen wurden seltene Dinge zu Geld: Kaurimuscheln in Afrika und Asien, Salz bei den Römern (daher das Wort „Salär“), Glasperlen in Westafrika.", "Als Europäer später massenhaft Glasperlen nach Afrika brachten, verloren die Perlen dort ihren Wert. Wer Geld leicht herstellen kann, macht es wertlos."],
+  ["Münzen", "ab ca. 600 v. Chr.", "Die ersten Münzen", "dusk", sa("coin", 50, 52, 74, "grow .6s cubic-bezier(.3,1.6,.5,1) both") + sl("König von Lydien", 50, 88, .8),
+    "Im Königreich Lydien (heutige Türkei) prägte man erstmals Münzen aus Gold und Silber. Der Stempel des Königs garantierte Gewicht und Reinheit.", "Später streckten Herrscher ihre Münzen mit billigem Metall, z. B. im alten Rom. Die Preise stiegen. Die erste bekannte Inflation durch „Geld verwässern“."],
+  ["Papier", "ab ca. 1.000 n. Chr.", "Papiergeld aus China", "night", sa("news", 40, 56, 70, "grow .5s both") + sa("bank2", 72, 58, 60, "grow .5s both", .5) + sl("Ein Gutschein für Metall", 50, 88, 1),
+    "In China gab es zuerst Papierscheine, die man gegen Münzen einlösen konnte. Leichter zu tragen als schwere Metalle. In Europa kamen Banknoten im 17. Jahrhundert.", "Als die Kaiser zu viele Scheine druckten, verloren sie an Wert. Papiergeld funktioniert nur, solange man dem Herausgeber vertraut."],
+  ["Gold", "ca. 1870 bis 1914", "Der klassische Goldstandard", "gold", sa("trophy", 50, 52, 74, "grow .6s both") + sl("Jeder Schein = Gold", 50, 88, .8),
+    "Die großen Länder banden ihr Geld an Gold. Jeder Schein war ein Anspruch auf eine feste Menge Gold. Das sorgte für stabile Preise, aber Staaten konnten nicht einfach mehr Geld schaffen.", "Im Ersten Weltkrieg setzten die Länder den Goldstandard aus, um den Krieg zu finanzieren."],
+  ["1944", "1944 bis 1971", "Bretton Woods", "day", sa("dollar", 34, 58, 70) + sa("trophy", 70, 56, 56, "grow .5s both", .4) + sl("35 $ = 1 Unze Gold", 50, 88, 1),
+    "Nach dem Zweiten Weltkrieg wurde der US-Dollar zur Weltwährung. Andere Währungen waren fest an den Dollar gebunden, und der Dollar an Gold: 35 Dollar je Unze.", "Die USA gaben mehr Dollar aus, als sie Gold hatten. Andere Länder wurden misstrauisch und wollten ihr Gold."],
+  ["1971", "15. August 1971", "Das Ende der Golddeckung", "dusk", sa("trophy", 50, 50, 70, "fade 2s ease .8s both") + sa("printer", 50, 56, 74, "grow .5s both", 2.4) + sl("Nixon-Schock", 50, 88, .4),
+    "US-Präsident Nixon stoppte den Umtausch von Dollar in Gold. Seitdem ist Geld weltweit nur noch durch Vertrauen gedeckt (Fiatgeld, von lateinisch „es werde“).", "Zentralbanken können die Geldmenge seitdem frei steuern. Mehr dazu in der Welt „Wie Geld entsteht“."],
+  ["Euro", "1999 / 2002", "Der Euro", "day", sa("dollar", 50, 54, 76, "grow .5s both") + sl("Eine Währung für viele Länder", 50, 88, .8),
+    "Elf Länder führten 1999 den Euro als Buchgeld ein, 2002 kamen Scheine und Münzen. Die Europäische Zentralbank (EZB) steuert ihn.", "Heute existiert der allergrößte Teil des Geldes nur als Zahl auf Konten, nicht als Scheine."],
+  ["2009", "3. Januar 2009", "Bitcoin", "night", sa("coin", 50, 52, 76, "grow .6s cubic-bezier(.3,1.6,.5,1) both") + sl("Knapp wie Gold, digital, ohne Bank", 50, 88, .8),
+    "Mitten in der Finanzkrise startet Bitcoin: ein Geld mit fester Menge, das niemand drucken kann und für das man keiner Bank vertrauen muss.", "Ob Bitcoin das Geld der Zukunft wird, ist offen. Aber es ist die erste ernsthafte Alternative, die ohne Staat funktioniert."],
+];
+let k = 0;
+function draw(){
+  const [s, y, t, sky, sc, x, les] = E[k];
+  $("eras").innerHTML = E.map((e, i) => `<button type="button" data-i="${i}" aria-current="${i === k}">${e[0]}</button>`).join("");
+  $("eras").children[k].scrollIntoView({block: "nearest", inline: "center"});
+  $("era").innerHTML = `<div class="era"><div class="scn ${sky}" aria-hidden="true">${sc}</div><span class="y">${k + 1} von ${E.length} · ${y}</span><h3>${t}</h3><p>${x}</p><div class="les">💡 ${les}</div></div>`;
+  $("prev").disabled = k === 0; $("nextE").textContent = k === E.length - 1 ? "Von vorn ↺" : "Weiter →";
+}
+$("eras").onclick = e => { const b = e.target.closest("button"); if (b){ k = +b.dataset.i; draw(); } };
+$("prev").onclick = () => { if (k > 0){ k--; draw(); } };
+$("nextE").onclick = () => { k = k === E.length - 1 ? 0 : k + 1; draw(); };
+draw();
+
+const QUIZ = [["Warum verloren Glasperlen in Westafrika ihren Wert?", ["Europäer brachten massenhaft billige Perlen ins Land", "Sie gingen kaputt", "Ein König verbot sie"], 0, "Was leicht herzustellen ist, taugt schlecht als Geld."], ["Was geschah am 15. August 1971?", ["Die USA beendeten den Umtausch von Dollar in Gold", "Der Euro wurde eingeführt", "Bitcoin wurde erfunden"], 0, "Seitdem ist kein großes Geld mehr an Gold gebunden."], ["Was bedeutet „Fiatgeld“?", ["Geld, das nur durch Vertrauen in den Staat gedeckt ist", "Geld aus Gold", "Geld eines Autoherstellers"], 0, "Lateinisch „fiat“: es werde. Es gilt, weil der Staat es so bestimmt."]];
+Lern.quiz($("quiz"), "geldgeschichte", QUIZ, "../"); Lern.visit("geldgeschichte"); Lern.renderNext("geldgeschichte", "../");
+})();
+</script>
+</body>
+</html>
