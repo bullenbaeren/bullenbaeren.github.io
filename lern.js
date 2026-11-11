@@ -61,7 +61,8 @@ const Lern = (() => {
       if (after.name !== before.name) toast(`${after.ico} Level-Up! Du bist jetzt <b>${after.name}</b>.`);
       else if (first) toast(`✓ Welt geschafft · ${after.n} von ${PATH.length}`);
       if (right === QUIZ.length) say("Alle Fragen richtig! ✨");
-      badge(); renderNext(id, root);
+      if (new Date().getHours() < 4){ const tt = tget(); tt.owl = 1; tset(tt); }
+      badge(); renderNext(id, root); titles();
       renderNext(id, root);
     }
   }
@@ -189,7 +190,7 @@ const Lern = (() => {
       daily(box); if (!right) box.querySelector(`[data-i="${b.dataset.i}"]`).classList.add("no");
       if ([3, 7, 14, 30, 100].includes(s.streak)){ confetti(); toast(`🔥 ${s.streak} Tage in Folge! Weiter so.`); }
       else toast(right ? "🔥 Richtig! Serie: " + s.streak : "🔥 Serie gehalten: " + s.streak + ". Mitmachen zählt!");
-      say(right ? "Stark! Bis morgen bei der nächsten Frage." : "Fast! Wichtig ist, dass du dranbleibst.");
+      say(right ? "Stark! Bis morgen bei der nächsten Frage." : "Fast! Wichtig ist, dass du dranbleibst."); titles();
     };
   }
 
@@ -309,25 +310,28 @@ const Lern = (() => {
       ["Kann eine Miner-Mehrheit mehr als 21 Mio. Bitcoin erzeugen?", ["Nein, die Nodes lehnen solche Blöcke ab", "Ja, ab 51 %", "Ja, ab 90 %"], "Nodes stimmen nicht ab, sie prüfen die Regeln."],
       ["Warum braucht Bitcoin-Mining Strom?", ["Weil Miner raten müssen, bis ein Hash passt", "Für die Kühlung von Börsen", "Für das Drucken von Coins"], "Proof of Work: echter Aufwand schützt das Netz."]]],
   ];
+  const FINAL = ["satoshi", "Satoshis Rätsel", "Du hast alle besiegt. Aber kennst du wirklich ALLES über Bitcoin?", []];
   const BK = "satsland-boss", bossWon = () => { try { return JSON.parse(localStorage.getItem(BK)) || {}; } catch(e){ return {}; } };
   function boss(k){
-    const [img, name, taunt, Q] = BOSSES[k], bg = document.createElement("div"); bg.className = "bossbg";
-    let i = 0, hp = 4, lives = 2, t = 0, timer = 0, lock = false;
-    const order = Q.map(q => q).sort(() => Math.random() - .5);
+    // k = 0–4: Kapitel-Boss (5 Fragen, 4 Leben, du 2, 15 s) · k = 5: Endboss (10 Fragen aus allen Kapiteln, 8 Leben, du 3, 12 s)
+    const fin = k === 5, [img, name, taunt, Q] = fin ? FINAL : BOSSES[k], HP = fin ? 8 : 4, LIVES = fin ? 3 : 2, TIME = fin ? 12 : 15;
+    const bg = document.createElement("div"); bg.className = "bossbg";
+    let i = 0, hp = HP, lives = LIVES, t = 0, timer = 0, lock = false;
+    const order = (fin ? BOSSES.flatMap(b => [...b[3]].sort(() => Math.random() - .5).slice(0, 2)) : Q.map(q => q)).sort(() => Math.random() - .5);
     bg.innerHTML = `<div class="boss" role="dialog" aria-label="Boss-Kampf"><div class="bt"><b>👹 ${name}</b><button class="bx" type="button" aria-label="Schließen">×</button></div>
       <div class="arena"><div class="bimg">${art(img)}</div><div class="bubble">${taunt}</div></div>
-      <div class="bars"><span>Boss</span><div class="hp"><i style="width:100%"></i></div><span>Du</span><span class="lives">❤️❤️</span></div><div id="bq"></div></div>`;
+      <div class="bars"><span>Boss</span><div class="hp"><i style="width:100%"></i></div><span>Du</span><span class="lives"></span></div><div id="bq"></div></div>`;
     document.body.appendChild(bg);
     const B = bg.querySelector(".boss"), im = bg.querySelector(".bimg"), bub = bg.querySelector(".bubble"), box = bg.querySelector("#bq");
     const close = () => { clearInterval(timer); bg.remove(); };
     bg.querySelector(".bx").onclick = close;
-    const hud = () => { bg.querySelector(".hp i").style.width = hp/4*100 + "%"; bg.querySelector(".lives").textContent = "❤️".repeat(lives) + "🖤".repeat(2 - lives); };
+    const hud = () => { bg.querySelector(".hp i").style.width = hp/HP*100 + "%"; bg.querySelector(".lives").textContent = "❤️".repeat(lives) + "🖤".repeat(LIVES - lives); };
     function ask(){
       if (hp <= 0 || lives <= 0 || i >= order.length) return end();
       const [q, opts, why] = order[i], mix = opts.map((o, n) => [Math.random(), n, o]).sort((a, b) => a[0] - b[0]);
       box.innerHTML = `<div class="tm"><i style="width:100%"></i></div><p class="bq">${i + 1}. ${q}</p><div class="opts">${mix.map(([, n, o]) => `<button type="button" data-n="${n}">${o}</button>`).join("")}</div><p class="why" hidden></p>`;
-      t = 15; lock = false; clearInterval(timer);
-      timer = setInterval(() => { t -= .1; box.querySelector(".tm i").style.width = Math.max(0, t/15*100) + "%"; if (t <= 0) answer(-1); }, 100);
+      t = TIME; lock = false; clearInterval(timer);
+      timer = setInterval(() => { t -= .1; box.querySelector(".tm i").style.width = Math.max(0, t/TIME*100) + "%"; if (t <= 0) answer(-1); }, 100);
       box.querySelector(".opts").onclick = e => { const b = e.target.closest("button"); if (b) answer(+b.dataset.n); };
     }
     function answer(n){
@@ -341,13 +345,15 @@ const Lern = (() => {
     }
     function end(){
       clearInterval(timer); const win = hp <= 0;
-      if (win){ im.classList.add("down"); bub.textContent = "Neiiin … besiegt!"; const w = bossWon(); w[k] = lives === 2 ? "perfect" : (w[k] === "perfect" ? "perfect" : true); try { localStorage.setItem(BK, JSON.stringify(w)); } catch(e){} confetti(); }
-      box.innerHTML = `<div class="end"><b>${win ? "🏆 Boss besiegt!" : "💀 Der Boss gewinnt diesmal"}</b><p class="muted">${win ? (lives === 2 ? "Ohne einen Fehler! ✨ Du bekommst die Glanz-Bosskarte." : "Die Boss-Karte liegt jetzt in deinem Album. Ohne Fehler gibt es die Glanzkarte.") : "Lies die Erklärungen in den Welten nochmal und versuch es erneut."}</p>
+      if (win){ im.classList.add("down"); bub.textContent = "Neiiin … besiegt!"; const w = bossWon(); w[k] = lives === LIVES ? "perfect" : (w[k] === "perfect" ? "perfect" : true); try { localStorage.setItem(BK, JSON.stringify(w)); } catch(e){} confetti(); if (fin) toast("👑 Satoshis Rätsel gelöst! Die goldene Karte gehört dir."); titles(); }
+      box.innerHTML = `<div class="end"><b>${win ? "🏆 Boss besiegt!" : "💀 Der Boss gewinnt diesmal"}</b><p class="muted">${win ? (lives === LIVES ? "Ohne einen Fehler! ✨ Du bekommst die Glanz-Bosskarte." : "Die Boss-Karte liegt jetzt in deinem Album. Ohne Fehler gibt es die Glanzkarte.") : "Lies die Erklärungen in den Welten nochmal und versuch es erneut."}</p>
         <div class="acts" style="justify-content:center;display:flex;gap:8px;margin-top:10px">${win ? "" : '<button class="btn" type="button" data-a="again">↺ Nochmal</button>'}<button class="btn ghost" type="button" data-a="close">Schließen</button></div></div>`;
       box.querySelector(".end").onclick = e => { const a = e.target.closest("button"); if (!a) return; close(); if (a.dataset.a === "again") boss(k); else if (win) location.reload(); };
     }
     hud(); setTimeout(ask, 1400);
   }
+  function finalCard(){ const won = bossWon()[5];
+    return `<span class="tcard bosscard goldcard ${won ? "got" : "lock"}"><span class="tn">★</span><span class="tart">${won ? art("satoshi") : "?"}</span><b>${won ? "Satoshis Rätsel" : "Endboss"}</b><small>${won ? "👑 Goldene Karte" : "Alle 5 Bosse besiegen"}</small></span>`; }
   function bossCard(k){ const won = bossWon()[k], [img, name] = BOSSES[k];
     return `<span class="tcard bosscard ${won ? "got" : "lock"} ${won === "perfect" ? "shiny" : ""}"><span class="tn">B${k + 1}</span><span class="tart">${won ? art(img) : "?"}</span><b>${won ? name : "Boss " + (k + 1)}</b><small>${won === "perfect" ? "✨ Glanzkarte" : won ? "🏆 besiegt" : "Kapitel " + (k + 1)}</small></span>`; }
 
@@ -375,12 +381,62 @@ const Lern = (() => {
       const b = e.target.closest(".gl"), pop = document.querySelector(".glpop");
       if (pop && !e.target.closest(".glpop")) pop.remove();
       if (!b) return;
+      tcount("words"); titles();
       const [t, , d, w] = GLOSSAR[+b.dataset.g], p = document.createElement("div"), r = b.getBoundingClientRect();
       p.className = "glpop"; p.innerHTML = `<b>📖 ${t}</b><span>${d}</span>${w && w !== here ? `<a href="${BASE}${w}/">Mehr dazu →</a>` : ""}<a href="${BASE}lexikon/" class="all">Alle Begriffe</a>`;
       document.body.appendChild(p);
       const x = Math.min(Math.max(8, r.left + scrollX - 20), document.documentElement.clientWidth - p.offsetWidth - 8);
       p.style.left = x + "px"; p.style.top = (r.bottom + scrollY + 8) + "px";
     });
+  }
+
+
+  // ---------- Titel (Erfolge): werden aus dem Fortschritt berechnet und einmalig gemeldet ----------
+  const TK = "satsland-titles";
+  const tget = () => { try { return JSON.parse(localStorage.getItem(TK)) || {}; } catch(e){ return {}; } };
+  const tset = o => { try { localStorage.setItem(TK, JSON.stringify(o)); } catch(e){} };
+  const TITLES_LIST = [
+    ["🧭", "Entdecker", "Alle Welten mindestens einmal besucht", (s) => PATH.every(([id]) => s[id])],
+    ["🎯", "Fehlerlos", "Ein Welt-Quiz ohne Fehler geschafft", (s) => PATH.some(([id]) => s[id] && s[id].quiz && s[id].quiz === s[id].total)],
+    ["💎", "Perfektionist", "Alle Welt-Quizze ohne Fehler", (s) => PATH.every(([id]) => s[id] && s[id].quiz && s[id].quiz === s[id].total)],
+    ["🍕", "Pizza-Kenner", "Die Zeitreise geschafft", (s) => done(s, "geschichte")],
+    ["🔥", "Funkenschlag", "3 Tage Tages-Challenge in Folge", (s, d) => (d.best || 0) >= 3],
+    ["☄️", "Dauerbrenner", "7 Tage Tages-Challenge in Folge", (s, d) => (d.best || 0) >= 7],
+    ["👹", "Bossjäger", "Den ersten Boss besiegt", (s, d, b) => [0, 1, 2, 3, 4].some(k => b[k])],
+    ["✨", "Glanzsammler", "3 Glanz-Bosskarten", (s, d, b) => [0, 1, 2, 3, 4].filter(k => b[k] === "perfect").length >= 3],
+    ["🏆", "Bezwinger", "Alle 5 Kapitel-Bosse besiegt", (s, d, b) => [0, 1, 2, 3, 4].every(k => b[k])],
+    ["👑", "Satoshis Erbe", "Den Endboss besiegt", (s, d, b) => !!b[5]],
+    ["🐋", "Wal", "Alle Welten geschafft", (s) => PATH.every(([id]) => done(s, id))],
+    ["📚", "Wortschatz", "10 Begriffe im Lexikon nachgeschlagen", (s, d, b, t) => (t.words || 0) >= 10],
+    ["🦉", "Nachteule", "Zwischen Mitternacht und 4 Uhr gelernt", (s, d, b, t) => !!t.owl],
+  ];
+  // Prüft alle Titel; neue werden gespeichert und als Meldung gezeigt
+  function titles(){
+    const t = tget(), s = load(), d = streak(), b = bossWon(), had = t.got || {};
+    const now = TITLES_LIST.filter(x => x[3](s, d, b, t)).map(x => x[1]), fresh = now.filter(n => !had[n]);
+    if (fresh.length){ fresh.forEach(n => had[n] = Date.now()); t.got = had; tset(t);
+      fresh.forEach((n, i) => { const x = TITLES_LIST.find(y => y[1] === n); setTimeout(() => toast(`🏅 Neuer Titel: ${x[0]} <b>${n}</b>`), 600 + i*3800); }); }
+    return had;
+  }
+  const tcount = key => { const t = tget(); t[key] = (t[key] || 0) + 1; tset(t); };
+
+
+  // ---------- Fortschritt mitnehmen: alles als Code, ohne Konto und ohne Server ----------
+  const SYNC_KEYS = ["bvb-lernen", "satsland-boss", "satsland-daily", "satsland-titles"];
+  function syncExport(){
+    const o = {}; SYNC_KEYS.forEach(k => { try { const v = localStorage.getItem(k); if (v) o[k] = JSON.parse(v); } catch(e){} });
+    return btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  }
+  // Zusammenführen statt überschreiben: von beiden Geräten zählt jeweils das Bessere
+  function syncImport(code){
+    let o; try { o = JSON.parse(decodeURIComponent(escape(atob(code.trim().replace(/-/g, "+").replace(/_/g, "/"))))); } catch(e){ return false; }
+    if (!o || typeof o !== "object") return false;
+    const get = k => { try { return JSON.parse(localStorage.getItem(k)) || {}; } catch(e){ return {}; } }, put = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} };
+    const L = get("bvb-lernen"); Object.entries(o["bvb-lernen"] || {}).forEach(([id, v]) => { const a = L[id] || {}; L[id] = Object.assign({}, a, v, {quiz: Math.max(a.quiz || 0, v.quiz || 0) || undefined, total: v.total || a.total}); }); put("bvb-lernen", L);
+    const B = get("satsland-boss"); Object.entries(o["satsland-boss"] || {}).forEach(([k, v]) => { if (v === "perfect" || !B[k]) B[k] = v; }); put("satsland-boss", B);
+    const D = get("satsland-daily"), d2 = o["satsland-daily"] || {}; if ((d2.last || "") > (D.last || "") || (d2.streak || 0) > (D.streak || 0)) put("satsland-daily", Object.assign({}, D, d2, {best: Math.max(D.best || 0, d2.best || 0)}));
+    const T = get("satsland-titles"), t2 = o["satsland-titles"] || {}; T.got = Object.assign({}, t2.got || {}, T.got || {}); T.words = Math.max(T.words || 0, t2.words || 0); T.owl = T.owl || t2.owl; put("satsland-titles", T);
+    return true;
   }
 
   // ---------- Spaß-Schicht: Level, Konfetti, Einblenden ----------
@@ -419,7 +475,7 @@ const Lern = (() => {
   }
   const seg = location.pathname.split("/").filter(Boolean), here = PATH.some(([id]) => id === seg[seg.length - 1]) ? seg[seg.length - 1] : "";
   function init(){
-    badge(); intro(); glossify(); reveal(); guide();
+    badge(); intro(); glossify(); reveal(); guide(); setTimeout(titles, 1500);
     if (here && ICON[here]){ const h = document.querySelector("h1"); if (h && !h.previousElementSibling){ const i = document.createElement("span"); i.className = "wico"; i.setAttribute("aria-hidden", "true"); i.innerHTML = art(CARD[here]); h.before(i);
       const k = chapterOf(here), c = CHAPTERS[k], p = document.createElement("p"); p.className = "chap"; p.innerHTML = `Kapitel ${k + 1} · ${c[0]} ${c[1]} · Welt ${c[3].indexOf(here) + 1} von ${c[3].length}`; i.after(p); } }
   }
@@ -446,5 +502,5 @@ const Lern = (() => {
   }
 
   init();
-  return {GLOSSAR, nextStep, PATH, CHAPTERS, ART, art, BOSSES, boss, bossWon, bossCard, CARD, daily, streak, say, GK, chapterOf, LEVELS, level, count, load, done, visit, quiz, renderNext, nextAfter, sha256, confetti, toast};
+  return {syncExport, syncImport, TITLES_LIST, titles, finalCard, GLOSSAR, nextStep, PATH, CHAPTERS, ART, art, BOSSES, boss, bossWon, bossCard, CARD, daily, streak, say, GK, chapterOf, LEVELS, level, count, load, done, visit, quiz, renderNext, nextAfter, sha256, confetti, toast};
 })();
