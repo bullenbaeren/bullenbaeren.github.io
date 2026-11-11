@@ -67,7 +67,11 @@ a:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
 .resume .ic{flex:none;width:40px;height:40px} .resume .ic svg{width:100%;height:100%} .resume small{display:block;font:700 12px var(--f-body);opacity:.75} .resume span{flex:1;min-width:0} .resume::after{content:"→";font-size:22px}
 
 /* Lernpfad als Berg (Pfad-Ansicht) */
-.vsw{margin-top:12px} .path.asmap details.kap{display:none}
+.vsw{display:flex;width:max-content;margin:12px auto 0;padding:4px;border-radius:999px;background:#0b0f2a;border:2px solid #0d1230;box-shadow:inset 0 2px 6px rgba(0,0,0,.4)} .path.asmap details.kap{display:none}
+.vsw button{border:0;background:transparent;color:var(--muted);font:800 14px var(--f-body);padding:8px 18px;border-radius:999px;cursor:pointer;transition:background .2s,color .2s}
+.vsw button[aria-pressed="true"]{background:linear-gradient(180deg,#ffd36b,#f7a21a);color:#241500;box-shadow:0 3px 0 #b86e00}
+.mapw .bob{animation:mbob 1.4s ease-in-out infinite} @keyframes mbob{50%{transform:translateY(-5px)}}
+.mapw .flag{transform-box:fill-box;transform-origin:0 50%;animation:mflag 1.8s ease-in-out infinite} @keyframes mflag{50%{transform:scaleX(.82) skewY(4deg)}}
 .mapw{margin-top:10px;max-height:72vh;overflow-y:auto;overscroll-behavior:contain;border-radius:18px;border:3px solid #0d1230;box-shadow:4px 4px 0 #0d1230;background:#0b0f2a;scroll-behavior:smooth}
 .mapw svg{display:block;width:100%;height:auto} .mapw a,.mapw [data-b]{cursor:pointer}
 .mapw a:hover .nb,.mapw [data-b]:hover .nb{stroke:#ffc94d}
@@ -102,7 +106,7 @@ details.fold[open] > summary{margin-bottom:12px}
   <section class="card path" aria-labelledby="pth"><div class="ph"><h2 id="pth">🗺️ Dein Lernpfad</h2><span class="muted" id="pathCount"></span></div>
     <p class="lvup" id="lvup"></p>
     <div class="next" id="next"></div>
-    <div class="seg vsw" id="vsw" role="group" aria-label="Ansicht wählen"><button class="btn" type="button" data-v="map">🗺️ Pfad</button><button class="btn" type="button" data-v="list">📋 Liste</button></div>
+    <div class="vsw" id="vsw" role="group" aria-label="Ansicht wählen"><button type="button" data-v="map">🗺️ Pfad</button><button type="button" data-v="list">📋 Liste</button></div>
     <div class="mapw" id="mapw" hidden><div id="map"></div></div>
     <details class="kap fold" data-k="1"><summary><span class="cn">1</span><span class="ct"><b>🏦 Geld verstehen</b><small>Was Geld ist, woher es kommt und warum es an Wert verliert.</small></span><span class="cp" data-cnt="1"><i><u></u></i><em></em></span></summary>
       <div class="grid big">
@@ -255,67 +259,70 @@ details.fold[open] > summary{margin-bottom:12px}
   const sec = document.querySelector(".card.path"), mapw = document.getElementById("mapw");
   let view = "map"; try { view = localStorage.getItem("satsland-view") || "map"; } catch(e){}
   function drawMap(first){
-    const L = Lern, box = mapw.clientWidth || 360, W = Math.min(780, Math.max(320, box)), nar = W < 560, STEP = nar ? 72 : 64, R = nar ? 22 : 25;
+    const L = Lern, W = Math.min(720, Math.max(320, mapw.clientWidth || 360)), nar = W < 520, R = nar ? 27 : 30, STEP = nar ? 92 : 96, GAP = 96;
     const nodes = []; L.CHAPTERS.forEach((c, k) => { c[3].forEach(id => nodes.push({t: "w", id, k})); nodes.push({t: "b", k}); });
-    const GAP = 40, N = nodes.length, TOP = 250, H = TOP + N * STEP + 6 * GAP + 150, BASE = H - 95, y = i => BASE - i * STEP - (nodes[Math.min(i, N - 1)].k) * GAP;
-    const hw = yy => 40 + (yy - TOP + 120) / (H - TOP) * (W / 2 - (nar ? 72 : 190)), x = i => W / 2 + Math.sin(i * .85) * hw(y(i)) * .58;
-    const P = nodes.map((n, i) => [x(i), y(i)]), peakY = y(N - 1) - 110;
+    const N = nodes.length, H = 330 + N * STEP + 6 * GAP, BASE = H - 70, A = Math.min(118, W * .25);
+    const y = i => BASE - i * STEP - nodes[Math.min(i, N - 1)].k * GAP - (i >= 0 ? GAP * .55 : 0), x = i => W / 2 + Math.sin(i * .95) * A;
+    const P = nodes.map((n, i) => [x(i), y(i)]), peakY = y(N - 1) - 150;
     const isDone = n => n.t === "b" ? !!won[n.k] : Lern.done(s, n.id);
-    let cur = nodes.findIndex(n => !isDone(n)); const allDone = cur < 0; if (allDone) cur = N;
+    let cur = nodes.findIndex(n => !isDone(n)); if (cur < 0) cur = N;
     const CH = ["#ffc94d", "#34d982", "#7cc4ff", "#ff9a6a", "#b26bff", "#ff5c73"];
     const curve = pts => { let d = `M${pts[0][0]},${pts[0][1]}`; for (let i = 0; i < pts.length - 1; i++){ const a = pts[i - 1] || pts[i], b = pts[i], c = pts[i + 1], e = pts[i + 2] || c;
-      d += ` C${b[0] + (c[0] - a[0]) / 6},${b[1] + (c[1] - a[1]) / 6} ${c[0] - (e[0] - b[0]) / 6},${c[1] - (e[1] - b[1]) / 6} ${c[0]},${c[1]}`; } return d; };
+      d += ` C${b[0] + (c[0] - a[0]) / 5},${b[1] + (c[1] - a[1]) / 5} ${c[0] - (e[0] - b[0]) / 5},${c[1] - (e[1] - b[1]) / 5} ${c[0]},${c[1]}`; } return d; };
     const art = (n, cx, cy, sz) => L.art(n).replace("<svg", `<svg x="${cx - sz / 2}" y="${cy - sz / 2}" width="${sz}" height="${sz}"`);
-    const lbl = (tx, ty, t, side, col, fs, fw = 800) => `<text x="${tx}" y="${ty}" fill="${col}" font-size="${fs}" font-weight="${fw}" text-anchor="${side > 0 ? "start" : "end"}" font-family="system-ui,sans-serif" paint-order="stroke" stroke="#0b0f2a" stroke-width="4">${t}</text>`;
-    const mtn = yy => { const f = Math.max(0, (yy - (peakY - 60)) / (H - (peakY - 60))), h2 = f * (W / 2 - 8); return [W / 2 - h2, W / 2 + h2]; };
-    let g = `<defs><linearGradient id="msky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#05071a"/><stop offset=".55" stop-color="#121848"/><stop offset="1" stop-color="#1d2563"/></linearGradient><radialGradient id="mglow"><stop offset="0" stop-color="#ffc94d" stop-opacity=".7"/><stop offset="1" stop-color="#ffc94d" stop-opacity="0"/></radialGradient></defs><rect width="${W}" height="${H}" fill="url(#msky)"/>`;
-    for (let i = 0; i < 90; i++) g += `<circle cx="${(i * 137.5) % W}" cy="${(i * 89.3) % (H * .7)}" r="${(i % 3) * .6 + .6}" fill="#fff" opacity="${.25 + (i % 5) / 10}"/>`;
-    g += `<path d="M${W / 2},${peakY - 60} L${W - 8},${H} L8,${H}Z" fill="#1d2358" stroke="#0d1230" stroke-width="5"/><path d="M${W / 2},${peakY - 60} L${W - 8},${H} L${W / 2 + 30},${H}Z" fill="#000" opacity=".18"/><path d="M${W / 2},${peakY - 60} l-30 56 14-5 16 18 18-21 13 7z" fill="#eef0ff" opacity=".85" stroke="#0d1230" stroke-width="3"/>`;
-    let st = 0; L.CHAPTERS.forEach((c, k) => { const n = c[3].length + 1, y0 = y(st) + STEP / 2, y1 = y(st + n - 1) - STEP / 2; st += n; const a = mtn(y0), b = mtn(y1);
-      g += `<path d="M${a[0]},${y0} L${b[0]},${y1} L${b[1]},${y1} L${a[1]},${y0}Z" fill="${CH[k]}" opacity=".15"/><line x1="${b[0]}" y1="${y1}" x2="${b[1]}" y2="${y1}" stroke="${CH[k]}" stroke-opacity=".35" stroke-width="2" stroke-dasharray="6 8"/>`; });
-    // Profi-Abzweigungen
-    nodes.forEach((n, i) => { if (n.t !== "b" || !L.PRO[n.k].length) return; const [bx, by] = P[i], side = bx < W / 2 ? 1 : -1, list = L.PRO[n.k], open = !!won[n.k];
-      const ox = nar ? (side > 0 ? W - 26 : 26) : (side > 0 ? W - 160 : 160), gap = nar ? 40 : 46, pts = list.map((id, j) => [ox + (nar ? 0 : side * (j % 2 ? 26 : 0)), by + 40 + j * gap]);
-      const d = curve([[bx, by], [bx + side * (nar ? 40 : 80), by + 4], ...pts]);
-      g += `<path d="${d}" fill="none" stroke="#0d1230" stroke-width="11" stroke-linecap="round"/><path d="${d}" fill="none" stroke="#b26bff" stroke-width="4.5" stroke-dasharray="2 10" stroke-linecap="round" opacity="${open ? 1 : .55}"/>`;
-      pts.forEach(([px, py], j) => { const id = list[j], ok = Lern.done(s, id), r = nar ? 16 : 19;
-        g += `<a href="${L.TITLES[id][1]}" aria-label="Profi: ${L.TITLES[id][0]}"><title>🔬 ${L.TITLES[id][0]}</title><circle cx="${px}" cy="${py + 4}" r="${r}" fill="#0d1230"/><circle class="nb" cx="${px}" cy="${py}" r="${r}" fill="${ok ? "#5b2fa8" : "#2a1d52"}" stroke="#b26bff" stroke-width="3" opacity="${open || ok ? 1 : .6}"/>${art(L.CARD[id], px, py, nar ? 22 : 26)}${ok ? `<circle cx="${px + r * .7}" cy="${py - r * .7}" r="7" fill="#34d982" stroke="#0d1230" stroke-width="2"/>` : ""}${nar ? "" : lbl(px + side * 26, py + 4, L.TITLES[id][0], side, "#e3ccff", 12.5)}</a>`; });
-      const [lx, ly] = pts[pts.length - 1];
-      g += `<g transform="translate(${nar ? lx - side * 14 : lx},${ly + 34})"><rect x="${nar ? -32 : -46}" y="-12" width="${nar ? 64 : 92}" height="23" rx="11.5" fill="#b26bff" stroke="#0d1230" stroke-width="3"/><text y="4" fill="#fff" font-size="${nar ? 11 : 12}" font-weight="900" text-anchor="middle" font-family="system-ui">${open ? "🔬 Profi" + (nar ? "" : "-Pfad") : "🔒 Profi"}</text></g>`; });
-    // Hauptweg
-    const all = [[W / 2, H - 20], ...P, [W / 2, peakY + 10]], done = all.slice(0, Math.min(all.length, cur + 2));
-    g += `<path d="${curve(all)}" fill="none" stroke="#0d1230" stroke-width="${nar ? 26 : 30}" stroke-linecap="round"/><path d="${curve(all)}" fill="none" stroke="#3a4070" stroke-width="${nar ? 17 : 20}" stroke-linecap="round"/>`;
-    if (done.length > 1) g += `<path class="${first ? "gold" : ""}" id="mgold" d="${curve(done)}" fill="none" stroke="#ffc94d" stroke-width="${nar ? 17 : 20}" stroke-linecap="round"/>`;
-    g += `<path d="${curve(all)}" fill="none" stroke="#fff" stroke-opacity=".16" stroke-width="3" stroke-dasharray="4 14"/>`;
-    // Kapitel-Bänder
-    st = 0; L.CHAPTERS.forEach((c, k) => { const i = st; st += c[3].length + 1; const by2 = y(i) + (k ? (STEP + GAP) / 2 : STEP / 2 + 6), mx = (P[i][0] + (P[i - 1] || P[i])[0]) / 2, bw = nar ? 200 : 224, off = nar ? 105 : 175;
-      const bxx = Math.max(bw / 2 + 6, Math.min(W - bw / 2 - 6, mx < W / 2 ? mx + off : mx - off)), dn = c[3].filter(id => Lern.done(s, id)).length;
-      g += `<g transform="translate(${bxx},${by2})"><rect x="${-bw / 2}" y="-15" width="${bw}" height="30" rx="15" fill="${CH[k]}" stroke="#0d1230" stroke-width="4"/><text y="5" fill="#120d00" font-size="${nar ? 12.5 : 14}" font-weight="900" text-anchor="middle" font-family="Arial Black,system-ui">${k + 1} · ${c[0]} ${c[1]} · ${dn}/${c[3].length}</text></g>`; });
+    const chip = (cx, cy, t, side, col = "#dfe3ff", bg = "rgba(11,15,42,.88)", fs = 12.5) => { const w = t.length * fs * .56 + 18, x0 = side > 0 ? cx : cx - w;
+      return `<rect x="${x0}" y="${cy - 13}" width="${w}" height="26" rx="13" fill="${bg}"/><text x="${x0 + w / 2}" y="${cy + 4.5}" fill="${col}" font-size="${fs}" font-weight="800" text-anchor="middle" font-family="system-ui,sans-serif">${t}</text>`; };
+    let g = `<defs><linearGradient id="msky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#04061a"/><stop offset=".6" stop-color="#11174a"/><stop offset="1" stop-color="#1b2361"/></linearGradient>
+      <linearGradient id="mtn" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2b3274"/><stop offset="1" stop-color="#161c4c"/></linearGradient>
+      <radialGradient id="mglow"><stop offset="0" stop-color="#ffc94d" stop-opacity=".75"/><stop offset="1" stop-color="#ffc94d" stop-opacity="0"/></radialGradient>
+      <filter id="gl"><feGaussianBlur stdDeviation="4"/></filter></defs><rect width="${W}" height="${H}" fill="url(#msky)"/>`;
+    for (let i = 0; i < 110; i++) g += `<circle cx="${(i * 137.5) % W}" cy="${(i * 89.3) % (H * .8)}" r="${(i % 3) * .5 + .5}" fill="#fff" opacity="${.2 + (i % 5) / 10}"/>`;
+    g += `<circle cx="56" cy="${peakY - 70}" r="20" fill="#fff6d8" opacity=".9"/><circle cx="65" cy="${peakY - 76}" r="18" fill="#0a0e30"/>`;
+    // Pyramide als ruhige Silhouette im Hintergrund
+    g += `<path d="M${W / 2},${peakY - 70} L${W + 40},${H} L-40,${H}Z" fill="url(#mtn)" opacity=".75"/><path d="M${W / 2},${peakY - 70} L${W + 40},${H} L${W / 2 + 26},${H}Z" fill="#000" opacity=".16"/><path d="M${W / 2},${peakY - 70} l-34 62 15-6 19 20 20-24 14 8z" fill="#eef0ff" opacity=".9"/>`;
+    // Weg: dunkle Spur, goldener erledigter Teil mit Glühen
+    const all = [[W / 2, H], ...P, [W / 2, peakY]], done = all.slice(0, Math.min(all.length, cur + 2));
+    g += `<path d="${curve(all)}" fill="none" stroke="#0a0d26" stroke-width="${nar ? 30 : 34}" stroke-linecap="round"/><path d="${curve(all)}" fill="none" stroke="#283070" stroke-width="${nar ? 20 : 24}" stroke-linecap="round"/><path d="${curve(all)}" fill="none" stroke="#4a54a0" stroke-width="3" stroke-dasharray="2 12" stroke-linecap="round"/>`;
+    if (done.length > 1) g += `<path d="${curve(done)}" fill="none" stroke="#ffc94d" stroke-width="${nar ? 20 : 24}" stroke-linecap="round" filter="url(#gl)" opacity=".55"/><path class="${first ? "gold" : ""}" id="mgold" d="${curve(done)}" fill="none" stroke="#ffc94d" stroke-width="${nar ? 16 : 19}" stroke-linecap="round"/>`;
+    // Kapitel-Karten über die ganze Breite
+    let st = 0; L.CHAPTERS.forEach((c, k) => { const i = st; st += c[3].length + 1; const cy = y(i) + STEP * .5 + GAP * .5 + 4, dn = c[3].filter(id => Lern.done(s, id)).length, all3 = dn === c[3].length, w = W - 28, h = 50;
+      g += `<g><rect x="14" y="${cy - h / 2 + 4}" width="${w}" height="${h}" rx="16" fill="#0a0d26"/><rect x="14" y="${cy - h / 2}" width="${w}" height="${h}" rx="16" fill="#1a2058" stroke="${CH[k]}" stroke-width="2.5"/>
+        <rect x="14" y="${cy - h / 2}" width="10" height="${h}" rx="5" fill="${CH[k]}"/><text x="38" y="${cy - 3}" fill="${CH[k]}" font-size="11" font-weight="900" font-family="system-ui" letter-spacing="1">KAPITEL ${k + 1}</text>
+        <text x="38" y="${cy + 15}" fill="#fff" font-size="${nar ? 15 : 16}" font-weight="900" font-family="Arial Black,system-ui">${c[0]} ${c[1]}</text>
+        <rect x="${W - 104}" y="${cy - 5}" width="70" height="10" rx="5" fill="#0a0d26"/><rect x="${W - 104}" y="${cy - 5}" width="${70 * dn / c[3].length}" height="10" rx="5" fill="${CH[k]}"/>
+        <text x="${W - 69}" y="${cy - 11}" fill="#aab2d8" font-size="11" font-weight="800" text-anchor="middle" font-family="system-ui">${all3 ? "✓ fertig" : dn + "/" + c[3].length}</text></g>`; });
     // Stationen
-    nodes.forEach((n, i) => { const [cx, cy] = P[i], ok = isDone(n), now = i === cur, boss = n.t === "b", r = boss ? R + 9 : R;
-      const ready = boss && L.CHAPTERS[n.k][3].every(id => Lern.done(s, id)), fill = boss ? (ok ? "#7a3b12" : "#3a1d2c") : ok ? "#34d982" : now ? "#ffc94d" : "#2a3170";
-      const side = cx > W / 2 + 4 ? -1 : cx < W / 2 - 4 ? 1 : (Math.cos(i * .85) > 0 ? -1 : 1), name = boss ? (ok ? "🏆 " : "👹 ") + L.BOSSES[n.k][1] : L.TITLES[n.id][0];
-      const open = boss ? `<g data-b="${n.k}" role="button" tabindex="0" aria-label="Boss: ${L.BOSSES[n.k][1]}">` : `<a href="${L.TITLES[n.id][1]}" aria-label="${name}">`, close = boss ? "</g>" : "</a>";
-      g += open;
-      if (now) g += `<circle cx="${cx}" cy="${cy}" r="${r + 30}" fill="url(#mglow)"/><circle class="spin" cx="${cx}" cy="${cy}" r="${r + 9}" fill="none" stroke="#ffc94d" stroke-width="4" stroke-dasharray="6 6"/>`;
-      g += `<g class="${now ? "curr" : ""}"><circle cx="${cx}" cy="${cy + 5}" r="${r}" fill="#0d1230"/><circle class="nb" cx="${cx}" cy="${cy}" r="${r}" fill="${fill}" stroke="#0d1230" stroke-width="4"/><g opacity="${ok || now || boss ? 1 : .55}">${art(boss ? L.BOSSES[n.k][0] : L.CARD[n.id], cx, cy, boss ? R * 2.1 : R * 1.36)}</g></g>`;
-      if (ok) g += `<circle cx="${cx + r * .72}" cy="${cy - r * .72}" r="9" fill="#fff" stroke="#0d1230" stroke-width="3"/><path d="M${cx + r * .72 - 4.5} ${cy - r * .72}l3.5 3.5 6-7" fill="none" stroke="#1a8a4a" stroke-width="3" stroke-linecap="round"/>`;
-      else if (!now && !(boss && ready)) g += `<text x="${cx + r * .72}" y="${cy - r * .72 + 4}" font-size="11" text-anchor="middle">🔒</text>`;
-      g += lbl(cx + side * (r + 9), cy + 5, name, side, boss ? "#ff9fb0" : now ? "#ffc94d" : ok ? "#cfe9d9" : "#aab2d8", boss ? (nar ? 13 : 14) : (nar ? 12.5 : 13), boss || now ? 900 : 700);
-      if (now) g += `<g transform="translate(${cx - side * (r + (nar ? 34 : 44))},${cy})"><rect x="${nar ? -27 : -32}" y="-14" width="${nar ? 54 : 64}" height="27" rx="13.5" fill="#fff" stroke="#0d1230" stroke-width="3"/><text y="5" font-size="13" font-weight="900" text-anchor="middle" font-family="system-ui" fill="#0d1230">${side > 0 ? "DU ➜" : "⬅ DU"}</text></g>`;
-      g += close; });
-    // Gipfel: Endboss
+    nodes.forEach((n, i) => { const [cx, cy] = P[i], ok = isDone(n), now = i === cur, boss = n.t === "b", r = boss ? R + 9 : R, locked = !ok && !now;
+      const ready = boss && L.CHAPTERS[n.k][3].every(id => Lern.done(s, id)), base = boss ? (ok ? "#c4581c" : ready ? "#a33a5a" : "#3a2a4a") : ok ? "#28c46f" : now ? "#ffc94d" : "#323a7a";
+      const lip = boss ? (ok ? "#7a3410" : "#21162e") : ok ? "#178a4c" : now ? "#c98a00" : "#1c2256";
+      const side = cx > W / 2 ? -1 : 1, name = boss ? L.BOSSES[n.k][1] : L.TITLES[n.id][0];
+      g += boss ? `<g data-b="${n.k}" role="button" tabindex="0" aria-label="Boss: ${name}">` : `<a href="${L.TITLES[n.id][1]}" aria-label="${name}">`;
+      if (now) g += `<circle cx="${cx}" cy="${cy}" r="${r + 34}" fill="url(#mglow)"/><circle class="spin" cx="${cx}" cy="${cy}" r="${r + 10}" fill="none" stroke="#ffc94d" stroke-width="4" stroke-dasharray="7 7"/>`;
+      g += `<g class="${now ? "curr" : ""}"><ellipse cx="${cx}" cy="${cy + 8}" rx="${r}" ry="${r * .92}" fill="${lip}" stroke="#0a0d26" stroke-width="3"/><circle class="nb" cx="${cx}" cy="${cy}" r="${r}" fill="${base}" stroke="#0a0d26" stroke-width="3"/><ellipse cx="${cx - r * .3}" cy="${cy - r * .45}" rx="${r * .38}" ry="${r * .2}" fill="#fff" opacity="${locked ? .08 : .3}"/>
+        <g opacity="${locked && !boss ? .45 : 1}">${art(boss ? L.BOSSES[n.k][0] : L.CARD[n.id], cx, cy, boss ? r * 1.75 : r * 1.3)}</g></g>`;
+      if (ok) g += `<circle cx="${cx + r * .75}" cy="${cy - r * .7}" r="10" fill="#fff" stroke="#0a0d26" stroke-width="2.5"/><path d="M${cx + r * .75 - 5} ${cy - r * .7}l3.5 3.5 6.5-7.5" fill="none" stroke="#178a4c" stroke-width="3" stroke-linecap="round"/>`;
+      if (boss && !ok) g += `<text x="${cx}" y="${cy - r - 6}" font-size="16" text-anchor="middle">👑</text>`;
+      g += chip(cx + side * (r + 8), cy, (boss ? (ok ? "🏆 " : "👹 ") : "") + name, side, boss ? "#ffb3c2" : now ? "#ffc94d" : ok ? "#c9f2da" : "#9aa2c8", boss ? "rgba(58,20,40,.92)" : "rgba(11,15,42,.88)", boss ? 13 : 12.5);
+      if (now) g += `<g class="bob"><rect x="${cx - 32}" y="${cy - r - 50}" width="64" height="30" rx="15" fill="#fff" stroke="#0a0d26" stroke-width="3"/><path d="M${cx - 7} ${cy - r - 21}l7 9 7-9z" fill="#fff" stroke="#0a0d26" stroke-width="3" stroke-linejoin="round"/><rect x="${cx - 8}" y="${cy - r - 24}" width="16" height="5" fill="#fff"/><text x="${cx}" y="${cy - r - 30}" font-size="14" font-weight="900" text-anchor="middle" font-family="system-ui" fill="#0a0d26">${boss ? "KAMPF!" : "START"}</text></g>`;
+      g += boss ? "</g>" : "</a>";
+      // Profi-Abzweigung: kleines Portal neben dem Boss
+      if (boss && L.PRO[n.k].length){ const open = !!won[n.k], pd = L.PRO[n.k].filter(id => Lern.done(s, id)).length, tot = L.PRO[n.k].length, px = Math.max(26, Math.min(W - 26, cx + side * (nar ? 112 : 150))), py = cy + 46;
+        g += `<a href="#pro${n.k + 1}" data-pro="${n.k + 1}" aria-label="Profi-Pfad Kapitel ${n.k + 1}"><title>🔬 Profi-Pfad: ${pd}/${tot} Vertiefungen</title><path d="M${cx + side * r * .8} ${cy + r * .5} Q${(cx + px) / 2} ${py + 12} ${px - side * 20} ${py}" fill="none" stroke="#b26bff" stroke-width="4" stroke-dasharray="2 9" stroke-linecap="round" opacity="${open ? 1 : .55}"/>
+          <circle cx="${px}" cy="${py + 5}" r="20" fill="#2a1450"/><circle cx="${px}" cy="${py}" r="20" fill="${open ? "#7b3fe0" : "#3b2a66"}" stroke="#0a0d26" stroke-width="3"/><text x="${px}" y="${py + 7}" font-size="19" text-anchor="middle">🔬</text>
+          <circle cx="${px + 15}" cy="${py - 14}" r="10" fill="${open ? "#b26bff" : "#5a4a80"}" stroke="#0a0d26" stroke-width="2.5"/><text x="${px + 15}" y="${py - 10}" fill="#fff" font-size="11" font-weight="900" text-anchor="middle" font-family="system-ui">${open ? tot - pd || "✓" : "🔒"}</text></a>`; }
+    });
+    // Gipfel
     const fw = Lern.bossWon().f, finReady = [0, 1, 2, 3, 4, 5].every(k => won[k]), sx = W / 2, sy = peakY;
-    g += `<g data-b="f" role="button" tabindex="0" aria-label="Endboss: Satoshis Rätsel"><circle cx="${sx}" cy="${sy}" r="${allDone ? 90 : 70}" fill="url(#mglow)"/><circle cx="${sx}" cy="${sy + 6}" r="42" fill="#0d1230"/><circle class="nb ${allDone && !fw ? "curr" : ""}" cx="${sx}" cy="${sy}" r="42" fill="${fw ? "#ffd36b" : finReady ? "#ffc94d" : "#4a3f1a"}" stroke="#0d1230" stroke-width="5"/>${art("satoshi", sx, sy, 62)}
-      <path d="M${sx + 28} ${sy - 40}V${sy - 110}" stroke="#0d1230" stroke-width="5"/><path d="M${sx + 28} ${sy - 110}l46 13-46 15z" fill="#f7931a" stroke="#0d1230" stroke-width="4"/><text x="${sx + 44}" y="${sy - 91}" font-size="14" font-weight="900" fill="#fff" font-family="Arial">₿</text>
-      <text x="${sx}" y="${sy + 68}" fill="#ffd36b" font-size="${nar ? 14 : 16}" font-weight="900" text-anchor="middle" font-family="Arial Black,system-ui" paint-order="stroke" stroke="#0b0f2a" stroke-width="5">${fw ? "🏆 Gipfel erreicht!" : "👑 Endboss: Satoshis Rätsel"}</text></g>`;
-    g += `<text x="${W / 2}" y="${H - 4}" fill="#9aa2c8" font-size="12" text-anchor="middle" font-family="system-ui">Start ⬆</text>`;
+    g += `<g data-b="f" role="button" tabindex="0" aria-label="Endboss: Satoshis Rätsel"><circle cx="${sx}" cy="${sy}" r="90" fill="url(#mglow)"/><ellipse cx="${sx}" cy="${sy + 9}" rx="46" ry="42" fill="${fw ? "#b8860b" : "#5a4a14"}" stroke="#0a0d26" stroke-width="3"/><circle class="nb ${cur >= N && !fw ? "curr" : ""}" cx="${sx}" cy="${sy}" r="46" fill="${fw || finReady ? "#ffd36b" : "#8a7a3a"}" stroke="#0a0d26" stroke-width="3"/>${art("satoshi", sx, sy, 66)}
+      <path d="M${sx + 30} ${sy - 44}V${sy - 112}" stroke="#0a0d26" stroke-width="5"/><path class="flag" d="M${sx + 30} ${sy - 112}l46 13-46 15z" fill="#f7931a" stroke="#0a0d26" stroke-width="3.5"/><text x="${sx + 46}" y="${sy - 93}" font-size="14" font-weight="900" fill="#fff" font-family="Arial">₿</text>
+      ${chip(sx - 105, sy + 70, fw ? "🏆 Gipfel erreicht!" : "👑 Endboss: Satoshis Rätsel", 1, "#ffd36b", "rgba(11,15,42,.92)", 14)}</g>`;
     document.getElementById("map").innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Lernpfad als Berg">${g}</svg>`;
     const gp = document.getElementById("mgold"); if (gp && first){ gp.style.setProperty("--len", gp.getTotalLength()); gp.style.strokeDasharray = gp.getTotalLength(); }
-    // zur aktuellen Station scrollen (im Kasten, nicht die ganze Seite)
     const ty = (cur >= N ? peakY : P[cur][1]) * (mapw.clientWidth / W);
-    mapw.style.scrollBehavior = "auto"; mapw.scrollTop = Math.max(0, ty - mapw.clientHeight / 2); mapw.style.scrollBehavior = "";
+    mapw.style.scrollBehavior = "auto"; mapw.scrollTop = Math.max(0, ty - mapw.clientHeight * .55); mapw.style.scrollBehavior = "";
   }
+  mapw.addEventListener("click", e => { const a = e.target.closest("[data-pro]"); if (!a) return; e.preventDefault(); e.stopPropagation(); setView("list");
+    const el = document.getElementById("pro" + a.dataset.pro); if (el){ el.open = true; el.closest("details.kap").open = true; setTimeout(() => el.scrollIntoView({block: "start", behavior: "smooth"}), 60); } }, true);
   mapw.addEventListener("click", e => { const b = e.target.closest("[data-b]"); if (!b) return; const k = b.dataset.b;
     if (k === "f"){ if ([0, 1, 2, 3, 4, 5].every(k => won[k])) Lern.boss("f"); else Lern.toast && Lern.toast("👑 Erst alle 6 Bosse besiegen, dann wartet Satoshi am Gipfel!"); return; }
     if (Lern.CHAPTERS[+k][3].every(id => Lern.done(s, id))) Lern.boss(+k); else Lern.toast && Lern.toast("🔒 Schaffe erst alle Welten dieses Kapitels, dann wartet der Boss."); });
