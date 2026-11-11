@@ -60,6 +60,16 @@ a:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
 .lvup span{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;font-size:18px;background:rgba(255,255,255,.04);border:1px solid var(--line);filter:grayscale(1);opacity:.45}
 .lvup span.got{filter:none;opacity:.8} .lvup span.on{filter:none;opacity:1;border-color:var(--gold);background:rgba(255,201,77,.15);transform:scale(1.15);box-shadow:0 0 18px -4px rgba(255,201,77,.7)}
 .lvup em{font-style:normal;font-size:14px;color:var(--muted);flex-basis:100%} .lvup em b{color:var(--gold)}
+/* Klappbare Bereiche */
+details.fold > summary{list-style:none;display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none}
+details.fold > summary::-webkit-details-marker{display:none}
+details.fold > summary h2{margin:0;flex:1}
+details.fold > summary .sm{font-size:13px;white-space:nowrap}
+details.fold > summary::after{content:"";flex:none;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.06) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6' fill='none' stroke='%23ffc94d' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/18px no-repeat;transition:transform .25s}
+details.fold[open] > summary::after{transform:rotate(180deg)}
+details.fold[open] > summary{margin-bottom:12px}
+details.grp.fold{padding:12px 14px;border-radius:18px;border:1px solid var(--line);background:rgba(255,255,255,.02)}
+details.grp.fold > .cd{margin-top:-4px}
 </style>
 </head>
 <body>
@@ -71,50 +81,50 @@ a:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
     <p class="lead">Bitcoin spielerisch verstehen: Lernwelten mit echten Live-Daten, ohne Anmeldung und ohne Tracking.</p>
   </div>
   <p class="count"><b>Alle 27 Themen</b> sind spielbar.</p>
-  <section class="card daily" aria-labelledby="dly"><h2 id="dly">🔥 Tages-Challenge</h2><div id="daily"></div></section>
-  <section class="card path" aria-label="Dein Lernpfad"><div class="ph"><h2>Dein Lernpfad</h2><span class="muted" id="pathCount"></span></div><p class="lvup" id="lvup"></p><div class="chs" id="steps"></div><div class="next" id="next"></div></section>
-  <section class="card" aria-labelledby="alb"><div class="ph"><h2 id="alb">🃏 Deine Sammelkarten</h2><span class="muted" id="albN"></span></div>
+  <details class="card daily fold" data-k="daily"><summary><h2 id="dly">🔥 Tages-Challenge</h2><span class="muted sm" id="dlyS"></span></summary><div id="daily"></div></details>
+  <details class="card path fold" data-k="path"><summary><h2>Dein Lernpfad</h2><span class="muted sm" id="pathCount"></span></summary><p class="lvup" id="lvup"></p><div class="chs" id="steps"></div><div class="next" id="next"></div></details>
+  <details class="card fold" data-k="album"><summary><h2 id="alb">🃏 Deine Sammelkarten</h2><span class="muted sm" id="albN"></span></summary>
     <p class="muted" style="margin:0 0 10px">Jede geschaffte Welt gibt eine Karte. Alle Quizfragen richtig? Dann glänzt sie. ✨</p>
     <div class="tcards" id="album"></div>
-  </section>
-  <section class="grp"><h2><span class="cn">1</span>🌱 Warum Bitcoin?</h2><p class="muted cd">Was gutes Geld ausmacht und warum Bitcoin anders ist.</p>
+  </details>
+  <details class="grp fold" data-k="1"><summary><h2><span class="cn">1</span>🌱 Warum Bitcoin?</h2><span class="muted sm" data-cnt="1"></span></summary><p class="muted cd">Was gutes Geld ausmacht und warum Bitcoin anders ist.</p>
   <div class="grid big">
     <a class="w" href="eigenschaften/"><span class="tag live">Start</span><span class="ic" aria-hidden="true">⚔️</span><b>Was macht Bitcoin aus?</b><span>Euro, Gold und Bitcoin im Duell um 10 Eigenschaften von gutem Geld.</span><span class="go">Geld-Duell →</span></a>
     <a class="w" href="inflation/"><span class="tag live">Live</span><span class="ic" aria-hidden="true">💶</span><b>Geld &amp; Inflation</b><span>Warum verliert der Euro an Wert, und was ist bei Bitcoin anders?</span><span class="go">Kaufkraft-Supermarkt →</span></a>
     <a class="w" href="halving/"><span class="tag live">Live</span><span class="ic" aria-hidden="true">⏳</span><b>Knappheit &amp; Halving</b><span>Nur 21 Millionen, Halving-Countdown und wer die Miner danach bezahlt.</span><span class="go">Halving-Uhr →</span></a>
     <a class="w" href="geschichte/"><span class="tag live">Live</span><span class="ic" aria-hidden="true">📜</span><b>Geschichte</b><span>Vom Whitepaper bis 100.000 $: Bitcoin in 15 Momenten.</span><span class="go">Zeitreise →</span></a>
-  </div></section>
-  <section class="grp"><h2><span class="cn">2</span>🛡️ Sicher starten</h2><p class="muted cd">Bevor du Bitcoin kaufst: Wallet, Seed und Betrug.</p>
+  </div></details>
+  <details class="grp fold" data-k="2"><summary><h2><span class="cn">2</span>🛡️ Sicher starten</h2><span class="muted sm" data-cnt="2"></span></summary><p class="muted cd">Bevor du Bitcoin kaufst: Wallet, Seed und Betrug.</p>
   <div class="grid big">
     <a class="w" href="wallets/"><span class="tag live">Neu</span><span class="ic" aria-hidden="true">🗄</span><b>Wallets &amp; Backup</b><span>Welche Wallet schützt wovor, und dein Notfall-Plan fürs Erbe.</span><span class="go">Wallet-Check →</span></a>
     <a class="w" href="seed/"><span class="tag live">Live</span><span class="ic" aria-hidden="true">🔑</span><b>Selbstverwahrung</b><span>12 Wörter, die alles sind: aufschreiben, prüfen, sicher aufbewahren.</span><span class="go">Seed-Trainer →</span></a>
     <a class="w" href="betrug/"><span class="tag live">Live</span><span class="ic" aria-hidden="true">🕵</span><b>Betrug erkennen</b><span>Echt oder Betrug? 10 typische Maschen im Test.</span><span class="go">Betrugs-Detektor →</span></a>
     <a class="w" href="krypto/"><span class="tag live">Live</span><span class="ic" aria-hidden="true">🟠</span><b>Bitcoin vs. „Krypto“</b><span>Sechs Fragen, mit denen du jeden Coin prüfen kannst.</span><span class="go">Coin-Check →</span></a>
-  </div></section>
-  <section class="grp"><h2><span class="cn">3</span>🧠 Klug investieren</h2><p class="muted cd">Sparplan statt Bauchgefühl, und Finger weg vom Hebel.</p>
+  </div></details>
+  <details class="grp fold" data-k="3"><summary><h2><span class="cn">3</span>🧠 Klug investieren</h2><span class="muted sm" data-cnt="3"></span></summary><p class="muted cd">Sparplan statt Bauchgefühl, und Finger weg vom Hebel.</p>
   <div class="grid big">
     <a class="w" href="sparplan/"><span class="tag live">Live</span><span class="ic" aria-hidden="true">🗓</span><b>Sparplan (DCA)</b><span>Was wäre aus jeden Monat 50 $ geworden? Mit Steuer-Grundregeln.</span><span class="go">Sparplan-Simulator →</span></a>
     <a class="w" href="fomo/"><span class="tag live">Live</span><span class="ic" aria-hidden="true">🎢</span><b>FOMO &amp; FUD</b><span>8 echte Momente: Kannst du deinen Gefühlen widerstehen?</span><span class="go">Gefühls-Achterbahn →</span></a>
     <a class="w" href="hebel/"><span class="tag live">Live</span><span class="ic" aria-hidden="true">💥</span><b>Hebel &amp; Liquidationen</b><span>Teste eine gehebelte Wette mit echten Kursen der letzten Tage.</span><span class="go">Hebel-Falle →</span></a>
-  </div></section>
-  <section class="grp"><h2><span class="cn">4</span>💸 Bezahlen & Senden</h2><p class="muted cd">Wie eine Zahlung wirklich abläuft, schnell und günstig.</p>
+  </div></details>
+  <details class="grp fold" data-k="4"><summary><h2><span class="cn">4</span>💸 Bezahlen & Senden</h2><span class="muted sm" data-cnt="4"></span></summary><p class="muted cd">Wie eine Zahlung wirklich abläuft, schnell und günstig.</p>
   <div class="grid big">
     <a class="w" href="utxo/"><span class="tag live">Live</span><span class="ic" aria-hidden="true">👛</span><b>Adressen &amp; UTXO</b><span>Mit Bitcoin-Münzen bezahlen und sehen, woher das Wechselgeld kommt.</span><span class="go">Wechselgeld-Kasse →</span></a>
     <a class="w" href="bahnhof/"><span class="tag live">Live</span><span class="ic" aria-hidden="true">🚉</span><b>Transaktionen &amp; Gebühren</b><span>Wie eine Überweisung in einen Block kommt.</span><span class="go">Mempool-Bahnhof →</span></a>
     <a class="w" href="lightning/"><span class="tag live">Live</span><span class="ic" aria-hidden="true">⚡</span><b>Lightning</b><span>Kaffee bezahlen: Blockchain gegen Lightning im Rennen.</span><span class="go">Lightning-Rennen →</span></a>
-  </div></section>
-  <section class="grp"><h2><span class="cn">5</span>⚙️ Unter der Haube</h2><p class="muted cd">Für Neugierige: die Technik hinter Bitcoin.</p>
+  </div></details>
+  <details class="grp fold" data-k="5"><summary><h2><span class="cn">5</span>⚙️ Unter der Haube</h2><span class="muted sm" data-cnt="5"></span></summary><p class="muted cd">Für Neugierige: die Technik hinter Bitcoin.</p>
   <div class="grid big">
     <a class="w" href="hashing/"><span class="tag live">Live</span><span class="ic" aria-hidden="true">🧬</span><b>Hashing</b><span>Der digitale Fingerabdruck: ein Zeichen ändern, alles ändert sich.</span><span class="go">Fingerabdruck-Maschine →</span></a>
     <a class="w" href="schluessel/"><span class="tag live">Echt</span><span class="ic" aria-hidden="true">🔐</span><b>Schlüssel &amp; Signaturen</b><span>Selbst unterschreiben, fälschen versuchen und scheitern.</span><span class="go">Schlüssel-Labor →</span></a>
     <a class="w" href="blockchain/"><span class="tag live">Live</span><span class="ic" aria-hidden="true">🔗</span><b>Blockchain</b><span>Fälsch einen Block und sieh, wie die Kette bricht. Mit der echten Kette live.</span><span class="go">Block-Kette →</span></a>
     <a class="w" href="mining/"><span class="tag live">Live</span><span class="ic" aria-hidden="true">⛏</span><b>Mining &amp; Energie</b><span>Selbst minen, Difficulty live und wie viel Strom Bitcoin braucht.</span><span class="go">Mining-Werkstatt →</span></a>
     <a class="w" href="nodes/"><span class="tag live">Live</span><span class="ic" aria-hidden="true">🖥</span><b>Nodes &amp; Upgrades</b><span>Versuch, die Regeln zu brechen, und sieh, wie Bitcoin sich trotzdem ändert.</span><span class="go">Node-Wache →</span></a>
-  </div></section>
-  <section class="grp"><h2>🎮 Extra</h2>
+  </div></details>
+  <details class="grp fold" data-k="extra"><summary><h2>🎮 Extra</h2><span class="muted sm" data-cnt=""></span></summary>
   <div class="grid big">
     <a class="w" href="spiel/"><span class="tag live">Live</span><span class="ic" aria-hidden="true">📈</span><b>Volatilität &amp; Zyklen</b><span>Warum der Kurs so stark schwankt.</span><span class="go">Bullen vs Bären →</span></a>
-  </div></section>
+  </div></details>
   <p class="foot">Unterhaltung und Lernen, keine Anlageberatung. Keine Cookies, kein Tracking. <a href="#" id="guideOn" style="color:inherit">Satoshi zurückholen</a></p>
 </div>
 <script src="lern.js?v=8"></script>
@@ -142,6 +152,16 @@ a:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
   document.getElementById("guideOn").onclick = e => { e.preventDefault(); try { localStorage.removeItem(Lern.GK); } catch(x){} location.reload(); };
   document.getElementById("album").innerHTML = Lern.PATH.map(([id]) => Lern.cardHTML(id, s)).join("");
   document.getElementById("albN").textContent = `${n} von ${Lern.PATH.length}`;
+  // Klappbereiche: gemerkter Zustand, sonst sinnvoller Standard
+  let fold = {}; try { fold = JSON.parse(localStorage.getItem("satsland-fold")) || {}; } catch(e){}
+  const nxW = Lern.nextAfter(""), nxCh = nxW ? Lern.chapterOf(nxW[0]) + 1 : 1, dly = Lern.streak();
+  const def = {daily: dly.last !== new Date().toLocaleDateString("sv-SE"), path: true, album: false, extra: false};
+  document.querySelectorAll("details.fold").forEach(d => {
+    const k = d.dataset.k; d.open = k in fold ? fold[k] : k in def ? def[k] : +k === nxCh;
+    d.addEventListener("toggle", () => { fold[k] = d.open; try { localStorage.setItem("satsland-fold", JSON.stringify(fold)); } catch(e){} });
+  });
+  document.querySelectorAll("[data-cnt]").forEach(el => { const c = Lern.CHAPTERS[+el.dataset.cnt - 1]; if (c){ const dn = c[3].filter(id => Lern.done(s, id)).length; el.textContent = dn === c[3].length ? "✓ alles geschafft" : `${dn}/${c[3].length}`; } });
+  document.getElementById("dlyS").textContent = dly.streak ? `🔥 ${dly.streak}` + (dly.last === new Date().toLocaleDateString("sv-SE") ? " · erledigt" : "") : "Neue Frage";
   document.getElementById("pathCount").textContent = `${n} von ${Lern.PATH.length} geschafft`;
   // Level-Leiter: aktuelles Tier und wie viele Welten bis zum nächsten
   const L = Lern.level(n), nx = Lern.LEVELS.find(l => l[0] > n);
