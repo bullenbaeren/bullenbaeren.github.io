@@ -70,6 +70,14 @@ a:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
 .vsw{display:flex;width:max-content;margin:12px auto 0;padding:4px;border-radius:999px;background:#0b0f2a;border:2px solid #0d1230;box-shadow:inset 0 2px 6px rgba(0,0,0,.4)} .path.asmap details.kap{display:none}
 .vsw button{border:0;background:transparent;color:var(--muted);font:800 14px var(--f-body);padding:8px 18px;border-radius:999px;cursor:pointer;transition:background .2s,color .2s}
 .vsw button[aria-pressed="true"]{background:linear-gradient(180deg,#ffd36b,#f7a21a);color:#241500;box-shadow:0 3px 0 #b86e00}
+.mback{position:fixed;inset:0;background:rgba(4,6,20,.6);z-index:80;backdrop-filter:blur(2px)}
+.mpop{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);width:min(440px,calc(100% - 24px));max-height:70vh;overflow:auto;z-index:81;padding:14px;border-radius:20px;border:3px solid #0d1230;box-shadow:0 6px 0 #0d1230;background:linear-gradient(160deg,#2a1d5a,#161b46);animation:mpin .3s cubic-bezier(.2,.8,.2,1)}
+@keyframes mpin{from{transform:translate(-50%,40px);opacity:0}}
+.mpop .mph{display:flex;align-items:center;gap:10px} .mpop .mph b{flex:1;font:900 17px var(--f-display);color:#e3ccff}
+.mpop .mph button{width:36px;height:36px;border-radius:50%;border:2px solid #0d1230;background:#3b2a66;color:#fff;font-size:16px;cursor:pointer}
+.mpop p{margin:6px 0 10px;font-size:13.5px}
+.mpl{display:grid;gap:8px} .mpl a{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:14px;background:rgba(178,107,255,.12);border:2px solid rgba(178,107,255,.35);color:var(--ink);text-decoration:none;font-weight:800}
+.mpl a:hover{border-color:#b26bff} .mpl a.ok{border-color:var(--bull)} .mpl .ic{width:36px;height:36px;flex:none} .mpl .ic svg{width:100%;height:100%} .mpl span:nth-child(2){flex:1} .mpl em{font-style:normal;color:#e3ccff}
 .mapw .bob{animation:mbob 1.4s ease-in-out infinite} @keyframes mbob{50%{transform:translateY(-5px)}}
 .mapw .flag{transform-box:fill-box;transform-origin:0 50%;animation:mflag 1.8s ease-in-out infinite} @keyframes mflag{50%{transform:scaleX(.82) skewY(4deg)}}
 .mapw{margin-top:10px;max-height:72vh;overflow-y:auto;overscroll-behavior:contain;border-radius:18px;border:3px solid #0d1230;box-shadow:4px 4px 0 #0d1230;background:#0b0f2a;scroll-behavior:smooth}
@@ -321,8 +329,17 @@ details.fold[open] > summary{margin-bottom:12px}
     const ty = (cur >= N ? peakY : P[cur][1]) * (mapw.clientWidth / W);
     mapw.style.scrollBehavior = "auto"; mapw.scrollTop = Math.max(0, ty - mapw.clientHeight * .55); mapw.style.scrollBehavior = "";
   }
-  mapw.addEventListener("click", e => { const a = e.target.closest("[data-pro]"); if (!a) return; e.preventDefault(); e.stopPropagation(); setView("list");
-    const el = document.getElementById("pro" + a.dataset.pro); if (el){ el.open = true; el.closest("details.kap").open = true; setTimeout(() => el.scrollIntoView({block: "start", behavior: "smooth"}), 60); } }, true);
+  // Profi-Portal: Vertiefungen als Karte direkt über dem Pfad (statt zur Liste zu springen)
+  document.body.insertAdjacentHTML("beforeend", `<div class="mback" id="mback" hidden></div><div class="mpop" id="mpop" role="dialog" aria-modal="true" aria-labelledby="mpT" hidden></div>`);
+  const mpop = document.getElementById("mpop"), mback = document.getElementById("mback");
+  const closePop = () => { mpop.hidden = mback.hidden = true; };
+  mback.onclick = closePop; addEventListener("keydown", e => { if (e.key === "Escape") closePop(); });
+  mapw.addEventListener("click", e => { const a = e.target.closest("[data-pro]"); if (!a) return; e.preventDefault(); e.stopPropagation();
+    const k = +a.dataset.pro - 1, open = !!won[k], L = Lern.PRO[k];
+    mpop.innerHTML = `<div class="mph"><b id="mpT">🔬 Profi-Pfad · ${Lern.CHAPTERS[k][0]} ${Lern.CHAPTERS[k][1]}</b><button type="button" id="mpx" aria-label="Schließen">✕</button></div>
+      <p class="muted">${open ? "Freigeschaltet! Vertiefungen für alle, die es genau wissen wollen." : "🔒 Empfohlen nach dem Boss " + Lern.BOSSES[k][1] + ". Reinschauen geht trotzdem."}</p>
+      <div class="mpl">${L.map(id => { const ok = Lern.done(s, id); return `<a href="${Lern.TITLES[id][1]}" class="${ok ? "ok" : ""}"><span class="ic">${Lern.art(Lern.CARD[id])}</span><span>${Lern.TITLES[id][0]}</span><em>${ok ? "✓" : open ? "→" : "🔒"}</em></a>`; }).join("")}</div>`;
+    mpop.hidden = mback.hidden = false; document.getElementById("mpx").onclick = closePop; document.getElementById("mpx").focus(); }, true);
   mapw.addEventListener("click", e => { const b = e.target.closest("[data-b]"); if (!b) return; const k = b.dataset.b;
     if (k === "f"){ if ([0, 1, 2, 3, 4, 5].every(k => won[k])) Lern.boss("f"); else Lern.toast && Lern.toast("👑 Erst alle 6 Bosse besiegen, dann wartet Satoshi am Gipfel!"); return; }
     if (Lern.CHAPTERS[+k][3].every(id => Lern.done(s, id))) Lern.boss(+k); else Lern.toast && Lern.toast("🔒 Schaffe erst alle Welten dieses Kapitels, dann wartet der Boss."); });
