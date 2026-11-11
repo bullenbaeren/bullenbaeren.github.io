@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Whitepaper-Tour · Satsland</title>
+<meta name="description" content="Profi-Vertiefung: Das Bitcoin-Whitepaper von Satoshi Nakamoto Abschnitt für Abschnitt, mit Originalsätzen, einfacher Erklärung und Links zum Ausprobieren.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0b0f2a">
+<link rel="icon" href="../icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="stylesheet" href="../lern.css?v=22">
+<style>
+/* Lernwelt "Whitepaper-Tour": nur seitenspezifische Teile, der Rest kommt aus lern.css */
+.idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
+.kv{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}
+.kv div{border:1px solid var(--line);border-radius:12px;padding:8px 10px;font-size:12px;color:var(--muted)} .kv b{display:block;font:700 18px var(--f-num);color:var(--ink)} .kv .g{color:var(--gold)}
+.seg{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px} .seg .btn[aria-pressed="true"]{outline:2px solid var(--gold);background:rgba(247,147,26,.15)}
+.res{margin-top:12px;padding:12px 14px;border-radius:14px;border:2px solid var(--line);font-size:15px;line-height:1.5}
+.res strong{display:block;font-size:18px} .res.ok{border-color:var(--bull)} .res.ok strong{color:var(--bull)} .res.bad{border-color:var(--bear)} .res.bad strong{color:var(--bear)} .res.warn{border-color:var(--gold)} .res.warn strong{color:var(--gold)}
+.note{margin:10px 0 0;font-size:14px;color:var(--muted);line-height:1.5} .note b{color:var(--ink)} .note a{color:var(--gold)}
+@media (max-width:620px){ .kv{grid-template-columns:1fr 1fr} }
+.wpbar{display:flex;align-items:center;gap:10px;margin-top:4px} .wpbar i{flex:1;height:12px;border-radius:6px;background:rgba(255,255,255,.08);overflow:hidden} .wpbar u{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--bull));transition:width .5s} .wpbar b{font:900 14px var(--f-num)}
+.wpp{margin-top:12px;display:grid;gap:8px}
+.wpp details{border:2px solid var(--line);border-radius:14px;background:#f4efe1;color:#1d1a12;overflow:hidden;transition:border-color .2s}
+.wpp details[open]{border-color:var(--gold);box-shadow:3px 3px 0 #0d1230}
+.wpp summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:10px 12px;font:900 15px Georgia,"Times New Roman",serif}
+.wpp summary::-webkit-details-marker{display:none}
+.wpp summary .n{flex:none;width:2em;height:2em;border-radius:50%;display:grid;place-items:center;background:#1d1a12;color:#f4efe1;font:900 13px var(--f-num)}
+.wpp summary .t{flex:1} .wpp summary .t small{display:block;font:600 12px var(--f-body);color:#6b6350}
+.wpp summary .ck{font-size:18px;opacity:.25} .wpp details.rd summary .ck{opacity:1}
+.wpp .bd{padding:0 14px 14px;font-size:15px;line-height:1.55}
+.wpp blockquote{margin:6px 0 10px;padding:8px 12px;border-left:4px solid #b86e00;background:rgba(184,110,0,.08);font:italic 15px/1.5 Georgia,"Times New Roman",serif}
+.wpp blockquote span{display:block;font:normal 13px var(--f-body);color:#6b6350;margin-top:4px}
+.wpp .go{display:inline-block;margin-top:8px;font-weight:800;color:#b86e00}
+.wpp .bd b{color:#000}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a class="back" href="../">← Satsland</a><a class="back" href="../lexikon/">📖 Lexikon</a></div>
+  <div>
+    <h1>Das <span class="btc">Whitepaper</span>, Seite für Seite</h1>
+    <p class="lead">Am 31. Oktober 2008 veröffentlichte Satoshi Nakamoto <b>9 Seiten</b>, die alles verändert haben. Hier gehst du sie Abschnitt für Abschnitt durch: der wichtigste Satz im Original, was er bedeutet, und wo du es in Satsland selbst ausprobieren kannst.</p>
+  </div>
+
+  <section class="card" aria-labelledby="h1s">
+    <h2 id="h1s">📜 „Bitcoin: A Peer-to-Peer Electronic Cash System“</h2>
+    <div class="wpbar"><i><u id="wpU"></u></i><b id="wpN"></b></div>
+    <p class="muted" style="font-size:13px;margin:6px 0 0">Tipp einen Abschnitt an, um ihn aufzuklappen. Gelesene Abschnitte bekommen einen Haken.</p>
+    <div class="wpp nogl" id="paper"></div>
+    <p class="note">Das Original lesen: <a href="https://bitcoin.org/bitcoin.pdf">bitcoin.org/bitcoin.pdf</a> (Englisch, 9 Seiten). Übersetzungen in viele Sprachen gibt es unter <a href="https://bitcoin.org/de/bitcoin-paper">bitcoin.org/de/bitcoin-paper</a>.</p>
+  </section>
+
+  <section class="card" aria-labelledby="hMs">
+    <h2 id="hMs">Das solltest du dir merken</h2>
+    <div class="learn">
+      <div><b>Vertrauen durch Beweis</b><span>Satoshis Kernidee: <b>kryptografischer Beweis statt Vertrauen</b> in eine Bank.</span></div>
+      <div><b>Kette aus Unterschriften</b><span>Eine Münze ist eine <b>Kette digitaler Unterschriften</b>, jeder Besitzer unterschreibt die Übergabe.</span></div>
+      <div><b>Eine CPU, eine Stimme</b><span>Proof of Work ersetzt Abstimmungen: <b>Rechenarbeit</b> entscheidet, nicht die Zahl der Konten.</span></div>
+      <div><b>Nur 9 Seiten</b><span>Das ganze System passt auf <b>9 Seiten</b> mit 12 Abschnitten und einer Formel.</span></div>
+    </div>
+    <details class="qz"><summary>Teste dich: 3 Fragen</summary><div id="quiz"></div></details>
+  </section>
+
+  <section class="card next" id="next" aria-label="Weiter"></section>
+  <details class="foot"><summary>Quellen</summary><p><a href="https://bitcoin.org/bitcoin.pdf">Satoshi Nakamoto: Bitcoin – A Peer-to-Peer Electronic Cash System (2008)</a> · Deutsche Übersetzungen der Zitate: Satsland</p></details>
+  <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
+</div>
+
+<script src="../lern.js?v=22"></script>
+<script>
+/* =====================================================================
+   WHITEPAPER-TOUR – Lernwelt von Satsland
+   ===================================================================== */
+(() => {
+const $ = id => document.getElementById(id);
+const WP = [
+  ["Zusammenfassung", "Abstract", "A purely peer-to-peer version of electronic cash would allow online payments to be sent directly from one party to another without going through a financial institution.", "Eine reine Peer-to-Peer-Version von elektronischem Geld würde Online-Zahlungen direkt von einer Partei zur anderen erlauben, ohne über ein Finanzinstitut zu gehen.", "Das Ziel in einem Satz: <b>digitales Bargeld ohne Bank</b>. Die Zusammenfassung verrät auch schon die Lösung für das Kopier-Problem: ein Netzwerk, das Zahlungen mit Zeitstempeln in eine Kette aus Rechenarbeit schreibt.", "start", "Bitcoin in 5 Minuten"],
+  ["1 · Einleitung", "Introduction", "What is needed is an electronic payment system based on cryptographic proof instead of trust.", "Was gebraucht wird, ist ein elektronisches Zahlungssystem, das auf kryptografischem Beweis statt auf Vertrauen beruht.", "Online-Handel hängt von Banken als <b>vertrauenswürdigen Dritten</b> ab. Die können Zahlungen rückgängig machen, das macht kleine Zahlungen teuer und Händler misstrauisch. Satoshi will Vertrauen durch <b>Mathematik</b> ersetzen.", "doppelt", "Kopier-Problem"],
+  ["2 · Transaktionen", "Transactions", "We define an electronic coin as a chain of digital signatures.", "Wir definieren eine elektronische Münze als eine Kette digitaler Unterschriften.", "Wer eine Münze weitergibt, <b>unterschreibt</b> die vorherige Übergabe und den öffentlichen Schlüssel des Empfängers. So kann jeder die Besitzkette prüfen. Offen bleibt nur: Hat der Besitzer dieselbe Münze schon an jemand anderen gegeben?", "schluessel", "Schlüssel-Labor"],
+  ["3 · Zeitstempel-Server", "Timestamp Server", "The solution we propose begins with a timestamp server.", "Die Lösung, die wir vorschlagen, beginnt mit einem Zeitstempel-Server.", "Damit alle die <b>Reihenfolge</b> kennen, wird ein Block von Daten gehasht und mit Zeitstempel veröffentlicht. Jeder Zeitstempel enthält den vorherigen. So entsteht eine <b>Kette</b>, in der jeder Block alle früheren bestätigt.", "blockchain", "Blockchain"],
+  ["4 · Proof of Work", "Proof-of-Work", "Proof-of-work is essentially one-CPU-one-vote.", "Proof of Work ist im Grunde: eine CPU, eine Stimme.", "Statt Stimmen pro Person (die man mit Fake-Konten fälschen könnte) zählt <b>Rechenarbeit</b>. Miner suchen eine Zahl (Nonce), bis der Hash des Blocks mit genug Nullen beginnt. Wer einen alten Block ändern will, müsste dessen Arbeit und alle danach neu leisten. Die Schwierigkeit passt sich an, damit Blöcke im Schnitt gleich schnell kommen.", "mining", "Mining-Werkstatt"],
+  ["5 · Netzwerk", "Network", "Nodes always consider the longest chain to be the correct one and will keep working on extending it.", "Nodes halten immer die längste Kette für die richtige und arbeiten daran weiter, sie zu verlängern.", "Die sechs Schritte des Netzes: Neue Zahlungen werden an alle verschickt, jede Node sammelt sie in einem Block, sucht den Proof of Work, verbreitet den Block, die anderen prüfen ihn und bauen darauf auf. Bei zwei Versionen gewinnt die mit der <b>meisten Arbeit</b>.", "konsens", "Einigungs-Labor"],
+  ["6 · Anreiz", "Incentive", "He ought to find it more profitable to play by the rules.", "Er sollte es profitabler finden, sich an die Regeln zu halten.", "Die erste Zahlung jedes Blocks erzeugt <b>neue Münzen für den Miner</b>. So kommen Bitcoin in Umlauf, ganz ohne Zentralbank, wie Goldsucher, die Gold in Umlauf bringen. Später sollen <b>Gebühren</b> die Belohnung übernehmen. Ein Angreifer mit viel Rechenleistung verdient mehr, wenn er ehrlich mint, als wenn er sein eigenes Vermögen zerstört.", "konsens", "Einigungs-Labor"],
+  ["7 · Speicherplatz sparen", "Reclaiming Disk Space", "Once the latest transaction in a coin is buried under enough blocks, the spent transactions before it can be discarded to save disk space.", "Sobald die letzte Transaktion einer Münze unter genug Blöcken begraben ist, können die ausgegebenen Transaktionen davor verworfen werden, um Speicherplatz zu sparen.", "Die Zahlungen eines Blocks werden in einem <b>Merkle-Baum</b> gehasht, nur die Wurzel steht im Block-Kopf. Alte Zahlungen kann man wegschneiden, ohne die Kette zu zerstören. Satoshi rechnete: Ein Block-Kopf hat nur <b>80 Byte</b>, also rund 4,2 MB pro Jahr.", "merkle", "Merkle-Baum"],
+  ["8 · Vereinfachte Zahlungsprüfung", "Simplified Payment Verification", "It is possible to verify payments without running a full network node.", "Man kann Zahlungen prüfen, ohne eine vollständige Node zu betreiben.", "Ein Nutzer braucht nur die <b>Block-Köpfe</b> der längsten Kette und den Merkle-Pfad zu seiner Zahlung. So funktionieren viele Handy-Wallets. Sicherer ist trotzdem eine <b>eigene Node</b>, besonders für Firmen.", "merkle", "Merkle-Baum"],
+  ["9 · Werte teilen und zusammenführen", "Combining and Splitting Value", "To allow value to be split and combined, transactions contain multiple inputs and outputs.", "Damit Werte geteilt und zusammengeführt werden können, enthalten Transaktionen mehrere Eingänge und Ausgänge.", "Statt jede Münze einzeln zu verschicken, nimmt eine Zahlung mehrere <b>Eingänge</b> und hat meist zwei <b>Ausgänge</b>: einen an den Empfänger und einen als <b>Wechselgeld</b> zurück. Genau das sind die heutigen UTXOs.", "utxo", "Wechselgeld-Kasse"],
+  ["10 · Privatsphäre", "Privacy", "The public can see that someone is sending an amount to someone else, but without information linking the transaction to anyone.", "Die Öffentlichkeit kann sehen, dass jemand einen Betrag an jemand anderen schickt, aber ohne Information, die die Zahlung mit einer Person verbindet.", "Banken schützen Privatsphäre, indem sie Daten <b>verbergen</b>. Bitcoin macht alles öffentlich, hält aber die <b>Schlüssel anonym</b>, wie an der Börse, wo man Kurse sieht, aber keine Namen. Satoshi rät schon hier: für jede Zahlung ein <b>neues Schlüsselpaar</b>.", "privatsphaere", "Spuren-Detektiv"],
+  ["11 · Berechnungen", "Calculations", "The probability drops exponentially as the number of blocks the attacker has to catch up with increases.", "Die Wahrscheinlichkeit sinkt exponentiell mit der Zahl der Blöcke, die der Angreifer aufholen muss.", "Satoshi beschreibt den Wettlauf zwischen ehrlicher Kette und Angreifer als <b>Zufallsweg</b> und liefert sogar ein kleines C-Programm. Ergebnis: Mit jedem weiteren Block wird ein Angriff dramatisch unwahrscheinlicher. Daher kommen die <b>6 Bestätigungen</b>.", "konsens", "Einigungs-Labor"],
+  ["12 · Fazit", "Conclusion", "We have proposed a system for electronic transactions without relying on trust.", "Wir haben ein System für elektronische Zahlungen vorgeschlagen, das nicht auf Vertrauen angewiesen ist.", "Das Netzwerk ist <b>robust durch Einfachheit</b>: Nodes müssen sich nicht kennen und können jederzeit gehen und wiederkommen. Sie stimmen mit ihrer Rechenleistung ab, indem sie gültige Blöcke verlängern und ungültige ablehnen. <b>Alle nötigen Regeln</b> lassen sich so durchsetzen.", "nodes", "Node-Wache"]];
+const KEY = "satsland-titles", get = () => { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch(e){ return {}; } };
+let read = new Set(get().wp || []);
+function save(){ const t = get(); t.wp = [...read]; try { localStorage.setItem(KEY, JSON.stringify(t)); } catch(e){} }
+function bar(){ $("wpU").style.width = read.size / WP.length * 100 + "%"; $("wpN").textContent = `${read.size}/${WP.length}`; }
+$("paper").innerHTML = WP.map(([de, en, q, qd, ex, w, wn], i) => `<details data-i="${i}" class="${read.has(i) ? "rd" : ""}"><summary><span class="n">${i ? i : "★"}</span><span class="t">${de.replace(/^\d+ · /, "")}<small>${en}</small></span><span class="ck">✅</span></summary><div class="bd"><blockquote>„${q}“<span>${qd}</span></blockquote><b>Einfach erklärt:</b> ${ex}<br><a class="go" href="../${w}/">Ausprobieren: ${wn} →</a></div></details>`).join("");
+$("paper").querySelectorAll("details").forEach(d => d.addEventListener("toggle", () => { if (!d.open) return; const i = +d.dataset.i;
+  if (!read.has(i)){ read.add(i); d.classList.add("rd"); save(); bar();
+    if (read.size === WP.length){ Lern.confetti && Lern.confetti(); Lern.say && Lern.say("Whitepaper komplett gelesen! Du kennst jetzt die Original-Idee von Satoshi. 📜", 5000); Lern.titles && setTimeout(Lern.titles, 800); } } }));
+bar();
+
+const QUIZ = [["Was ersetzt Bitcoin laut Whitepaper?", ["Gold", "Vertrauen in Dritte durch kryptografischen Beweis", "Das Internet", "Computer"], 1, "Satoshi wollte ein Zahlungssystem, das auf Beweis statt Vertrauen beruht."], ["Wie definiert Satoshi eine elektronische Münze?", ["Als Datei", "Als Kette digitaler Unterschriften", "Als Goldstück", "Als Bankkonto"], 1, "Jede Übergabe wird vom bisherigen Besitzer unterschrieben."], ["Welche Kette halten Nodes laut Whitepaper für die richtige?", ["Die kürzeste", "Die längste, also die mit der meisten Arbeit", "Die von Satoshi", "Die neueste"], 1, "Nodes arbeiten immer an der längsten Kette weiter."]];
+Lern.quiz($("quiz"), "whitepaper", QUIZ, "../"); Lern.visit("whitepaper"); Lern.renderNext("whitepaper", "../");
+})();
+</script>
+</body>
+</html>
