@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Erster Kauf · Satsland</title>
+<meta name="description" content="Lernwelt: Bitcoin zum ersten Mal kaufen. Anbieter-Arten vergleichen, versteckte Gebühren erkennen und sicher in die eigene Wallet auszahlen.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0b0f2a">
+<link rel="icon" href="../icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="stylesheet" href="../lern.css?v=18">
+<style>
+/* Lernwelt "Erster Kauf": nur seitenspezifische Teile, der Rest kommt aus lern.css */
+.idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
+.kv{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}
+.kv div{border:1px solid var(--line);border-radius:12px;padding:8px 10px;font-size:12px;color:var(--muted)} .kv b{display:block;font:700 18px var(--f-num);color:var(--ink)} .kv .g{color:var(--gold)}
+.seg{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px} .seg .btn[aria-pressed="true"]{outline:2px solid var(--gold);background:rgba(247,147,26,.15)}
+.res{margin-top:12px;padding:12px 14px;border-radius:14px;border:2px solid var(--line);font-size:15px;line-height:1.5}
+.res strong{display:block;font-size:18px} .res.ok{border-color:var(--bull)} .res.ok strong{color:var(--bull)} .res.bad{border-color:var(--bear)} .res.bad strong{color:var(--bear)} .res.warn{border-color:var(--gold)} .res.warn strong{color:var(--gold)}
+.note{margin:10px 0 0;font-size:14px;color:var(--muted);line-height:1.5} .note b{color:var(--ink)} .note a{color:var(--gold)}
+@media (max-width:620px){ .kv{grid-template-columns:1fr 1fr} }
+.inp{width:100%;font:600 16px var(--f-body);padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:#0b0f2a;color:var(--ink);margin-top:6px}
+.lbl2{display:block;font-size:13px;color:var(--muted);margin-top:12px}
+.hx{font:600 12px/1.45 var(--f-num);word-break:break-all;color:#cfd5ff}
+.ctl .row{display:flex;align-items:center;gap:10px;margin-top:8px} .ctl .row input{flex:1} .ctl .row b{font:900 18px var(--f-num);min-width:5ch;text-align:right}
+
+.route{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:12px}
+.route div{border:2px solid var(--line);border-radius:14px;padding:10px;font-size:13px;line-height:1.45}
+.route b{display:block;font:900 15px var(--f-display);margin-bottom:4px} .route .y{color:var(--bull);font-weight:800} .route .n{color:var(--bear);font-weight:800}
+.fees{display:grid;gap:8px;margin-top:12px}
+.fees div{display:grid;grid-template-columns:9em 1fr 7.5em;gap:8px;align-items:center;font-size:13px}
+.fees i{display:block;height:16px;border-radius:8px;background:rgba(255,255,255,.07);overflow:hidden} .fees u{display:block;height:100%;border-radius:8px;transition:width .5s}
+.fees em{font:700 13px var(--f-num);font-style:normal;text-align:right}
+.order{display:grid;gap:8px;margin-top:12px}
+.order button{text-align:left;padding:10px 12px;border-radius:12px;border:2px solid var(--line);background:rgba(255,255,255,.04);color:var(--ink);font:600 15px var(--f-body);cursor:pointer;transition:border-color .2s,background .2s}
+.order button:hover{border-color:var(--gold)} .order button.ok{border-color:var(--bull);background:rgba(52,217,130,.12);cursor:default} .order button.no{animation:shake .35s;border-color:var(--bear)}
+.order button i{font-style:normal;display:inline-grid;place-items:center;width:1.8em;height:1.8em;border-radius:50%;background:var(--bull);color:#04240f;font:900 13px var(--f-num);margin-right:8px}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+@media (max-width:620px){ .route{grid-template-columns:1fr 1fr} .fees div{grid-template-columns:6.5em 1fr 6em} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a class="back" href="../">← Satsland</a><a class="back" href="../lexikon/">📖 Lexikon</a></div>
+  <div>
+    <h1>Dein erster <span class="btc">Bitcoin</span>-Kauf</h1>
+    <p class="lead">Bitcoin kaufen ist heute einfach. Aber es gibt Unterschiede bei <b>Gebühren</b> und bei der Frage, <b>wem die Bitcoin danach wirklich gehören</b>. Hier lernst du den sicheren Weg, Schritt für Schritt.</p>
+  </div>
+
+  <section class="card" aria-labelledby="h1s">
+    <h2 id="h1s">1 · Wo kann man kaufen?</h2>
+    <div class="route">
+      <div><b>📱 Broker / Neobank</b>Sehr bequem, oft aus der Banking-App. <span class="n">Auszahlen in eigene Wallet oft nicht möglich.</span></div>
+      <div><b>🏦 Krypto-Börse</b>Niedrige Gebühren, großes Angebot. <span class="y">Auszahlen möglich.</span> Viele andere Coins als Ablenkung.</div>
+      <div><b>🟠 Bitcoin-only-Anbieter</b>Nur Bitcoin, meist mit Sparplan und <span class="y">automatischer Auszahlung</span> in deine Wallet.</div>
+      <div><b>🤝 Privat (P2P)</b>Ohne Firma dazwischen, mehr Privatsphäre. <span class="n">Mehr Betrugsrisiko</span>, eher für Fortgeschrittene.</div>
+    </div>
+    <p class="note">In der EU brauchen Anbieter seit der Regulierung <b>MiCA</b> eine Lizenz. Kauf nur bei Anbietern, die von der Finanzaufsicht (in Deutschland: <b>BaFin</b>) zugelassen sind.</p>
+  </section>
+
+  <section class="card" aria-labelledby="h2s">
+    <h2 id="h2s">2 · Wie viele Sats bekommst du wirklich? <span class="mode" id="mode">Verbinde …</span></h2>
+    <p class="muted" style="margin:0">Neben der sichtbaren Gebühr gibt es oft einen <b>Spread</b>: Du kaufst etwas teurer, als der echte Kurs ist. Das sieht man nicht sofort, kostet aber.</p>
+    <div class="ctl"><label class="lbl2" for="eur">Betrag</label><div class="row"><input id="eur" type="range" min="25" max="1000" step="25" value="100"><b id="eurV" class="num">100 €</b></div></div>
+    <div class="fees" id="fees"></div>
+    <p class="note" id="feeN"></p>
+  </section>
+
+  <section class="card" aria-labelledby="h3s">
+    <h2 id="h3s">3 · Bring die Schritte in die richtige Reihenfolge</h2>
+    <p class="muted" style="margin:0">Tipp die Schritte so an, wie du sie machen würdest.</p>
+    <div class="order" id="order"></div>
+    <div id="oRes"></div>
+  </section>
+
+  <section class="card" aria-labelledby="hMs">
+    <h2 id="hMs">Das solltest du dir merken</h2>
+    <div class="learn">
+      <div><b>Auf Lizenz achten</b><span>Nur bei Anbietern kaufen, die von der <b>BaFin</b> bzw. nach <b>MiCA</b> zugelassen sind.</span></div>
+      <div><b>Gebühren + Spread</b><span>Achte auf die <b>Gesamtkosten</b>. Ein versteckter Spread kann teurer sein als die Gebühr.</span></div>
+      <div><b>Eigene Wallet</b><span>Bitcoin auf einer Plattform gehören <b>der Plattform</b>, bis du sie in deine Wallet auszahlst.</span></div>
+      <div><b>Erst testen</b><span>Vor der großen Auszahlung immer eine <b>kleine Test-Auszahlung</b>, und die Adresse prüfen.</span></div>
+    </div>
+    <details class="qz"><summary>Teste dich: 3 Fragen</summary><div id="quiz"></div></details>
+  </section>
+
+  <section class="card next" id="next" aria-label="Weiter"></section>
+  <details class="foot"><summary>Quellen</summary><p><a href="https://www.bafin.de/DE/Aufsicht/MiCAR/MiCAR_node.html">BaFin: MiCAR</a> · <a href="https://mempool.space">mempool.space (Kurs)</a></p></details>
+  <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
+</div>
+
+<script src="../lern.js?v=18"></script>
+<script>
+/* =====================================================================
+   ERSTER KAUF – Lernwelt von Satsland
+   ===================================================================== */
+(() => {
+const $ = id => document.getElementById(id);
+let eur = 0, live = false;
+async function price(){ try { const j = await (await fetch("https://mempool.space/api/v1/prices")).json(); if (j.EUR > 0){ eur = j.EUR; live = true; } } catch(e){}
+  $("mode").className = "mode " + (live ? "live" : "demo"); $("mode").textContent = live ? "Live-Kurs" : "Beispielkurs"; if (!eur) eur = 80000; fees(); }
+const R = [["Bitcoin-only-App", 1.0, 0, "#34d982"], ["Krypto-Börse", 0.3, 0.2, "#7cc4ff"], ["Broker mit Spread", 1.0, 1.5, "#ffc94d"], ["Teurer Anbieter", 2.0, 2.5, "#ff5c73"]];
+function fees(){
+  const a = +$("eur").value, ideal = a / eur * 1e8; $("eurV").textContent = a + " €";
+  const rows = R.map(([n, fee, spread, c]) => [n, a * (1 - fee / 100) / (eur * (1 + spread / 100)) * 1e8, fee + spread, c]);
+  $("fees").innerHTML = rows.map(([n, s, k, c]) => `<div><span>${n}<br><small class="muted">≈ ${k.toLocaleString("de-DE")} % Kosten</small></span><i><u style="width:${s / ideal * 100}%;background:${c}"></u></i><em>${Math.round(s).toLocaleString("de-DE")} sats</em></div>`).join("");
+  $("feeN").innerHTML = `Ohne jede Gebühr wären es <b>${Math.round(ideal).toLocaleString("de-DE")} sats</b> (Kurs ${Math.round(eur).toLocaleString("de-DE")} €). Bei einem Sparplan über 10 Jahre summieren sich ${(rows[3][2] - rows[0][2]).toLocaleString("de-DE")} Prozentpunkte Unterschied zu einem echten Batzen. Die Prozentwerte sind Beispiele, prüf immer das Preisblatt deines Anbieters.`;
+}
+$("eur").oninput = fees; fees(); price();
+// Reihenfolge-Spiel
+const STEPS = ["Lizenzierten Anbieter auswählen", "Konto eröffnen und Ausweis prüfen lassen", "Euro überweisen", "Bitcoin kaufen", "Eigene Wallet einrichten und Seed auf Papier sichern", "Kleine Test-Auszahlung an deine Adresse", "Rest auszahlen, Adresse vorher genau prüfen"];
+let next = 0, err = 0;
+function order(){ next = 0; err = 0; $("oRes").innerHTML = "";
+  $("order").innerHTML = STEPS.map((t, i) => [Math.random(), i, t]).sort((a, b) => a[0] - b[0]).map(([, i, t]) => `<button type="button" data-i="${i}">${t}</button>`).join(""); }
+$("order").onclick = e => { const b = e.target.closest("button[data-i]"); if (!b || b.classList.contains("ok")) return;
+  if (+b.dataset.i === next){ b.classList.add("ok"); b.innerHTML = `<i>${next + 1}</i>` + b.textContent; b.style.order = next - 10; next++;
+    if (next === STEPS.length){ $("oRes").innerHTML = `<div class="res ${err ? "warn" : "ok"}"><strong>${err ? `Geschafft, mit ${err} Fehlversuch${err > 1 ? "en" : ""}` : "Perfekt, alles richtig!"}</strong>Die Wallet kannst du übrigens auch schon vor dem Kauf einrichten. Wichtig ist nur: <b>Test-Auszahlung vor der großen Auszahlung.</b> <button class="btn" type="button" id="oAgain" style="margin-top:8px">↺ Nochmal</button></div>`; $("oAgain").onclick = order; Lern.confetti && Lern.confetti(); } }
+  else { err++; b.classList.remove("no"); void b.offsetWidth; b.classList.add("no"); } };
+order();
+
+const QUIZ = [["Was ist ein Spread?", ["Eine Wallet-Art", "Der Aufschlag auf den echten Kurs, den man beim Kauf zahlt", "Ein Bitcoin-Upgrade", "Die Zinsen der Bank"], 1, "Beim Spread kaufst du etwas teurer als der echte Marktpreis. Diese Kosten sieht man oft nicht direkt."], ["Wem gehören Bitcoin, die auf einer Plattform liegen?", ["Immer dir", "Erstmal der Plattform, du hast nur ein Versprechen", "Dem Staat", "Niemandem"], 1, "Auf der Plattform hält der Anbieter die Schlüssel. Erst nach der Auszahlung in deine Wallet gehören sie wirklich dir."], ["Was machst du vor der ersten großen Auszahlung?", ["Nichts", "Eine kleine Test-Auszahlung", "Den Seed fotografieren", "Die Adresse per Hand abtippen"], 1, "Eine kleine Test-Auszahlung zeigt, dass Adresse und Wallet funktionieren. Erst dann den Rest schicken."]];
+Lern.quiz($("quiz"), "kaufen", QUIZ, "../"); Lern.visit("kaufen"); Lern.renderNext("kaufen", "../");
+})();
+</script>
+</body>
+</html>

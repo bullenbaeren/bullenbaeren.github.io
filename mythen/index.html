@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mythen-Check · Satsland</title>
+<meta name="description" content="Lernwelt: Die häufigsten Bitcoin-Mythen im Faktencheck. Kriminalität, Strom, Schneeballsystem, Anonymität und mehr, mit Quellen.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0b0f2a">
+<link rel="icon" href="../icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="stylesheet" href="../lern.css?v=18">
+<style>
+/* Lernwelt "Mythen-Check": nur seitenspezifische Teile, der Rest kommt aus lern.css */
+.idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
+.kv{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}
+.kv div{border:1px solid var(--line);border-radius:12px;padding:8px 10px;font-size:12px;color:var(--muted)} .kv b{display:block;font:700 18px var(--f-num);color:var(--ink)} .kv .g{color:var(--gold)}
+.seg{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px} .seg .btn[aria-pressed="true"]{outline:2px solid var(--gold);background:rgba(247,147,26,.15)}
+.res{margin-top:12px;padding:12px 14px;border-radius:14px;border:2px solid var(--line);font-size:15px;line-height:1.5}
+.res strong{display:block;font-size:18px} .res.ok{border-color:var(--bull)} .res.ok strong{color:var(--bull)} .res.bad{border-color:var(--bear)} .res.bad strong{color:var(--bear)} .res.warn{border-color:var(--gold)} .res.warn strong{color:var(--gold)}
+.note{margin:10px 0 0;font-size:14px;color:var(--muted);line-height:1.5} .note b{color:var(--ink)} .note a{color:var(--gold)}
+@media (max-width:620px){ .kv{grid-template-columns:1fr 1fr} }
+.inp{width:100%;font:600 16px var(--f-body);padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:#0b0f2a;color:var(--ink);margin-top:6px}
+.lbl2{display:block;font-size:13px;color:var(--muted);margin-top:12px}
+.hx{font:600 12px/1.45 var(--f-num);word-break:break-all;color:#cfd5ff}
+.ctl .row{display:flex;align-items:center;gap:10px;margin-top:8px} .ctl .row input{flex:1} .ctl .row b{font:900 18px var(--f-num);min-width:5ch;text-align:right}
+
+.myth{margin-top:12px;border:3px solid #0d1230;border-radius:18px;padding:18px 16px;background:linear-gradient(160deg,#232a62,#151a40);box-shadow:4px 4px 0 #0d1230;min-height:150px}
+.myth .k{font:900 13px var(--f-num);color:var(--muted)} .myth p{font:900 21px/1.3 var(--f-display);margin:8px 0 0}
+.myth.in{animation:flipin .4s}
+@keyframes flipin{from{transform:rotateY(70deg);opacity:0}to{transform:none;opacity:1}}
+.pick{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px} .pick button{font-size:15px;padding:12px 6px}
+.ans{margin-top:12px} .ans .res{animation:flipin .3s}
+.score{display:flex;gap:4px;margin-top:12px;flex-wrap:wrap} .score i{width:22px;height:8px;border-radius:4px;background:rgba(255,255,255,.1)} .score i.ok{background:var(--bull)} .score i.no{background:var(--bear)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a class="back" href="../">← Satsland</a><a class="back" href="../lexikon/">📖 Lexikon</a></div>
+  <div>
+    <h1>Mythos oder <span class="btc">Wahrheit</span>?</h1>
+    <p class="lead">Über Bitcoin hört man viel, Gutes wie Schlechtes. Teste dich: Ist die Aussage ein <b>Mythos</b> oder <b>stimmt sie</b>? Zu jeder Antwort gibt es die Fakten, ehrlich auch dort, wo Kritik berechtigt ist.</p>
+  </div>
+
+  <section class="card" aria-labelledby="h1s">
+    <h2 id="h1s">Der Faktencheck</h2>
+    <div class="myth" id="card" aria-live="polite"></div>
+    <div class="pick" id="pick"><button class="btn" type="button" data-a="m">❌ Mythos</button><button class="btn" type="button" data-a="t">⚖️ Teils</button><button class="btn" type="button" data-a="w">✅ Stimmt</button></div>
+    <div class="ans" id="ans"></div>
+    <div class="score" id="score"></div>
+  </section>
+
+  <section class="card" aria-labelledby="hMs">
+    <h2 id="hMs">Das solltest du dir merken</h2>
+    <div class="learn">
+      <div><b>Kriminalität</b><span>Laut Chainalysis lag der illegale Anteil aller Krypto-Zahlungen 2025 <b>unter 1 %</b>.</span></div>
+      <div><b>Strom</b><span>Bitcoin braucht <b>viel</b> Strom, laut Cambridge-Studie aber zu gut der <b>Hälfte</b> aus nachhaltigen Quellen.</span></div>
+      <div><b>Kein Schneeball</b><span>Niemand verspricht Renditen, es gibt keinen Betreiber. Aber der <b>Preis schwankt stark</b>.</span></div>
+      <div><b>Pseudonym</b><span>Bitcoin ist <b>nicht anonym</b>: Alle Zahlungen sind öffentlich, nur ohne Namen.</span></div>
+    </div>
+    <details class="qz"><summary>Teste dich: 3 Fragen</summary><div id="quiz"></div></details>
+  </section>
+
+  <section class="card next" id="next" aria-label="Weiter"></section>
+  <details class="foot"><summary>Quellen</summary><p><a href="https://www.theblock.co/post/384753/crypto-crime-150-billion-usd-2025-state-actors-scale-onchain-chainalysis">The Block zu Chainalysis 2026</a> · <a href="https://www.jbs.cam.ac.uk/2025/cambridge-study-sustainable-energy-rising-in-bitcoin-mining/">Cambridge Judge Business School (2025)</a></p></details>
+  <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
+</div>
+
+<script src="../lern.js?v=18"></script>
+<script>
+/* =====================================================================
+   MYTHEN-CHECK – Lernwelt von Satsland
+   ===================================================================== */
+(() => {
+const $ = id => document.getElementById(id);
+const M = [
+  ["Bitcoin wird vor allem für Kriminalität benutzt.", "m", "Laut dem Krypto-Kriminalitätsbericht 2026 von Chainalysis lag der Anteil illegaler Zahlungen 2025 bei <b>unter 1 %</b> aller Krypto-Zahlungen, und der größte Teil davon lief über Stablecoins, nicht über Bitcoin. Weil alles öffentlich ist, wurden schon viele Täter gefasst."],
+  ["Bitcoin verbraucht sehr viel Strom.", "t", "Stimmt: Mining braucht viel Strom, etwa so viel wie ein mittelgroßes Land. Aber laut einer Cambridge-Studie (2025) stammen gut <b>52 %</b> aus nachhaltigen Quellen, oft Strom, der sonst ungenutzt verfallen würde. Ob sich das lohnt, ist eine Wertungsfrage."],
+  ["Bitcoin ist ein Schneeballsystem.", "m", "Ein Schneeballsystem hat einen Betreiber, der Renditen verspricht und mit neuem Geld alte Anleger bezahlt. Bei Bitcoin gibt es <b>keinen Betreiber und keine versprochene Rendite</b>. Wohl aber starke Kursschwankungen: Wer teuer kauft, kann verlieren."],
+  ["Man muss einen ganzen Bitcoin kaufen.", "m", "Ein Bitcoin hat <b>100 Millionen Satoshis</b>. Man kann schon für wenige Euro einsteigen."],
+  ["Bitcoin ist anonym.", "m", "Bitcoin ist <b>pseudonym</b>: Jede Zahlung ist für immer öffentlich, nur stehen keine Namen dabei. Über Börsen mit Ausweis-Pflicht lassen sich Adressen oft Personen zuordnen."],
+  ["Bitcoin selbst wurde schon gehackt.", "m", "Das Bitcoin-Netzwerk läuft seit 2009 und wurde <b>nie erfolgreich gehackt</b>. Gehackt wurden Börsen und schlecht gesicherte Wallets. Darum: eigene Wallet, Seed offline."],
+  ["Ein Staat kann Bitcoin abschalten.", "t", "Ein Staat kann Börsen regulieren oder Bitcoin verbieten, wie China 2021. Das <b>Netzwerk selbst</b> läuft aber auf zehntausenden Nodes weltweit weiter. Abschalten könnte es nur, wer das ganze Internet überall abschaltet."],
+  ["Es wird nie mehr als 21 Millionen Bitcoin geben.", "w", "Die Grenze ist in den Regeln festgeschrieben, die jede Node prüft. Ändern ließe sie sich nur, wenn fast alle Nutzer freiwillig mitmachen, und das will praktisch niemand."],
+  ["Bitcoin ist zu langsam für den Alltag.", "t", "Auf der Haupt-Blockchain dauert eine Bestätigung im Schnitt <b>10 Minuten</b> und ist nicht für Kaffee gedacht. Mit <b>Lightning</b> geht es in Sekunden und für Bruchteile von Cent."],
+  ["Wer Bitcoin kopiert, hat ein gleich gutes Geld.", "m", "Den Code kann jeder kopieren, und tausende haben es getan. Nicht kopieren kann man das <b>Netzwerk</b>: die Nodes, Miner, Nutzer und die 17 Jahre Vertrauen."]
+];
+const L = {m: "Mythos", t: "Teils richtig", w: "Stimmt"};
+let i = 0, res = [];
+function card(){
+  if (i >= M.length){ const r = res.filter(Boolean).length;
+    $("card").innerHTML = `<span class="k">ERGEBNIS</span><p>${r} von ${M.length} richtig ${r >= 8 ? "🏆" : r >= 5 ? "👍" : "📚"}</p>`; $("card").classList.remove("in"); void $("card").offsetWidth; $("card").classList.add("in");
+    $("pick").hidden = true; $("ans").innerHTML = `<button class="btn" type="button" id="again">↺ Nochmal</button>`; $("again").onclick = () => { i = 0; res = []; $("pick").hidden = false; card(); }; if (r >= 8) Lern.confetti && Lern.confetti(); score(); return; }
+  $("card").innerHTML = `<span class="k">AUSSAGE ${i + 1} VON ${M.length}</span><p>„${M[i][0]}“</p>`; $("card").classList.remove("in"); void $("card").offsetWidth; $("card").classList.add("in");
+  $("ans").innerHTML = ""; $("pick").querySelectorAll("button").forEach(b => b.disabled = false); score();
+}
+function score(){ $("score").innerHTML = M.map((_, k) => `<i class="${k < res.length ? (res[k] ? "ok" : "no") : ""}"></i>`).join(""); }
+$("pick").onclick = e => { const b = e.target.closest("[data-a]"); if (!b || i >= M.length || res.length > i) return;
+  const ok = b.dataset.a === M[i][1]; res.push(ok); $("pick").querySelectorAll("button").forEach(x => x.disabled = true);
+  $("ans").innerHTML = `<div class="res ${ok ? "ok" : "bad"}"><strong>${ok ? "Richtig!" : "Nicht ganz."} Antwort: ${L[M[i][1]]}</strong>${M[i][2]}<br><button class="btn" type="button" id="nx" style="margin-top:10px">Weiter →</button></div>`;
+  $("nx").onclick = () => { i++; card(); }; score(); };
+card();
+
+const QUIZ = [["Wie hoch war laut Chainalysis 2025 der Anteil illegaler Krypto-Zahlungen?", ["Etwa 50 %", "Etwa 25 %", "Unter 1 %", "Genau 10 %"], 2, "Laut Chainalysis lag der illegale Anteil 2025 bei unter 1 % aller Krypto-Zahlungen."], ["Ist Bitcoin anonym?", ["Ja, völlig", "Nein, pseudonym: alle Zahlungen sind öffentlich, nur ohne Namen", "Nur am Wochenende", "Nur mit Lightning"], 1, "Jede Zahlung steht öffentlich in der Blockchain. Namen stehen nicht dabei, lassen sich aber oft herausfinden."], ["Wurde das Bitcoin-Netzwerk selbst schon gehackt?", ["Ja, mehrmals", "Nein, gehackt wurden Börsen und schlecht gesicherte Wallets", "Ja, 2021 von China", "Ja, jedes Jahr"], 1, "Das Netzwerk lief seit 2009 ohne erfolgreichen Hack. Verluste entstanden bei Börsen und unsicheren Wallets."]];
+Lern.quiz($("quiz"), "mythen", QUIZ, "../"); Lern.visit("mythen"); Lern.renderNext("mythen", "../");
+})();
+</script>
+</body>
+</html>

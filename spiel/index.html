@@ -600,7 +600,7 @@ const unitScale = l => (KS)*(0.95 + l*0.14)*(W < 560 ? .95 : 1.1);
 
 // ---------- Satsland-Verbindung: geschaffte Kapitel schalten Accessoires frei ----------
 // 1 Kapitel = Doktorhut (5), 3 Kapitel = Krone (6), alle 6 = Laseraugen (7)
-const SL_CH = [["geld","geldgeschichte","geldschoepfung","cantillon","inflation"],["doppelt","eigenschaften","wert","halving","knappheit","geschichte"],["wallets","seed","betrug","krypto","risiken"],["sparplan","fomo","hebel"],["utxo","bahnhof","lightning"],["hashing","schluessel","blockchain","mining","nodes","reise"]];
+const SL_CH = [["geld","geldgeschichte","geldschoepfung","cantillon","inflation"],["doppelt","eigenschaften","wert","halving","knappheit","geschichte","mythen"],["wallets","seed","betrug","krypto","risiken"],["kaufen","sparplan","fomo","hebel"],["utxo","bahnhof","lightning","privatsphaere"],["hashing","schluessel","blockchain","mining","nodes","reise"]];
 const slDone = (() => { try { const s = JSON.parse(localStorage.getItem("bvb-lernen")) || {}; return SL_CH.filter(c => c.every(id => s[id] && s[id].quiz)).length; } catch(e){ return 0; } })();
 const SL_ACC = [[1, 5, "🎓 Doktorhut"], [3, 6, "👑 Krone"], [6, 7, "🔴 Laseraugen"]].filter(a => slDone >= a[0]);
 { const pill = document.getElementById("slPill"); if (pill) pill.textContent = `🎓 Satsland ${slDone}/6`; }

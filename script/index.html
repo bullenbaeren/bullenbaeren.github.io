@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Script-Labor · Satsland</title>
+<meta name="description" content="Profi-Vertiefung: Bitcoin Script. Die kleine Programmiersprache in jeder Zahlung, Schritt für Schritt auf dem Stapel ausgeführt: Unterschrift, Multisig und Zeitschloss.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0b0f2a">
+<link rel="icon" href="../icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="stylesheet" href="../lern.css?v=18">
+<style>
+/* Lernwelt "Script-Labor": nur seitenspezifische Teile, der Rest kommt aus lern.css */
+.idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
+.kv{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}
+.kv div{border:1px solid var(--line);border-radius:12px;padding:8px 10px;font-size:12px;color:var(--muted)} .kv b{display:block;font:700 18px var(--f-num);color:var(--ink)} .kv .g{color:var(--gold)}
+.seg{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px} .seg .btn[aria-pressed="true"]{outline:2px solid var(--gold);background:rgba(247,147,26,.15)}
+.res{margin-top:12px;padding:12px 14px;border-radius:14px;border:2px solid var(--line);font-size:15px;line-height:1.5}
+.res strong{display:block;font-size:18px} .res.ok{border-color:var(--bull)} .res.ok strong{color:var(--bull)} .res.bad{border-color:var(--bear)} .res.bad strong{color:var(--bear)} .res.warn{border-color:var(--gold)} .res.warn strong{color:var(--gold)}
+.note{margin:10px 0 0;font-size:14px;color:var(--muted);line-height:1.5} .note b{color:var(--ink)} .note a{color:var(--gold)}
+@media (max-width:620px){ .kv{grid-template-columns:1fr 1fr} }
+.inp{width:100%;font:600 16px var(--f-body);padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:#0b0f2a;color:var(--ink);margin-top:6px}
+.lbl2{display:block;font-size:13px;color:var(--muted);margin-top:12px}
+.hx{font:600 12px/1.45 var(--f-num);word-break:break-all;color:#cfd5ff}
+.ctl .row{display:flex;align-items:center;gap:10px;margin-top:8px} .ctl .row input{flex:1} .ctl .row b{font:900 18px var(--f-num);min-width:5ch;text-align:right}
+
+.lab{display:grid;grid-template-columns:1.2fr 1fr;gap:12px;margin-top:12px}
+.code{display:grid;gap:5px;align-content:start}
+.code div{padding:7px 10px;border-radius:9px;background:rgba(255,255,255,.04);font:700 13px var(--f-num);border:2px solid transparent;word-break:break-all;transition:all .25s}
+.code div.k{color:#7cc4ff} .code div.u{color:var(--gold)} .code div.cur{border-color:var(--gold);background:rgba(247,147,26,.15);transform:translateX(4px)} .code div.done{opacity:.35}
+.code small{display:block;font:600 11px var(--f-body);color:var(--muted)}
+.stack{display:flex;flex-direction:column-reverse;justify-content:flex-start;gap:5px;min-height:220px;padding:10px;border-radius:14px;border:2px dashed var(--line);background:#0b0f2a}
+.stack div{padding:7px 9px;border-radius:9px;background:#232a62;border:2px solid #3a4070;font:700 12px var(--f-num);word-break:break-all;animation:drop .3s}
+.stack div.t{background:rgba(52,217,130,.2);border-color:var(--bull)} .stack div.f{background:rgba(255,92,115,.2);border-color:var(--bear)}
+@keyframes drop{from{transform:translateY(-14px);opacity:0}to{transform:none;opacity:1}}
+.stack .lb{order:99;text-align:center;font:900 12px var(--f-display);color:var(--muted);background:none;border:0;animation:none}
+.ctlr{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+@media (max-width:620px){ .lab{grid-template-columns:1fr} .stack{min-height:120px} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a class="back" href="../">← Satsland</a><a class="back" href="../lexikon/">📖 Lexikon</a></div>
+  <div>
+    <h1>Jede Zahlung ist ein kleines <span class="btc">Programm</span></h1>
+    <p class="lead">Bitcoin hat keine Konten. Stattdessen hängt an jedem Betrag ein kleines Schloss aus Code, das <b>Script</b>. Wer ausgeben will, liefert den passenden Schlüssel. Die Nodes rechnen beides auf einem <b>Stapel</b> durch: Steht am Ende „wahr“ oben, ist die Zahlung gültig.</p>
+  </div>
+
+  <section class="card" aria-labelledby="h1s">
+    <h2 id="h1s">Wähle ein Schloss und führe es aus</h2>
+    <div class="seg" id="kind"><button class="btn" type="button" data-s="p2pkh" aria-pressed="true">🔑 Normale Zahlung</button><button class="btn" type="button" data-s="multi">👥 2-von-3 Multisig</button><button class="btn" type="button" data-s="time">⏰ Zeitschloss</button></div>
+    <p class="note" id="desc"></p>
+    <div class="ctlr"><button class="btn" type="button" id="st">▶ Nächster Schritt</button><button class="btn" type="button" id="all">⏩ Alles ausführen</button><button class="btn" type="button" id="bad">😈 Falscher Schlüssel</button><button class="btn" type="button" id="rs">↺ Neu</button></div>
+    <div class="lab nogl"><div class="code" id="code"></div><div class="stack" id="stack"></div></div>
+    <div id="sRes"></div>
+  </section>
+
+  <section class="card" aria-labelledby="h2s">
+    <h2 id="h2s">Warum so einfach?</h2>
+    <p class="muted" style="margin:0">Script kann absichtlich <b>keine Schleifen</b> und nichts aus dem Internet laden. So kann jede Node jedes Schloss in Millisekunden prüfen, und niemand kann das Netz mit Endlos-Programmen lahmlegen. Trotzdem reicht es für <b>Mehrfach-Unterschriften, Zeitschlösser, Erbschafts-Lösungen und Lightning</b>.</p>
+  </section>
+
+  <section class="card" aria-labelledby="hMs">
+    <h2 id="hMs">Das solltest du dir merken</h2>
+    <div class="learn">
+      <div><b>Schloss + Schlüssel</b><span>Jeder Betrag hat ein <b>Schloss-Script</b>. Zum Ausgeben liefert man das passende <b>Schlüssel-Script</b>.</span></div>
+      <div><b>Der Stapel</b><span>Werte werden <b>oben draufgelegt</b> und Befehle nehmen sich die obersten. Am Ende muss „wahr“ oben liegen.</span></div>
+      <div><b>Multisig</b><span><b>2 von 3</b> Schlüsseln müssen unterschreiben. Ideal für Familien, Firmen und Erbschaft.</span></div>
+      <div><b>Zeitschloss</b><span>Geld kann erst <b>ab einem bestimmten Block</b> ausgegeben werden. Wichtig für Lightning und Erbschaft.</span></div>
+    </div>
+    <details class="qz"><summary>Teste dich: 3 Fragen</summary><div id="quiz"></div></details>
+  </section>
+
+  <section class="card next" id="next" aria-label="Weiter"></section>
+  <details class="foot"><summary>Quellen</summary><p><a href="https://en.bitcoin.it/wiki/Script">Bitcoin Wiki: Script</a> · <a href="https://github.com/bitcoin/bips/blob/master/bip-0065.mediawiki">BIP65 (CHECKLOCKTIMEVERIFY)</a></p></details>
+  <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
+</div>
+
+<script src="../bitlib.js?v=18"></script>
+<script src="../lern.js?v=18"></script>
+<script>
+/* =====================================================================
+   SCRIPT-LABOR – Lernwelt von Satsland
+   ===================================================================== */
+(() => {
+const $ = id => document.getElementById(id);
+const hx = u => Bit.hex(u), short = s => s.length > 20 ? s.slice(0, 10) + "…" + s.slice(-6) : s;
+const keys = [1, 2, 3].map(() => Bit.mod(Bit.big(Bit.rand(32)), Bit.N)), pubs = keys.map(k => Bit.pubC(Bit.mul(k))), PKH = hx(Bit.hash160(pubs[0]));
+const HEIGHT = 925000, LOCK = 924000;
+let kind = "p2pkh", wrong = false, prog = [], pc = 0, stack = [], fail = "";
+const D = {
+  p2pkh: "Das Standard-Schloss: „Zeig einen öffentlichen Schlüssel, dessen Fingerabdruck passt, und eine gültige Unterschrift dazu.“",
+  multi: "Ein Gemeinschafts-Schloss: Von drei Schlüsseln müssen <b>zwei</b> unterschreiben. Eine verlorene Karte ist kein Drama.",
+  time: `Ein Zeitschloss: Ausgeben erst ab Block <b>${LOCK.toLocaleString("de-DE")}</b>. Die Kette ist im Beispiel bei Block ${HEIGHT.toLocaleString("de-DE")}.`
+};
+function build(){
+  const sig = n => ["sig", wrong && n === 0 ? "falsch" : "ok", n];
+  if (kind === "p2pkh") prog = [[sig(0), "u", "Unterschrift", "<Unterschrift A>"], [["push", hx(pubs[wrong ? 1 : 0])], "u", "Öffentlicher Schlüssel", "<PubKey>"], [["DUP"], "k", "verdoppelt das oberste Element", "OP_DUP"], [["HASH160"], "k", "SHA-256, dann RIPEMD-160", "OP_HASH160"], [["push", PKH], "k", "Fingerabdruck aus dem Schloss", "<" + short(PKH) + ">"], [["EQUALVERIFY"], "k", "beide gleich? sonst Abbruch", "OP_EQUALVERIFY"], [["CHECKSIG"], "k", "Unterschrift zum Schlüssel gültig?", "OP_CHECKSIG"]];
+  if (kind === "multi") prog = [[["push", "0"], "u", "Platzhalter (historischer Bug)", "OP_0"], [sig(0), "u", "Unterschrift A", "<Unterschrift A>"], [["sig", "ok", 2], "u", "Unterschrift C", "<Unterschrift C>"], [["push", "2"], "k", "so viele müssen unterschreiben", "OP_2"], ...pubs.map((p, i) => [["push", hx(p)], "k", "Schlüssel " + "ABC"[i], "<PubKey " + "ABC"[i] + ">"]), [["push", "3"], "k", "so viele Schlüssel gibt es", "OP_3"], [["CHECKMULTISIG"], "k", "2 gültige Unterschriften von den 3?", "OP_CHECKMULTISIG"]];
+  if (kind === "time") prog = [[sig(0), "u", "Unterschrift", "<Unterschrift A>"], [["push", String(wrong ? 926000 : LOCK)], "k", "frühester Block", "<" + (wrong ? 926000 : LOCK) + ">"], [["CLTV"], "k", "ist dieser Block schon erreicht?", "OP_CHECKLOCKTIMEVERIFY"], [["DROP"], "k", "Zahl wieder wegwerfen", "OP_DROP"], [["push", hx(pubs[0])], "k", "Schlüssel des Besitzers", "<PubKey A>"], [["CHECKSIG"], "k", "Unterschrift gültig?", "OP_CHECKSIG"]];
+  pc = 0; stack = []; fail = ""; $("desc").innerHTML = D[kind] + (wrong ? " <b style='color:var(--bear)'>😈 Jetzt mit falschem Schlüssel!</b>" : ""); draw();
+}
+const label = v => v.t === "sig" ? (v.ok ? "✍️ Unterschrift " + "ABC"[v.n] : "✍️ falsche Unterschrift") : v.t === "bool" ? (v.v ? "WAHR" : "FALSCH") : short(v.v);
+function exec(){
+  if (fail || pc >= prog.length) return;
+  const [op] = prog[pc]; pc++;
+  const pop = () => stack.pop();
+  if (op[0] === "sig") stack.push({t: "sig", ok: op[1] === "ok", n: op[2]});
+  else if (op[0] === "push") stack.push({t: "d", v: op[1]});
+  else if (op[0] === "DUP") stack.push(Object.assign({}, stack[stack.length - 1]));
+  else if (op[0] === "HASH160"){ const a = pop(); stack.push({t: "d", v: hx(Bit.hash160(Bit.unhex(a.v)))}); }
+  else if (op[0] === "EQUALVERIFY"){ const a = pop(), b = pop(); if (a.v !== b.v) fail = "Der Fingerabdruck passt nicht: Das ist nicht der Schlüssel, für den das Schloss gemacht wurde."; }
+  else if (op[0] === "CHECKSIG"){ const pk = pop(), s = pop(); const ok = s.ok && pk.v === hx(pubs[s.n]); stack.push({t: "bool", v: ok}); if (!ok) fail = "Die Unterschrift passt nicht zum Schlüssel."; }
+  else if (op[0] === "CHECKMULTISIG"){ const n = +pop().v, pk = []; for (let i = 0; i < n; i++) pk.unshift(pop().v); const m = +pop().v, sg = []; for (let i = 0; i < m; i++) sg.unshift(pop()); pop();
+    let j = 0, good = 0; for (const s of sg){ while (j < pk.length && !(s.ok && pk[j] === hx(pubs[s.n]))) j++; if (j < pk.length){ good++; j++; } }
+    const ok = good >= m; stack.push({t: "bool", v: ok}); if (!ok) fail = "Nicht genug gültige Unterschriften: Eine der beiden passt zu keinem Schlüssel."; }
+  else if (op[0] === "CLTV"){ const a = stack[stack.length - 1]; if (HEIGHT < +a.v) fail = `Zu früh! Erst ab Block ${(+a.v).toLocaleString("de-DE")} erlaubt, wir sind bei ${HEIGHT.toLocaleString("de-DE")}.`; }
+  else if (op[0] === "DROP") pop();
+  draw();
+}
+function draw(){
+  $("code").innerHTML = `<small>🔓 Schlüssel (vom Ausgebenden) · 🔒 Schloss (im Betrag)</small>` + prog.map(([, c, why, txt], i) => `<div class="${c} ${i < pc ? "done" : i === pc && !fail ? "cur" : ""}">${c === "u" ? "🔓" : "🔒"} ${txt.replace(/</g, "&lt;")}<small>${why}</small></div>`).join("");
+  $("stack").innerHTML = `<div class="lb">⬆ oben · STAPEL</div>` + stack.map(v => `<div class="${v.t === "bool" ? (v.v ? "t" : "f") : ""}">${label(v)}</div>`).join("");
+  const end = pc >= prog.length;
+  $("sRes").innerHTML = fail ? `<div class="res bad"><strong>❌ Abgelehnt</strong>${fail} Jede Node auf der Welt würde diese Zahlung verwerfen.</div>`
+    : end ? `<div class="res ok"><strong>✅ Gültig! Oben liegt WAHR.</strong>Die Zahlung darf ausgegeben werden.</div>` : "";
+  if (end && !fail && !wrong) Lern.confetti && Lern.confetti();
+}
+$("st").onclick = exec; $("all").onclick = () => { const t = setInterval(() => { if (fail || pc >= prog.length) return clearInterval(t); exec(); }, 350); };
+$("bad").onclick = () => { wrong = true; build(); }; $("rs").onclick = () => { wrong = false; build(); };
+$("kind").onclick = e => { const b = e.target.closest("[data-s]"); if (!b) return; kind = b.dataset.s; wrong = false; $("kind").querySelectorAll("[data-s]").forEach(x => x.setAttribute("aria-pressed", x === b)); build(); };
+build();
+
+const QUIZ = [["Was liegt am Ende einer gültigen Script-Ausführung oben auf dem Stapel?", ["Nichts", "WAHR", "Der private Schlüssel", "Die Adresse"], 1, "Ein Script ist erfüllt, wenn am Ende WAHR oben auf dem Stapel liegt."], ["Was bedeutet 2-von-3 Multisig?", ["Zwei Bitcoin für drei Personen", "Von drei Schlüsseln müssen zwei unterschreiben", "Die Zahlung dauert 2 bis 3 Blöcke", "Drei Adressen, zwei Seeds"], 1, "Bei 2-von-3 gibt es drei Schlüssel, zwei Unterschriften reichen zum Ausgeben."], ["Warum kann Script keine Schleifen?", ["Aus Versehen", "Damit jede Node jedes Script schnell und sicher prüfen kann", "Weil Satoshi keine Schleifen mochte", "Kann es doch"], 1, "Ohne Schleifen endet jedes Script sicher und schnell. So kann niemand das Netz mit Endlos-Programmen lahmlegen."]];
+Lern.quiz($("quiz"), "script", QUIZ, "../"); Lern.visit("script"); Lern.renderNext("script", "../");
+})();
+</script>
+</body>
+</html>
