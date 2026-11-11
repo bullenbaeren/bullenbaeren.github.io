@@ -14,7 +14,7 @@
 <meta property="og:description" content="Bitcoin spielerisch verstehen, mit echten Live-Daten.">
 <meta property="og:image" content="https://satsland.github.io/og.png">
 <meta property="og:url" content="https://satsland.github.io/">
-<link rel="stylesheet" href="lern.css?v=19">
+<link rel="stylesheet" href="lern.css?v=20">
 <style>
 /* Übersicht der Lernwelten: gleiche Farben und Schriften wie das Spiel. */
 .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
@@ -62,6 +62,8 @@ a:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
 .w.done .no{background:var(--bull);color:#04240f} .w.nx{border-color:var(--gold);box-shadow:0 0 0 2px rgba(255,201,77,.35)}
 .path .next{margin:6px 0 4px}
 .kap .w .tag{display:none}
+.resume{display:flex;align-items:center;gap:10px;margin:10px 0 0;padding:12px 14px;border-radius:16px;border:3px solid #0d1230;box-shadow:3px 3px 0 #0d1230;background:linear-gradient(135deg,#ffc94d,#f7931a);color:#241500;text-decoration:none;font:900 16px var(--f-display)}
+.resume .ic{flex:none;width:40px;height:40px} .resume .ic svg{width:100%;height:100%} .resume small{display:block;font:700 12px var(--f-body);opacity:.75} .resume span{flex:1;min-width:0} .resume::after{content:"→";font-size:22px}
 /* Profi-Pfad: Vertiefungen nach dem Kapitel-Boss */
 details.pro{margin-top:10px;border-radius:14px;border:2px dashed rgba(178,107,255,.55);padding:8px 10px;background:rgba(178,107,255,.06)}
 details.pro > summary b{font:900 15px var(--f-display);color:#d6b8ff;white-space:nowrap} details.pro > summary small{flex:1;text-align:right;font-size:12px;color:var(--muted)}
@@ -85,6 +87,7 @@ details.fold[open] > summary{margin-bottom:12px}
     <p class="lead">Bitcoin spielerisch verstehen: Lernwelten mit echten Live-Daten, ohne Anmeldung und ohne Tracking.</p>
   </div>
   <p class="count"><b>34 Welten</b> in 6 Kapiteln · <b>6 Bosse</b> + Endboss · <b>🔬 9 Profi-Vertiefungen</b></p>
+  <a class="resume" id="resume" hidden></a>
   <details class="card daily fold" data-k="daily"><summary><h2 id="dly">🔥 Tages-Challenge</h2><span class="muted sm" id="dlyS"></span></summary><div id="daily"></div></details>
   <section class="card path" aria-labelledby="pth"><div class="ph"><h2 id="pth">🗺️ Dein Lernpfad</h2><span class="muted" id="pathCount"></span></div>
     <p class="lvup" id="lvup"></p>
@@ -113,7 +116,7 @@ details.fold[open] > summary{margin-bottom:12px}
     </details>
     <details class="kap fold" data-k="3"><summary><span class="cn">3</span><span class="ct"><b>🛡️ Sicher starten</b><small>Bevor du Bitcoin kaufst: Wallet, Seed, Betrug und echte Risiken.</small></span><span class="cp" data-cnt="3"><i><u></u></i><em></em></span></summary>
       <div class="grid big">
-        <a class="w" href="wallets/"><span class="tag live">Neu</span><span class="ic" aria-hidden="true">🗄</span><b>Wallets &amp; Backup</b><span>Welche Wallet schützt wovor, und dein Notfall-Plan fürs Erbe.</span><span class="go">Wallet-Check →</span></a>
+        <a class="w" href="wallets/"><span class="tag live">Neu</span><span class="ic" aria-hidden="true">🗄</span><b>Wallets, Backup &amp; Erbplan</b><span>Welche Wallet schützt wovor, und dein Notfall-Plan fürs Erbe.</span><span class="go">Wallet-Check →</span></a>
         <a class="w" href="seed/"><span class="tag live">Live</span><span class="ic" aria-hidden="true">🔑</span><b>Selbstverwahrung</b><span>12 Wörter, die alles sind: aufschreiben, prüfen, sicher aufbewahren.</span><span class="go">Seed-Trainer →</span></a>
         <a class="w" href="betrug/"><span class="tag live">Live</span><span class="ic" aria-hidden="true">🕵</span><b>Betrug erkennen</b><span>Echt oder Betrug? 10 typische Maschen im Test.</span><span class="go">Betrugs-Detektor →</span></a>
         <a class="w" href="krypto/"><span class="tag live">Live</span><span class="ic" aria-hidden="true">🟠</span><b>Bitcoin vs. „Krypto“</b><span>Sechs Fragen, mit denen du jeden Coin prüfen kannst.</span><span class="go">Coin-Check →</span></a>
@@ -123,7 +126,7 @@ details.fold[open] > summary{margin-bottom:12px}
     <details class="kap fold" data-k="4"><summary><span class="cn">4</span><span class="ct"><b>🧠 Klug investieren</b><small>Sparplan statt Bauchgefühl, und Finger weg vom Hebel.</small></span><span class="cp" data-cnt="4"><i><u></u></i><em></em></span></summary>
       <div class="grid big">
         <a class="w" href="kaufen/"><span class="tag live">Neu</span><span class="ic" aria-hidden="true"></span><b>Bitcoin kaufen</b><span>Wo kaufen, versteckte Gebühren erkennen und sicher in die eigene Wallet.</span><span class="go">Erster Kauf →</span></a>
-        <a class="w" href="sparplan/"><span class="tag live">Live</span><span class="ic" aria-hidden="true">🗓</span><b>Sparplan (DCA)</b><span>Was wäre aus jeden Monat 50 $ geworden? Mit Steuer-Grundregeln.</span><span class="go">Sparplan-Simulator →</span></a>
+        <a class="w" href="sparplan/"><span class="tag live">Live</span><span class="ic" aria-hidden="true">🗓</span><b>Sparplan &amp; Steuern</b><span>Was wäre aus jeden Monat 50 $ geworden? Plus: wann Gewinne steuerfrei sind.</span><span class="go">Sparplan-Simulator →</span></a>
         <a class="w" href="zyklen/"><span class="tag live">Neu</span><span class="ic" aria-hidden="true"></span><b>Kurszyklen & Crashs</b><span>Alle großen Abstürze, wie lange die Erholung dauerte, und: Hältst du durch?</span><span class="go">Kurs-Achterbahn →</span></a>
         <a class="w" href="fomo/"><span class="tag live">Live</span><span class="ic" aria-hidden="true">🎢</span><b>FOMO &amp; FUD</b><span>8 echte Momente: Kannst du deinen Gefühlen widerstehen?</span><span class="go">Gefühls-Achterbahn →</span></a>
         <a class="w" href="hebel/"><span class="tag live">Live</span><span class="ic" aria-hidden="true">💥</span><b>Hebel &amp; Liquidationen</b><span>Teste eine gehebelte Wette mit echten Kursen der letzten Tage.</span><span class="go">Hebel-Falle →</span></a>
@@ -162,7 +165,7 @@ details.fold[open] > summary{margin-bottom:12px}
   </details>
   <p class="foot">Unterhaltung und Lernen, keine Anlageberatung. Keine Cookies, kein Tracking. <a href="#" id="guideOn" style="color:inherit">Satoshi zurückholen</a></p>
 </div>
-<script src="lern.js?v=19"></script>
+<script src="lern.js?v=20"></script>
 <script>
 // Lernpfad: Fortschritt aus dem eigenen Browser, Häkchen an den Karten, Empfehlung als Nächstes
 (() => {
@@ -233,6 +236,10 @@ details.fold[open] > summary{margin-bottom:12px}
   document.getElementById("lvup").innerHTML = Lern.LEVELS.map(l => `<span class="${l[2] === L.name ? "on" : n >= l[0] ? "got" : ""}" title="${l[2]} ab ${l[0]} Welten">${Lern.art(l[3])}</span>`).join("")
     + `<em>${nx ? `Du bist <b>${L.name}</b>. Noch ${nx[0] - n} Welt${nx[0] - n > 1 ? "en" : ""} bis Level <b>${nx[2]}</b>.` : "Du bist ein <b>Wal</b>! Alle Welten geschafft."}</em>`;
   Lern.renderNext("", "");
+  // „Weiter, wo du warst“: zuletzt geöffnete, noch nicht geschaffte Welt (auch Profi), höchstens 30 Tage alt
+  { const last = Object.keys(Lern.TITLES).filter(id => s[id] && s[id].seen && !Lern.done(s, id) && Date.now() - s[id].seen < 30 * 864e5).sort((a, b) => s[b].seen - s[a].seen)[0];
+    if (last){ const r = document.getElementById("resume"); r.href = Lern.TITLES[last][1]; r.hidden = false;
+      r.innerHTML = `<span class="ic" aria-hidden="true">${Lern.art(Lern.CARD[last])}</span><span><small>Weiter, wo du warst</small>${Lern.TITLES[last][0]}</span>`; } }
 })();
 </script>
 </body>
