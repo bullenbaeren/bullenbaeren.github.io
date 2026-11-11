@@ -47,6 +47,18 @@
 .calc div > b{font:700 12px var(--f-num);text-align:right} .calc div.sum{background:rgba(52,217,130,.1)} .calc div.sum2{background:rgba(247,147,26,.12)}
 .final{margin-top:12px}
 .aval{margin-top:12px} .aval svg{width:100%;height:auto;display:block}
+.hand{margin-top:12px}
+.hsel{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:10px} .hsel input{width:5em;font:900 16px var(--f-num);padding:8px;border-radius:10px;border:2px solid var(--gold);background:#0b0f2a;color:var(--ink)}
+.hdots{display:flex;gap:4px;margin-top:12px} .hdots i{flex:1;height:8px;border-radius:4px;background:rgba(255,255,255,.1)} .hdots i.ok{background:var(--bull)} .hdots i.cur{background:var(--gold)}
+.hstep{margin-top:12px;border:2px solid var(--gold);border-radius:14px;padding:12px;background:rgba(247,147,26,.06)}
+.hstep h3{margin:0 0 6px;font-size:16px} .hops{display:grid;gap:3px;margin-top:8px;font:600 12px var(--f-num);overflow-x:auto}
+.hops div{display:grid;grid-template-columns:4.6em auto 5.6em;gap:8px;white-space:nowrap;align-items:center} .hops div span:first-child{color:var(--gold);font-weight:900} .hops div em{font-style:normal;color:var(--muted);text-align:right}
+.hops .ln{border-top:2px solid var(--muted);margin-top:2px}
+.hin{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px} .hin input{flex:1 1 14em;font:700 15px var(--f-num);padding:9px 10px;border-radius:10px;border:2px solid var(--line);background:#0b0f2a;color:var(--ink);letter-spacing:1px}
+.hin input.ok{border-color:var(--bull)} .hin input.no{border-color:var(--bear)}
+#sheet{display:none}
+@media (max-width:520px){ .hops{font-size:13px} .hops div{grid-template-columns:5.6em auto;gap:0 8px;padding:3px 0} .hops div span:nth-child(2){white-space:normal;width:19.5ch;line-height:1.35} .hops div em{grid-column:1;grid-row:2;align-self:start;text-align:left;font-size:11px} }
+@media print{ .guide,.toast,.confetti{display:none!important} body{background:#fff!important} body *{visibility:hidden} #sheet,#sheet *{visibility:visible;color:#000!important} #sheet{display:block;position:absolute;left:0;top:0;width:100%;font:11px/1.35 monospace} #sheet h1{font:900 16px Arial;margin:0 0 6px} #sheet h2{font:900 13px Arial;margin:10px 0 4px} #sheet table{border-collapse:collapse;width:100%} #sheet td{border:1px solid #999;padding:2px 4px;font:10px monospace} #sheet .blank:first-child{width:22%} #sheet .blank{height:18px} }
 @media (max-width:620px){ .regs{grid-template-columns:repeat(4,minmax(0,1fr))} .bitrows div{grid-template-columns:4.8em repeat(8,minmax(0,1fr)) 2.8em;gap:3px} .bitrows b{height:26px;font-size:13px} }
 </style>
 </head>
@@ -93,9 +105,20 @@
     <p class="note" id="avalN"></p>
   </section>
 
+  <section class="card" aria-labelledby="h5s">
+    <h2 id="h5s">5 · Selbst rechnen, mit Stift und Papier</h2>
+    <p class="muted" style="margin:0">Hier rechnest du eine echte Runde von Hand nach, in <b>8 kleinen Schritten</b>. Gib dein Ergebnis als Hex (8 Zeichen) oder als 32 Bits ein. Die Zahlen gehören zu deinem Text von oben.</p>
+    <div class="hsel"><label for="hR">Runde</label><input id="hR" type="number" min="1" max="64" value="1"><button class="btn" type="button" id="hPrint">🖨️ Rechenblatt drucken</button></div>
+    <div class="hdots" id="hDots"></div>
+    <div class="hand nogl" id="hand"></div>
+    <div class="idea" style="margin-top:12px">⏱️ <b>Wie lange dauert das?</b> Der Ingenieur Ken Shirriff hat 2014 eine Runde in rund <b>16 Minuten</b> von Hand gerechnet. Ein ganzer SHA-256 hat 64 Runden plus Vorbereitung, das sind gut <b>17 Stunden</b>. Bitcoin-Mining braucht zwei SHA-256 pro Versuch. Shirriff schaffte so <b>0,67 Hashes pro Tag</b>, echte Mining-Chips schaffen <b>Billionen pro Sekunde</b>.</div>
+  </section>
+  <div id="sheet"></div>
+
   <section class="card" aria-labelledby="hMs">
     <h2 id="hMs">Das solltest du dir merken</h2>
     <div class="learn">
+      <div><b>Selbst nachrechnen</b><span>Eine Runde besteht aus <b>8 einfachen Schritten</b>, die man mit Stift und Papier schafft.</span></div>
       <div><b>Erst auffüllen</b><span>Jeder Text wird auf Blöcke von <b>512 Bits</b> gebracht: Text, eine 1, Nullen, Länge.</span></div>
       <div><b>Nur einfache Tricks</b><span>XOR, UND, NICHT, Drehen und Plus. Mehr steckt nicht drin, aber <b>64 Runden</b> davon.</span></div>
       <div><b>Zwei neue Werte pro Runde</b><span>Nur <b>a</b> und <b>e</b> werden neu berechnet, der Rest rutscht weiter.</span></div>
@@ -105,7 +128,7 @@
   </section>
 
   <section class="card next" id="next" aria-label="Weiter"></section>
-  <details class="foot"><summary>Quellen</summary><p><a href="https://csrc.nist.gov/pubs/fips/180-4/upd1/final">NIST FIPS 180-4 (Secure Hash Standard)</a> · Alle Werte werden live im Browser berechnet.</p></details>
+  <details class="foot"><summary>Quellen</summary><p><a href="https://csrc.nist.gov/pubs/fips/180-4/upd1/final">NIST FIPS 180-4 (Secure Hash Standard)</a> · <a href="https://www.righto.com/2014/09/mining-bitcoin-with-pencil-and-paper.html">Ken Shirriff: Mining Bitcoin with pencil and paper</a> · Alle Werte werden live im Browser berechnet.</p></details>
   <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
 </div>
 
@@ -189,6 +212,53 @@ function all(){ T = Bit.sha256(Bit.utf8($("msg").value), true); grid(); go(step)
 const KC = [0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2];
 $("msg").addEventListener("input", all);
 bits(); all();
+// 5) Von Hand rechnen: eine Runde in 8 Schritten
+const rr = (x, n) => ((x >>> n) | (x << (32 - n))) >>> 0, BIN = x => (x >>> 0).toString(2).padStart(32, "0"), GB = x => BIN(x).match(/.{4}/g).join(" ");
+let hr = 1, hs = 0;
+function steps(){
+  const Bk = T.blocks[0], i = hr - 1, [a, b, c, d, e, f, g, h] = i ? Bk.R[i - 1].v : Bk.before, r = Bk.R[i];
+  return [
+    ["Σ1(e): e dreimal drehen, dann XOR", [["e ↻ 6", rr(e, 6)], ["e ↻ 11", rr(e, 11)], ["e ↻ 25", rr(e, 25)]], r.S1, "XOR Spalte für Spalte: Zähl die Einsen in einer Spalte. Ungerade Anzahl → 1, gerade → 0.", [["e", e]]],
+    ["Wähler Ch(e, f, g)", [["e", e], ["f", f], ["g", g]], r.ch, "Spalte für Spalte: Steht bei e eine 1, schreib das Bit von f ab, sonst das Bit von g."],
+    ["T1 = h + Σ1 + Ch + K + W", [["h", h], ["Σ1", r.S1], ["Ch", r.ch], ["K" + i, KC[i]], ["W" + i, Bk.W[i]]], r.t1, "Addiere in Hex von rechts nach links mit Übertrag (a = 10 … f = 15). Alles über 8 Stellen fällt weg."],
+    ["Σ0(a): a dreimal drehen, dann XOR", [["a ↻ 2", rr(a, 2)], ["a ↻ 13", rr(a, 13)], ["a ↻ 22", rr(a, 22)]], r.S0, "Wie bei Σ1: Spalte für Spalte die Einsen zählen, ungerade → 1.", [["a", a]]],
+    ["Mehrheit Maj(a, b, c)", [["a", a], ["b", b], ["c", c]], r.maj, "Spalte für Spalte: Sind mindestens zwei der drei Bits 1, schreib 1, sonst 0."],
+    ["T2 = Σ0 + Mehrheit", [["Σ0", r.S0], ["Maj", r.maj]], r.t2, "Normale Hex-Addition, Überlauf über 8 Stellen fällt weg."],
+    ["Neues e = d + T1", [["d", d], ["T1", r.t1]], r.v[4], "Hex-Addition. Danach rutscht das alte e nach f, f nach g, g nach h."],
+    ["Neues a = T1 + T2", [["T1", r.t1], ["T2", r.t2]], r.v[0], "Hex-Addition. Das alte a rutscht nach b, b nach c, c nach d. Runde fertig!"]];
+}
+const hrow = (n, v) => `<div><span>${n}</span><span>${GB(v)}</span><em>${hx(v)}</em></div>`;
+function hand(){
+  const S = steps(), [t, ops, want, tip, pre] = S[hs];
+  $("hDots").innerHTML = S.map((_, k) => `<i class="${k < hs ? "ok" : k === hs ? "cur" : ""}"></i>`).join("");
+  $("hand").innerHTML = `<div class="hstep"><h3>Runde ${hr} · Schritt ${hs + 1} von 8: ${t}</h3>
+    <div class="hops">${(pre || []).map(([n, v]) => hrow(n, v)).join("")}${ops.map(([n, v]) => hrow(n, v)).join("")}<div class="ln"><span>=</span><span>???? ???? ???? ???? ???? ???? ???? ????</span><em>????????</em></div></div>
+    <div class="hin"><input id="hIn" placeholder="z. B. 1a2b3c4d" autocomplete="off" spellcheck="false" aria-label="Dein Ergebnis"><button class="btn" type="button" id="hChk">Prüfen</button><button class="btn" type="button" id="hTip">💡 Tipp</button><button class="btn" type="button" id="hSol">Lösung</button></div>
+    <p class="note" id="hN"></p></div>`;
+  const ok = sol => { $("hIn").className = "ok"; $("hN").innerHTML = `${sol ? `Lösung: <b>${GB(want)}</b> = ` : "✅ Richtig: "}<b>${hx(want)}</b> <button class="btn" type="button" id="hNx">${hs < 7 ? "Nächster Schritt →" : hr < 64 ? "Runde " + (hr + 1) + " →" : "↺ Von vorn"}</button>`;
+    $("hNx").onclick = () => { if (hs < 7) hs++; else { hs = 0; hr = hr < 64 ? hr + 1 : 1; $("hR").value = hr; } hand(); };
+    if (hs === 7){ Lern.confetti && Lern.confetti(); Lern.say && Lern.say(`Runde ${hr} geschafft! Nur noch ${64 - hr} …`, 3500); } };
+  $("hChk").onclick = () => { const v = $("hIn").value.replace(/\s/g, "").toLowerCase(), n = /^[01]{32}$/.test(v) ? parseInt(v, 2) : /^[0-9a-f]{1,8}$/.test(v) ? parseInt(v, 16) : NaN;
+    if (n >>> 0 === want && !isNaN(n)) ok(); else { $("hIn").className = "no"; $("hN").innerHTML = isNaN(n) ? "Bitte 8 Hex-Zeichen (0–9, a–f) oder 32 Bits eingeben." : `❌ Noch nicht. Du hast <b>${hx(n)}</b>. Prüf die Spalten noch einmal.`; } };
+  $("hIn").addEventListener("keydown", e => { if (e.key === "Enter") $("hChk").click(); });
+  $("hTip").onclick = () => { $("hN").innerHTML = "💡 " + tip; };
+  $("hSol").onclick = () => { $("hIn").value = hx(want); ok(true); };
+}
+$("hR").addEventListener("change", () => { hr = Math.max(1, Math.min(64, +$("hR").value || 1)); $("hR").value = hr; hs = 0; hand(); });
+$("msg").addEventListener("input", () => { hs = 0; hand(); });
+hand();
+// Druckbares Rechenblatt: Block, Startwerte, Konstanten, Vorlage für Runde 1
+$("hPrint").onclick = () => {
+  const Bk = T.blocks[0], m = $("msg").value, tr = (cells, cls = "") => `<tr>${cells.map(c => `<td class="${cls}">${c}</td>`).join("")}</tr>`;
+  const W16 = Bk.W.slice(0, 16), blanks = n => Array.from({length: n}, () => tr(["", "", ""], "blank")).join("");
+  $("sheet").innerHTML = `<h1>SHA-256 von Hand · Satsland</h1><p>Text: „${m.replace(/</g, "&lt;")}“ · Ziel-Hash: ${Bit.hex(T.out)}</p>
+    <h2>Nachricht als 16 Wörter (W0–W15)</h2><table>${[0, 4, 8, 12].map(o => tr(W16.slice(o, o + 4).map((w, k) => `W${o + k}: ${hx(w)}<br>${GB(w)}`))).join("")}</table>
+    <h2>Startwerte a–h</h2><table>${tr(Bk.before.map((v, k) => NAMES[k] + ": " + hx(v)))}</table>
+    <h2>Rundenkonstanten K0–K63</h2><table>${Array.from({length: 8}, (_, r) => tr(KC.slice(r * 8, r * 8 + 8).map((k, c) => `K${r * 8 + c}: ${hx(k)}`))).join("")}</table>
+    <h2>Runde 1 – deine Rechnung (32 Bits je Zeile)</h2><table>${tr(["Schritt", "Bits", "Hex"])}${["e ↻ 6", "e ↻ 11", "e ↻ 25", "Σ1 = XOR", "Ch(e,f,g)", "T1 = h+Σ1+Ch+K0+W0", "a ↻ 2", "a ↻ 13", "a ↻ 22", "Σ0 = XOR", "Maj(a,b,c)", "T2 = Σ0+Maj", "neues e = d+T1", "neues a = T1+T2"].map(n => tr([n, "", ""], "blank")).join("")}</table>
+    <p>Regeln: XOR = ungerade Anzahl Einsen → 1 · Ch: e=1 → f, sonst g · Maj: mind. zwei Einsen → 1 · ↻ n = um n Stellen nach rechts drehen · Plus: modulo 2³² (Überlauf weg).</p>`;
+  window.print();
+};
 
 const QUIZ = [["Warum wird der Text auf 512 Bits aufgefüllt?", ["Damit er schöner aussieht", "Weil SHA-256 immer in festen Blöcken von 512 Bits rechnet", "Um ihn zu verschlüsseln", "Damit er kürzer wird"], 1, "SHA-256 verarbeitet Daten in Blöcken von genau 512 Bits. Endmarke, Nullen und Länge sorgen dafür, dass jeder Text eindeutig passt."], ["Wie viele Kästen bekommen pro Runde einen neuen Wert?", ["Alle acht", "Keiner", "Zwei: a und e", "Nur h"], 2, "Nur a und e werden neu berechnet. Die anderen rutschen einen Kasten weiter. Nach 64 Runden ist alles gründlich vermischt."], ["Was macht XOR?", ["Gibt 1, wenn die Bits verschieden sind", "Addiert zwei Zahlen", "Löscht alle Bits", "Dreht die Reihenfolge um"], 0, "XOR liefert 1 bei verschiedenen Bits und 0 bei gleichen. Es ist der wichtigste Misch-Trick in SHA-256."]];
 Lern.quiz($("quiz"), "sha256", QUIZ, "../"); Lern.visit("sha256"); Lern.renderNext("sha256", "../");
