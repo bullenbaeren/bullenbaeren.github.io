@@ -67,8 +67,8 @@ a:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
 .resume .ic{flex:none;width:40px;height:40px} .resume .ic svg{width:100%;height:100%} .resume small{display:block;font:700 12px var(--f-body);opacity:.75} .resume span{flex:1;min-width:0} .resume::after{content:"→";font-size:22px}
 
 /* Lernpfad als Berg (Pfad-Ansicht) */
-.vsw{display:flex;width:max-content;margin:12px auto 0;padding:4px;border-radius:999px;background:#0b0f2a;border:2px solid #0d1230;box-shadow:inset 0 2px 6px rgba(0,0,0,.4)} .path.asmap details.kap{display:none}
-.vsw button{border:0;background:transparent;color:var(--muted);font:800 14px var(--f-body);padding:8px 18px;border-radius:999px;cursor:pointer;transition:background .2s,color .2s}
+.vsw{display:flex;width:max-content;margin:0 0 0 auto;padding:4px;border-radius:999px;background:#0b0f2a;border:2px solid #0d1230;box-shadow:inset 0 2px 6px rgba(0,0,0,.4)} .path.asmap details.kap{display:none}
+.vsw button{border:0;background:transparent;color:var(--muted);font:800 13px var(--f-body);padding:7px 12px;border-radius:999px;cursor:pointer;transition:background .2s,color .2s}
 .vsw button[aria-pressed="true"]{background:linear-gradient(180deg,#ffd36b,#f7a21a);color:#241500;box-shadow:0 3px 0 #b86e00}
 .mback{position:fixed;inset:0;background:rgba(4,6,20,.6);z-index:80;backdrop-filter:blur(2px)}
 .mpop{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);width:min(440px,calc(100% - 24px));max-height:70vh;overflow:auto;z-index:81;padding:14px;border-radius:20px;border:3px solid #0d1230;box-shadow:0 6px 0 #0d1230;background:linear-gradient(160deg,#2a1d5a,#161b46);animation:mpin .3s cubic-bezier(.2,.8,.2,1)}
@@ -91,6 +91,17 @@ a:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
 .mapw .curr{animation:mpulse 1.6s ease-in-out infinite;transform-box:fill-box;transform-origin:center} @keyframes mpulse{50%{transform:scale(1.12)}}
 .mapw .spin{animation:mspin 8s linear infinite;transform-box:fill-box;transform-origin:center} @keyframes mspin{to{transform:rotate(360deg)}}
 .mapw .gold{animation:mdraw 1.6s ease-out both} @keyframes mdraw{from{stroke-dashoffset:var(--len)}to{stroke-dashoffset:0}}
+/* Aufgeräumter Kopf: kleiner Titel, Status-Kacheln, ein klarer Weiter-Knopf */
+.hero2{display:flex;align-items:center;gap:14px;margin:6px 0 14px} .hero2 .wico{width:56px;height:56px;margin:0;flex:none} .hero2 h1{margin:0;font-size:30px;line-height:1} .hero2 p{margin:4px 0 0;color:var(--muted);font-size:14px}
+.stats{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:8px}
+.stats > *{display:flex;flex-direction:column;justify-content:center;gap:3px;padding:10px 12px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid var(--line);color:var(--ink);text-decoration:none;min-width:0}
+.stats small{font:700 11px var(--f-body);color:var(--muted);text-transform:uppercase;letter-spacing:.06em} .stats b{font:900 17px var(--f-display);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stats .lvb{display:flex;align-items:center;gap:8px} .stats .lvb i{flex:none;width:30px;height:30px} .stats .lvb i svg{width:100%;height:100%}
+.stats .bar{height:6px;border-radius:3px;background:#0b0f2a;overflow:hidden} .stats .bar u{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--bull))}
+.stats button{cursor:pointer;font:inherit;text-align:left}
+.resume{margin-top:12px} .wrap > .top .lvl{display:none} .alt{margin:6px 4px 0;font-size:13px;color:var(--muted)} .alt a{color:var(--gold);font-weight:800}
+.card.path .ph{display:flex;align-items:center;gap:10px} .card.path .ph h2{margin:0;flex:1} .pinfo{margin:6px 0 0;font-size:13px}
+@media (max-width:420px){ .hero2 h1{font-size:26px} .stats b{font-size:15px} .vsw button{padding:7px 10px} }
 /* Profi-Pfad: Vertiefungen nach dem Kapitel-Boss */
 details.pro{margin-top:10px;border-radius:14px;border:2px dashed rgba(178,107,255,.55);padding:8px 10px;background:rgba(178,107,255,.06)}
 details.pro > summary b{font:900 15px var(--f-display);color:#d6b8ff;white-space:nowrap} details.pro > summary small{flex:1;text-align:right;font-size:12px;color:var(--muted)}
@@ -108,18 +119,14 @@ details.fold[open] > summary{margin-bottom:12px}
 <body>
 <div class="wrap">
   <div class="top"><a class="back" href="spiel/">🐂 Spiel</a><a class="back" href="lexikon/">📖 Lexikon</a></div>
-  <div>
-    <span class="wico" aria-hidden="true" id="heroIc"></span>
-    <h1>Sats<span>land</span></h1>
-    <p class="lead">Bitcoin spielerisch verstehen: Lernwelten mit echten Live-Daten, ohne Anmeldung und ohne Tracking.</p>
-  </div>
-  <p class="count"><b>36 Welten</b> in 6 Kapiteln · <b>6 Bosse</b> + Endboss · <b>🔬 10 Profi-Vertiefungen</b></p>
+  <header class="hero2"><span class="wico" aria-hidden="true" id="heroIc"></span><div><h1>Sats<span>land</span></h1><p>Bitcoin spielerisch verstehen</p></div></header>
+  <div class="stats" id="stats"></div>
   <a class="resume" id="resume" hidden></a>
-  <details class="card daily fold" data-k="daily"><summary><h2 id="dly">🔥 Tages-Challenge</h2><span class="muted sm" id="dlyS"></span></summary><div id="daily"></div></details>
-  <section class="card path" aria-labelledby="pth"><div class="ph"><h2 id="pth">🗺️ Dein Lernpfad</h2><span class="muted" id="pathCount"></span></div>
-    <p class="lvup" id="lvup"></p>
-    <div class="next" id="next"></div>
-    <div class="vsw" id="vsw" role="group" aria-label="Ansicht wählen"><button type="button" data-v="map">🗺️ Pfad</button><button type="button" data-v="list">📋 Liste</button></div>
+  <p class="alt" id="alt" hidden></p>
+  <details class="card daily fold" data-k="daily"><summary><h2 id="dly">🔥 Tagesfrage</h2><span class="muted sm" id="dlyS"></span></summary><div id="daily"></div></details>
+  <section class="card path" aria-labelledby="pth"><div class="ph"><h2 id="pth">🗺️ Lernpfad</h2><div class="vsw" id="vsw" role="group" aria-label="Ansicht wählen"><button type="button" data-v="map">🗺️ Pfad</button><button type="button" data-v="list">📋 Liste</button></div></div>
+    <p class="muted pinfo" id="pathCount"></p>
+    <div class="next" id="next" hidden></div>
     <div class="mapw" id="mapw" hidden><div id="map"></div></div>
     <details class="kap fold" data-k="1"><summary><span class="cn">1</span><span class="ct"><b>🏦 Geld verstehen</b><small>Was Geld ist, woher es kommt und warum es an Wert verliert.</small></span><span class="cp" data-cnt="1"><i><u></u></i><em></em></span></summary>
       <div class="grid big">
@@ -255,17 +262,19 @@ details.fold[open] > summary{margin-bottom:12px}
   // Klappbereiche: gemerkter Zustand, sonst sinnvoller Standard
   let fold = {}; try { fold = JSON.parse(localStorage.getItem("satsland-fold")) || {}; } catch(e){}
   const nxCh = nxS ? (nxS.w ? Lern.chapterOf(nxS.w) : nxS.b) + 1 : 1, dly = Lern.streak();
-  const def = {daily: dly.last !== new Date().toLocaleDateString("sv-SE"), album: false};
+  const def = {daily: false, album: false};
   document.querySelectorAll("details.fold").forEach(d => {
     const k = d.dataset.k; d.open = k in fold ? fold[k] : k in def ? def[k] : +k === nxCh;
     d.addEventListener("toggle", () => { fold[k] = d.open; try { localStorage.setItem("satsland-fold", JSON.stringify(fold)); } catch(e){} });
   });
-  document.getElementById("dlyS").textContent = dly.streak ? `🔥 ${dly.streak}` + (dly.last === new Date().toLocaleDateString("sv-SE") ? " · erledigt" : "") : "Neue Frage";
-  document.getElementById("pathCount").textContent = `${n} von ${Lern.PATH.length} geschafft`;
-  // Level-Leiter: aktuelles Tier und wie viele Welten bis zum nächsten
-  const L = Lern.level(n), nx = Lern.LEVELS.find(l => l[0] > n);
-  document.getElementById("lvup").innerHTML = Lern.LEVELS.map(l => `<span class="${l[2] === L.name ? "on" : n >= l[0] ? "got" : ""}" title="${l[2]} ab ${l[0]} Welten">${Lern.art(l[3])}</span>`).join("")
-    + `<em>${nx ? `Du bist <b>${L.name}</b>. Noch ${nx[0] - n} Welt${nx[0] - n > 1 ? "en" : ""} bis Level <b>${nx[2]}</b>.` : "Du bist ein <b>Wal</b>! Alle Welten geschafft."}</em>`;
+  document.getElementById("dlyS").textContent = dly.streak ? `🔥 ${dly.streak}` + (dly.last === new Date().toLocaleDateString("sv-SE") ? " · erledigt" : "") : "✨ Neue Frage";
+  document.getElementById("pathCount").textContent = `36 Welten · 6 Bosse · 👑 Endboss · 🔬 10 Profi`;
+  // Status-Kacheln: Level, Welten, Serie
+  const L = Lern.level(n), nx = Lern.LEVELS.find(l => l[0] > n), lv = Lern.LEVELS.find(l => l[2] === L.name), lo = lv ? lv[0] : 0, pct = nx ? (n - lo) / (nx[0] - lo) * 100 : 100;
+  document.getElementById("stats").innerHTML = `<div title="${nx ? `Noch ${nx[0] - n} bis ${nx[2]}` : "Höchstes Level"}"><small>Level</small><span class="lvb"><i>${Lern.art(lv ? lv[3] : "plankton")}</i><b>${L.name}</b></span><span class="bar"><u style="width:${pct}%"></u></span></div>
+    <div><small>Welten</small><b>${n}/${Lern.PATH.length}</b></div>
+    <button type="button" id="stDl"><small>Serie</small><b>🔥 ${dly.streak || 0}</b></button>`;
+  document.getElementById("stDl").onclick = () => { const d = document.querySelector('details[data-k="daily"]'); d.open = true; d.scrollIntoView({behavior: "smooth", block: "start"}); };
   Lern.renderNext("", "");
 
   // ---------- Pfad-Ansicht: Lernpfad als Berg mit Profi-Abzweigungen ----------
@@ -359,11 +368,15 @@ details.fold[open] > summary{margin-bottom:12px}
   let rz; addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(() => { if (view === "map") drawMap(false); }, 250); });
   setView(/^#pro\d/.test(location.hash) ? "list" : view, true);
   { const pd = document.querySelector('details[data-k="path"]'); if (pd) pd.addEventListener("toggle", () => { if (pd.open && view === "map") drawMap(false); }); }
-  // „Weiter, wo du warst“: zuletzt geöffnete, noch nicht geschaffte Welt (auch Profi), höchstens 30 Tage alt
-  { const last = Object.keys(Lern.TITLES).filter(id => s[id] && s[id].seen && !Lern.done(s, id) && Date.now() - s[id].seen < 30 * 864e5).sort((a, b) => s[b].seen - s[a].seen)[0];
-    const fresh = !Object.keys(s).length, go = last || (fresh ? "start" : "");
-    if (go){ const r = document.getElementById("resume"); r.href = Lern.TITLES[go][1]; r.hidden = false;
-      r.innerHTML = `<span class="ic" aria-hidden="true">${Lern.art(Lern.CARD[go])}</span><span><small>${last ? "Weiter, wo du warst" : "Neu hier? Starte mit"}</small>${Lern.TITLES[go][0]}</span>`; } }
+  // Ein klarer Weiter-Knopf: nächster Schritt im Pfad; zuletzt besuchte Welt nur als kleiner Zusatz
+  { const st = Lern.nextStep(""), r = document.getElementById("resume"), fresh = !Object.keys(s).length;
+    const last = Object.keys(Lern.TITLES).filter(id => s[id] && s[id].seen && !Lern.done(s, id) && Date.now() - s[id].seen < 30 * 864e5).sort((a, b) => s[b].seen - s[a].seen)[0];
+    if (st){ r.hidden = false;
+      if (st.w){ const k = Lern.chapterOf(st.w); r.href = Lern.TITLES[st.w][1];
+        r.innerHTML = `<span class="ic" aria-hidden="true">${Lern.art(Lern.CARD[st.w])}</span><span><small>${fresh ? "Los geht's mit" : "Weiter mit"} · Kapitel ${k + 1}</small>${Lern.TITLES[st.w][0]}</span>`; }
+      else { r.href = "#"; r.onclick = e => { e.preventDefault(); Lern.boss(st.b); };
+        r.innerHTML = `<span class="ic" aria-hidden="true">${Lern.art(Lern.BOSSES[st.b][0])}</span><span><small>Kapitel ${st.b + 1} geschafft! Jetzt der Boss</small>${Lern.BOSSES[st.b][1]}</span>`; } }
+    if (last && (!st || st.w !== last)){ const a = document.getElementById("alt"); a.hidden = false; a.innerHTML = `oder zurück zu <a href="${Lern.TITLES[last][1]}">${Lern.TITLES[last][0]}</a>`; } }
 })();
 </script>
 </body>
