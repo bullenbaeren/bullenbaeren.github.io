@@ -34,6 +34,7 @@
 .mine{margin-top:12px;display:grid;grid-template-columns:86px 1fr;gap:10px;align-items:end}
 .mp{border:2px dashed var(--line);border-radius:12px;padding:6px;text-align:center;min-height:96px} .mp small{display:block;font-size:11px;color:var(--muted);margin-bottom:4px}
 .mq{display:flex;flex-wrap:wrap;gap:3px;justify-content:center} .mq i,.bk i{width:14px;height:14px;border-radius:4px;background:#5a63a8;display:block}
+.mq i.nw{animation:bkIn .4s both}
 .mq i.me,.bk i.me{background:var(--gold);box-shadow:0 0 0 2px #fff,0 0 10px var(--gold)}
 .bks{display:flex;gap:6px;overflow:hidden;min-height:96px;align-items:flex-end}
 .bk{flex:0 0 74px;border:3px solid #0d1230;border-radius:10px;background:linear-gradient(#7b54ff,#4b2fc2);box-shadow:3px 3px 0 #0d1230;padding:5px;text-align:center;animation:bkIn .45s cubic-bezier(.3,1.5,.5,1) both}
@@ -148,14 +149,14 @@ function view(){
       <div class="row" style="margin-top:12px"><button class="btn" type="button" id="go">📤 Jetzt senden</button></div><div class="mine" id="mine" hidden><div class="mp"><small>Warteraum</small><div class="mq" id="mq"></div></div><div class="bks" id="bks"></div><p class="lg"><span><i class="me"></i> deine Zahlung</span><span><i></i> Zahlungen anderer Leute</span></p></div><p class="note" id="sN"></p></div>`;
     $("go").onclick = () => { $("go").disabled = true; Lern.sfx && Lern.sfx("coin"); $("mine").hidden = false;
       // Mindestgebühr pro Block sinkt, je leerer der Warteraum wird (Zeitraffer: 1 Block ≈ 10 Min.)
-      const MIN = [12, 9, 5, 4, 3, 2]; let k = 0, q = 11;
-      const wait = () => { $("mq").innerHTML = '<i class="me"></i>' + "<i></i>".repeat(q); };
-      wait(); $("sN").innerHTML = "📤 Gesendet! Deine Zahlung (gold) wartet im Warteraum. Miner nehmen die mit der höchsten Gebühr zuerst …";
+      const MIN = [12, 9, 5, 4, 3, 2], CAP = 8, Q = 10; let k = 0;   // Block fasst 8, Warteraum hat immer 10 andere
+      const wait = (q, nw = 0) => { $("mq").innerHTML = '<i class="me"></i>' + "<i></i>".repeat(q - nw) + '<i class="nw"></i>'.repeat(nw); };
+      wait(Q); $("sN").innerHTML = "📤 Gesendet! Deine Zahlung (gold) wartet im Warteraum. Miner nehmen die mit der höchsten Gebühr zuerst …";
       const next = () => { const m = MIN[k], in_ = fee[1] >= m, d = document.createElement("div");
-        d.className = "bk" + (in_ ? " hit" : ""); d.innerHTML = `<b>Block ${k + 1}</b><div>${in_ ? '<i class="me"></i>' + "<i></i>".repeat(Math.min(q, 7)) : "<i></i>".repeat(8)}</div><small>ab ${m} sat/vB</small>`;
+        d.className = "bk" + (in_ ? " hit" : ""); d.innerHTML = `<b>Block ${k + 1}</b><div>${in_ ? '<i class="me"></i>' + "<i></i>".repeat(CAP - 1) : "<i></i>".repeat(CAP)}</div><small>ab ${m} sat/vB</small>`;
         $("bks").prepend(d); k++; Lern.sfx && Lern.sfx(in_ ? "lvl" : "hit");
-        if (!in_){ q = Math.max(3, q - 2); wait(); $("sN").innerHTML = `⛏️ Block ${k} gefunden: ab ${m} sat/vB. Deine ${fee[1]} sat/vB reichen noch nicht, du wartest weiter …`; setTimeout(next, 1100); return; }
-        $("mq").innerHTML = "<i></i>".repeat(Math.max(3, q - 7));
+        if (!in_){ wait(Q - CAP); setTimeout(() => wait(Q, CAP), 450); $("sN").innerHTML = `⛏️ Block ${k} gefunden: Die ${CAP} Zahlungen mit der höchsten Gebühr (ab ${m} sat/vB) sind eingestiegen, ${CAP} neue kommen nach. Deine ${fee[1]} sat/vB reichen noch nicht …`; setTimeout(next, 1100); return; }
+        wait(Q - CAP + 1); $("mq").firstChild.remove();
         $("sN").innerHTML = `<b>✅ In Block ${k}, also nach ca. ${k * 10} Min. angekommen!</b> ${amt < .01 ? "Der Test hat geklappt. Jetzt kannst du den Rest beruhigt schicken." : "Geschafft."} ${mist ? `(${mist} Fehler unterwegs, beim nächsten Mal genauer hinschauen.)` : "Alles richtig gemacht!"} <button class="btn ghost" type="button" id="again" style="margin-top:8px">↺ Nochmal üben</button>`;
         $("again").onclick = () => { s = 0; mist = 0; view(); }; };
       setTimeout(next, 1300); };
