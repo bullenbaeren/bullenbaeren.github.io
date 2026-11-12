@@ -154,7 +154,7 @@ function view(){
         d.className = "bk" + (in_ ? " hit" : ""); d.innerHTML = `<b>Block ${k + 1}</b><div>${in_ ? '<i class="me"></i>' + "<i></i>".repeat(Math.min(q, 7)) : "<i></i>".repeat(8)}</div><small>ab ${m} sat/vB</small>`;
         $("bks").prepend(d); k++; Lern.sfx && Lern.sfx(in_ ? "lvl" : "hit");
         if (!in_){ q = Math.max(3, q - 2); wait(); $("sN").innerHTML = `⛏️ Block ${k} gefunden: ab ${m} sat/vB. Deine ${fee[1]} sat/vB reichen noch nicht, du wartest weiter …`; setTimeout(next, 1100); return; }
-        $("mq").innerHTML = "<i></i>".repeat(Math.max(0, q - 7));
+        $("mq").innerHTML = "<i></i>".repeat(Math.max(3, q - 7));
         $("sN").innerHTML = `<b>✅ In Block ${k}, also nach ca. ${k * 10} Min. angekommen!</b> ${amt < .01 ? "Der Test hat geklappt. Jetzt kannst du den Rest beruhigt schicken." : "Geschafft."} ${mist ? `(${mist} Fehler unterwegs, beim nächsten Mal genauer hinschauen.)` : "Alles richtig gemacht!"} <button class="btn ghost" type="button" id="again" style="margin-top:8px">↺ Nochmal üben</button>`;
         $("again").onclick = () => { s = 0; mist = 0; view(); }; };
       setTimeout(next, 1300); };
