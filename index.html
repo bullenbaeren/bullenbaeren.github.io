@@ -26,7 +26,8 @@ a.w{transition:transform .15s, border-color .15s}
 .w span{color:var(--muted);font-size:14px}
 .w .tag{position:absolute;top:14px;right:14px;font:700 11px var(--f-body);letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:999px}
 .w .tag.live{background:var(--bull);color:#04240f}
-.w .tag.soon{border:1px solid var(--line);color:var(--muted)}
+.w .tag.bonus{background:#ff5c73;color:#fff}
+.tag.soon{border:1px solid var(--line);color:var(--muted)}
 .w.off{opacity:.6}
 .w .go{margin-top:auto;font-weight:800;color:var(--gold)}
 .grp{display:flex;flex-direction:column;gap:10px}
@@ -124,7 +125,7 @@ details.fold[open] > summary{margin-bottom:12px}
 </head>
 <body>
 <div class="wrap">
-  <div class="top"><a class="back" href="spiel/">🐂 Spiel</a><a class="back" href="lexikon/">📖 Lexikon</a></div>
+  <div class="top"><a class="back" href="lexikon/">📖 Lexikon</a></div>
   <header class="hero2"><img class="wico" id="heroIc" src="icon.svg" alt="" style="border-radius:22%"><div><h1>Sats<span>land</span></h1><p>Bitcoin spielerisch verstehen</p></div></header>
   <div class="stats" id="stats"></div>
   <a class="resume" id="resume" hidden></a>
@@ -173,6 +174,7 @@ details.fold[open] > summary{margin-bottom:12px}
         <a class="w" href="zyklen/"><span class="tag live">Neu</span><span class="ic" aria-hidden="true"></span><b>Kurszyklen & Crashs</b><span>Alle großen Abstürze, wie lange die Erholung dauerte, und: Hältst du durch?</span><span class="go">Kurs-Achterbahn →</span></a>
         <a class="w" href="fomo/"><span class="tag live">Live</span><span class="ic" aria-hidden="true">🎢</span><b>FOMO &amp; FUD</b><span>8 echte Momente: Kannst du deinen Gefühlen widerstehen?</span><span class="go">Gefühls-Achterbahn →</span></a>
         <a class="w" href="hebel/"><span class="tag live">Live</span><span class="ic" aria-hidden="true">💥</span><b>Hebel &amp; Liquidationen</b><span>Teste eine gehebelte Wette mit echten Kursen der letzten Tage.</span><span class="go">Hebel-Falle →</span></a>
+        <a class="w" href="spiel/" data-arena><span class="tag bonus">Bonus</span><span class="ic" aria-hidden="true">⚔️</span><b>Kurs-Arena</b><span>Der echte Bitcoin-Kurs als Comic-Schlacht: Käufer gegen Verkäufer, live. Frei nach dem Boss von Welt 4.</span><span class="go">Kurs-Arena →</span></a>
       </div>
     </details>
     <details class="kap fold" data-k="5"><summary><span class="cn">5</span><span class="ct"><b>💸 Bezahlen & Senden</b><small>Wie eine Zahlung wirklich abläuft, schnell und günstig.</small></span><span class="cp" data-cnt="5"><i><u></u></i><em></em></span></summary>
@@ -312,7 +314,7 @@ details.fold[open] > summary{margin-bottom:12px}
     const curve = pts => { let d = `M${pts[0][0]},${pts[0][1]}`; for (let i = 0; i < pts.length - 1; i++){ const a = pts[i - 1] || pts[i], b = pts[i], c = pts[i + 1], e = pts[i + 2] || c;
       d += ` C${b[0] + (c[0] - a[0]) / 5},${b[1] + (c[1] - a[1]) / 5} ${c[0] - (e[0] - b[0]) / 5},${c[1] - (e[1] - b[1]) / 5} ${c[0]},${c[1]}`; } return d; };
     const art = (n, cx, cy, sz) => L.art(n).replace("<svg", `<svg x="${cx - sz / 2}" y="${cy - sz / 2}" width="${sz}" height="${sz}"`);
-    const chip = (cx, cy, t, side, col = "#dfe3ff", bg = "rgba(11,15,42,.88)", fs = 12.5) => { const w = t.length * fs * .56 + 18, x0 = side > 0 ? cx : cx - w;
+    const chip = (cx, cy, t, side, col = "#dfe3ff", bg = "rgba(11,15,42,.88)", fs = 12.5) => { const w = t.length * fs * .56 + 18, x0 = side > 0 ? cx : side < 0 ? cx - w : cx - w / 2;
       return `<rect x="${x0}" y="${cy - 13}" width="${w}" height="26" rx="13" fill="${bg}"/><text x="${x0 + w / 2}" y="${cy + 4.5}" fill="${col}" font-size="${fs}" font-weight="800" text-anchor="middle" font-family="system-ui,sans-serif">${t}</text>`; };
     let g = `<defs><linearGradient id="msky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#04061a"/><stop offset=".6" stop-color="#11174a"/><stop offset="1" stop-color="#1b2361"/></linearGradient>
       <linearGradient id="mtn" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2b3274"/><stop offset="1" stop-color="#161c4c"/></linearGradient>
@@ -352,6 +354,11 @@ details.fold[open] > summary{margin-bottom:12px}
       if (now){ const nx = P[i + 1] ? P[i + 1][0] : cx, bx = Math.max(36, Math.min(W - 36, cx + (nx > cx ? -22 : 22))), by = cy - r - 14;
         bubble = `<g class="bob"><path d="M${cx - 6} ${by - 3}l${(cx - bx) * .2 + 6} 12 6-12z" fill="#fff" stroke="#0a0d26" stroke-width="3" stroke-linejoin="round"/><rect x="${bx - 32}" y="${by - 30}" width="64" height="30" rx="15" fill="#fff" stroke="#0a0d26" stroke-width="3"/><rect x="${cx - 7}" y="${by - 4}" width="14" height="4" fill="#fff"/><text x="${bx}" y="${by - 10}" font-size="14" font-weight="900" text-anchor="middle" font-family="system-ui" fill="#0a0d26">${boss ? "KAMPF!" : "START"}</text></g>`; }
       g += boss ? "</g>" : "</a>";
+      // Bonus: Kurs-Arena als Portal neben dem Boss von Welt 4
+      if (boss && n.k === 3){ const open = !!won[3], px = Math.max(26, Math.min(W - 26, cx + side * (nar ? 112 : 150))), py = cy + 46;
+        g += `<a href="spiel/" data-arena aria-label="Bonus: Kurs-Arena"><path d="M${cx + side * r * .8} ${cy + r * .5} Q${(cx + px) / 2} ${py + 12} ${px - side * 20} ${py}" fill="none" stroke="${open ? "#ff5c73" : "#4a3a5a"}" stroke-width="5" stroke-dasharray="2 9" stroke-linecap="round"/>
+          <circle cx="${px}" cy="${py + 5}" r="22" fill="#4a1020"/><circle cx="${px}" cy="${py}" r="22" fill="${open ? "#e0405a" : "#4a2a3a"}" stroke="#0a0d26" stroke-width="3"/><text x="${px}" y="${py + 7}" font-size="20" text-anchor="middle" opacity="${open ? 1 : .5}">⚔️</text>
+          ${open ? "" : `<text x="${px + 15}" y="${py - 10}" font-size="13" text-anchor="middle">🔒</text>`}${chip(px + side * 28, py, "🎮 Arena", side, open ? "#ffb3c2" : "#9aa2c8", "rgba(58,20,40,.92)", 12)}</a>`; }
       // Profi-Abzweigung: kleines Portal neben dem Boss
       if (boss && L.PRO[n.k].length){ const open = !!won[n.k], pd = L.PRO[n.k].filter(id => Lern.done(s, id)).length, tot = L.PRO[n.k].length, px = Math.max(26, Math.min(W - 26, cx + side * (nar ? 112 : 150))), py = cy + 46;
         g += `<a href="#pro${n.k + 1}" data-pro="${n.k + 1}" aria-label="Profi-Pfad Welt ${n.k + 1}"><title>🔬 Profi-Pfad: ${pd}/${tot} Vertiefungen</title><path d="M${cx + side * r * .8} ${cy + r * .5} Q${(cx + px) / 2} ${py + 12} ${px - side * 20} ${py}" fill="none" stroke="#b26bff" stroke-width="4" stroke-dasharray="2 9" stroke-linecap="round" opacity="${open ? 1 : .55}"/>
@@ -374,6 +381,7 @@ details.fold[open] > summary{margin-bottom:12px}
   const mpop = document.getElementById("mpop"), mback = document.getElementById("mback");
   const closePop = () => { mpop.hidden = mback.hidden = true; };
   mback.onclick = closePop; addEventListener("keydown", e => { if (e.key === "Escape") closePop(); });
+  document.addEventListener("click", e => { const a = e.target.closest("[data-arena]"); if (!a || Lern.bossWon()[3]) return; e.preventDefault(); e.stopPropagation(); Lern.toast("🔒 Die Kurs-Arena öffnet sich, wenn du den Boss von Welt 4 besiegt hast."); }, true);
   mapw.addEventListener("click", e => { const a = e.target.closest("[data-pro]"); if (!a) return; e.preventDefault(); e.stopPropagation(); openPro(+a.dataset.pro - 1); }, true);
   function openPro(k){ const open = !!won[k], L = Lern.PRO[k];
     mpop.innerHTML = `<div class="mph"><b id="mpT">🔬 Profi-Pfad · ${Lern.CHAPTERS[k][0]} ${Lern.CHAPTERS[k][1]}</b><button type="button" id="mpx" aria-label="Schließen">✕</button></div>
