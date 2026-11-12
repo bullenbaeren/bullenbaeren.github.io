@@ -31,6 +31,15 @@
 .cmp{display:grid;gap:8px;margin-top:10px} .cmp div{border-radius:12px;padding:8px 10px;background:rgba(0,0,0,.25)} .cmp small{display:block;font-size:12px;color:var(--muted)}
 .ch{display:grid;gap:8px;margin-top:10px} .ch button{text-align:left}
 .ch button.pick{border-color:var(--gold);background:rgba(255,201,77,.15)}
+.mine{margin-top:12px;display:grid;grid-template-columns:86px 1fr;gap:10px;align-items:end}
+.mp{border:2px dashed var(--line);border-radius:12px;padding:6px;text-align:center;min-height:96px} .mp small{display:block;font-size:11px;color:var(--muted);margin-bottom:4px}
+.mq{display:flex;flex-wrap:wrap;gap:3px;justify-content:center} .mq i,.bk i{width:14px;height:14px;border-radius:4px;background:#5a63a8;display:block}
+.mq i.me,.bk i.me{background:var(--gold);box-shadow:0 0 0 2px #fff,0 0 10px var(--gold)}
+.bks{display:flex;gap:6px;overflow:hidden;min-height:96px;align-items:flex-end}
+.bk{flex:0 0 74px;border:3px solid #0d1230;border-radius:10px;background:linear-gradient(#7b54ff,#4b2fc2);box-shadow:3px 3px 0 #0d1230;padding:5px;text-align:center;animation:bkIn .45s cubic-bezier(.3,1.5,.5,1) both}
+.bk b{display:block;font:900 10px var(--f-num);color:#fff;margin-bottom:3px} .bk div{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;justify-items:center} .bk small{display:block;font:800 10px var(--f-body);color:#e6dcff;margin-top:3px}
+.bk.hit{background:linear-gradient(#34d982,#139c57)} .bk.hit small{color:#04240f}
+@keyframes bkIn{from{transform:translateX(-30px) scale(.4);opacity:0}}
 .sum{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:14px;margin-top:8px} .sum span{color:var(--muted)}
 .fall{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px} .fall div{border-radius:14px;border:1px solid rgba(255,92,115,.4);background:rgba(255,92,115,.06);padding:12px;font-size:14px;line-height:1.5;color:var(--muted)}
 .fall .ft{display:block;font:900 15px var(--f-display);color:var(--ink);margin-bottom:4px}
@@ -128,19 +137,27 @@ function view(){
         $("tst").onclick = ev => { ev.preventDefault(); amt = .0001; s = 2; view(); }; $("nxt").onclick = ev => { ev.preventDefault(); s = 2; view(); }; } };
   }
   else if (s === 2){
-    const F = [["🐢 Langsam", 2, "ca. 1 Std. oder länger"], ["🚶 Normal", 6, "ca. 30 Min."], ["🚀 Schnell", 15, "nächster Block, ca. 10 Min."]];
+    const F = [["🐢 Langsam", 2, "ca. 1 Std."], ["🚶 Normal", 6, "ca. 30 Min."], ["🚀 Schnell", 15, "nächster Block, ca. 10 Min."]];
     B.innerHTML = `<div class="sbox"><h3>Gebühr wählen</h3><p class="muted" style="margin:0">Die Gebühr hängt <b>nicht vom Betrag</b> ab, sondern davon, wie eilig es ist (Beispielwerte):</p>
       <div class="ch">${F.map(([t, v, z], i) => `<button class="btn ghost" type="button" data-i="${i}">${t} · ${v} sat/vB · ${z} · ≈ ${(v * 140).toLocaleString("de-DE")} sats</button>`).join("")}</div></div>`;
     B.querySelector(".ch").onclick = e => { const b = e.target.closest("[data-i]"); if (!b) return; fee = F[+b.dataset.i]; Lern.sfx && Lern.sfx("click"); s = 3; view(); };
   }
   else if (s === 3){
     B.innerHTML = `<div class="sbox"><h3>Nochmal prüfen, dann senden</h3><div class="sum"><span>An</span><b class="adr" style="padding:2px 6px">${hl(ANNA)}</b><span>Betrag</span><b>${amt.toLocaleString("de-DE",{maximumFractionDigits:8})} BTC</b><span>Gebühr</span><b>${fee[0]} · ${fee[1]} sat/vB</b><span>Dauer</span><b>${fee[2]}</b></div>
-      <div class="row" style="margin-top:12px"><button class="btn" type="button" id="go">📤 Jetzt senden</button></div><p class="note" id="sN"></p></div>`;
-    $("go").onclick = () => { $("go").disabled = true; Lern.sfx && Lern.sfx("coin");
-      $("sN").innerHTML = "📤 Gesendet! Die Zahlung wartet im Warteraum auf einen Block …";
-      setTimeout(() => { Lern.sfx && Lern.sfx("lvl");
-        $("sN").innerHTML = `<b>✅ Angekommen!</b> ${amt < .01 ? "Der Test hat geklappt. Jetzt kannst du den Rest beruhigt schicken." : "Geschafft."} ${mist ? `(${mist} Fehler unterwegs, beim nächsten Mal genauer hinschauen.)` : "Alles richtig gemacht!"} <button class="btn ghost" type="button" id="again" style="margin-top:8px">↺ Nochmal üben</button>`;
-        $("again").onclick = () => { s = 0; mist = 0; view(); }; }, fee[1] > 10 ? 1500 : fee[1] > 4 ? 2600 : 3800); };
+      <div class="row" style="margin-top:12px"><button class="btn" type="button" id="go">📤 Jetzt senden</button></div><div class="mine" id="mine" hidden><div class="mp"><small>Warteraum</small><div class="mq" id="mq"></div></div><div class="bks" id="bks"></div></div><p class="note" id="sN"></p></div>`;
+    $("go").onclick = () => { $("go").disabled = true; Lern.sfx && Lern.sfx("coin"); $("mine").hidden = false;
+      // Mindestgebühr pro Block sinkt, je leerer der Warteraum wird (Zeitraffer: 1 Block ≈ 10 Min.)
+      const MIN = [12, 9, 5, 4, 3, 2]; let k = 0, q = 11;
+      const wait = () => { $("mq").innerHTML = '<i class="me"></i>' + "<i></i>".repeat(q); };
+      wait(); $("sN").innerHTML = "📤 Gesendet! Deine Zahlung (gold) wartet im Warteraum. Miner nehmen die mit der höchsten Gebühr zuerst …";
+      const next = () => { const m = MIN[k], in_ = fee[1] >= m, d = document.createElement("div");
+        d.className = "bk" + (in_ ? " hit" : ""); d.innerHTML = `<b>Block ${k + 1}</b><div>${in_ ? '<i class="me"></i>' + "<i></i>".repeat(Math.min(q, 7)) : "<i></i>".repeat(8)}</div><small>ab ${m} sat/vB</small>`;
+        $("bks").prepend(d); k++; Lern.sfx && Lern.sfx(in_ ? "lvl" : "hit");
+        if (!in_){ q = Math.max(3, q - 2); wait(); $("sN").innerHTML = `⛏️ Block ${k} gefunden: ab ${m} sat/vB. Deine ${fee[1]} sat/vB reichen noch nicht, du wartest weiter …`; setTimeout(next, 1100); return; }
+        $("mq").innerHTML = "<i></i>".repeat(Math.max(0, q - 7));
+        $("sN").innerHTML = `<b>✅ In Block ${k}, also nach ca. ${k * 10} Min. angekommen!</b> ${amt < .01 ? "Der Test hat geklappt. Jetzt kannst du den Rest beruhigt schicken." : "Geschafft."} ${mist ? `(${mist} Fehler unterwegs, beim nächsten Mal genauer hinschauen.)` : "Alles richtig gemacht!"} <button class="btn ghost" type="button" id="again" style="margin-top:8px">↺ Nochmal üben</button>`;
+        $("again").onclick = () => { s = 0; mist = 0; view(); }; };
+      setTimeout(next, 1300); };
   }
 }
 view();
