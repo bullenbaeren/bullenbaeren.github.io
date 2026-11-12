@@ -216,7 +216,7 @@ $("simB").onclick = () => { if (!mblocks || (anim && t - anim.t0 < 5.2)) return;
 // Nach der Abfahrt rücken alle einen Abschnitt nach vorne
 let shiftT = -9;
 function shiftZones(){ if (!mblocks || !mblocks.length) return; const last = mblocks[mblocks.length - 1];
-  mblocks = [...mblocks.slice(1), {nTx: last.nTx, feeRange: last.feeRange.map(v => Math.max(1, v*.8)), medianFee: Math.max(1, last.medianFee*.8)}];
+  mblocks = [...mblocks.slice(1), {nTx: last.nTx, feeRange: last.feeRange.map(v => Math.max(.1, v*.6)), medianFee: Math.max(.1, last.medianFee*.6)}];
   layoutCrowd(); renderYou(); shiftT = t; }
 
 // ---------- Fahrgäste auf dem Bahnsteig ----------
@@ -386,13 +386,15 @@ function draw(){
       });
     }
     // Übungs-Fahrgast
-    if (mine && mine.state === "wait" && !(anim && t - anim.t0 < 3.2)){
-      const zi = Math.min(2, zoneFor(mine.fee)), zr = zoneRect(zi);
-      // steht vorne an der Bahnsteigkante, gut sichtbar
-      const rank = zi === 0 && mblocks[0] ? pctBelow(mine.fee, mblocks[0])/100 : .5;
-      const yx = zr.x + 16*k + (1 - rank)*(zr.w - 32*k), yy = plY + H*.05;
+    if (mine && mine.state === "wait"){
+      const zn = zoneFor(mine.fee), zi = Math.min(2, zn), zr = zoneRect(zi);
+      // steht vorne an der Bahnsteigkante; in „Weitere Züge“ je nach Zug-Nummer weiter hinten
+      const rank = zi === 0 && mblocks[0] ? pctBelow(mine.fee, mblocks[0])/100 : zi === 2 ? 1 - Math.min(1, (zn - 2)/6) : .5;
+      const tx2 = zr.x + 16*k + (1 - rank)*(zr.w - 32*k);
+      mine.px = mine.px == null ? tx2 : mine.px + (tx2 - mine.px)*.06;   // weich aufrücken statt springen
+      const yx = mine.px, yy = plY + H*.05, lab = zn >= mblocks.length ? `DU · Zug ${mblocks.length + 1}+` : `DU · Zug ${zn + 1}`;
       passenger(yx, yy, k*1.7, "#ffc94d", 0, true);
-      ctx.font = `900 ${Math.round(9*k + 3)}px Arial`; ctx.textAlign = "center"; ctx.lineWidth = 3; ctx.strokeStyle = INK; ctx.strokeText("DU", yx, yy - 40*k); ctx.fillStyle = "#ffc94d"; ctx.fillText("DU", yx, yy - 40*k);
+      ctx.font = `900 ${Math.round(9*k + 3)}px Arial`; ctx.textAlign = "center"; ctx.lineWidth = 3; ctx.strokeStyle = INK; ctx.strokeText(lab, yx, yy - 40*k); ctx.fillStyle = "#ffc94d"; ctx.fillText(lab, yx, yy - 40*k);
     }
     ctx.fillStyle = "#9aa2d6"; ctx.font = `600 ${Math.round(9*k + 2)}px ui-monospace,monospace`; ctx.textAlign = "right"; ctx.fillText(`1 Figur ≈ ${perFig} Tx`, W - 10, H - 8);
   } else {
