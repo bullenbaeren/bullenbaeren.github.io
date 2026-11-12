@@ -9,13 +9,13 @@
 <meta name="theme-color" content="#0b0f2a">
 <link rel="icon" href="../icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-<link rel="stylesheet" href="../lern.css?v=24">
+<link rel="stylesheet" href="../lern.css?v=25">
 <style>
 /* Lernwelt "Wallets": nur seitenspezifische Teile, der Rest kommt aus lern.css */
 .idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
 .pick{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
 .pick .btn{padding:9px 12px;font-size:14px} .pick .btn[aria-pressed="true"]{outline:2px solid var(--gold);background:rgba(247,147,26,.15)}
-.lbl{margin:16px 0 0;font-weight:700}
+.qlbl{margin:16px 0 0;font-weight:700}
 .wl{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:12px}
 .w{border:2px solid var(--line);border-radius:16px;padding:12px;background:rgba(255,255,255,.03);transition:border-color .2s,background .2s}
 .w .ic{font-size:28px} .w b{display:block;margin-top:4px} .w small{display:block;font-size:12px;color:var(--muted);margin-top:2px;line-height:1.4}
@@ -58,9 +58,9 @@
 
   <section class="card" aria-labelledby="h2s">
     <h2 id="h2s">Welche Wallet passt zu dir?</h2>
-    <p class="lbl">Wie viel willst du aufbewahren?</p>
+    <p class="qlbl">Wie viel willst du aufbewahren?</p>
     <div class="pick" id="amt"></div>
-    <p class="lbl">Wofür?</p>
+    <p class="qlbl">Wofür?</p>
     <div class="pick" id="use"></div>
     <div class="rec-box" id="rec"></div>
     <div class="wl" id="wl2"></div>
@@ -105,7 +105,7 @@
   <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
 </div>
 
-<script src="../lern.js?v=24"></script>
+<script src="../lern.js?v=25"></script>
 <script>
 /* =====================================================================
    WALLET-CHECK – Lernwelt von Satsland

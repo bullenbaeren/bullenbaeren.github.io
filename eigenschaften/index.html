@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#0b0f2a">
 <link rel="icon" href="../icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-<link rel="stylesheet" href="../lern.css?v=24">
+<link rel="stylesheet" href="../lern.css?v=25">
 <style>
 /* Lernwelt "Eigenschaften": nur seitenspezifische Teile, der Rest kommt aus lern.css */
 .idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
@@ -41,6 +41,10 @@ table.pts{width:100%;border-collapse:separate;border-spacing:0 4px;margin-top:6p
 @media (max-width:520px){ .m .ic{font-size:24px} .m b{font-size:11px} .pts td i{width:6px;height:6px} .pts{font-size:12px} }
 @keyframes rin{from{opacity:0;transform:translateY(8px)}}
 @media (max-width:520px){ .m{padding:10px 6px} .m .ic{font-size:26px} .m b{font-size:13px} }
+.dg3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px}
+.dg3 > div{border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.03);padding:12px} .dg3 > div.me{border-color:rgba(247,147,26,.6)} .dg3 > div > b{display:block;font:900 16px var(--f-display);margin-bottom:6px}
+.dg3 dl{margin:0;font-size:13.5px} .dg3 dt{color:var(--muted);font-size:12px;margin-top:6px} .dg3 dd{margin:0}
+@media (max-width:620px){ .dg3{grid-template-columns:1fr} }
 </style>
 </head>
 <body>
@@ -61,6 +65,18 @@ table.pts{width:100%;border-collapse:separate;border-spacing:0 4px;margin-top:6p
     <div class="race" id="race"></div>
   </section>
 
+  <section class="card" id="digi" aria-labelledby="hDs">
+    <h2 id="hDs">Und die neuen Digitalgelder? <span class="mode demo">Stand Nov. 2026</span></h2>
+    <p class="muted" style="margin:0">Neben Bitcoin gibt es neue digitale Gelder. Sie sehen ähnlich aus, funktionieren aber ganz anders:</p>
+    <div class="dg3">
+      <div><b>📲 Digitaler Euro</b><dl><dt>Wer gibt ihn heraus?</dt><dd>Die Zentralbank (EZB)</dd><dt>Menge</dt><dd>beliebig vermehrbar</dd><dt>Wert</dt><dd>immer 1 €</dd><dt>Sperrbar?</dt><dd>möglich, Regeln noch offen</dd></dl></div>
+      <div><b>🪙 Stablecoin</b><dl><dt>Wer gibt ihn heraus?</dt><dd>eine private Firma</dd><dt>Menge</dt><dd>wächst mit Einzahlungen</dd><dt>Wert</dt><dd>meist 1 $ oder 1 €</dd><dt>Sperrbar?</dt><dd><b>ja</b>, die Firma kann einfrieren</dd></dl></div>
+      <div class="me"><b>🟠 Bitcoin</b><dl><dt>Wer gibt ihn heraus?</dt><dd><b>niemand</b>, ein offenes Netz</dd><dt>Menge</dt><dd><b>max. 21 Mio.</b></dd><dt>Wert</dt><dd>schwankt stark</dd><dt>Sperrbar?</dt><dd><b>nein</b>, in eigener Wallet</dd></dl></div>
+    </div>
+    <p class="note">📅 <b>Digitaler Euro:</b> Das EU-Parlament verhandelt noch, Pilot-Tests sind ab Mitte 2027 geplant, der Start für alle <b>frühestens 2029</b>, mit einer Haltegrenze pro Person (diskutiert: rund 3.000 €). Er bleibt ein Euro: bequem, aber <b>kein Schutz vor Inflation</b>.</p>
+    <p class="note">Kurz gesagt: Digitaler Euro und Stablecoins sind <b>stabil, aber vermehrbar</b>. Bitcoin ist <b>knapp, aber schwankt</b>.</p>
+  </section>
+
   <section class="card" aria-labelledby="h2s">
     <h2 id="h2s">Das solltest du dir merken</h2>
     <div class="learn">
@@ -73,11 +89,11 @@ table.pts{width:100%;border-collapse:separate;border-spacing:0 4px;margin-top:6p
   </section>
 
   <section class="card next" id="next" aria-label="Weiter"></section>
-  <details class="foot"><summary>Quellen</summary><p>Euro-Kurs von Bitcoin live von Coinbase. Gold-Förderung jährlich rund 1,5 bis 2 % des Bestands (gerundet). Die Punkte sind vereinfacht und als Diskussionsgrundlage gedacht.</p></details>
+  <details class="foot"><summary>Quellen</summary><p>Digitaler Euro: <a href="https://netzpolitik.org/2026/alternative-zu-visa-paypal-und-co-eu-abgeordnete-stimmen-fuer-digitalen-euro/">netzpolitik.org (Juni 2026)</a>, <a href="https://de.wikipedia.org/wiki/Digitaler_Euro">Wikipedia</a>. Euro-Kurs von Bitcoin live von Coinbase. Gold-Förderung jährlich rund 1,5 bis 2 % des Bestands (gerundet). Die Punkte sind vereinfacht und als Diskussionsgrundlage gedacht.</p></details>
   <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
 </div>
 
-<script src="../lern.js?v=24"></script>
+<script src="../lern.js?v=25"></script>
 <script>
 /* =====================================================================
    GELD-DUELL – Lernwelt von Satsland
@@ -92,7 +108,7 @@ const R = [
   ["Knappheit", "Kann jemand einfach mehr davon herstellen?", "lo", [[1, "Am Strand sammelbar"], [2, "Wird langsam mehr geschürft"], [0, "Zentralbank kann unbegrenzt schaffen"], [3, "Nie mehr als 21 Millionen"]], "halving/", "Knappheit & Halving"],
   ["Teilbarkeit", () => "Kann man es in winzige Stücke teilen?" + (eurPrice ? ` (1 Cent sind gerade ${Math.round(0.01/eurPrice*1e8).toLocaleString("de-DE")} Sats.)` : ""), "hi", [[1, "Eine Muschel ist eine Muschel"], [1, "Teilen braucht Werkzeug und Waage"], [2, "Bis zum Cent"], [3, "Bis zum Satoshi, 100 Millionen pro Bitcoin"]], "utxo/", "Wechselgeld-Kasse"],
   ["Transportierbarkeit", "Kann man 1 Million schnell ans andere Ende der Welt bringen?", "lo", [[0, "Ein ganzer LKW voll Muscheln"], [1, "Rund 10 kg Gold, Zoll, Versicherung"], [2, "Überweisung, aber Tage und Gebühren"], [3, "In Minuten, rund um die Uhr"]], "lightning/", "Lightning"],
-  ["Haltbarkeit", "Bleibt es über Jahrhunderte erhalten?", "hi", [[2, "Kann zerbrechen"], [3, "Rostet nie, hält ewig"], [1, "Scheine verschleißen nach wenigen Jahren"], [2, "Hält, solange das Netz läuft und du den Seed hast"]], "seed/", "Seed-Trainer"],
+  ["Haltbarkeit", "Bleibt es über Jahrhunderte erhalten?", "hi", [[2, "Kann zerbrechen"], [3, "Rostet nie, hält ewig"], [1, "Scheine verschleißen nach wenigen Jahren"], [3, "Nutzt sich nie ab: Die Blockchain vergisst nichts, solange das Netz läuft"]], "seed/", "Seed-Trainer"],
   ["Fälschungssicherheit", "Wie schwer ist es, Falschgeld herzustellen?", "lo", [[1, "Glas- und Porzellan-Kopien gab es oft"], [2, "Vergoldetes Metall fällt nicht immer auf"], [2, "Gut geschützt, Falschgeld gibt es trotzdem"], [3, "Unmöglich ohne Schlüssel, jede Node prüft"]], "schluessel/", "Schlüssel-Labor"],
   ["Prüfbarkeit", "Kann jeder schnell prüfen, ob es echt ist?", "lo", [[2, "Sieht man meistens"], [1, "Braucht Säuretest oder Prüfgerät"], [2, "Sicherheitsmerkmale fühlen und sehen"], [3, "Jede Node prüft in Sekunden"]], "blockchain/", "Blockchain"],
   ["Unabhängigkeit", "Kann eine Bank oder ein Staat es sperren oder kontrollieren?", "lo", [[3, "Niemand kontrolliert Muscheln"], [3, "Gold in der Hand kann niemand sperren"], [0, "Konten können gesperrt werden, Zentralbank steuert"], [3, "Kein Chef, mit eigenen Schlüsseln nicht sperrbar"]], "nodes/", "Node-Wache"],
@@ -150,6 +166,7 @@ fetch("https://api.coinbase.com/v2/prices/BTC-EUR/spot").then(x => x.json()).the
 const QUIZ = [
   ["Welche Eigenschaft hat Bitcoin, die Euro nicht hat?", ["Einen stabilen Preis", "Eine feste Obergrenze, die niemand ändern kann", "Er ist älter"], 1, "Die Menge von 21 Millionen steht fest. Eine Zentralbank kann dagegen neues Geld schaffen."],
   ["Wo schneidet Gold besser ab als Bitcoin?", ["Bei der Erfahrung: seit Jahrtausenden Geld", "Beim Verschicken", "Bei der Teilbarkeit"], 0, "Gold ist seit Jahrtausenden Geld. Bitcoin gibt es erst seit 2009."],
+  ["Was unterscheidet einen Stablecoin von Bitcoin?", ["Stablecoins gibt eine Firma heraus und kann sie einfrieren", "Stablecoins sind auf 21 Millionen begrenzt", "Es gibt keinen Unterschied"], 0, "Hinter einem Stablecoin steht eine Firma. Sie hält den Wert stabil, kann Guthaben aber auch sperren."],
   ["Was heißt „dezentral“ bei Bitcoin?", ["Es gibt einen Chef pro Land", "Kein Einzelner bestimmt, tausende Nodes prüfen gemeinsam", "Bitcoin liegt auf einem großen Server"], 1, "Es gibt keine Firma und keine Zentralbank. Die Regeln werden von allen Nodes gemeinsam durchgesetzt."],
 ];
 Lern.quiz($("quiz"), "eigenschaften", QUIZ, "../"); Lern.visit("eigenschaften"); Lern.renderNext("eigenschaften", "../");

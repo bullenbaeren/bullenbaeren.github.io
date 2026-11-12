@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#0b0f2a">
 <link rel="icon" href="../icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-<link rel="stylesheet" href="../lern.css?v=24">
+<link rel="stylesheet" href="../lern.css?v=25">
 <style>
 /* Lernwelt "Whitepaper-Tour": nur seitenspezifische Teile, der Rest kommt aus lern.css */
 .idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
@@ -88,7 +88,7 @@
   <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
 </div>
 
-<script src="../lern.js?v=24"></script>
+<script src="../lern.js?v=25"></script>
 <script>
 /* =====================================================================
    WHITEPAPER-TOUR – Lernwelt von Satsland
@@ -121,7 +121,7 @@ const SCN = [
   () => box(15, 40, 60, 80) + em(45, 92, "🙋") + tx(45, 134, "Anna", "sm") + box(245, 40, 60, 80) + em(275, 92, "🙋‍♂️") + tx(275, 134, "Ben", "sm") + em(160, 46, "🏦", 34) + `<path class="show" d="M140 18l40 34M180 18l-40 34" stroke="#ff5c73" stroke-width="5" stroke-linecap="round"/>` + coin(75, 92, "fly") + tx(160, 82, "direkt, ohne Bank", "sm"),
   () => `<g class="dim">${box(20, 25, 120, 95)}${em(80, 75, "🏦", 36)}${tx(80, 105, "Vertrauen?", "lb")}${em(122, 48, "❓", 18)}</g>` + arrow(148, 72, 175) + `<g class="show d1">${box(180, 25, 120, 95, "#173a2c")}${em(240, 75, "🔐", 36)}${tx(240, 105, "Beweis ✓", "lb")}</g>`,
   () => [0, 1, 2].map(i => box(12 + i * 106, 35, 84, 70) + em(54 + i * 106, 70, ["🙋", "🙋‍♂️", "🧑"][i]) + tx(54 + i * 106, 95, "Besitzer " + (i + 1), "sm")).join("") + [0, 1].map(i => `<g class="show d${i * 2 + 1}">${arrow(98 + i * 106, 70, 116 + i * 106, "#34d982")}${em(107 + i * 106, 28, "✍️", 22)}${tx(107 + i * 106, 128, "unterschreibt", "sm")}</g>`).join(""),
-  () => [0, 1, 2, 3].map(i => `<g class="show d${i}">${box(10 + i * 78, 45, 64, 50, "#ffc94d")}${tx(42 + i * 78, 68, "Block " + (i + 1), "lb", 'fill="#241500"')}${tx(42 + i * 78, 86, "⏱ 12:0" + i, "sm", 'fill="#6b4a00"')}${i ? arrow(i * 78 - 6, 70, 10 + i * 78, "#eef0ff") : ""}</g>`).join("") + tx(160, 125, "Jeder Block enthält den Hash des vorigen", "sm"),
+  () => [0, 1, 2, 3].map(i => `<g class="show d${i}">${box(10 + i * 78, 45, 64, 50, "#ffc94d")}${tx(42 + i * 78, 68, "Block " + (i + 1), "lb", 'fill="#241500"')}${tx(42 + i * 78, 86, "⏱ ~12:" + String(i * 10).padStart(2, "0"), "sm", 'fill="#6b4a00"')}${i ? arrow(i * 78 - 6, 70, 10 + i * 78, "#eef0ff") : ""}</g>`).join("") + tx(160, 125, "Jeder Block enthält den Hash des vorigen", "sm"),
   () => box(30, 20, 260, 100) + tx(160, 45, "Ziel: Hash beginnt mit 00", "sm") + `<text class="lb" id="powN" x="160" y="72" text-anchor="middle">Nonce: 0</text><text id="powH" x="160" y="100" text-anchor="middle" font-family="monospace" font-size="15" font-weight="800" fill="#ff5c73">…</text>`,
   () => { const R = ring(6, 160, 70, 52); return `<circle class="ripple" cx="${R[0][0]}" cy="${R[0][1]}" r="120" fill="none" stroke="#ffc94d" stroke-width="4"/>` + R.map(([x, y], i) => `<g class="${i ? "show d" + Math.min(5, i) : ""}"><circle cx="${x}" cy="${y}" r="15" fill="${i ? "#34d982" : "#ffc94d"}" stroke="#0d1230" stroke-width="3"/>${em(x, y + 6, "🖥", 14)}</g>`).join("") + tx(160, 75, "Block!", "lb") + tx(160, 136, "alle prüfen und bauen weiter", "sm"); },
   () => `<path d="M90 120l40-40 50 10 40 30z" fill="#9aa2b8" stroke="#0d1230" stroke-width="3"/>` + `<g class="swing">${em(105, 75, "⛏️", 44)}</g>` + [0, 1, 2].map(i => coin(170 + i * 30, 70, "up d" + i, 11)).join("") + `<g class="show d2">${tx(250, 40, "+3,125 BTC", "lb", 'fill="#ffc94d"')}${tx(250, 56, "plus Gebühren", "sm")}</g>`,

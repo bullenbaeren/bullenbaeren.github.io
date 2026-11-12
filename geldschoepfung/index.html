@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#0b0f2a">
 <link rel="icon" href="../icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-<link rel="stylesheet" href="../lern.css?v=24">
+<link rel="stylesheet" href="../lern.css?v=25">
 <style>
 /* Lernwelt "Geld-Maschine": nur seitenspezifische Teile, der Rest kommt aus lern.css */
 .idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
@@ -25,6 +25,8 @@
 .bal h3{margin:0 0 6px;font:900 14px var(--f-display)} .bal ul{list-style:none;margin:0;padding:0;font:14px/1.6 Georgia,serif} .bal li{display:flex;justify-content:space-between;gap:6px;animation:pop .3s}
 .bal li b{font-family:var(--f-num)} .bal .new{color:#1a7a44;font-weight:700}
 .m3{margin-top:14px} .m3 svg{width:100%;height:auto;display:block}
+.m3t{display:flex;gap:6px;margin-bottom:10px} .m3t button{flex:1;min-height:38px;border-radius:12px;border:2px solid #0d1230;background:#232a6a;color:#dfe3ff;font-weight:800;cursor:pointer}
+.m3t button[aria-pressed=true]{background:#ffc94d;color:#0d1230}
 .who3{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px} .who3 div{border:1px solid var(--line);border-radius:14px;padding:10px 12px;font-size:14px;line-height:1.45;color:var(--muted)} .who3 b{display:block;color:var(--ink);font-family:var(--f-display)}
 @media (max-width:620px){ .who3,.bal{grid-template-columns:1fr} }
 </style>
@@ -46,8 +48,8 @@
   </section>
 
   <section class="card" aria-labelledby="h2s">
-    <h2 id="h2s">So viel Euro gibt es <span class="mode demo">gerundet</span></h2>
-    <p class="muted" style="margin:0">Die Geldmenge M3 umfasst Bargeld, Kontoguthaben und kurzfristige Ersparnisse im Euroraum. Sie ist seit dem Start des Euro um ein Vielfaches gewachsen:</p>
+    <h2 id="h2s">So viel Geld gibt es <span class="mode demo">gerundet</span></h2>
+    <p class="muted" style="margin:0">Die Geldmenge umfasst Bargeld, Kontoguthaben und kurzfristige Ersparnisse. Sie ist seit 1999 um ein Vielfaches gewachsen, beim Euro und beim Dollar:</p>
     <div class="m3" id="m3"></div>
   </section>
 
@@ -72,11 +74,11 @@
   </section>
 
   <section class="card next" id="next" aria-label="Weiter"></section>
-  <details class="foot"><summary>Quellen</summary><p>Geldmenge M3 des Euroraums gerundet nach Daten der EZB (Januar 2026: rund 17,3 Billionen €, <a href="https://tradingeconomics.com/euro-area/money-supply-m3/news/513983">Trading Economics</a>; Monatsberichte der Bundesbank). Zur Geldschöpfung durch Kredite siehe z. B. Bank of England, „Money creation in the modern economy“ (2014). Die Bank-Bilanz ist ein vereinfachtes Beispiel.</p></details>
+  <details class="foot"><summary>Quellen</summary><p>Geldmenge M3 des Euroraums gerundet nach Daten der EZB (Januar 2026: rund 17,3 Billionen €, <a href="https://tradingeconomics.com/euro-area/money-supply-m3/news/513983">Trading Economics</a>; Monatsberichte der Bundesbank). Geldmenge M2 der USA gerundet nach Daten der Federal Reserve (<a href="https://fred.stlouisfed.org/series/M2SL">FRED, M2SL</a>). Zur Geldschöpfung durch Kredite siehe z. B. Bank of England, „Money creation in the modern economy“ (2014). Die Bank-Bilanz ist ein vereinfachtes Beispiel.</p></details>
   <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
 </div>
 
-<script src="../lern.js?v=24"></script>
+<script src="../lern.js?v=25"></script>
 <script>
 /* =====================================================================
    GELD-MASCHINE – Lernwelt von Satsland
@@ -94,14 +96,23 @@ $("loan").onclick = () => { loan = true; draw(); $("loan").disabled = true; $("r
 $("repay").onclick = () => { loan = false; draw(); $("repay").disabled = true; $("loan").disabled = false; const R = $("res"); R.className = "res ok";
   R.innerHTML = `<strong>Und weg ist es wieder.</strong>Zahlt Lena den Kredit zurück, verschwinden Forderung und Guthaben. Das Geld wird <b>gelöscht</b>. Weil aber ständig neue Kredite vergeben werden, wächst die Geldmenge insgesamt meist weiter. Die Zinsen behält die Bank als Einnahme.`; };
 draw();
-// Geldmenge M3 Euroraum, gerundet in Billionen €
-const D = [[1999, 4.5], [2004, 6.0], [2008, 9.3], [2012, 9.8], [2016, 11.2], [2020, 14.3], [2022, 16.0], [2026, 17.3]];
-const X = i => 30 + i/(D.length - 1)*440, Y = v => 150 - v/18*130;
-$("m3").innerHTML = `<svg viewBox="0 0 500 175" aria-label="Geldmenge M3 von 4,5 auf 17,3 Billionen Euro">
-  ${D.map(([y, v], i) => `<rect x="${X(i) - 16}" y="${Y(v)}" width="32" height="${150 - Y(v)}" rx="5" fill="#f7931a" stroke="#0d1230" stroke-width="2.5"><animate attributeName="height" from="0" to="${150 - Y(v)}" dur=".8s" begin="${i*.1}s" fill="freeze"/><animate attributeName="y" from="150" to="${Y(v)}" dur=".8s" begin="${i*.1}s" fill="freeze"/></rect>
-  <text x="${X(i)}" y="${Y(v) - 6}" font-size="12" font-weight="800" text-anchor="middle" fill="#fff" font-family="Arial">${v.toLocaleString("de-DE")}</text><text x="${X(i)}" y="168" font-size="11" text-anchor="middle" fill="#9aa2d6" font-family="Arial">${y}</text>`).join("")}
-  <text x="4" y="14" font-size="11" fill="#9aa2d6" font-family="Arial">Billionen €</text></svg>
-  <p class="note">Von etwa <b>4,5 Billionen €</b> (1999) auf etwa <b>17,3 Billionen €</b> (Januar 2026), also fast das <b>Vierfache</b>.</p>`;
+// Geldmenge: M3 Euroraum (Billionen €) und M2 USA (Billionen $), gerundet
+const D = [[1999, 4.5, 4.6], [2004, 6.0, 6.4], [2008, 9.3, 8.2], [2012, 9.8, 10.4], [2016, 11.2, 13.2], [2020, 14.3, 19.1], [2022, 16.0, 21.4], [2026, 17.3, 22.4]];
+const X = i => 34 + i/(D.length - 1)*436, Y = v => 150 - v/23.5*128, nf = v => v.toLocaleString("de-DE");
+const TXT = {e: `Von etwa <b>4,5 Billionen €</b> (1999) auf etwa <b>17,3 Billionen €</b> (Januar 2026), also fast das <b>Vierfache</b>.`,
+  d: `Von etwa <b>4,6 Billionen $</b> (1999) auf etwa <b>22,4 Billionen $</b> (Anfang 2026), also fast das <b>Fünffache</b>. Allein 2020 kamen rund 4 Billionen dazu.`,
+  b: `Beide wachsen und wachsen: Euro <b>fast ×4</b>, Dollar <b>fast ×5</b>. Bei Bitcoin steht die Höchstmenge fest: <b>21 Millionen</b>.`};
+function m3(mode){
+  const bar = (i, v, dx, w, col, k) => `<rect x="${X(i) + dx - w/2}" y="${Y(v)}" width="${w}" height="${150 - Y(v)}" rx="4" fill="${col}" stroke="#0d1230" stroke-width="2"><animate attributeName="height" from="0" to="${150 - Y(v)}" dur=".7s" begin="${i*.08}s" fill="freeze"/><animate attributeName="y" from="150" to="${Y(v)}" dur=".7s" begin="${i*.08}s" fill="freeze"/></rect>` + (mode === "b" ? "" : `<text x="${X(i)}" y="${Y(v) - 6}" font-size="12" font-weight="800" text-anchor="middle" fill="#fff" font-family="Arial">${nf(v)}</text>`);
+  const g = D.map(([y, e, d], i) => (mode === "e" ? bar(i, e, 0, 32, "#f7931a") : mode === "d" ? bar(i, d, 0, 32, "#34d982") : bar(i, e, -9, 17, "#f7931a") + bar(i, d, 9, 17, "#34d982"))
+    + `<text x="${X(i)}" y="168" font-size="11" text-anchor="middle" fill="#9aa2d6" font-family="Arial">${y}</text>`).join("");
+  const leg = mode === "b" ? `<rect x="300" y="4" width="12" height="12" rx="3" fill="#f7931a"/><text x="317" y="14" font-size="11" fill="#dfe3ff" font-family="Arial">Euro (M3)</text><rect x="390" y="4" width="12" height="12" rx="3" fill="#34d982"/><text x="407" y="14" font-size="11" fill="#dfe3ff" font-family="Arial">Dollar (M2)</text>` : "";
+  $("m3v").innerHTML = `<svg viewBox="0 0 500 175" aria-label="Geldmenge im Zeitverlauf"><text x="4" y="14" font-size="11" fill="#9aa2d6" font-family="Arial">${mode === "e" ? "Billionen €" : mode === "d" ? "Billionen $" : "Billionen (€ bzw. $)"}</text>${leg}${g}</svg><p class="note">${TXT[mode]}</p>`;
+  document.querySelectorAll("#m3 [data-m]").forEach(b => b.setAttribute("aria-pressed", b.dataset.m === mode));
+}
+$("m3").innerHTML = `<div class="m3t" role="group" aria-label="Währung wählen"><button type="button" data-m="e">€ Euro</button><button type="button" data-m="d">$ Dollar</button><button type="button" data-m="b">Beide</button></div><div id="m3v"></div>`;
+$("m3").onclick = e => { const b = e.target.closest("[data-m]"); if (b) m3(b.dataset.m); };
+m3("e");
 
 const QUIZ = [["Was passiert, wenn eine Bank einen Kredit vergibt?", ["Es entsteht neues Geld auf dem Konto des Kunden", "Die Bank nimmt Geld von anderen Kunden weg", "Die Zentralbank druckt Scheine"], 0, "Die Bank verlängert beide Seiten ihrer Bilanz. So entsteht der größte Teil unseres Geldes."], ["Was passiert mit dem Geld, wenn ein Kredit zurückgezahlt wird?", ["Es wird gelöscht", "Es geht an die Zentralbank", "Es bleibt für immer"], 0, "Forderung und Guthaben verschwinden wieder."], ["Wie entstehen neue Bitcoin?", ["Nur beim Mining, nach festem Plan", "Durch Kredite", "Durch Beschluss einer Zentralbank"], 0, "Die Menge ist im Code festgelegt."]];
 Lern.quiz($("quiz"), "geldschoepfung", QUIZ, "../"); Lern.visit("geldschoepfung"); Lern.renderNext("geldschoepfung", "../");

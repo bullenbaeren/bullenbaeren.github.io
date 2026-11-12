@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#0b0f2a">
 <link rel="icon" href="../icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-<link rel="stylesheet" href="../lern.css?v=24">
+<link rel="stylesheet" href="../lern.css?v=25">
 <style>
 /* Lernwelt "Wem gehört Bitcoin?": nur seitenspezifische Teile, der Rest kommt aus lern.css */
 .idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
@@ -32,6 +32,8 @@
 .vs button{padding:14px 8px;border-radius:14px;border:3px solid #0d1230;box-shadow:3px 3px 0 #0d1230;background:#232a62;color:var(--ink);font:800 15px var(--f-body);cursor:pointer}
 .vs button.ok{background:rgba(52,217,130,.25)} .vs button.no{background:rgba(255,92,115,.25)} .vs span{align-self:center;font:900 18px var(--f-display);color:var(--gold)}
 @media (max-width:620px){ .bars div{grid-template-columns:7em 1fr 4.5em} }
+.two2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px} .two2 > div{border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.03);padding:12px;font-size:14px;color:var(--muted);line-height:1.5} .two2 > div > b:first-child{display:block;font:900 15px var(--f-display);color:var(--ink);margin-bottom:4px}
+@media (max-width:620px){ .two2{grid-template-columns:1fr} }
 </style>
 </head>
 <body>
@@ -46,6 +48,10 @@
     <h2 id="h1s">1 · Die große Verteilung <span class="mode" id="mode">Verbinde …</span></h2>
     <div class="bars nogl" id="bars"></div>
     <p class="note">Alle Zahlen sind gerundete Schätzungen aus öffentlichen Daten und haben unterschiedliche Stichtage. Verlorene Coins kann niemand genau zählen. Auch Börsen verwahren Millionen Bitcoin für ihre Kunden, sie sind hier in „Alle anderen“ enthalten.</p>
+    <div class="two2">
+      <div><b>💀 Warum gehen Bitcoin verloren?</b>Wer seine Seed-Wörter verliert, kommt <b>nie wieder</b> an seine Bitcoin. Es gibt keine Bank und keinen Support, der sie zurückholt. Viele frühe Nutzer haben alte Festplatten weggeworfen, als ein Bitcoin nur ein paar Cent wert war. Die Coins stehen weiter in der Blockchain, nur kann sie niemand mehr bewegen. Alle anderen werden dadurch ein Stück knapper.</div>
+      <div><b>🌍 Und „alle anderen“?</b>Das ist der <b>größte Teil</b>: Millionen ganz normale Menschen auf der ganzen Welt. Bitcoin ist also <b>verteilt</b>. Und selbst wer sehr viele Coins hat, kann die <b>Regeln nicht ändern</b>. Darüber entscheiden die Nodes, also alle, die mitmachen.</div>
+    </div>
   </section>
 
   <section class="card" aria-labelledby="h2s">
@@ -56,6 +62,7 @@
 
   <section class="card" aria-labelledby="h3s">
     <h2 id="h3s">3 · Wenn jeder Mensch gleich viel hätte</h2>
+    <p class="muted" style="margin:0">Kleine Erinnerung: Ein Bitcoin lässt sich in <b>100 Millionen Sats</b> (Satoshis) teilen. Niemand muss einen ganzen kaufen.</p>
     <div class="kv" id="pkv"></div>
     <p class="note">Rund <b>8,2 Milliarden</b> Menschen teilen sich höchstens 21 Millionen Bitcoin. Pro Kopf ist das weniger als <b>0,003 BTC</b>. Wer heute ein paar hunderttausend Sats besitzt, hat also schon mehr als seinen „fairen Anteil“.</p>
   </section>
@@ -78,7 +85,7 @@
   <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
 </div>
 
-<script src="../lern.js?v=24"></script>
+<script src="../lern.js?v=25"></script>
 <script>
 /* =====================================================================
    WEM GEHÖRT BITCOIN? – Lernwelt von Satsland

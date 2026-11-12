@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#0b0f2a">
 <link rel="icon" href="../icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-<link rel="stylesheet" href="../lern.css?v=24">
+<link rel="stylesheet" href="../lern.css?v=25">
 <style>
 /* Lernwelt "Tausch-Insel": nur seitenspezifische Teile, der Rest kommt aus lern.css */
 .idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
@@ -43,7 +43,7 @@
 
   <section class="card" aria-labelledby="h1s">
     <h2 id="h1s">1 · Tauschen ohne Geld</h2>
-    <div class="idea">Du bist <b>Fischer</b> und hast Hunger auf <b>Brot</b>. Geld gibt es nicht, nur Tausch. Tippe die Person an, mit der du als Nächstes tauschen willst.</div>
+    <div class="idea" id="who"></div>
     <div class="isle" id="isle"></div>
     <p class="inv" id="inv"></p>
     <div class="res" id="res" hidden></div>
@@ -72,35 +72,44 @@
   <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
 </div>
 
-<script src="../lern.js?v=24"></script>
+<script src="../lern.js?v=25"></script>
 <script>
 /* =====================================================================
    TAUSCH-INSEL – Lernwelt von Satsland
    ===================================================================== */
 (() => {
 const $ = id => document.getElementById(id);
-// Insel: [Symbol, Name, hat, will]
-const P = [["🍞", "Bäckerin", "Brot", "Holz"], ["🪵", "Holzfäller", "Holz", "Schuhe"], ["👞", "Schuster", "Schuhe", "Fisch"], ["🧀", "Käser", "Käse", "Wein"]], IC = {Fisch: "🐟", Brot: "🍞", Holz: "🪵", Schuhe: "👞"};
-let have = "Fisch", steps = 0;
+// Insel: Jede Runde ein neues Rätsel (wer du bist, was du willst, wer was hat)
+const G = {Fisch: ["🐟", "Fischer"], Brot: ["🍞", "Bäckerin"], Holz: ["🪵", "Holzfäller"], Schuhe: ["👞", "Schuster"], Käse: ["🧀", "Käserin"], Wein: ["🍷", "Winzer"], Wolle: ["🧶", "Schäferin"]};
+const shuf = a => a.map(v => [Math.random(), v]).sort((x, y) => x[0] - y[0]).map(v => v[1]);
+let P, have, want, path, steps;
+function newRound(){
+  const g = shuf(Object.keys(G)); have = g[0]; want = g[3]; steps = 0; path = [g[0], g[1], g[2], g[3]];
+  // Kette: jemand hat g1 und will g0, jemand hat g2 und will g1, jemand hat g3 (dein Wunsch) und will g2; dazu eine falsche Fährte
+  P = shuf([[g[1], g[0]], [g[2], g[1]], [g[3], g[2]], [g[4], g[5]]]).map(([h, w]) => [G[h][0], G[h][1], h, w]);
+  $("who").innerHTML = `Du bist <b>${G[have][1]}</b> und hast <b>${G[have][0]} ${have}</b>. Du willst <b>${G[want][0]} ${want}</b>. Geld gibt es nicht, nur Tausch. Tippe die Person an, mit der du als Nächstes tauschen willst.`;
+  $("res").hidden = true; draw();
+}
 function draw(){
   $("isle").innerHTML = P.map(([e, n, h, w], i) => `<button class="pp" type="button" data-i="${i}"><span class="e">${e}</span><b>${n}</b><small>hat ${h}<br>will ${w}</small></button>`).join("");
-  $("inv").innerHTML = `Du hast: <b>${IC[have]} ${have}</b>${have === "Brot" ? " 🎉" : ""} · Tauschversuche: <b>${steps}</b>`;
+  $("inv").innerHTML = `Du hast: <b>${G[have][0]} ${have}</b>${have === want ? " 🎉" : ""} · Tauschversuche: <b>${steps}</b>`;
 }
 $("isle").onclick = e => {
-  const b = e.target.closest(".pp"); if (!b || have === "Brot") return;
+  const b = e.target.closest(".pp"); if (!b || have === want) return;
   const [, n, h, w] = P[+b.dataset.i]; steps++;
   if (w === have){ b.classList.add("hit"); have = h; } else { b.classList.remove("miss"); void b.offsetWidth; b.classList.add("miss"); }
   draw();
-  if (have === "Brot"){ const R = $("res"); R.hidden = false; R.className = "res ok";
-    R.innerHTML = `<strong>Endlich Brot! Nach ${steps} Versuchen.</strong>Du musstest Fisch gegen Schuhe, Schuhe gegen Holz und Holz gegen Brot tauschen. Genau dafür wurde <b>Geld</b> erfunden: Ein Gut, das <b>jeder</b> annimmt. Dann verkaufst du deinen Fisch einfach und kaufst Brot.`; }
+  if (have === want){ const R = $("res"); R.hidden = false; R.className = "res ok";
+    R.innerHTML = `<strong>Endlich ${want}! Nach ${steps} Versuchen.</strong>Du musstest ${path[0]} gegen ${path[1]}, ${path[1]} gegen ${path[2]} und ${path[2]} gegen ${path[3]} tauschen. Genau dafür wurde <b>Geld</b> erfunden: Ein Gut, das <b>jeder</b> annimmt. Dann verkaufst du einfach, was du hast, und kaufst, was du willst. <button class="btn" type="button" id="again" style="margin-top:10px">🎲 Neue Insel-Runde</button>`;
+    $("again").onclick = newRound; }
 };
-draw();
+newRound();
 // Aufgaben zuordnen
 const F = [["Tauschmittel", "Damit bezahlt man."], ["Wertspeicher", "Damit spart man für später."], ["Recheneinheit", "Damit vergleicht man Preise."]];
 const ST = [["Du bezahlst den Bäcker für ein Brot.", 0], ["Du legst Geld für den Urlaub im nächsten Jahr zurück.", 1], ["Auf dem Schild steht: Brot 3 €, Fisch 5 €.", 2], ["Der Schuster nimmt dein Geld, obwohl er keinen Fisch will.", 0], ["Dein Erspartes ist in 10 Jahren hoffentlich noch genauso viel wert.", 1], ["Du rechnest aus, ob ein Auto teurer ist als ein Fahrrad.", 2]];
 let sel = -1, done = 0;
 $("fn").innerHTML = F.map(([t, d], i) => `<div data-f="${i}"><b>${t}</b>${d}</div>`).join("");
-$("st").innerHTML = ST.map(([t], i) => `<button type="button" data-s="${i}">${t}</button>`).join("");
+$("st").innerHTML = ST.map(([t], i) => [Math.random(), t, i]).sort((x, y) => x[0] - y[0]).map(([, t, i]) => `<button type="button" data-s="${i}">${t}</button>`).join("");
 $("st").onclick = e => { const b = e.target.closest("button"); if (!b) return; sel = +b.dataset.s; [...$("st").children].forEach(x => x.classList.toggle("sel", x === b)); $("fn").querySelectorAll("div").forEach(d => d.classList.add("drop")); };
 $("fn").onclick = e => {
   const d = e.target.closest("div[data-f]"); if (!d || sel < 0) return;

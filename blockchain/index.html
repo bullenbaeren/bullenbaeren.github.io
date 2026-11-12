@@ -13,19 +13,22 @@
 <meta property="og:description" content="Fälsch einen Block und sieh, wie die Kette bricht.">
 <meta property="og:image" content="https://satsland.github.io/og.png">
 <meta property="og:url" content="https://satsland.github.io/blockchain/">
-<link rel="stylesheet" href="../lern.css?v=24">
+<link rel="stylesheet" href="../lern.css?v=25">
 <style>
 /* Lernwelt "Blockchain": nur seitenspezifische Teile, der Rest kommt aus lern.css */
 /* 1 · Echte Kette */
 .chain{display:flex;gap:0;overflow-x:auto;padding:6px 2px 10px;scrollbar-width:thin}
-.blk{flex:none;width:200px;background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;padding:10px 12px;font-size:13px}
+.blk{flex:none;width:200px;background:linear-gradient(160deg,#2a3184,#171d52);border:3px solid #0d1230;border-radius:16px;padding:0 12px 10px;font-size:13px;box-shadow:5px 5px 0 #0d1230;overflow:hidden;margin:4px 0 6px}
+.blk.new{border-color:#f7931a;box-shadow:5px 5px 0 #0d1230,0 0 18px rgba(247,147,26,.45);animation:pop .5s both}
+.bt{display:flex;align-items:center;gap:6px;white-space:nowrap;margin:0 -12px 8px;padding:8px 12px;background:linear-gradient(90deg,#f7931a,#ffb04a);color:#2a1400;border-bottom:3px solid #0d1230} .bt span{font:800 12px var(--f-body)} .bt b{font:900 16px var(--f-display)} .bt em{margin-left:auto;font:900 10px var(--f-body);font-style:normal;background:#0d1230;color:#ffc94d;padding:2px 6px;border-radius:6px}
+.fill{position:relative;height:16px;border-radius:8px;background:#0d1230;margin-top:8px;overflow:hidden} .fill i{position:absolute;inset:0 auto 0 0;background:repeating-linear-gradient(45deg,#34d982 0 6px,#2bb56c 6px 12px)} .fill span{position:relative;display:block;text-align:center;font:800 10px/16px var(--f-body);color:#fff;text-shadow:0 1px 2px #000}
 .blk h3{margin:0 0 4px;font:900 15px var(--f-display);color:var(--btc)}
 .blk .r{display:flex;justify-content:space-between;gap:8px;color:var(--muted)}
 .blk .r b{color:var(--ink);font-weight:700}
 .blk .h{margin-top:6px;font:600 11px var(--f-num);word-break:break-all;color:var(--muted)}
 .blk .h i{font-style:normal;color:var(--gold)}
 .blk .h u{text-decoration:none;color:var(--bull);font-weight:800}
-.link{flex:none;width:34px;display:flex;align-items:center;justify-content:center;color:var(--btc);font-size:20px}
+.link{flex:none;width:40px;display:flex;align-items:center;justify-content:center} .link svg{width:40px;height:24px}
 .hint{margin:6px 0 0;font-size:14px;color:var(--muted)}
 .hint b{color:var(--ink)}
 /* 2 · Manipulier-mich-Kette */
@@ -48,7 +51,8 @@
 .hash input{width:100%;font:600 16px var(--f-body);padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:#0b0f2a;color:var(--ink)}
 .hash .out{font:600 13px var(--f-num);word-break:break-all;background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:12px;padding:10px 12px;color:var(--gold)}
 @media (max-width:860px){ .toy{grid-template-columns:repeat(2,minmax(0,1fr))} }
-@media (max-width:560px){ .toy{grid-template-columns:1fr} .hash{grid-template-columns:1fr} .blk{width:170px} }
+@media (max-width:560px){ .toy{grid-template-columns:1fr} .hash{grid-template-columns:1fr} .blk{width:190px} .bt b{font-size:15px} }
+@keyframes pop{from{transform:scale(.85);opacity:0}to{transform:none;opacity:1}}
 </style>
 </head>
 <body>
@@ -74,14 +78,6 @@
     <p class="hint" id="toyHint">Alle Blöcke sind gültig.</p>
   </section>
 
-  <!-- 3 · Hash-Probierfeld -->
-  <section class="card" aria-labelledby="h3s">
-    <h2 id="h3s">Der digitale Fingerabdruck</h2>
-    <div class="hash">
-      <div><p class="muted" style="margin:0 0 8px">Tipp etwas ein. Schon ein Buchstabe mehr ergibt einen komplett anderen Hash (SHA-256, wie bei Bitcoin).</p><input id="hin" value="Satsland" aria-label="Text für den Hash"></div>
-      <div class="out" id="hout" aria-live="polite">–</div>
-    </div>
-  </section>
 
   <!-- 4 · Merksätze und Quiz -->
   <section class="card" aria-labelledby="h4s">
@@ -102,7 +98,7 @@
   <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
 </div>
 
-<script src="../lern.js?v=24"></script>
+<script src="../lern.js?v=25"></script>
 <script>
 /* =====================================================================
    BLOCKCHAIN – Lernwelt von Satsland
@@ -119,25 +115,28 @@ const sha256 = Lern.sha256;   // gemeinsamer SHA-256 aus lern.js
 const zeros = hx => { const m = hx.match(/^0*/)[0].length; return `<i>${hx.slice(0, m)}</i>${hx.slice(m)}`; };
 
 // ---------- 1 · Echte Kette ----------
+function chainHTML(bl, live){
+  return bl.map((b, i) => {
+    const ago = Math.max(0, Math.round((Date.now()/1000 - b.timestamp)/60)), last = i === bl.length - 1;
+    const prev = b.previousblockhash || "", tail = s => s.slice(-6), full = Math.min(100, Math.round((b.weight || 3.99e6)/4e6*100));
+    const prevHtml = i ? `${prev.slice(0, 6)}…<u>${tail(prev)}</u>` : `${prev.slice(0, 6)}…${tail(prev)}`;
+    const own = `${zeros(b.id.slice(0, 22))}…<u>${tail(b.id)}</u>`, pool = b.extras && b.extras.pool && b.extras.pool.name;
+    return (i ? `<div class="link" aria-hidden="true"><svg viewBox="0 0 40 24"><path d="M2 12h36" stroke="#34d982" stroke-width="3" stroke-dasharray="4 4"/><rect x="8" y="5" width="14" height="14" rx="7" fill="none" stroke="#f7931a" stroke-width="3"/><rect x="18" y="5" width="14" height="14" rx="7" fill="none" stroke="#ffc94d" stroke-width="3"/></svg></div>` : "")
+      + `<div class="blk ${last ? "new" : ""}"><div class="bt"><b>Block ${fmt(b.height)}</b>${last ? `<em>${live ? "NEU" : "DEMO"}</em>` : ""}</div>
+      <div class="r"><span>vor</span><b>${ago} Min</b></div><div class="r"><span>Zahlungen</span><b>${fmt(b.tx_count)}</b></div>${pool ? `<div class="r"><span>Miner</span><b>${pool}</b></div>` : ""}
+      <div class="fill" title="So voll ist der Block"><i style="width:${full}%"></i><span>${full} % voll</span></div>
+      <div class="h">Vorgänger: ${prevHtml}</div><div class="h">Hash: ${own}</div></div>`;
+  }).join("");
+}
 async function loadChain(){
-  try {
-    const bl = (await (await fetch("https://mempool.space/api/v1/blocks")).json()).slice(0, 6).reverse();
-    if (!bl.length) throw 0;
-    $("mode").className = "mode live"; $("mode").textContent = "Live";
-    $("chain").innerHTML = bl.map((b, i) => {
-      const ago = Math.max(0, Math.round((Date.now()/1000 - b.timestamp)/60));
-      const prev = b.previousblockhash || "", tail = s => s.slice(-6);
-      const prevHtml = i ? `${prev.slice(0, 6)}…<u>${tail(prev)}</u>` : `${prev.slice(0, 6)}…${tail(prev)}`;
-      const own = `${zeros(b.id.slice(0, 22))}…<u>${tail(b.id)}</u>`;
-      return (i ? `<div class="link" aria-hidden="true">⛓</div>` : "") + `<div class="blk"><h3>Block ${fmt(b.height)}</h3>
-        <div class="r"><span>vor</span><b>${ago} Min</b></div><div class="r"><span>Transaktionen</span><b>${fmt(b.tx_count)}</b></div>
-        <div class="h">Vorgänger: ${prevHtml}</div><div class="h">Hash: ${own}</div></div>`;
-    }).join("");
-    const c = $("chain"); c.scrollLeft = c.scrollWidth;
-  } catch(e){
-    $("mode").className = "mode demo"; $("mode").textContent = "Keine Live-Daten";
-    $("chain").innerHTML = `<p class="muted" style="margin:0">Die echten Blöcke sind gerade nicht erreichbar. Unten kannst du trotzdem eine eigene Kette ausprobieren.</p>`;
-  }
+  let bl, live = true;
+  try { bl = (await (await fetch("https://mempool.space/api/v1/blocks")).json()).slice(0, 6).reverse(); if (!bl.length) throw 0; }
+  catch(e){ live = false;   // Beispiel-Kette, damit man das Prinzip trotzdem sieht
+    const H = h => "00000000000000000002" + sha256("blk" + h).slice(0, 44); let t = Date.now()/1000 - 3600;
+    bl = Array.from({length: 6}, (_, i) => { const h = 925500 + i; t += 600; return {height: h, id: H(h), previousblockhash: H(h - 1), timestamp: t, tx_count: 2800 + (i * 937) % 1900, weight: 3.6e6 + (i * 71e3) % 4e5}; }); }
+  $("mode").className = "mode " + (live ? "live" : "demo"); $("mode").textContent = live ? "Live" : "Beispiel, Live nicht erreichbar";
+  $("chain").innerHTML = chainHTML(bl, live);
+  const c = $("chain"); c.scrollLeft = c.scrollWidth;
 }
 
 // ---------- 2 · Übungskette ----------
@@ -193,9 +192,6 @@ toy.forEach(b => {
   $("m" + b.nr).addEventListener("click", e => mine(b, e.target));
 });
 
-// ---------- 3 · Hash-Probierfeld ----------
-const showHash = () => { $("hout").innerHTML = zeros(sha256($("hin").value)); };
-$("hin").addEventListener("input", showHash);
 
 // ---------- Quiz ----------
 const QUIZ = [
@@ -205,7 +201,7 @@ const QUIZ = [
 ];
 Lern.quiz($("quiz"), "blockchain", QUIZ, "../"); Lern.visit("blockchain"); Lern.renderNext("blockchain", "../");
 
-renderToy(); showHash(); loadChain(); setInterval(loadChain, 60000);
+renderToy(); loadChain(); setInterval(loadChain, 60000);
 })();
 </script>
 </body>

@@ -13,7 +13,7 @@
 <meta property="og:description" content="So kommt deine Bitcoin-Überweisung in einen Block. Der echte Mempool als Bahnhof, live.">
 <meta property="og:image" content="https://satsland.github.io/og.png">
 <meta property="og:url" content="https://satsland.github.io/bahnhof/">
-<link rel="stylesheet" href="../lern.css?v=24">
+<link rel="stylesheet" href="../lern.css?v=25">
 <style>
 /* Lernwelt "Mempool-Bahnhof": gleiche Farben und Schriften wie das Spiel. Nur Systemschriften, keine Cookies, kein Tracking. */
 .card > .mode{margin-bottom:8px}
@@ -74,6 +74,7 @@ canvas{display:block;width:100%;height:clamp(300px,52vw,430px)}
 
   <section class="stage"><canvas id="cv" role="img" aria-label="Bahnhof: Fahrgäste (Transaktionen) warten auf Züge (Blöcke). Vorne die mit der höchsten Gebühr."></canvas></section>
   <p class="news" id="news" aria-live="polite">Der Bahnhof öffnet …</p>
+  <div class="row" style="margin:-4px 0 14px"><button class="btn" type="button" id="simB">⛏️ Zeig mir: Ein Block wird gefunden</button></div>
 
   <section class="card you" aria-label="Deine Übungs-Überweisung">
     <div>
@@ -114,7 +115,7 @@ canvas{display:block;width:100%;height:clamp(300px,52vw,430px)}
   </details>
 </div>
 
-<script src="../lern.js?v=24"></script>
+<script src="../lern.js?v=25"></script>
 <script>
 /* =====================================================================
    MEMPOOL-BAHNHOF – Lernwelt von Satsland
@@ -205,6 +206,12 @@ function newBlock(b){
   }
   renderYou();
 }
+
+// Vorschau: Block sofort "finden", damit man nicht 10 Minuten warten muss (ändert keine echten Daten)
+$("simB").onclick = () => { if (!mblocks || (anim && t - anim.t0 < 5.2)) return;
+  if (mode === "demo"){ demoIn = rnd(25, 60); newBlock({height: tip.h + 1, timestamp: Date.now()/1000, tx_count: mblocks[0].nTx, extras: {feeRange: mblocks[0].feeRange, pool: {name: "Demo-Miner"}}}); return; }
+  anim = {t0: t, h: tip.h + 1, pool: "", n: mblocks[0].nTx, sim: true};
+  say(`<b>So läuft es ab:</b> Ein Miner findet den nächsten Block. Die rund <b>${fmt(mblocks[0].nTx)}</b> Fahrgäste aus Abschnitt 1, also die mit der höchsten Gebühr, steigen ein, der Zug fährt ab und ihre Zahlungen sind <b>bestätigt</b>. Die anderen rücken auf. (Vorschau, der echte nächste Block kommt in ~10 Min.)`); };
 
 // ---------- Fahrgäste auf dem Bahnsteig ----------
 // Abschnitt 1 = nächster Block, 2 = übernächster, 3 = alle weiteren. 1 Figur steht für mehrere Transaktionen.

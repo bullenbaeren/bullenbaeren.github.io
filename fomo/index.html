@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#0b0f2a">
 <link rel="icon" href="../icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-<link rel="stylesheet" href="../lern.css?v=24">
+<link rel="stylesheet" href="../lern.css?v=25">
 <style>
 /* Lernwelt "FOMO & FUD": nur seitenspezifische Teile, der Rest kommt aus lern.css */
 .idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
@@ -17,7 +17,7 @@
 .mom .d{font-size:13px;color:var(--muted)} .mom .p{font:800 26px var(--f-num);margin:2px 0}
 .mom .h{font-size:17px;font-weight:700;line-height:1.35} .mom .f{display:inline-block;margin-top:8px;padding:3px 10px;border-radius:999px;font-size:13px;font-weight:700}
 .f.eu{background:rgba(46,204,113,.2);color:var(--bull)} .f.pa{background:rgba(231,76,60,.2);color:var(--bear)} .f.ne{background:rgba(255,255,255,.08);color:var(--muted)}
-.dec{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px} .dec .btn{padding:12px 4px}
+.dec{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px} .dec .btn{padding:8px 4px;height:auto;min-height:52px;line-height:1.2;border-radius:16px;font-size:14px}
 .port{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
 .port div{border:1px solid var(--line);border-radius:12px;padding:8px 10px;font-size:12px;color:var(--muted)} .port b{display:block;font:700 16px var(--f-num);color:var(--ink)}
 .prog{margin-top:10px;font-size:13px;color:var(--muted)}
@@ -62,7 +62,7 @@ svg.ch{width:100%;height:auto;display:block;margin-top:12px;max-height:220px}
   <p class="foot">Lernen und Unterhaltung, keine Anlageberatung. Vergangene Entwicklungen sind kein Hinweis auf die Zukunft.</p>
 </div>
 
-<script src="../lern.js?v=24"></script>
+<script src="../lern.js?v=25"></script>
 <script>
 /* =====================================================================
    GEFÜHLS-ACHTERBAHN – Lernwelt von Satsland
@@ -113,10 +113,13 @@ function end(){
 }
 // Kleine Kurve mit deinen Entscheidungen (log. Skala)
 function chart(){
-  const pts = [...M.map(m => m[1]), now], lo = Math.log(2000), hi = Math.log(Math.max(...pts)*1.1);
+  // Nur bis zum aktuellen Moment zeigen: Die Zukunft kennst du ja auch nicht. Am Ende die ganze Kurve.
+  const pts = [...M.map(m => m[1]), now], end = i >= pts.length - 1, vis = end ? pts : pts.slice(0, i + 1);
+  const lo = Math.log(Math.min(...vis) / 1.6), hi = Math.log(Math.max(...vis) * 1.6);
   const X = k => 15 + k/(pts.length - 1)*470, Y = v => 165 - (Math.log(v) - lo)/(hi - lo)*150;
-  let s = `<polyline points="${pts.map((v, k) => X(k).toFixed(0) + "," + Y(v).toFixed(0)).join(" ")}" fill="none" stroke="#f7931a" stroke-width="3"/>`;
-  pts.forEach((v, k) => { const a = acts[k], c = a === "buy" ? "#2ecc71" : a === "sell" ? "#e74c3c" : k === i ? "#fff" : "#3a4170";
+  let s = `<polyline points="${vis.map((v, k) => X(k).toFixed(0) + "," + Y(v).toFixed(0)).join(" ")}" fill="none" stroke="#f7931a" stroke-width="3"/>`;
+  if (!end) for (let k = i + 1; k < pts.length; k++) s += `<text x="${X(k).toFixed(0)}" y="95" fill="#3a4170" font-size="22" font-weight="900" text-anchor="middle">?</text>`;
+  vis.forEach((v, k) => { const a = acts[k], c = a === "buy" ? "#2ecc71" : a === "sell" ? "#e74c3c" : k === i ? "#fff" : "#3a4170";
     s += `<circle cx="${X(k).toFixed(0)}" cy="${Y(v).toFixed(0)}" r="${k === i ? 9 : 7}" fill="${c}" stroke="#0b0f2a" stroke-width="2"/>`; });
   $("ch").innerHTML = s;
 }

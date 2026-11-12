@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#0b0f2a">
 <link rel="icon" href="../icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-<link rel="stylesheet" href="../lern.css?v=24">
+<link rel="stylesheet" href="../lern.css?v=25">
 <style>
 /* Lernwelt "Mining": nur seitenspezifische Teile, der Rest kommt aus lern.css */
 .diff{display:flex;align-items:center;gap:12px;margin:8px 0 12px}
@@ -47,7 +47,7 @@
     <div class="diff"><input id="z" type="range" min="1" max="6" value="4" aria-label="Anzahl Nullen"><b id="zV" class="num">0000</b><button class="btn" id="go" type="button">⛏ Minen</button></div>
     <div class="kv">
       <div><small>Versuche</small><b class="num" id="tries">0</b></div>
-      <div><small>Dein Tempo</small><b class="num" id="rate">–</b></div>
+      <div><small>Dein Tempo: Versuche pro Sekunde</small><b class="num" id="rate">–</b></div>
       <div><small>Erwartet im Schnitt</small><b class="num" id="exp">–</b></div>
       <div><small>Gefunden nach</small><b class="num g" id="time">–</b></div>
     </div>
@@ -57,11 +57,12 @@
   <section class="card" aria-labelledby="h2s">
     <h2 id="h2s">Du gegen das echte Netz <span class="mode" id="mode">Verbinde …</span></h2>
     <div class="kv">
-      <div><small>Rechenleistung Bitcoin</small><b class="num" id="net">–</b></div>
+      <div><small>Alle Miner zusammen: Versuche pro Sekunde</small><b class="num" id="net">–</b></div>
       <div><small>So viele deiner Geräte</small><b class="num" id="dev">–</b></div>
       <div><small>Dein Gerät bräuchte für 1 Block</small><b class="num g" id="solo">–</b></div>
       <div><small>Nullen bei echten Blöcken</small><b class="num" id="realz">–</b></div>
     </div>
+    <p class="note">📏 <b>Was heißt „Tempo“?</b> Ein Versuch heißt <b>Hash</b>. Fachleute schreiben deshalb <b>H/s</b> (Hashes pro Sekunde). Das ganze Netz schafft rund <b>1.000 Trillionen</b> pro Sekunde. Eine Trillion ist eine 1 mit <b>18 Nullen</b>, Fachleute schreiben dafür <b>EH/s</b>. Das sind pro Sekunde mehr Versuche als 100-mal alle Sandkörner der Erde.</p>
     <p class="note">Deshalb rechnen Miner mit Spezialchips in großen Hallen und schließen sich zu <b>Pools</b> zusammen, die sich die Belohnung teilen.</p>
   </section>
 
@@ -109,7 +110,7 @@
   <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
 </div>
 
-<script src="../lern.js?v=24"></script>
+<script src="../lern.js?v=25"></script>
 <script>
 /* =====================================================================
    MINING-WERKSTATT – Lernwelt von Satsland
@@ -137,7 +138,7 @@ $("go").addEventListener("click", () => {
     while (performance.now() < end){ for (let k = 0; k < 200; k++){ h = Lern.sha256(data + n); if (h.startsWith(pre)) return found(h); n++; } }
     show(h); requestAnimationFrame(step);
   };
-  const show = h => { const s = (performance.now() - t0)/1000; myRate = n/s; $("tries").textContent = fmt(n); $("rate").textContent = big(myRate) + " H/s"; $("hx").innerHTML = "Versuch: " + zeros(h); };
+  const show = h => { const s = (performance.now() - t0)/1000; myRate = n/s; $("tries").textContent = fmt(n); $("rate").textContent = big(myRate); $("hx").innerHTML = "Versuch: " + zeros(h); };
   const found = h => { show(h); $("hx").className = "hx win"; $("hx").innerHTML = `Gefunden! Nonce ${fmt(n)}<br>${zeros(h)}`; $("time").textContent = dur((performance.now() - t0)/1000); busy = false; $("go").disabled = false; compare(); };
   step();
 });
@@ -146,7 +147,7 @@ $("go").addEventListener("click", () => {
 function compare(){
   if (!netHash) return;
   energy();
-  $("net").textContent = fmt(netHash/1e18) + " EH/s";
+  $("net").textContent = fmt(netHash/1e18) + " Trillionen";
   if (myRate > 0){ $("dev").textContent = big(netHash/myRate); if (diff) $("solo").textContent = dur(diff*4294967296/myRate); }
 }
 async function load(){

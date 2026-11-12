@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#0b0f2a">
 <link rel="icon" href="../icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-<link rel="stylesheet" href="../lern.css?v=24">
+<link rel="stylesheet" href="../lern.css?v=25">
 <style>
 /* Lernwelt "Kurs-Achterbahn": nur seitenspezifische Teile, der Rest kommt aus lern.css */
 .idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
@@ -24,9 +24,9 @@
 .ctl .row{display:flex;align-items:center;gap:10px;margin-top:8px} .ctl .row input{flex:1} .ctl .row b{font:900 18px var(--f-num);min-width:5ch;text-align:right}
 .chart{margin-top:12px;border-radius:14px;background:#0b0f2a;border:1px solid var(--line);overflow:hidden} .chart svg{width:100%;height:auto;display:block}
 
-.cyc{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-top:12px}
+.cyc{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-top:8px}
 .cyc button{padding:8px 4px;border-radius:12px;border:2px solid var(--line);background:rgba(255,255,255,.04);color:var(--ink);font:800 13px var(--f-body);cursor:pointer}
-.cyc button b{display:block;font:900 17px var(--f-num);color:var(--bear)} .cyc button[aria-pressed="true"]{border-color:var(--gold);background:rgba(247,147,26,.15)}
+.cyc button b{display:block;font:900 16px var(--f-num);color:var(--bear)} .cyc button.up b{color:var(--bull)} .lbl2{margin:14px 0 0;font-size:14px;color:var(--muted)} .cyc button[aria-pressed="true"]{border-color:var(--gold);background:rgba(247,147,26,.15)}
 .dec{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px} .dec button{font-size:17px;padding:14px}
 .big{font:900 34px var(--f-num);text-align:center;margin-top:10px;transition:color .3s} .big small{display:block;font:700 13px var(--f-body);color:var(--muted)}
 @media (max-width:620px){ .cyc{grid-template-columns:repeat(3,minmax(0,1fr))} }
@@ -41,21 +41,18 @@
   </div>
 
   <section class="card" aria-labelledby="h1s">
-    <h2 id="h1s">1 · 15 Jahre Achterbahn <span class="mode demo">gerundete Werte in $</span></h2>
+    <h2 id="h1s">1 · 15 Jahre Achterbahn: Crashs und Rallyes <span class="mode demo">gerundete Werte in $</span></h2>
     <div class="chart nogl" id="chart"></div>
-    <div class="seg" id="sc"><button class="btn" type="button" data-s="lin" aria-pressed="true">Normale Skala</button><button class="btn" type="button" data-s="log">Log-Skala</button></div>
-    <p class="note" id="scN"></p>
-  </section>
-
-  <section class="card" aria-labelledby="h2s">
-    <h2 id="h2s">2 · Die großen Crashs</h2>
+    <div class="seg" id="sc"><button class="btn ghost" type="button" data-s="lin" aria-pressed="true">Normale Skala</button><button class="btn ghost" type="button" data-s="log">Log-Skala</button></div>
+    <p class="lbl2">Tippe eine Phase an: <b style="color:var(--bear)">▼ Crash</b> oder <b style="color:var(--bull)">▲ Rallye</b> (×8 heißt: achtmal so viel)</p>
     <div class="cyc" id="cyc"></div>
     <div class="kv" id="ckv"></div>
     <p class="note" id="cN"></p>
+    <p class="note" id="scN"></p>
   </section>
 
   <section class="card" aria-labelledby="h3s">
-    <h2 id="h3s">3 · Simulator: Hältst du durch?</h2>
+    <h2 id="h3s">2 · Simulator: Hältst du durch?</h2>
     <p class="muted" style="margin:0">Du hast am Hoch von Dezember 2017 für <b>1.000 €</b> Bitcoin gekauft. Dann beginnt der Absturz …</p>
     <div class="big" id="sv">1.000 €<small>Wert deiner Bitcoin</small></div>
     <div class="row" style="display:flex;justify-content:center;margin-top:10px"><button class="btn" type="button" id="sGo">▶ Zeit laufen lassen</button></div>
@@ -81,7 +78,7 @@
   <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
 </div>
 
-<script src="../lern.js?v=24"></script>
+<script src="../lern.js?v=25"></script>
 <script>
 /* =====================================================================
    KURS-ACHTERBAHN – Lernwelt von Satsland
@@ -91,24 +88,30 @@ const $ = id => document.getElementById(id);
 // Gerundete Monatswerte in US-Dollar (Stützpunkte)
 const H = [["2011-01",0.3],["2011-06",30],["2011-11",2],["2012-08",12],["2013-04",200],["2013-07",80],["2013-12",1000],["2014-06",600],["2015-01",200],["2015-12",430],["2016-12",960],["2017-06",2500],["2017-12",19000],["2018-02",7000],["2018-12",3300],["2019-06",12000],["2019-12",7200],["2020-03",5000],["2020-12",29000],["2021-04",63000],["2021-07",31000],["2021-11",67000],["2022-06",19000],["2022-11",16000],["2023-06",30000],["2023-12",42000],["2024-03",71000],["2024-08",55000],["2024-12",100000],["2025-04",78000],["2025-10",124000],["2026-02",62000],["2026-11",74000]];
 const C = [["2011", 32, 2, -93, "Jun 2011 → Nov 2011", "rund 20 Monate", "2011-06", "2011-11"], ["2013", 1150, 160, -86, "Dez 2013 → Jan 2015", "gut 3 Jahre", "2013-12", "2015-01"], ["2017", 19700, 3150, -84, "Dez 2017 → Dez 2018", "rund 3 Jahre", "2017-12", "2018-12"], ["2021", 69000, 15500, -77, "Nov 2021 → Nov 2022", "rund 2 Jahre und 4 Monate", "2021-11", "2022-11"], ["2025", 126000, 60000, -52, "Okt 2025 → Feb 2026", "läuft noch", "2025-10", "2026-02"]];
+// Rallyes: vom Tief zum nächsten Hoch (gerundet)
+const U = [["2011–13", 2, 1150, "Nov 2011 → Dez 2013", "rund 2 Jahre", "2011-11", "2013-12"], ["2015–17", 160, 19700, "Jan 2015 → Dez 2017", "rund 3 Jahre", "2015-01", "2017-12"], ["2018–21", 3150, 69000, "Dez 2018 → Nov 2021", "rund 3 Jahre", "2018-12", "2021-11"], ["2022–25", 15500, 126000, "Nov 2022 → Okt 2025", "rund 3 Jahre", "2022-11", "2025-10"]];
+// Alles chronologisch: Crash, Rallye, Crash, …
+const P = []; C.forEach((c, i) => { P.push({up: 0, l: c[0], a: c[1], b: c[2], pct: c[3], per: c[4], dur: c[5], d0: c[6], d1: c[7], i}); if (U[i]) { const u = U[i]; P.push({up: 1, l: u[0], a: u[1], b: u[2], pct: Math.round((u[2] / u[1] - 1) * 100), per: u[3], dur: u[4], d0: u[5], d1: u[6]}); } });
+const pf = p => p.up ? "×" + Math.round(p.b / p.a).toLocaleString("de-DE") : p.pct + " %";
 const t = s => +s.slice(0, 4) + (+s.slice(5) - 1) / 12;
-let log = false, sel = 2;
+let log = false, sel = 4;
 function chart(){
   const W = 640, Hh = 320, T0 = 2011, T1 = 2027, x = d => 50 + (t(d) - T0) / (T1 - T0) * (W - 70);
   const y = v => log ? Hh - 36 - (Math.log10(v) + 1) / 6.3 * (Hh - 60) : Hh - 36 - v / 130000 * (Hh - 60);
-  const c = C[sel];
+  const c = P[sel], col = c.up ? "#34d982" : "#ff5c73";
   const pts = H.map(([d, v]) => x(d) + "," + y(v)).join(" ");
   const grid = (log ? [1, 100, 10000, 1000000 / 10] : [0, 50000, 100000]).map(v => `<line x1="50" x2="${W - 10}" y1="${y(v || 0.0001)}" y2="${y(v || 0.0001)}" stroke="#232a62"/><text x="44" y="${y(v || 0.0001) + 6}" fill="#8890b8" font-size="17" text-anchor="end">${v >= 1000 ? v / 1000 + "k" : v}</text>`).join("");
   const yrs = [2012, 2015, 2018, 2021, 2024, 2027].map(j => `<text x="${50 + (j - T0) / (T1 - T0) * (W - 70)}" y="${Hh - 8}" fill="#8890b8" font-size="17" text-anchor="middle">${j}</text>`).join("");
-  const band = `<rect x="${x(c[6])}" y="10" width="${x(c[7]) - x(c[6])}" height="${Hh - 46}" fill="rgba(255,92,115,.16)"/>`;
-  $("chart").innerHTML = `<svg viewBox="0 0 ${W} ${Hh}" role="img" aria-label="Bitcoin-Kurs seit 2011">${grid}${band}<polyline points="${pts}" fill="none" stroke="#ffc94d" stroke-width="4" stroke-linejoin="round"/>${yrs}<text x="${(x(c[6]) + x(c[7])) / 2}" y="34" fill="#ff5c73" font-size="22" font-weight="900" text-anchor="middle">${c[3]} %</text></svg>`;
-  $("scN").innerHTML = log ? "Auf der <b>Log-Skala</b> ist jeder Strich das Hundertfache. So sieht man: Auch die frühen Crashs waren gewaltig, und der Langzeit-Trend ging trotzdem nach oben." : "Auf der normalen Skala sehen frühe Crashs winzig aus, obwohl sie prozentual sogar <b>größer</b> waren. Schalte auf die Log-Skala um!";
+  const band = `<rect x="${x(c.d0)}" y="10" width="${x(c.d1) - x(c.d0)}" height="${Hh - 46}" fill="${c.up ? "rgba(52,217,130,.16)" : "rgba(255,92,115,.16)"}"/>`;
+  const lx = Math.max(90, Math.min(W - 70, (x(c.d0) + x(c.d1)) / 2));
+  $("chart").innerHTML = `<svg viewBox="0 0 ${W} ${Hh}" role="img" aria-label="Bitcoin-Kurs seit 2011">${grid}${band}<polyline points="${pts}" fill="none" stroke="#ffc94d" stroke-width="4" stroke-linejoin="round"/><circle cx="${x(c.d0)}" cy="${y(c.a)}" r="7" fill="${col}" stroke="#0d1230" stroke-width="3"/><circle cx="${x(c.d1)}" cy="${y(c.b)}" r="7" fill="${col}" stroke="#0d1230" stroke-width="3"/>${yrs}<text x="${lx}" y="34" fill="${col}" font-size="22" font-weight="900" text-anchor="middle">${pf(c)}</text></svg>`;
+  $("scN").innerHTML = log ? "Auf der <b>Log-Skala</b> ist jeder Strich das Hundertfache. So sieht man: Auch die frühen Crashs und Rallyes waren gewaltig, und der Langzeit-Trend ging trotzdem nach oben." : "Auf der normalen Skala sehen frühe Phasen winzig aus, obwohl sie prozentual sogar <b>größer</b> waren. Schalte auf die Log-Skala um!";
 }
 function cyc(){
-  $("cyc").innerHTML = C.map((c, i) => `<button type="button" data-i="${i}" aria-pressed="${i === sel}">${c[0]}<b>${c[3]} %</b></button>`).join("");
-  const c = C[sel];
-  $("ckv").innerHTML = `<div>Hoch → Tief<b style="font-size:15px">${c[1].toLocaleString("de-DE")} → ${c[2].toLocaleString("de-DE")} $</b></div><div>Zeitraum<b class="g" style="font-size:15px">${c[4]}</b></div><div>Bis zum neuen Rekord<b style="font-size:15px">${c[5]}</b></div>`;
-  $("cN").innerHTML = sel === 4 ? "Der aktuelle Crash: Vom Rekord von rund <b>126.000 $</b> im Oktober 2025 fiel Bitcoin bis Februar 2026 um <b>mehr als die Hälfte</b>. Anfang November 2026 lag er bei rund <b>74.000 $</b>. Wie es weitergeht, weiß niemand." : "Aus 1.000 € am Hoch wurden im Tief <b>" + Math.round(1000 * c[2] / c[1]).toLocaleString("de-DE") + " €</b>. Wer gehalten hat, war Jahre später trotzdem im Plus.";
+  $("cyc").innerHTML = P.map((c, i) => `<button type="button" class="${c.up ? "up" : ""}" data-i="${i}" aria-pressed="${i === sel}">${c.up ? "▲" : "▼"} ${c.l}<b>${pf(c)}</b></button>`).join("");
+  const c = P[sel];
+  $("ckv").innerHTML = `<div>${c.up ? "Tief → Hoch" : "Hoch → Tief"}<b style="font-size:15px">${c.a.toLocaleString("de-DE")} → ${c.b.toLocaleString("de-DE")} $</b></div><div>Zeitraum<b class="g" style="font-size:15px">${c.per}</b></div><div>${c.up ? "Dauer" : "Bis zum neuen Rekord"}<b style="font-size:15px">${c.dur}</b></div>`;
+  $("cN").innerHTML = c.up ? "Aus 1.000 € im Tief wurden am Hoch rund <b>" + Math.round(1000 * c.b / c.a).toLocaleString("de-DE") + " €</b>. Aber: Wer erst am Hoch kaufte, verlor danach oft den Großteil." : c.i === 4 ? "Der aktuelle Crash: Vom Rekord von rund <b>126.000 $</b> im Oktober 2025 fiel Bitcoin bis Februar 2026 um <b>mehr als die Hälfte</b>. Anfang November 2026 lag er bei rund <b>74.000 $</b>. Wie es weitergeht, weiß niemand." : "Aus 1.000 € am Hoch wurden im Tief <b>" + Math.round(1000 * c.b / c.a).toLocaleString("de-DE") + " €</b>. Wer gehalten hat, war Jahre später trotzdem im Plus.";
   chart();
 }
 $("cyc").onclick = e => { const b = e.target.closest("[data-i]"); if (b){ sel = +b.dataset.i; cyc(); } };

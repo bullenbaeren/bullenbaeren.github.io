@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#0b0f2a">
 <link rel="icon" href="../icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-<link rel="stylesheet" href="../lern.css?v=24">
+<link rel="stylesheet" href="../lern.css?v=25">
 <style>
 /* Lernwelt "Schlüssel": nur seitenspezifische Teile, der Rest kommt aus lern.css */
 .keys{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
@@ -50,6 +50,9 @@
 .how{margin-top:12px;font-size:14px;color:var(--muted)} .how summary{cursor:pointer;color:var(--gold);font-weight:700} .how p{margin:8px 0 0;line-height:1.55} .how b{color:var(--ink)}
 @media (max-width:620px){ .eq{grid-template-columns:1fr;gap:2px} .eq .op{justify-self:center;line-height:1} .sign{flex-direction:column} }
 .big{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.qz2{margin:16px 0 6px;font-weight:800} .zz{display:grid;gap:8px}
+.zz div{border-radius:12px;padding:8px 10px;background:rgba(255,255,255,.03);border:1px solid var(--line);font-size:13px;color:var(--muted)}
+.zz code{display:block;font:700 13px/1.35 var(--f-num);color:var(--ink);word-break:break-all;margin-top:2px} .zz .me{border-color:rgba(255,92,115,.6);background:rgba(255,92,115,.08)} .zz .me code{color:#ff9aa8}
 .big div{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;padding:10px 12px;font-size:14px;color:var(--muted)}
 .big b{display:block;font:600 19px var(--f-num);color:var(--ink)}
 @media (max-width:700px){ .keys,.big{grid-template-columns:1fr} }
@@ -116,6 +119,9 @@
       <div><b class="num" id="myRate">–</b>Schlüssel pro Sekunde schafft dein Gerät</div>
       <div><b class="num" id="myTime">–</b>bräuchtest du im Schnitt, um einen bestimmten zu treffen</div>
     </div>
+    <p class="qz2">Wie lang ist das? Zähl die Ziffern:</p>
+    <div class="zz" id="zz"></div>
+    <p class="note" id="zzN"></p>
   </section>
 
   <section class="card" aria-labelledby="h3s">
@@ -136,7 +142,7 @@
   <p class="foot">Lernen und Unterhaltung, keine Anlageberatung. Niemals echte Schlüssel oder Seed-Wörter auf Webseiten eingeben.</p>
 </div>
 
-<script src="../lern.js?v=24"></script>
+<script src="../lern.js?v=25"></script>
 <script>
 /* =====================================================================
    SCHLÜSSEL-LABOR – Lernwelt von Satsland
@@ -240,6 +246,9 @@ function rate(){
   $("myRate").textContent = Math.round(r).toLocaleString("de-DE");
   const e = Math.floor(Math.log10(yrs)), sup = String(e).split("").map(d => "⁰¹²³⁴⁵⁶⁷⁸⁹"[d]).join("");
   $("myTime").textContent = `≈ 10${sup} Jahre`;
+  const dg = n => "1" + "0".repeat(n), grp = t => t.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  $("zz").innerHTML = [["🧑 Ein Menschenleben", "80"], ["🏛️ Seit den Pyramiden", "4.500"], ["🦖 Seit den Dinosauriern", "66.000.000"], ["🌌 Alter des Universums", "13.800.000.000"]].map(([t, v]) => `<div>${t}<code>${v} Jahre</code></div>`).join("") + `<div class="me">🔑 Deinen Schlüssel erraten<code>${grp(dg(e))} Jahre</code></div>`;
+  $("zzN").innerHTML = `Das Universum ist ein <b>11-stelliges</b> Alter. Fürs Raten bräuchtest du eine Zahl mit <b>${e + 1} Stellen</b>. Selbst wenn jeder der 8 Milliarden Menschen eine Milliarde solcher Geräte hätte, blieben es noch rund 10${String(Math.max(0, e - 19)).split("").map(d => "⁰¹²³⁴⁵⁶⁷⁸⁹"[d]).join("")} Jahre.`;
 }
 
 newKey().catch(() => { $("res").textContent = "Dein Browser unterstützt Web Crypto hier nicht. Öffne die Seite über https."; });

@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#0b0f2a">
 <link rel="icon" href="../icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-<link rel="stylesheet" href="../lern.css?v=24">
+<link rel="stylesheet" href="../lern.css?v=25">
 <style>
 /* Lernwelt "Einigungs-Labor": nur seitenspezifische Teile, der Rest kommt aus lern.css */
 .idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
@@ -25,6 +25,9 @@
 .chart{margin-top:12px;border-radius:14px;background:#0b0f2a;border:1px solid var(--line);overflow:hidden} .chart svg{width:100%;height:auto;display:block}
 
 .camp svg{width:100%;height:auto;display:block}
+.dst{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px} .dst div{border-radius:14px;border:2px solid var(--line);background:rgba(255,255,255,.03);padding:8px;text-align:center;transition:all .3s}
+.dst span{font-size:24px;display:block} .dst small{display:block;font-size:12px;color:var(--muted)} .dst b{font:900 17px var(--f-num)} .dst .hi{border-color:var(--gold);background:rgba(255,201,77,.12);transform:translateY(-3px)} .dst .ok b{color:var(--bull)} .dst .bad b{color:#ff9aa8}
+#diff .pop{animation:pop .4s both;transform-box:fill-box;transform-origin:bottom} .camp .pop{animation:pop .4s both;transform-box:fill-box;transform-origin:center} .camp .msg{animation:dash 1s linear infinite} @keyframes dash{to{stroke-dashoffset:-24}} .stp{display:block;font:800 12px var(--f-body);color:var(--gold);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}
 .seg2{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
 .race{display:grid;gap:10px;margin-top:12px}
 .lane{display:flex;align-items:center;gap:6px;min-height:46px;padding:6px;border-radius:12px;background:rgba(255,255,255,.03);overflow-x:auto}
@@ -34,7 +37,7 @@
 @keyframes pop{from{transform:scale(.4)}to{transform:none}}
 .tbl{width:100%;border-collapse:collapse;margin-top:10px;font-size:13px} .tbl th,.tbl td{padding:6px;border-bottom:1px solid var(--line);text-align:right} .tbl th:first-child,.tbl td:first-child{text-align:left} .tbl th{color:var(--muted);font-size:12px}
 .pay{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
-.pay div{border:2px solid var(--line);border-radius:14px;padding:10px 12px;font-size:14px;line-height:1.5} .pay .h{border-color:rgba(52,217,130,.55)} .pay .a{border-color:rgba(255,92,115,.55)} .pay div > b:first-child{display:block;font-family:var(--f-display);font-size:16px}
+.pay div{border:2px solid var(--line);border-radius:14px;padding:10px 12px;font-size:14px;line-height:1.5} .pay .h{border-color:rgba(52,217,130,.55)} .pay .pa{border-color:rgba(255,92,115,.55)} .pay div > b:first-child{display:block;font-family:var(--f-display);font-size:16px}
 @media (max-width:620px){ .pay{grid-template-columns:1fr} }
 </style>
 </head>
@@ -74,7 +77,7 @@
     <h2 id="h4s">4 · Warum Ehrlichkeit sich lohnt</h2>
     <div class="pay">
       <div class="h"><b>⛏️ Ehrlich minen</b>Jeder gefundene Block bringt <b>3,125 BTC</b> plus Gebühren. Planbar, legal, und der Wert deiner Belohnung bleibt erhalten.</div>
-      <div class="a"><b>😈 Betrügen</b>Braucht über die Hälfte der weltweiten Rechenleistung: Milliarden für Geräte und Strom. Selbst wenn es klappt, bricht das Vertrauen und damit der <b>Wert</b> deiner eigenen Bitcoin und Geräte ein.</div>
+      <div class="pa"><b>😈 Betrügen</b>Braucht über die Hälfte der weltweiten Rechenleistung: Milliarden für Geräte und Strom. Selbst wenn es klappt, bricht das Vertrauen und damit der <b>Wert</b> deiner eigenen Bitcoin und Geräte ein.</div>
     </div>
     <p class="note">Das ist der eigentliche Trick von Bitcoin: Die Regeln sind so gebaut, dass <b>Ehrlichkeit mehr Gewinn bringt als Betrug</b>. Man muss den Minern nicht vertrauen, sie handeln aus Eigennutz richtig. Fachleute nennen das <b>Spieltheorie</b>.</p>
   </section>
@@ -83,6 +86,8 @@
     <h2 id="h5s">5 · Immer 10 Minuten: die Difficulty-Anpassung <span class="mode" id="mode">Verbinde …</span></h2>
     <p class="muted" style="margin:0">Kommen mehr Miner dazu, würden Blöcke schneller gefunden. Darum passt Bitcoin alle <b>2.016 Blöcke</b> (etwa 2 Wochen) die Schwierigkeit an. Probier es aus:</p>
     <div class="seg2"><button class="btn" type="button" data-h="2">🚀 Doppelt so viele Miner</button><button class="btn" type="button" data-h="0.5">📉 Hälfte der Miner fällt aus</button><button class="btn" type="button" data-h="0">↺ Neu</button></div>
+    <div class="dst" id="dst"></div>
+    <p class="note" id="dcap" aria-live="polite"></p>
     <div class="chart nogl" id="diff"></div>
     <div class="kv" id="dkv"></div>
   </section>
@@ -105,7 +110,7 @@
   <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
 </div>
 
-<script src="../lern.js?v=24"></script>
+<script src="../lern.js?v=25"></script>
 <script>
 /* =====================================================================
    EINIGUNGS-LABOR – Lernwelt von Satsland
@@ -114,19 +119,37 @@
 const $ = id => document.getElementById(id);
 // 1) Generäle
 const POS = [[200, 50], [345, 150], [290, 300], [110, 300], [55, 150]];
-let traitor = 0;
-function camp(mode){
-  const T = POS.map((p, i) => { let txt, col;
-    if (!mode){ txt = "?"; col = "#3a4070"; }
-    else if (mode === 1){ const atk = i === traitor ? "😈" : (i % 2 ? "Angriff" : "Rückzug"); txt = atk; col = i === traitor ? "#b26bff" : i % 2 ? "#ff5c73" : "#7cc4ff"; }
-    else { txt = i === traitor ? "😈 allein" : "Angriff"; col = i === traitor ? "#b26bff" : "#34d982"; }
-    return `<g><circle cx="${p[0]}" cy="${p[1]}" r="34" fill="${col}" stroke="#0d1230" stroke-width="4"/><text x="${p[0]}" y="${p[1] - 2}" font-size="26" text-anchor="middle">⛺</text><text x="${p[0]}" y="${p[1] + 54}" fill="#eef0ff" font-size="17" font-weight="800" text-anchor="middle">${txt}</text></g>`; }).join("");
-  const lines = mode === 1 ? POS.map((p, i) => i === traitor ? "" : `<line x1="${POS[traitor][0]}" y1="${POS[traitor][1]}" x2="${p[0]}" y2="${p[1]}" stroke="#b26bff" stroke-width="3" stroke-dasharray="6 6"/>`).join("") : "";
-  const chain = mode === 2 ? `<g transform="translate(150 150)">${[0, 1, 2].map(k => `<rect x="${k * 36}" y="0" width="30" height="24" rx="5" fill="#ffc94d" stroke="#0d1230" stroke-width="3"/>`).join("")}</g>` : `<text x="200" y="182" font-size="44" text-anchor="middle">🏰</text>`;
-  $("camp").innerHTML = `<svg viewBox="0 0 400 370" role="img" aria-label="Fünf Generäle um eine Stadt">${lines}${chain}${T}</svg>`;
-  $("gN").innerHTML = !mode ? "Wähle oben, wie die Generäle sich abstimmen." : mode === 1 ? "Der Verräter erzählt jedem etwas anderes. Jetzt glauben manche an Angriff, andere an Rückzug. <b>Chaos, die Stadt gewinnt.</b> Genau so könnte jemand bei digitalem Geld dem einen „gezahlt“ und dem anderen „nicht gezahlt“ erzählen." : "Mit Bitcoin zählt nicht, wer was <b>sagt</b>, sondern die gemeinsame Kette mit der <b>meisten Arbeit</b>. Fälschen würde enorm viel Rechenleistung kosten. Alle Ehrlichen sehen dieselbe Kette und greifen gemeinsam an. Der Verräter bleibt allein.";
+let traitor = 0, gT = 0;
+// Ablauf in Schritten, damit man sieht, WAS passiert
+function frame(mode, st){
+  const tr = POS[traitor], C = [200, 178];
+  const T = POS.map((p, i) => { let txt = "?", col = "#3a4070";
+    if (i === traitor && mode) { txt = mode === 2 && st >= 3 ? "😈 allein" : "😈"; col = "#b26bff"; }
+    else if (mode === 1 && st >= 2){ txt = i % 2 ? "Angriff" : "Rückzug"; col = i % 2 ? "#ff5c73" : "#7cc4ff"; }
+    else if (mode === 2){ txt = st >= 1 ? "Angriff" : "⛏️ rechnet"; col = st >= 1 ? "#34d982" : "#3a4070"; }
+    return `<g><circle cx="${p[0]}" cy="${p[1]}" r="34" fill="${col}" stroke="#0d1230" stroke-width="4" style="transition:fill .4s"/><text x="${p[0]}" y="${p[1] - 2}" font-size="26" text-anchor="middle">⛺</text><text x="${p[0]}" y="${p[1] + 54}" fill="#eef0ff" font-size="17" font-weight="800" text-anchor="middle">${txt}</text></g>`; }).join("");
+  let mid = "";
+  if (mode === 1){
+    mid = `<text x="${C[0]}" y="${C[1] + 16}" font-size="44" text-anchor="middle">🏰</text>`;
+    if (st >= 1) mid = POS.map((p, i) => { if (i === traitor) return ""; const mx = tr[0] + (p[0] - tr[0]) * .66, my = tr[1] + (p[1] - tr[1]) * .66, m = i % 2 ? "Angriff!" : "Rückzug!";
+      return `<line class="msg" x1="${tr[0]}" y1="${tr[1]}" x2="${p[0]}" y2="${p[1]}" stroke="#b26bff" stroke-width="3" stroke-dasharray="6 6"/><g class="pop"><rect x="${mx - 40}" y="${my - 14}" width="80" height="26" rx="13" fill="#fff" stroke="#0d1230" stroke-width="2.5"/><text x="${mx}" y="${my + 4}" font-size="14" font-weight="900" text-anchor="middle" fill="${i % 2 ? "#d0304a" : "#2a6fd0"}">${m}</text></g>`; }).join("") + mid;
+    if (st >= 3) mid += `<text x="${C[0]}" y="${C[1] - 34}" font-size="18" font-weight="900" text-anchor="middle" fill="#ff5c73">Stadt gewinnt!</text>`;
+  } else if (mode === 2){
+    const n = st === 0 ? 0 : st === 1 ? 1 : 3, w = 30, gap = 6, x0 = C[0] - (n * (w + gap) - gap) / 2;
+    if (st >= 1) mid += POS.map((p, i) => i === traitor ? "" : `<line x1="${C[0]}" y1="${C[1]}" x2="${p[0]}" y2="${p[1]}" stroke="#34d982" stroke-width="2.5" opacity=".55"/>`).join("");
+    mid += `<rect x="${C[0] - 70}" y="${C[1] - 24}" width="140" height="48" rx="12" fill="#0d1230" opacity=".85"/>` + Array.from({length: n}, (_, k) => `<g class="pop" style="animation-delay:${k * .25}s"><rect x="${x0 + k * (w + gap)}" y="${C[1] - 12}" width="${w}" height="24" rx="5" fill="#ffc94d" stroke="#0d1230" stroke-width="3"/><text x="${x0 + k * (w + gap) + w / 2}" y="${C[1] + 5}" font-size="13" text-anchor="middle">⛏️</text></g>`).join("") + (n ? "" : `<text x="${C[0]}" y="${C[1] + 5}" fill="#9aa2d6" font-size="13" text-anchor="middle">gemeinsame Kette</text>`);
+    if (st >= 2){ const fx = tr[0] + (C[0] - tr[0]) * .5 - 15, fy = tr[1] + (C[1] - tr[1]) * .5 - 12;
+      mid += `<g class="pop"><rect x="${fx}" y="${fy}" width="30" height="24" rx="5" fill="#ff5c73" stroke="#0d1230" stroke-width="3"/><rect x="${fx - 30}" y="${fy - 25}" width="90" height="20" rx="10" fill="#0d1230"/><text x="${fx + 15}" y="${fy - 10}" fill="#ff9aa8" font-size="13" font-weight="800" text-anchor="middle">Fälschung</text>${st >= 3 ? `<text x="${fx + 15}" y="${fy + 20}" font-size="22" font-weight="900" text-anchor="middle" fill="#fff">✗</text>` : ""}</g>`; }
+  }
+  return `<svg viewBox="0 0 400 390" role="img" aria-label="Fünf Generäle um eine Stadt">${mid}${T}</svg>`;
 }
-$("gA").onclick = () => { traitor = Bit0(); camp(1); }; $("gB").onclick = () => camp(2);
+const STEPS = {1: ["Ohne gemeinsames Kassenbuch: Die Generäle schicken sich Boten.", "Der Verräter 😈 schickt Boten los und erzählt <b>jedem etwas anderes</b>.", "Jetzt glauben manche an <b>Angriff</b>, andere an <b>Rückzug</b>. Keiner kann prüfen, wer lügt.", "<b>Chaos: Nur ein Teil greift an, die Stadt gewinnt.</b> Genau so könnte bei digitalem Geld jemand dem einen „bezahlt“ und dem anderen „nicht bezahlt“ erzählen."],
+  2: ["Neue Regel: Ein Befehl zählt nur, wenn er in einem <b>Block</b> steht. Jeder Block kostet viel <b>Rechenarbeit</b> ⛏️. Alle hängen an <b>eine gemeinsame Kette</b> an.", "Ein ehrlicher General findet den ersten Block: <b>„Angriff“</b>. Alle sehen dieselbe Kette.", "Der Verräter rechnet <b>allein</b> an einer Fälschung „Rückzug“. Die Ehrlichen rechnen <b>zusammen</b>, ihre Kette wächst viel schneller.", "Alle folgen der Kette mit der <b>meisten Arbeit</b>. Die Fälschung ist kürzer und wird ignoriert. <b>Gemeinsamer Angriff, Sieg!</b> Der Verräter bleibt allein."]};
+function camp(mode){ clearTimeout(gT); let st = 0;
+  const go = () => { $("camp").innerHTML = frame(mode, st); $("gN").innerHTML = mode ? `<small class="stp">Schritt ${st + 1} von 4</small>${STEPS[mode][st]}` : "Wähle oben, wie die Generäle sich abstimmen. Dann läuft es Schritt für Schritt ab.";
+    if (mode && st < 3){ st++; gT = setTimeout(go, 2600); } };
+  go(); }
+$("gA").onclick = () => { traitor = Bit0(); camp(1); }; $("gB").onclick = () => { traitor = Bit0(); camp(2); };
 const Bit0 = () => Math.floor(Math.random() * 5);
 camp(0);
 // 2) Rennen zweier Ketten
@@ -147,18 +170,29 @@ function atk(){ const q = +$("aq").value / 100; $("aqV").textContent = Math.roun
   $("atk").innerHTML = `<tr><th>Bestätigungen</th><th>Chance des Angreifers</th></tr>` + [1, 2, 3, 6, 10].map(z => `<tr><td>${z}${z === 6 ? " ⭐" : ""}</td><td>${f(prob(q, z))}</td></tr>`).join(""); }
 $("aq").oninput = atk; atk();
 // 5) Difficulty-Simulation: 6 Perioden à 2.016 Blöcke
-let hash = [1], diff = [1];
-function diffSim(){
-  const per = hash.map((h, i) => 10 * diff[i] / h), W = 640, H = 240, n = Math.max(6, per.length), x = i => 60 + i * (W - 90) / (n - 1), y = m => H - 40 - Math.min(m, 21) / 21 * (H - 80);
-  $("diff").innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Blockzeit pro Periode"><line x1="50" x2="${W - 20}" y1="${y(10)}" y2="${y(10)}" stroke="#34d982" stroke-dasharray="6 6"/><text x="${W - 22}" y="${y(10) - 8}" fill="#34d982" font-size="24" font-weight="800" text-anchor="end">Ziel: 10 Min.</text>
-    ${per.map((m, i) => `<rect x="${x(i) - 30}" y="${y(m)}" width="60" height="${H - 40 - y(m)}" rx="8" fill="${Math.abs(m - 10) < 0.5 ? "#34d982" : m < 10 ? "#ffc94d" : "#ff5c73"}"/><text x="${x(i)}" y="${y(m) - 8}" fill="#eef0ff" font-size="26" font-weight="900" text-anchor="middle">${m.toLocaleString("de-DE", {maximumFractionDigits: 1})}</text><text x="${x(i)}" y="${H - 14}" fill="#8890b8" font-size="20" text-anchor="middle">P${i + 1}</text>`).join("")}</svg>`;
+// Schritt für Schritt: Miner ändern sich → Blockzeit weicht ab → Anpassung → wieder 10 Min.
+let hM = 1, dM = 1, bars = [[10, "Start"]], dT = 0;
+const fx = v => (v >= 1 ? "×" + v.toLocaleString("de-DE", {maximumFractionDigits: 2}) : "÷" + (1 / v).toLocaleString("de-DE", {maximumFractionDigits: 2}));
+function diffSim(cap, hi){
+  const W = 640, H = 250, n = Math.max(6, bars.length), x = i => 60 + i * (W - 90) / (n - 1), y = m => H - 50 - Math.min(m, 21) / 21 * (H - 90), t = 10 * dM / hM;
+  $("dst").innerHTML = [["⛏️", "Miner", fx(hM), hi === 0], ["🧩", "Schwierigkeit", fx(dM), hi === 1], ["⏱️", "Ein Block dauert", t.toLocaleString("de-DE", {maximumFractionDigits: 1}) + " Min.", hi === 2, Math.abs(t - 10) < .5 ? "ok" : "bad"]]
+    .map(([e, l, v, h, c]) => `<div class="${h ? "hi" : ""} ${c || ""}"><span>${e}</span><small>${l}</small><b>${v}</b></div>`).join("");
+  $("dcap").innerHTML = cap || "Tippe oben, was passieren soll. Dann siehst du Schritt für Schritt, wie Bitcoin reagiert.";
+  $("diff").innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Blockzeit pro Periode"><line x1="30" x2="${W - 20}" y1="${y(10)}" y2="${y(10)}" stroke="#34d982" stroke-dasharray="6 6"/><text x="${W - 22}" y="${y(10) - 8}" fill="#34d982" font-size="22" font-weight="800" text-anchor="end">Ziel: 10 Min.</text>
+    ${bars.map(([m, l], i) => `<g class="pop"><rect x="${x(i) - 30}" y="${y(m)}" width="60" height="${H - 50 - y(m)}" rx="8" fill="${Math.abs(m - 10) < 0.5 ? "#34d982" : m < 10 ? "#ffc94d" : "#ff5c73"}"/><text x="${x(i)}" y="${y(m) - 8}" fill="#eef0ff" font-size="24" font-weight="900" text-anchor="middle">${m.toLocaleString("de-DE", {maximumFractionDigits: 1})}</text></g><text x="${x(i)}" y="${H - 22}" fill="#aab2d8" font-size="17" font-weight="700" text-anchor="middle">${l}</text><text x="${x(i)}" y="${H - 3}" fill="#6a72a8" font-size="15" text-anchor="middle">2 Wochen</text>`).join("")}</svg>`;
 }
-document.querySelectorAll("[data-h]").forEach(b => b.onclick = () => { const f = +b.dataset.h;
-  if (!f){ hash = [1]; diff = [1]; } else { if (hash.length >= 6){ hash = hash.slice(-1); diff = diff.slice(-1); }
-    // Anpassung nach jeder Periode: neue Schwierigkeit = alte × (10 Min ÷ tatsächliche Blockzeit), max. Faktor 4
-    const i = hash.length - 1, nh = hash[i] * f; const adj = Math.min(4, Math.max(.25, hash[i] / diff[i])); hash.push(nh); diff.push(diff[i] * adj);
-    const j = hash.length - 1, adj2 = Math.min(4, Math.max(.25, hash[j] / diff[j])); hash.push(nh); diff.push(diff[j] * adj2); }
-  diffSim(); });
+document.querySelectorAll("[data-h]").forEach(b => b.onclick = () => { const f = +b.dataset.h; clearTimeout(dT);
+  if (!f){ hM = dM = 1; bars = [[10, "Start"]]; diffSim(); return; }
+  if (bars.length >= 6) bars = bars.slice(-2);
+  document.querySelectorAll("[data-h]").forEach(x => x.disabled = true);
+  hM *= f; const t = 10 * dM / hM; bars.push([t, f > 1 ? "mehr Miner" : "Miner weg"]);
+  diffSim(f > 1 ? `<small class="stp">Schritt 1 von 3</small>Mehr Miner = mehr Versuche pro Sekunde. Blöcke kommen jetzt alle <b>${t.toLocaleString("de-DE")} Minuten</b>. Zu schnell!` : `<small class="stp">Schritt 1 von 3</small>Weniger Miner = weniger Versuche. Blöcke dauern jetzt <b>${t.toLocaleString("de-DE")} Minuten</b>. Zu langsam!`, 2);
+  dT = setTimeout(() => { const adj = Math.min(4, Math.max(.25, hM / dM)); dM *= adj;
+    diffSim(`<small class="stp">Schritt 2 von 3</small>Nach 2.016 Blöcken schaut <b>jede Node</b> auf die Uhr und passt das Rätsel an: <b>${fx(adj)}</b> so schwer. Niemand muss das entscheiden, es ist eine feste Regel.`, 1);
+    dT = setTimeout(() => { bars.push([10 * dM / hM, "angepasst"]);
+      diffSim(`<small class="stp">Schritt 3 von 3</small>Wieder <b>10 Minuten</b> pro Block. Egal wie viele Miner kommen oder gehen: Bitcoin hält seinen Takt.`, 2);
+      document.querySelectorAll("[data-h]").forEach(x => x.disabled = false); }, 2600); }, 2600);
+});
 diffSim();
 async function live(){ let d = null; try { d = await (await fetch("https://mempool.space/api/v1/difficulty-adjustment")).json(); } catch(e){}
   $("mode").className = "mode " + (d ? "live" : "demo"); $("mode").textContent = d ? "Live" : "Live nicht erreichbar";

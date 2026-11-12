@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#0b0f2a">
 <link rel="icon" href="../icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-<link rel="stylesheet" href="../lern.css?v=24">
+<link rel="stylesheet" href="../lern.css?v=25">
 <style>
 /* Lernwelt "Erster Kauf": nur seitenspezifische Teile, der Rest kommt aus lern.css */
 .idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
@@ -69,7 +69,7 @@
 
   <section class="card" aria-labelledby="h3s">
     <h2 id="h3s">3 · Bring die Schritte in die richtige Reihenfolge</h2>
-    <p class="muted" style="margin:0">Tipp die Schritte so an, wie du sie machen würdest.</p>
+    <p class="muted" style="margin:0">Tipp die Schritte so an, wie du sie machen würdest. Manchmal sind <b>mehrere Reihenfolgen</b> richtig.</p>
     <div class="order" id="order"></div>
     <div id="oRes"></div>
   </section>
@@ -92,7 +92,7 @@
   <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
 </div>
 
-<script src="../lern.js?v=24"></script>
+<script src="../lern.js?v=25"></script>
 <script>
 /* =====================================================================
    ERSTER KAUF – Lernwelt von Satsland
@@ -113,12 +113,16 @@ $("eur").oninput = fees; fees(); price();
 // Reihenfolge-Spiel
 const STEPS = ["Lizenzierten Anbieter auswählen", "Konto eröffnen und Ausweis prüfen lassen", "Euro überweisen", "Bitcoin kaufen", "Eigene Wallet einrichten und Seed auf Papier sichern", "Kleine Test-Auszahlung an deine Adresse", "Rest auszahlen, Adresse vorher genau prüfen"];
 let next = 0, err = 0;
-function order(){ next = 0; err = 0; $("oRes").innerHTML = "";
+// Was muss vorher erledigt sein? Mehrere Reihenfolgen sind richtig (z. B. Wallet schon vor dem Kauf einrichten)
+const NEED = [[], [0], [1], [2], [], [3, 4], [5]];
+const WHY = ["", "Erst brauchst du einen Anbieter, bei dem du ein Konto eröffnest.", "Überweisen geht erst, wenn dein Konto eröffnet ist.", "Kaufen geht erst, wenn Euro auf dem Konto sind.", "", "Für die Test-Auszahlung brauchst du gekaufte Bitcoin <b>und</b> eine eigene Wallet.", "Erst testen, dann den Rest auszahlen!"];
+let done = new Set();
+function order(){ next = 0; err = 0; done = new Set(); $("oRes").innerHTML = "";
   $("order").innerHTML = STEPS.map((t, i) => [Math.random(), i, t]).sort((a, b) => a[0] - b[0]).map(([, i, t]) => `<button type="button" data-i="${i}">${t}</button>`).join(""); }
-$("order").onclick = e => { const b = e.target.closest("button[data-i]"); if (!b || b.classList.contains("ok")) return;
-  if (+b.dataset.i === next){ b.classList.add("ok"); b.innerHTML = `<i>${next + 1}</i>` + b.textContent; b.style.order = next - 10; next++;
-    if (next === STEPS.length){ $("oRes").innerHTML = `<div class="res ${err ? "warn" : "ok"}"><strong>${err ? `Geschafft, mit ${err} Fehlversuch${err > 1 ? "en" : ""}` : "Perfekt, alles richtig!"}</strong>Die Wallet kannst du übrigens auch schon vor dem Kauf einrichten. Wichtig ist nur: <b>Test-Auszahlung vor der großen Auszahlung.</b> <button class="btn" type="button" id="oAgain" style="margin-top:8px">↺ Nochmal</button></div>`; $("oAgain").onclick = order; Lern.confetti && Lern.confetti(); } }
-  else { err++; b.classList.remove("no"); void b.offsetWidth; b.classList.add("no"); } };
+$("order").onclick = e => { const b = e.target.closest("button[data-i]"); if (!b || b.classList.contains("ok")) return; const i = +b.dataset.i;
+  if (NEED[i].every(k => done.has(k))){ done.add(i); b.classList.remove("no"); b.classList.add("ok"); b.innerHTML = `<i>${next + 1}</i>` + b.textContent; b.style.order = next - 10; next++; $("oRes").innerHTML = "";
+    if (next === STEPS.length){ $("oRes").innerHTML = `<div class="res ${err ? "warn" : "ok"}"><strong>${err ? `Geschafft, mit ${err} Fehlversuch${err > 1 ? "en" : ""}` : "Perfekt, alles richtig!"}</strong>${done && [...done].indexOf(4) < [...done].indexOf(3) ? "Gut: Du hast die Wallet schon vor dem Kauf eingerichtet. Das geht genauso." : "Die Wallet kannst du übrigens auch schon vor dem Kauf einrichten, beide Wege sind richtig."} Wichtig ist nur: <b>Test-Auszahlung vor der großen Auszahlung.</b> <button class="btn" type="button" id="oAgain" style="margin-top:8px">↺ Nochmal</button></div>`; $("oAgain").onclick = order; Lern.confetti && Lern.confetti(); } }
+  else { err++; b.classList.remove("no"); void b.offsetWidth; b.classList.add("no"); $("oRes").innerHTML = `<p class="note">✋ ${WHY[i]}</p>`; } };
 order();
 
 const QUIZ = [["Was ist ein Spread?", ["Eine Wallet-Art", "Der Aufschlag auf den echten Kurs, den man beim Kauf zahlt", "Ein Bitcoin-Upgrade", "Die Zinsen der Bank"], 1, "Beim Spread kaufst du etwas teurer als der echte Marktpreis. Diese Kosten sieht man oft nicht direkt."], ["Wem gehören Bitcoin, die auf einer Plattform liegen?", ["Immer dir", "Erstmal der Plattform, du hast nur ein Versprechen", "Dem Staat", "Niemandem"], 1, "Auf der Plattform hält der Anbieter die Schlüssel. Erst nach der Auszahlung in deine Wallet gehören sie wirklich dir."], ["Was machst du vor der ersten großen Auszahlung?", ["Nichts", "Eine kleine Test-Auszahlung", "Den Seed fotografieren", "Die Adresse per Hand abtippen"], 1, "Eine kleine Test-Auszahlung zeigt, dass Adresse und Wallet funktionieren. Erst dann den Rest schicken."]];

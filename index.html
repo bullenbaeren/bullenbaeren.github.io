@@ -14,7 +14,7 @@
 <meta property="og:description" content="Bitcoin spielerisch verstehen, mit echten Live-Daten.">
 <meta property="og:image" content="https://satsland.github.io/og.png">
 <meta property="og:url" content="https://satsland.github.io/">
-<link rel="stylesheet" href="lern.css?v=24">
+<link rel="stylesheet" href="lern.css?v=25">
 <style>
 /* Übersicht der Lernwelten: gleiche Farben und Schriften wie das Spiel. */
 .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
@@ -114,6 +114,12 @@ details.fold > summary .sm{font-size:13px;white-space:nowrap}
 details.fold > summary::after{content:"";flex:none;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.06) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6' fill='none' stroke='%23ffc94d' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/18px no-repeat;transition:transform .25s}
 details.fold[open] > summary::after{transform:rotate(180deg)}
 details.fold[open] > summary{margin-bottom:12px}
+.intro{position:fixed;inset:0;z-index:90;background:rgba(5,7,25,.82);backdrop-filter:blur(4px);display:grid;place-items:center;padding:16px;animation:fin .3s both}
+.ibox{position:relative;width:min(420px,100%);border-radius:24px;border:3px solid #0d1230;background:linear-gradient(#232a6a,#141a48);box-shadow:6px 6px 0 #0d1230;padding:26px 20px 20px;text-align:center;animation:fin .35s both}
+.ibox h2{margin:12px 0 6px;font:900 24px var(--f-display)} .ibox p{margin:0 0 16px;font-size:16px;line-height:1.5;color:var(--muted)} .ibox p b{color:var(--ink)}
+.ipic{display:grid;place-items:center;height:110px} .ipic img{border-radius:22%;filter:drop-shadow(0 8px 18px #0008)} .ipic .ib{width:96px;height:96px;display:block} .ipic .ib svg{width:100%;height:100%}
+.idots{display:flex;justify-content:center;gap:6px;margin-bottom:14px} .idots i{width:8px;height:8px;border-radius:50%;background:#3a4280} .idots i.on{background:var(--gold);width:22px;border-radius:4px}
+.ibox .ign{width:100%} .isk{position:absolute;right:12px;top:10px;background:none;border:0;color:var(--muted);font:700 13px var(--f-body);cursor:pointer;padding:6px}
 </style>
 </head>
 <body>
@@ -135,14 +141,13 @@ details.fold[open] > summary{margin-bottom:12px}
         <a class="w" href="geldschoepfung/"><span class="tag live">Neu</span><span class="ic" aria-hidden="true"></span><b>Wie Geld entsteht</b><span>Spiel Bank: Warum jeder Kredit neues Geld erschafft.</span><span class="go">Geld-Maschine →</span></a>
         <a class="w" href="cantillon/"><span class="tag live">Neu</span><span class="ic" aria-hidden="true"></span><b>Cantillon-Effekt</b><span>Wer neues Geld zuerst bekommt, gewinnt. Wer zuletzt, verliert.</span><span class="go">Geldfluss →</span></a>
         <a class="w" href="inflation/"><span class="tag live">Live</span><span class="ic" aria-hidden="true">💶</span><b>Geld &amp; Inflation</b><span>Warum verliert der Euro an Wert, und was ist bei Bitcoin anders?</span><span class="go">Kaufkraft-Supermarkt →</span></a>
-        <a class="w" href="digitalgeld/"><span class="tag live">Neu</span><span class="ic" aria-hidden="true"></span><b>Digitaler Euro & Stablecoins</b><span>Was unterscheidet digitalen Euro, Stablecoin und Bitcoin? Mit Zeitplan.</span><span class="go">Digitalgeld-Vergleich →</span></a>
       </div>
     </details>
     <details class="kap fold" data-k="2"><summary><span class="cn">2</span><span class="ct"><b>🌱 Warum Bitcoin?</b><small>Das Kopier-Problem, gutes Geld, Knappheit und wie alles anfing.</small></span><span class="cp" data-cnt="2"><i><u></u></i><em></em></span></summary>
       <div class="grid big">
         <a class="w" href="start/"><span class="tag live">Neu</span><span class="ic" aria-hidden="true"></span><b>Bitcoin in 5 Minuten</b><span>Das große Bild in 6 Comic-Szenen. Der perfekte Einstieg!</span><span class="go">Bitcoin in 5 Minuten →</span></a>
         <a class="w" href="doppelt/"><span class="tag live">Neu</span><span class="ic" aria-hidden="true"></span><b>Das Kopier-Problem</b><span>Warum digitales Geld so schwer ist und wie Bitcoin es ohne Bank löst.</span><span class="go">Kopier-Problem →</span></a>
-        <a class="w" href="eigenschaften/"><span class="tag live">Start</span><span class="ic" aria-hidden="true">⚔️</span><b>Was macht Bitcoin aus?</b><span>Euro, Gold und Bitcoin im Duell um 10 Eigenschaften von gutem Geld.</span><span class="go">Geld-Duell →</span></a>
+        <a class="w" href="eigenschaften/"><span class="tag live">Start</span><span class="ic" aria-hidden="true">⚔️</span><b>Was macht Bitcoin aus?</b><span>Euro, Gold und Bitcoin im Duell um 10 Eigenschaften. Dazu: digitaler Euro und Stablecoins.</span><span class="go">Geld-Duell →</span></a>
         <a class="w" href="wert/"><span class="tag live">Neu</span><span class="ic" aria-hidden="true"></span><b>Warum hat Bitcoin Wert?</b><span>Angebot, Nachfrage und warum der Kurs so schwankt.</span><span class="go">Wert-Waage →</span></a>
         <a class="w" href="halving/"><span class="tag live">Live</span><span class="ic" aria-hidden="true">⏳</span><b>Knappheit &amp; Halving</b><span>Nur 21 Millionen, Halving-Countdown und wer die Miner danach bezahlt.</span><span class="go">Halving-Uhr →</span></a>
         <a class="w" href="knappheit/"><span class="tag live">Neu</span><span class="ic" aria-hidden="true"></span><b>Knappheits-Modelle</b><span>Stock-to-Flow: Wie knapp ist Bitcoin im Vergleich zu Gold?</span><span class="go">Knappheits-Messer →</span></a>
@@ -190,20 +195,20 @@ details.fold[open] > summary{margin-bottom:12px}
     </details>
   </section>
   <details class="card fold" data-k="album"><summary><h2 id="alb">🃏 Boss-Karten</h2><span class="muted sm" id="albN"></span></summary>
-    <p class="muted" style="margin:0 0 10px">Schaffe alle Welten eines Kapitels und besiege seinen Boss. Ohne einen Fehler gibt es die Glanzkarte. ✨</p>
+    <p class="muted" style="margin:0 0 10px">Schaffe alle Level einer Welt und besiege ihren Boss. Ohne einen Fehler gibt es die Glanzkarte. ✨</p>
     <div class="tcards" id="album"></div>
   </details>
   <details class="card fold" data-k="titles"><summary><h2>🏅 Deine Titel</h2><span class="muted sm" id="ttlN"></span></summary><div class="titles" id="ttl"></div></details>
   <details class="card fold sync" data-k="sync"><summary><h2>📲 Fortschritt mitnehmen</h2><span class="muted sm">Handy ↔ PC</span></summary>
-    <p class="muted" style="margin:0 0 8px;font-size:14px">Dein Fortschritt liegt nur in diesem Browser. Mit diesem Code nimmst du Level, Bosse, Serie und Titel auf ein anderes Gerät mit. Ohne Konto, nichts wird hochgeladen.</p>
+    <p class="muted" style="margin:0 0 8px;font-size:14px">Dein Fortschritt liegt nur in diesem Browser. Mit diesem Code nimmst du Fortschritt, Bosse, Serie und Titel auf ein anderes Gerät mit. Ohne Konto, nichts wird hochgeladen.</p>
     <div class="acts"><button class="btn" id="syE" type="button">📤 Code erzeugen</button><button class="btn ghost" id="syS" type="button" hidden>🔗 Als Link teilen</button></div>
     <textarea id="syT" placeholder="Hier erscheint dein Code. Auf dem anderen Gerät hier einfügen und „Übernehmen“ tippen." aria-label="Fortschritts-Code"></textarea>
     <div class="acts"><button class="btn ghost" id="syI" type="button">📥 Code übernehmen</button></div>
     <p class="msg2" id="syM"></p>
   </details>
-  <p class="foot">Unterhaltung und Lernen, keine Anlageberatung. Keine Cookies, kein Tracking. <a href="#" id="guideOn" style="color:inherit">Satoshi zurückholen</a></p>
+  <p class="foot">Unterhaltung und Lernen, keine Anlageberatung. Keine Cookies, kein Tracking. <a href="#" id="guideOn" style="color:inherit">Satoshi zurückholen</a> · <a href="#" id="introOn" style="color:inherit">Einführung ansehen</a></p>
 </div>
-<script src="lern.js?v=24"></script>
+<script src="lern.js?v=25"></script>
 <script>
 // Lernpfad: Fortschritt aus dem eigenen Browser, Häkchen an den Karten, Empfehlung als Nächstes
 (() => {
@@ -233,7 +238,7 @@ details.fold[open] > summary{margin-bottom:12px}
   // Kapitel-Boss am Ende jedes Kapitels
   const won = Lern.bossWon();
   document.querySelectorAll("details.kap").forEach(d => { const k = +d.dataset.k - 1, c = Lern.CHAPTERS[k], ready = c[3].every(id => Lern.done(s, id)), [img, name] = Lern.BOSSES[k];
-    d.insertAdjacentHTML("beforeend", `<button class="bossbtn ${won[k] ? "won" : ""}" type="button" data-b="${k}" ${ready ? "" : "disabled"}><span class="bi">${Lern.art(img)}</span><span>${won[k] ? "🏆 " + name + " besiegt" : "👹 Boss: " + name}<small>${won[k] ? "Nochmal kämpfen?" : ready ? "5 Fragen auf Zeit. Bereit?" : "🔒 Schaffe erst alle Welten dieses Kapitels"}</small></span></button>`); });
+    d.insertAdjacentHTML("beforeend", `<button class="bossbtn ${won[k] ? "won" : ""}" type="button" data-b="${k}" ${ready ? "" : "disabled"}><span class="bi">${Lern.art(img)}</span><span>${won[k] ? "🏆 " + name + " besiegt" : "👹 Boss: " + name}<small>${won[k] ? "Nochmal kämpfen?" : ready ? "5 Fragen auf Zeit. Bereit?" : "🔒 Schaffe erst alle Level dieser Welt"}</small></span></button>`); });
   document.querySelectorAll(".bossbtn").forEach(b => b.onclick = () => Lern.boss(+b.dataset.b));
   // Profi-Pfade: nach dem Boss freigeschaltet (vorher sichtbar, aber gedimmt)
   const PD = {whitepaper: "Satoshis 9 Seiten Abschnitt für Abschnitt: Originalsätze einfach erklärt.", entropie: "Wie sicher ist ein Seed? Würfle dir einen und teste deinen Zufall.", ableitung: "Von 12 Wörtern bis zur Adresse: jede Station echt gerechnet.", sha256: "Die Hash-Maschine aufgeschraubt: 64 Runden Schritt für Schritt.",
@@ -243,7 +248,7 @@ details.fold[open] > summary{margin-bottom:12px}
     const open = won[k], dn = L.filter(id => Lern.done(s, id)).length;
     d.insertAdjacentHTML("beforeend", `<details class="pro fold ${open ? "" : "lock"}" id="pro${k + 1}" data-k="p${k + 1}"><summary><b>🔬 Profi-Pfad</b><small>${open ? `${dn}/${L.length} geschafft` : "🔒 Empfohlen nach dem Boss"}</small></summary><div class="grid big">${L.map(id => { const [t, path] = Lern.TITLES[id], ok = Lern.done(s, id);
       return `<a class="w ${ok ? "done" : ""}" href="${path}">${open ? `<span class="no">${ok ? "✓" : "🔬"}</span>` : '<span class="lk">🔒</span>'}<span class="ic" aria-hidden="true">${Lern.art(Lern.CARD[id])}</span><b>${t}</b><span>${PD[id]}</span><span class="go">Vertiefen →</span></a>`; }).join("")}</div></details>`); });
-  { const ph = location.hash.match(/^#pro(\d)$/), el = ph && document.getElementById("pro" + ph[1]); if (el) setTimeout(() => { el.open = true; el.closest("details.kap").open = true; history.replaceState(null, "", location.pathname); setTimeout(() => el.scrollIntoView({block: "start"}), 200); }, 0); }
+  { const ph = location.hash.match(/^#pro(\d)$/), el = ph && document.getElementById("pro" + ph[1]); let vw = "map"; try { vw = localStorage.getItem("satsland-view") || "map"; } catch(e){} if (el && vw === "list") setTimeout(() => { el.open = true; el.closest("details.kap").open = true; history.replaceState(null, "", location.pathname); setTimeout(() => el.scrollIntoView({block: "start"}), 200); }, 0); }
   // Direkt zum Boss über die Empfehlung (#boss1 … #boss5)
   const bh = location.hash.match(/^#boss(\d)$/);
   if (bh){ const b = document.querySelector(`.bossbtn[data-b="${+bh[1] - 1}"]`); if (b && !b.disabled){ b.closest("details").open = true; setTimeout(() => { b.scrollIntoView({block: "center"}); Lern.boss(+b.dataset.b); }, 300); history.replaceState(null, "", location.pathname); } }
@@ -252,26 +257,41 @@ details.fold[open] > summary{margin-bottom:12px}
     el.querySelector("u").style.width = dn/c[3].length*100 + "%"; el.querySelector("em").textContent = dn === c[3].length ? "✓ geschafft" : `${dn}/${c[3].length}`;
     if (dn === c[3].length) el.closest(".kap").classList.add("full"); });
   Lern.daily(document.getElementById("daily"));
+  // Einführung beim allerersten Besuch (3 kurze Karten)
+  function intro(){
+    const IT = [["icon", "Willkommen in Satsland!", "Hier lernst du Bitcoin <b>spielerisch</b>, ganz ohne Vorwissen. Ein paar Minuten am Tag reichen."],
+      ["map", `6 Welten, ${Lern.PATH.length} Level`, "Jedes Level dauert nur ein paar Minuten: <b>ausprobieren, lesen, 3 Quizfragen</b>. Am Ende jeder Welt wartet ein <b>Boss</b>, ganz oben Satoshi."],
+      ["pro", "Profi-Pfad & Tagesfrage", "Wer tiefer will, findet nach jedem Boss <b>🔬 Vertiefungen</b>. Jeden Tag gibt es eine neue <b>🔥 Tagesfrage</b>. Dein Fortschritt bleibt nur in diesem Browser."]];
+    let i = 0; const o = document.createElement("div"); o.className = "intro"; o.setAttribute("role", "dialog"); o.setAttribute("aria-modal", "true"); o.setAttribute("aria-label", "Einführung"); document.body.appendChild(o);
+    const end = go => { try { localStorage.setItem("satsland-intro", "1"); } catch(e){} o.remove(); if (go) location.href = Lern.TITLES[Lern.PATH[0][0]][1]; };
+    const pic = k => k === "icon" ? `<img src="icon.svg" alt="" width="96" height="96">` : k === "map" ? `<span class="ib">${Lern.art("go")}</span>` : `<span class="ib">${Lern.art("atom")}</span>`;
+    const show = () => { const [k, t, x] = IT[i];
+      o.innerHTML = `<div class="ibox"><button type="button" class="isk">Überspringen</button><div class="ipic">${pic(k)}</div><h2>${t}</h2><p>${x}</p><div class="idots">${IT.map((_, j) => `<i class="${j === i ? "on" : ""}"></i>`).join("")}</div><button type="button" class="btn ign">${i < IT.length - 1 ? "Weiter →" : "🚀 Los geht's mit Level 1-1"}</button></div>`;
+      o.querySelector(".isk").onclick = () => end(false); o.querySelector(".ign").onclick = () => { if (i < IT.length - 1){ i++; show(); } else end(true); }; o.querySelector(".ign").focus(); };
+    show();
+  }
+  { let seen = false; try { seen = localStorage.getItem("satsland-intro") === "1"; } catch(e){} if (!seen && !Lern.count(s)) intro(); }
+  document.getElementById("introOn").onclick = e => { e.preventDefault(); intro(); };
   document.getElementById("guideOn").onclick = e => { e.preventDefault(); try { localStorage.removeItem(Lern.GK); } catch(x){} location.reload(); };
   document.getElementById("album").innerHTML = Lern.BOSSES.map((b, k) => Lern.bossCard(k)).join("") + Lern.finalCard();
   { const w5 = Lern.bossWon(), ready5 = Lern.BOSSES.every((x, k) => w5[k]);
-    document.getElementById("album").insertAdjacentHTML("afterend", `<button class="bossbtn ${w5.f ? "won" : ""}" id="finalBtn" type="button" ${ready5 ? "" : "disabled"}><span class="bi">${Lern.art("satoshi")}</span><span>${w5.f ? "👑 Satoshis Rätsel gelöst" : "★ Endboss: Satoshis Rätsel"}<small>${ready5 ? "10 Fragen aus allen Kapiteln, 12 Sekunden je Frage" : "🔒 Besiege erst alle 6 Kapitel-Bosse"}</small></span></button>`);
+    document.getElementById("album").insertAdjacentHTML("afterend", `<button class="bossbtn ${w5.f ? "won" : ""}" id="finalBtn" type="button" ${ready5 ? "" : "disabled"}><span class="bi">${Lern.art("satoshi")}</span><span>${w5.f ? "👑 Satoshis Rätsel gelöst" : "★ Endboss: Satoshis Rätsel"}<small>${ready5 ? "10 Fragen aus allen Welten, 12 Sekunden je Frage" : "🔒 Besiege erst alle 6 Kapitel-Bosse"}</small></span></button>`);
     document.getElementById("finalBtn").onclick = () => Lern.boss("f"); }
   document.getElementById("albN").textContent = `${Lern.BOSSES.filter((x, k) => Lern.bossWon()[k]).length} von ${Lern.BOSSES.length}${Lern.bossWon().f ? " · 👑" : ""}`;
   // Klappbereiche: gemerkter Zustand, sonst sinnvoller Standard
   let fold = {}; try { fold = JSON.parse(localStorage.getItem("satsland-fold")) || {}; } catch(e){}
-  const nxCh = nxS ? (nxS.w ? Lern.chapterOf(nxS.w) : nxS.b) + 1 : 1, dly = Lern.streak();
+  const nxCh = nxS ? (nxS.w ? Lern.chapterOf(nxS.w) : nxS.b) + 1 : Lern.count(s) ? 6 : 1, dly = Lern.streak();
   const def = {daily: false, album: false};
   document.querySelectorAll("details.fold").forEach(d => {
     const k = d.dataset.k; d.open = k in fold ? fold[k] : k in def ? def[k] : +k === nxCh;
     d.addEventListener("toggle", () => { fold[k] = d.open; try { localStorage.setItem("satsland-fold", JSON.stringify(fold)); } catch(e){} });
   });
   document.getElementById("dlyS").textContent = dly.streak ? `🔥 ${dly.streak}` + (dly.last === new Date().toLocaleDateString("sv-SE") ? " · erledigt" : "") : "✨ Neue Frage";
-  document.getElementById("pathCount").textContent = `36 Welten · 6 Bosse · 👑 Endboss · 🔬 10 Profi`;
-  // Status-Kacheln: Level, Welten, Serie
+  document.getElementById("pathCount").textContent = `6 Welten · ${Lern.PATH.length} Level · 6 Bosse · 👑 Endboss · 🔬 10 Profi`;
+  // Status-Kacheln: Rang, aktuelle Welt, Serie
   const L = Lern.level(n), nx = Lern.LEVELS.find(l => l[0] > n), lv = Lern.LEVELS.find(l => l[2] === L.name), lo = lv ? lv[0] : 0, pct = nx ? (n - lo) / (nx[0] - lo) * 100 : 100;
-  document.getElementById("stats").innerHTML = `<div title="${nx ? `Noch ${nx[0] - n} bis ${nx[2]}` : "Höchstes Level"}"><small>Level</small><span class="lvb"><i>${Lern.art(lv ? lv[3] : "plankton")}</i><b>${L.name}</b></span><span class="bar"><u style="width:${pct}%"></u></span></div>
-    <div><small>Welten</small><b>${n}/${Lern.PATH.length}</b></div>
+  document.getElementById("stats").innerHTML = `<div title="${nx ? `Noch ${nx[0] - n} bis ${nx[2]}` : "Höchster Rang"}"><small>Rang</small><span class="lvb"><i>${Lern.art(lv ? lv[3] : "plankton")}</i><b>${L.name}</b></span><span class="bar"><u style="width:${pct}%"></u></span></div>
+    <div title="Geschaffte Level in deiner aktuellen Welt"><small>Welt ${nxCh}</small><b>${Lern.CHAPTERS[nxCh - 1][3].filter(id => Lern.done(s, id)).length}/${Lern.CHAPTERS[nxCh - 1][3].length} <span style="font-size:12px;color:var(--muted)">Level</span></b></div>
     <button type="button" id="stDl"><small>Serie</small><b>🔥 ${dly.streak || 0}</b></button>`;
   document.getElementById("stDl").onclick = () => { const d = document.querySelector('details[data-k="daily"]'); d.open = true; d.scrollIntoView({behavior: "smooth", block: "start"}); };
   Lern.renderNext("", "");
@@ -280,9 +300,9 @@ details.fold[open] > summary{margin-bottom:12px}
   const sec = document.querySelector(".card.path"), mapw = document.getElementById("mapw");
   let view = "map"; try { view = localStorage.getItem("satsland-view") || "map"; } catch(e){}
   function drawMap(first){
-    const L = Lern, W = Math.min(720, Math.max(320, mapw.clientWidth || 360)), nar = W < 520, R = nar ? 27 : 30, STEP = nar ? 92 : 96, GAP = 96;
+    const L = Lern, W = Math.min(720, Math.max(320, mapw.clientWidth || 360)), nar = W < 520, R = nar ? 27 : 30, STEP = nar ? 92 : 96, GAP = 118;
     const nodes = []; L.CHAPTERS.forEach((c, k) => { c[3].forEach(id => nodes.push({t: "w", id, k})); nodes.push({t: "b", k}); });
-    const N = nodes.length, H = 330 + N * STEP + 6 * GAP, BASE = H - 70, A = Math.min(118, W * .25);
+    const N = nodes.length, H = 350 + N * STEP + 6 * GAP, BASE = H - 90, A = Math.min(118, W * .25);
     const y = i => BASE - i * STEP - nodes[Math.min(i, N - 1)].k * GAP - (i >= 0 ? GAP * .55 : 0), x = i => W / 2 + Math.sin(i * .95) * A;
     const P = nodes.map((n, i) => [x(i), y(i)]), peakY = y(N - 1) - 150;
     const isDone = n => n.t === "b" ? !!won[n.k] : Lern.done(s, n.id);
@@ -304,13 +324,13 @@ details.fold[open] > summary{margin-bottom:12px}
     g += `<g class="shoot"><line x1="${W * .12}" y1="${peakY - 30}" x2="${W * .12 + 70}" y2="${peakY}" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/></g><g class="shoot s2"><line x1="${W * .55}" y1="${H * .45}" x2="${W * .55 + 60}" y2="${H * .45 + 26}" stroke="#fff" stroke-width="2" stroke-linecap="round"/></g>`;
     for (let i = 0; i < 12; i++){ const n = (i * 7) % (N - 1); g += `<circle class="fly2" style="animation-delay:${(i * .53) % 6}s" cx="${(P[n][0] + ((i * 53) % 120 - 60)).toFixed(0)}" cy="${P[n][1].toFixed(0)}" r="2.2" fill="#ffe08a"/>`; }
     // Weg: dunkle Spur, goldener erledigter Teil mit Glühen
-    const all = [[W / 2, H], ...P, [W / 2, peakY]], done = all.slice(0, Math.min(all.length, cur + 2));
+    const all = [[P[0][0], P[0][1] + R + 16], ...P, [W / 2, peakY]], done = all.slice(0, Math.min(all.length, cur + 2));
     g += `<path d="${curve(all)}" fill="none" stroke="#0a0d26" stroke-width="${nar ? 30 : 34}" stroke-linecap="round"/><path d="${curve(all)}" fill="none" stroke="#283070" stroke-width="${nar ? 20 : 24}" stroke-linecap="round"/><path d="${curve(all)}" fill="none" stroke="#4a54a0" stroke-width="3" stroke-dasharray="2 12" stroke-linecap="round"/>`;
     if (done.length > 1) g += `<path d="${curve(done)}" fill="none" stroke="#ffc94d" stroke-width="${nar ? 20 : 24}" stroke-linecap="round" filter="url(#gl)" opacity=".55"/><path class="${first ? "gold" : ""}" id="mgold" d="${curve(done)}" fill="none" stroke="#ffc94d" stroke-width="${nar ? 16 : 19}" stroke-linecap="round"/>`;
     // Kapitel-Karten über die ganze Breite
-    let st = 0; L.CHAPTERS.forEach((c, k) => { const i = st; st += c[3].length + 1; const cy = y(i) + STEP * .5 + GAP * .5 + 4, dn = c[3].filter(id => Lern.done(s, id)).length, all3 = dn === c[3].length, w = W - 28, h = 50;
+    let st = 0; L.CHAPTERS.forEach((c, k) => { const i = st; st += c[3].length + 1; const cy = i ? (y(i - 1) - R - 59 + y(i) + R + 8) / 2 : y(0) + R + 50, dn = c[3].filter(id => Lern.done(s, id)).length, all3 = dn === c[3].length, w = W - 28, h = 50;
       g += `<g><rect x="14" y="${cy - h / 2 + 4}" width="${w}" height="${h}" rx="16" fill="#0a0d26"/><rect x="14" y="${cy - h / 2}" width="${w}" height="${h}" rx="16" fill="#1a2058" stroke="${CH[k]}" stroke-width="2.5"/>
-        <rect x="14" y="${cy - h / 2}" width="10" height="${h}" rx="5" fill="${CH[k]}"/><text x="38" y="${cy - 3}" fill="${CH[k]}" font-size="11" font-weight="900" font-family="system-ui" letter-spacing="1">KAPITEL ${k + 1}</text>
+        <rect x="14" y="${cy - h / 2}" width="10" height="${h}" rx="5" fill="${CH[k]}"/><text x="38" y="${cy - 3}" fill="${CH[k]}" font-size="11" font-weight="900" font-family="system-ui" letter-spacing="1">WELT ${k + 1}</text>
         <text x="38" y="${cy + 15}" fill="#fff" font-size="${nar ? 15 : 16}" font-weight="900" font-family="Arial Black,system-ui">${c[0]} ${c[1]}</text>
         <rect x="${W - 104}" y="${cy - 5}" width="70" height="10" rx="5" fill="#0a0d26"/><rect x="${W - 104}" y="${cy - 5}" width="${70 * dn / c[3].length}" height="10" rx="5" fill="${CH[k]}"/>
         <text x="${W - 69}" y="${cy - 11}" fill="#aab2d8" font-size="11" font-weight="800" text-anchor="middle" font-family="system-ui">${all3 ? "✓ fertig" : dn + "/" + c[3].length}</text></g>`; });
@@ -330,7 +350,7 @@ details.fold[open] > summary{margin-bottom:12px}
       g += boss ? "</g>" : "</a>";
       // Profi-Abzweigung: kleines Portal neben dem Boss
       if (boss && L.PRO[n.k].length){ const open = !!won[n.k], pd = L.PRO[n.k].filter(id => Lern.done(s, id)).length, tot = L.PRO[n.k].length, px = Math.max(26, Math.min(W - 26, cx + side * (nar ? 112 : 150))), py = cy + 46;
-        g += `<a href="#pro${n.k + 1}" data-pro="${n.k + 1}" aria-label="Profi-Pfad Kapitel ${n.k + 1}"><title>🔬 Profi-Pfad: ${pd}/${tot} Vertiefungen</title><path d="M${cx + side * r * .8} ${cy + r * .5} Q${(cx + px) / 2} ${py + 12} ${px - side * 20} ${py}" fill="none" stroke="#b26bff" stroke-width="4" stroke-dasharray="2 9" stroke-linecap="round" opacity="${open ? 1 : .55}"/>
+        g += `<a href="#pro${n.k + 1}" data-pro="${n.k + 1}" aria-label="Profi-Pfad Welt ${n.k + 1}"><title>🔬 Profi-Pfad: ${pd}/${tot} Vertiefungen</title><path d="M${cx + side * r * .8} ${cy + r * .5} Q${(cx + px) / 2} ${py + 12} ${px - side * 20} ${py}" fill="none" stroke="#b26bff" stroke-width="4" stroke-dasharray="2 9" stroke-linecap="round" opacity="${open ? 1 : .55}"/>
           <circle cx="${px}" cy="${py + 5}" r="20" fill="#2a1450"/><circle cx="${px}" cy="${py}" r="20" fill="${open ? "#7b3fe0" : "#3b2a66"}" stroke="#0a0d26" stroke-width="3"/><text x="${px}" y="${py + 7}" font-size="19" text-anchor="middle">🔬</text>
           <circle cx="${px + 15}" cy="${py - 14}" r="10" fill="${open ? "#b26bff" : "#5a4a80"}" stroke="#0a0d26" stroke-width="2.5"/><text x="${px + 15}" y="${py - 10}" fill="#fff" font-size="11" font-weight="900" text-anchor="middle" font-family="system-ui">${open ? tot - pd || "✓" : "🔒"}</text></a>`; }
     });
@@ -349,15 +369,15 @@ details.fold[open] > summary{margin-bottom:12px}
   const mpop = document.getElementById("mpop"), mback = document.getElementById("mback");
   const closePop = () => { mpop.hidden = mback.hidden = true; };
   mback.onclick = closePop; addEventListener("keydown", e => { if (e.key === "Escape") closePop(); });
-  mapw.addEventListener("click", e => { const a = e.target.closest("[data-pro]"); if (!a) return; e.preventDefault(); e.stopPropagation();
-    const k = +a.dataset.pro - 1, open = !!won[k], L = Lern.PRO[k];
+  mapw.addEventListener("click", e => { const a = e.target.closest("[data-pro]"); if (!a) return; e.preventDefault(); e.stopPropagation(); openPro(+a.dataset.pro - 1); }, true);
+  function openPro(k){ const open = !!won[k], L = Lern.PRO[k];
     mpop.innerHTML = `<div class="mph"><b id="mpT">🔬 Profi-Pfad · ${Lern.CHAPTERS[k][0]} ${Lern.CHAPTERS[k][1]}</b><button type="button" id="mpx" aria-label="Schließen">✕</button></div>
       <p class="muted">${open ? "Freigeschaltet! Vertiefungen für alle, die es genau wissen wollen." : "🔒 Empfohlen nach dem Boss " + Lern.BOSSES[k][1] + ". Reinschauen geht trotzdem."}</p>
       <div class="mpl">${L.map(id => { const ok = Lern.done(s, id); return `<a href="${Lern.TITLES[id][1]}" class="${ok ? "ok" : ""}"><span class="ic">${Lern.art(Lern.CARD[id])}</span><span>${Lern.TITLES[id][0]}</span><em>${ok ? "✓" : open ? "→" : "🔒"}</em></a>`; }).join("")}</div>`;
-    mpop.hidden = mback.hidden = false; document.getElementById("mpx").onclick = closePop; document.getElementById("mpx").focus(); }, true);
+    mpop.hidden = mback.hidden = false; document.getElementById("mpx").onclick = closePop; document.getElementById("mpx").focus(); }
   mapw.addEventListener("click", e => { const b = e.target.closest("[data-b]"); if (!b) return; const k = b.dataset.b;
     if (k === "f"){ if ([0, 1, 2, 3, 4, 5].every(k => won[k])) Lern.boss("f"); else Lern.toast && Lern.toast("👑 Erst alle 6 Bosse besiegen, dann wartet Satoshi am Gipfel!"); return; }
-    if (Lern.CHAPTERS[+k][3].every(id => Lern.done(s, id))) Lern.boss(+k); else Lern.toast && Lern.toast("🔒 Schaffe erst alle Welten dieses Kapitels, dann wartet der Boss."); });
+    if (Lern.CHAPTERS[+k][3].every(id => Lern.done(s, id))) Lern.boss(+k); else Lern.toast && Lern.toast("🔒 Schaffe erst alle Level dieser Welt, dann wartet der Boss."); });
   mapw.addEventListener("keydown", e => { if (e.key === "Enter" && e.target.closest("[data-b]")) e.target.closest("[data-b]").dispatchEvent(new MouseEvent("click", {bubbles: true})); });
   function setView(v, first){ view = v; try { localStorage.setItem("satsland-view", v); } catch(e){}
     sec.classList.toggle("asmap", v === "map"); mapw.hidden = v !== "map";
@@ -365,16 +385,18 @@ details.fold[open] > summary{margin-bottom:12px}
     if (v === "map") requestAnimationFrame(() => drawMap(first)); }
   document.getElementById("vsw").onclick = e => { const b = e.target.closest("[data-v]"); if (b) setView(b.dataset.v, true); };
   let rz; addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(() => { if (view === "map") drawMap(false); }, 250); });
-  setView(/^#pro\d/.test(location.hash) ? "list" : view, true);
+  setView(view, true);
+  // Rückkehr aus einer Vertiefung (#pro1 …): auf dem Pfad bleiben und das Profi-Fenster öffnen
+  { const ph = location.hash.match(/^#pro(\d)$/); if (ph && view === "map"){ history.replaceState(null, "", location.pathname); setTimeout(() => openPro(+ph[1] - 1), 400); } }
   { const pd = document.querySelector('details[data-k="path"]'); if (pd) pd.addEventListener("toggle", () => { if (pd.open && view === "map") drawMap(false); }); }
   // Ein klarer Weiter-Knopf: nächster Schritt im Pfad; zuletzt besuchte Welt nur als kleiner Zusatz
   { const st = Lern.nextStep(""), r = document.getElementById("resume"), fresh = !Object.keys(s).length;
     const last = Object.keys(Lern.TITLES).filter(id => s[id] && s[id].seen && !Lern.done(s, id) && Date.now() - s[id].seen < 30 * 864e5).sort((a, b) => s[b].seen - s[a].seen)[0];
     if (st){ r.hidden = false;
       if (st.w){ const k = Lern.chapterOf(st.w); r.href = Lern.TITLES[st.w][1];
-        r.innerHTML = `<span class="ic" aria-hidden="true">${Lern.art(Lern.CARD[st.w])}</span><span><small>${fresh ? "Los geht's mit" : "Weiter mit"} · Kapitel ${k + 1}</small>${Lern.TITLES[st.w][0]}</span>`; }
+        r.innerHTML = `<span class="ic" aria-hidden="true">${Lern.art(Lern.CARD[st.w])}</span><span><small>${fresh ? "Los geht's mit" : "Weiter mit"} · Level ${k + 1}-${Lern.CHAPTERS[k][3].indexOf(st.w) + 1}</small>${Lern.TITLES[st.w][0]}</span>`; }
       else { r.href = "#"; r.onclick = e => { e.preventDefault(); Lern.boss(st.b); };
-        r.innerHTML = `<span class="ic" aria-hidden="true">${Lern.art(Lern.BOSSES[st.b][0])}</span><span><small>Kapitel ${st.b + 1} geschafft! Jetzt der Boss</small>${Lern.BOSSES[st.b][1]}</span>`; } }
+        r.innerHTML = `<span class="ic" aria-hidden="true">${Lern.art(Lern.BOSSES[st.b][0])}</span><span><small>Welt ${st.b + 1} geschafft! Jetzt der Boss</small>${Lern.BOSSES[st.b][1]}</span>`; } }
     if (last && (!st || st.w !== last)){ const a = document.getElementById("alt"); a.hidden = false; a.innerHTML = `oder zurück zu <a href="${Lern.TITLES[last][1]}">${Lern.TITLES[last][0]}</a>`; } }
 })();
 </script>

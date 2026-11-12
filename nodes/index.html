@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#0b0f2a">
 <link rel="icon" href="../icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-<link rel="stylesheet" href="../lern.css?v=24">
+<link rel="stylesheet" href="../lern.css?v=25">
 <style>
 /* Lernwelt "Nodes": nur seitenspezifische Teile, der Rest kommt aus lern.css */
 .dev{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:4px}
@@ -47,6 +47,10 @@
 .fres strong{display:block;font-size:18px} .fres.ok{border-color:var(--bull)} .fres.ok strong{color:var(--bull)} .fres.bad{border-color:var(--bear)} .fres.bad strong{color:var(--bear)} .fres.warn{border-color:var(--gold)} .fres.warn strong{color:var(--gold)}
 .ftl{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:6px} .ftl li{font-size:14px;line-height:1.45;color:var(--muted)} .ftl b{color:var(--ink)} .ftl em{font-style:normal;color:var(--gold);font-weight:700}
 @media (max-width:620px){ .fseg{grid-template-columns:1fr} .fdots{grid-template-columns:repeat(10,1fr)} .fchain .b{width:24px;height:24px;font-size:11px} .fchain .ln{width:4px} .fchain .lb{width:6em} }
+.nring{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:12px 0}
+.nring div{border-radius:14px;border:2px solid rgba(52,217,130,.45);background:rgba(52,217,130,.06);padding:8px;text-align:center;transition:all .35s}
+.nring span{display:block;font-size:26px} .nring b{display:block;font:900 14px var(--f-display)} .nring small{font-size:12px;color:var(--muted)}
+.nring .bad{border-color:#b26bff;background:rgba(178,107,255,.12)} .nring .rej{border-color:rgba(255,92,115,.6)} .nring .rej small{color:#ff9aa8;font-weight:800} .nring .off{opacity:.45;filter:grayscale(.7);transform:scale(.94)}
 </style>
 </head>
 <body>
@@ -79,6 +83,14 @@
     <p class="res" id="res" aria-live="polite"></p>
     <div class="cons" id="cons"></div>
     <details class="foot" style="margin-top:10px"><summary>Und was können Miner doch?</summary><p>Mit mehr als der Hälfte der Rechenleistung (51 %-Angriff) könnten Miner <b>Transaktionen blockieren</b> oder eine eigene, frische Zahlung zurückdrehen. Das wäre extrem teuer. <b>Regeln ändern</b>, also mehr Coins erzeugen oder fremde Coins nehmen, können sie trotzdem nicht.</p></details>
+  </section>
+
+<section class="card" aria-labelledby="hNs">
+    <h2 id="hNs">Und können Nodes schummeln?</h2>
+    <p class="muted" style="margin:0">Eine Node ist nur ein Computer mit der Bitcoin-Software. Was passiert, wenn jemand seine Node so verändert, dass sie lügt?</p>
+    <div class="nring" id="nring" aria-live="polite"></div>
+    <div class="row"><button class="btn" type="button" id="nCheat">😈 Node 1 schreibt sich 1.000 BTC gut</button><button class="btn ghost" type="button" id="nReset">↺ Neu</button></div>
+    <p class="note" id="nN">Sechs Nodes, jede mit ihrer eigenen Kopie der Blockchain. Tipp auf den Knopf.</p>
   </section>
 
 <section class="card" aria-labelledby="hFs">
@@ -122,7 +134,7 @@
   <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
 </div>
 
-<script src="../lern.js?v=24"></script>
+<script src="../lern.js?v=25"></script>
 <script>
 /* =====================================================================
    NODE-WACHE – Lernwelt von Satsland
@@ -150,6 +162,16 @@ async function compare(){
 }
 compare(); setInterval(compare, 60000);
 
+// ---------- Können Nodes schummeln? Jede Node prüft selbst, Lügen werden abgelehnt ----------
+{
+  const draw = st => { $("nring").innerHTML = Array.from({length: 6}, (_, i) => {
+      const bad = i === 0 && st, cls = bad ? (st >= 2 ? "bad off" : "bad") : st >= 2 ? "rej" : "";
+      return `<div class="${cls}"><span>${bad ? "😈" : "🖥️"}</span><b>Node ${i + 1}</b><small>${bad ? (st >= 2 ? "allein" : "+1.000 BTC?") : st >= 2 ? "✗ abgelehnt" : st ? "prüft …" : "✓ gleiche Kette"}</small></div>`; }).join(""); };
+  let t = 0; draw(0);
+  $("nCheat").onclick = () => { clearTimeout(t); draw(1); $("nN").innerHTML = "Node 1 schickt einen Block, in dem sie sich <b>1.000 BTC aus dem Nichts</b> gutschreibt. Alle anderen Nodes prüfen ihn …";
+    t = setTimeout(() => { draw(2); $("nN").innerHTML = "<b>Abgelehnt!</b> Jede Node prüft selbst nach denselben Regeln: Geld aus dem Nichts ist verboten. Die schummelnde Node wird ignoriert und rechnet ab jetzt <b>allein</b> auf einer Kette, die niemand anerkennt. Ihre „1.000 BTC“ sind wertlos. Darum gilt: Je mehr Menschen selbst eine Node betreiben, desto sicherer ist Bitcoin."; }, 1800); };
+  $("nReset").onclick = () => { clearTimeout(t); draw(0); $("nN").textContent = "Sechs Nodes, jede mit ihrer eigenen Kopie der Blockchain. Tipp auf den Knopf."; };
+}
 // ---------- 2) Können Miner schummeln? ----------
 // [Knopf, was im Block steht, gültig?, Erklärung]
 const CASES = [

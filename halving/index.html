@@ -13,7 +13,7 @@
 <meta property="og:description" content="Live-Countdown zum nächsten Bitcoin-Halving und warum es nur 21 Millionen gibt.">
 <meta property="og:image" content="https://satsland.github.io/og.png">
 <meta property="og:url" content="https://satsland.github.io/halving/">
-<link rel="stylesheet" href="../lern.css?v=24">
+<link rel="stylesheet" href="../lern.css?v=25">
 <style>
 /* Lernwelt "Knappheit & Halving": gleiche Farben und Schriften wie das Spiel. Nur Systemschriften, keine Cookies, kein Tracking. */
 
@@ -45,7 +45,7 @@
 .yearRow{display:flex;align-items:center;gap:12px;margin:4px 0 12px}
 .yearRow b{font:600 26px var(--f-num);min-width:4ch}
 .curve{width:100%;height:150px;display:block}
-.cwrap{position:relative} .cap{position:absolute;left:6px;top:12px;font:600 11px var(--f-num);color:var(--muted)}
+.cwrap{position:relative} .cap{position:absolute;right:6px;top:14px;font:600 11px var(--f-num);color:var(--muted)}
 .axis{position:relative;height:16px;font:600 11px var(--f-num);color:var(--muted)}
 .axis span{position:absolute;transform:translateX(-50%)}
 .axis span:first-child{transform:none} .axis span:last-child{transform:translateX(-100%)}
@@ -59,7 +59,8 @@
 @media (max-width:340px){ .learn{grid-template-columns:1fr} }
 .ssplit{display:flex;height:40px;border-radius:12px;overflow:hidden;margin-top:12px;border:1px solid var(--line)}
 .ssplit div{display:grid;place-items:center;font:700 13px var(--f-num);white-space:nowrap;overflow:hidden;min-width:0}
-.ssplit .a{background:#f7931a;color:#1a1000} .ssplit .b{background:#2ecc71;color:#06210f}
+.ssplit .sa{background:#f7931a;color:#1a1000} .ssplit .sb{background:#2ecc71;color:#06210f} .ssplit div{transition:flex-basis .35s}
+.syr{display:flex;align-items:center;gap:12px;margin-top:12px} .syr input{flex:1} .syr b{font:900 22px var(--f-num);min-width:4ch;text-align:right}
 .sleg{display:flex;gap:14px;flex-wrap:wrap;margin-top:6px;font-size:13px;color:var(--muted)} .sleg i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-1px}
 table.stab{width:100%;border-collapse:collapse;margin-top:12px;font-size:14px}
 .stab th,.stab td{padding:8px 6px;border-bottom:1px solid var(--line);text-align:right} .stab th:first-child,.stab td:first-child{text-align:left}
@@ -118,9 +119,10 @@ table.stab{width:100%;border-collapse:collapse;margin-top:12px;font-size:14px}
   <!-- 4 · Merksätze -->
 <section class="card" aria-labelledby="hSs">
     <h2 id="hSs">Wer bezahlt die Miner danach? <span class="mode" id="sMode">Verbinde …</span></h2>
-    <p class="muted" style="margin:0">Miner bekommen pro Block <b style="color:#f7931a">neue Bitcoin</b> plus die <b style="color:#2ecc71">Gebühren</b> aller Zahlungen darin. Der erste Teil halbiert sich immer weiter. So sieht es gerade aus:</p>
-    <div class="ssplit" id="sSplit"><div class="a"></div><div class="b"></div></div>
-    <div class="sleg"><span><i style="background:#f7931a"></i>Neue Bitcoin</span><span><i style="background:#2ecc71"></i>Gebühren (Schnitt der letzten Blöcke)</span></div>
+    <p class="muted" style="margin:0">Miner bekommen pro Block <b style="color:#f7931a">neue Bitcoin</b> plus die <b style="color:#2ecc71">Gebühren</b> aller Zahlungen darin. Der erste Teil halbiert sich immer weiter. Schieb das Jahr und sieh, wie sich der Lohn verschiebt (gleiche Gebühren wie heute angenommen):</p>
+    <div class="syr"><input type="range" id="sYear" min="2024" max="2140" value="2026" aria-label="Jahr für den Miner-Lohn"><b id="sYv">2026</b></div>
+    <div class="ssplit" id="sSplit"><div class="sa"></div><div class="sb"></div></div>
+    <div class="sleg"><span><i style="background:#f7931a"></i>Neue Bitcoin</span><span><i style="background:#2ecc71"></i>Gebühren (Schnitt heute)</span></div>
     <table class="stab" id="sTab"></table>
     <p class="note">Ohne neue Bitcoin müssen langfristig <b>Gebühren</b> die Miner bezahlen. Ob das reicht, ist eine <b>offene Frage</b>: Befürworter setzen auf mehr Nutzung und einen höheren Kurs, Kritiker warnen, dass ein Angriff sonst billiger würde.</p>
   </section>
@@ -141,7 +143,7 @@ table.stab{width:100%;border-collapse:collapse;margin-top:12px;font-size:14px}
   <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
 </div>
 
-<script src="../lern.js?v=24"></script>
+<script src="../lern.js?v=25"></script>
 <script>
 /* =====================================================================
    KNAPPHEIT & HALVING – Lernwelt von Satsland
@@ -216,9 +218,10 @@ function renderYear(){
   $("tmReward").textContent = rewardSat(e) ? btc(rewardSat(e)/1e8) : "0 BTC";
   const rest = TOTAL/1e8 - m;
   $("tmLeft").textContent = rest >= 1000 ? fmt(rest) + " BTC" : rest.toLocaleString("de-DE", {maximumFractionDigits: 2}) + " BTC";
-  renderCurve();
+  renderCurve(); if (window.minerSplit) minerSplit(y);
 }
 $("year").addEventListener("input", renderYear);
+$("sYear").addEventListener("input", () => { $("year").value = $("sYear").value; renderYear(); });
 
 // ---------- Live-Daten ----------
 async function load(){
@@ -246,8 +249,11 @@ async function load(){
   const btc = v => v.toLocaleString("de-DE", {maximumFractionDigits: v < 0.01 ? 4 : 3});
   const sub = y => y >= 2140 ? 0 : 3.125/Math.pow(2, Math.floor((y - 2024)/4));
   const show = (fee, live) => {
-    const t = 3.125 + fee, [a, b] = $("sSplit").children, pa = 3.125/t*100;
-    a.style.flexBasis = pa + "%"; b.style.flexBasis = (100 - pa) + "%"; a.textContent = Math.round(pa) + " %"; b.textContent = 100 - pa >= 12 ? Math.round(100 - pa) + " %" : "";
+    const t = 3.125 + fee;
+    window.minerSplit = y => { y = Math.max(2024, Math.min(2140, y)); const [a, b] = $("sSplit").children, sb = sub(y), pa = sb/(sb + fee)*100, r = v => v > 99.5 && v < 100 ? "> 99" : v < 1 && v > 0 ? "< 1" : Math.round(v);
+      $("sYear").value = y; $("sYv").textContent = y;
+      a.style.flexBasis = pa + "%"; b.style.flexBasis = (100 - pa) + "%"; a.textContent = pa >= 14 ? r(pa) + " % neue BTC" : pa >= 8 ? r(pa) + " %" : ""; b.textContent = 100 - pa >= 14 ? r(100 - pa) + " % Gebühren" : 100 - pa >= 8 ? r(100 - pa) + " %" : ""; };
+    minerSplit(+$("year").value);
     $("sTab").innerHTML = `<tr><th>Jahr</th><th>Neue BTC</th><th>+ Gebühren</th><th>Lohn im Vergleich zu heute</th></tr>` + [new Date().getFullYear(), 2028, 2032, 2040, 2060, 2140].map((y, i) => {
       const s = sub(y), p = (s + fee)/t*100; return `<tr><td>${i ? y : "heute"}</td><td>${btc(s)}</td><td>${btc(fee)}</td><td class="${p < 50 ? "lo" : ""}">${p >= 99.5 ? "100" : p < 1 ? "< 1" : Math.round(p)} %</td></tr>`; }).join("");
     $("sMode").className = "mode " + (live ? "live" : "demo"); $("sMode").textContent = live ? "Live" : "Beispielwerte";

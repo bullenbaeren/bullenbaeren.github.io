@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#0b0f2a">
 <link rel="icon" href="../icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-<link rel="stylesheet" href="../lern.css?v=24">
+<link rel="stylesheet" href="../lern.css?v=25">
 <style>
 /* Lernwelt "Hebel": nur seitenspezifische Teile, der Rest kommt aus lern.css */
 .idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
@@ -28,6 +28,9 @@ table.t{width:100%;border-collapse:collapse;margin-top:10px;font-size:14px}
 .t th,.t td{padding:8px 6px;border-bottom:1px solid var(--line);text-align:left} .t th{color:var(--muted);font-weight:600;font-size:12px}
 .t td b{font-family:var(--f-num)} .t tr.x td{color:var(--bear)} .t tr.x td:last-child::after{content:" 💥"}
 @media (max-width:620px){ .ctl{grid-template-columns:1fr} }
+.stop{border-color:rgba(255,92,115,.6);background:linear-gradient(rgba(255,92,115,.1),transparent)} .stopg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.stopg div{border-radius:14px;border:1px solid rgba(255,92,115,.35);background:rgba(0,0,0,.18);padding:12px;font-size:14px;color:var(--muted);line-height:1.5} .stopg div > b:first-child{display:block;font:900 15px var(--f-display);color:#ff9aa8;margin-bottom:4px} .stopg a{color:var(--gold)}
+@media (max-width:620px){ .stopg{grid-template-columns:1fr} }
 </style>
 </head>
 <body>
@@ -61,7 +64,17 @@ table.t{width:100%;border-collapse:collapse;margin-top:10px;font-size:14px}
     <table class="t" id="tab"></table>
   </section>
 
-  <section class="card" aria-labelledby="h3s">
+  <section class="card stop" aria-labelledby="hXs">
+    <h2 id="hXs">🛑 Unser klarer Rat: Finger weg!</h2>
+    <div class="stopg">
+      <div><b>Die meisten verlieren</b>Anbieter von Hebel-Produkten (CFDs) müssen in der EU offenlegen, wie viele Kunden Geld verlieren: meist <b>70 bis 80 %</b> und mehr.</div>
+      <div><b>Die Börse gewinnt immer</b>Sie verdient an Gebühren, Zinsen und an jeder <b>Liquidation</b>. Je mehr du handelst, desto mehr verdient sie.</div>
+      <div><b>Bitcoin schwankt zu stark</b>Bewegungen von 10 % an einem Tag sind normal. Bei Hebel 10 ist dein Geld dann <b>komplett weg</b>, auch wenn der Kurs danach wieder steigt.</div>
+      <div><b>Besser so</b>Kauf echte Bitcoin, zahl sie in deine eigene Wallet aus und spare regelmäßig, zum Beispiel mit einem <a href="../sparplan/">Sparplan</a>. Ohne Hebel kannst du nie mehr verlieren als deinen Einsatz, und du kannst warten.</div>
+    </div>
+  </section>
+
+<section class="card" aria-labelledby="h3s">
     <h2 id="h3s">Das solltest du dir merken</h2>
     <div class="learn">
       <div><b>Hebel = Lupe</b><span>Hebel vergrößert <b>Gewinne und Verluste</b>. Bei 10× bedeutet 10 % Minus: alles weg.</span></div>
@@ -73,11 +86,11 @@ table.t{width:100%;border-collapse:collapse;margin-top:10px;font-size:14px}
   </section>
 
   <section class="card next" id="next" aria-label="Weiter"></section>
-  <details class="foot"><summary>Quellen</summary><p>Stündliche Kurse der letzten 3 Tage live von Coinbase. Vereinfachte Rechnung: Liquidation, wenn der Verlust den Einsatz erreicht, ohne Gebühren, Funding und Sicherheitspuffer der Börsen. In echt wird oft noch früher liquidiert.</p></details>
+  <details class="foot"><summary>Quellen</summary><p><a href="https://www.esma.europa.eu/press-news/esma-news/esma-agrees-prohibit-binary-options-and-restrict-cfds-protect-retail-investors">ESMA: Beschränkung von CFDs (Pflicht-Warnhinweis mit Verlustquote)</a>; Stündliche Kurse der letzten 3 Tage live von Coinbase. Vereinfachte Rechnung: Liquidation, wenn der Verlust den Einsatz erreicht, ohne Gebühren, Funding und Sicherheitspuffer der Börsen. In echt wird oft noch früher liquidiert.</p></details>
   <p class="foot">Lernen und Unterhaltung, keine Anlageberatung. Hebel-Handel kann zum Totalverlust führen.</p>
 </div>
 
-<script src="../lern.js?v=24"></script>
+<script src="../lern.js?v=25"></script>
 <script>
 /* =====================================================================
    HEBEL-FALLE – Lernwelt von Satsland

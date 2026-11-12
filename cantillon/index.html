@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#0b0f2a">
 <link rel="icon" href="../icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-<link rel="stylesheet" href="../lern.css?v=24">
+<link rel="stylesheet" href="../lern.css?v=25">
 <style>
 /* Lernwelt "Geldfluss": nur seitenspezifische Teile, der Rest kommt aus lern.css */
 .idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
@@ -26,7 +26,7 @@
 .fp.got{border-color:var(--gold);background:rgba(255,201,77,.1)} .fp .k{display:block;margin-top:4px;font:900 13px var(--f-num)} .fp .k.up{color:var(--bull)} .fp .k.dn{color:var(--bear)}
 .fp .coin{position:absolute;left:50%;top:-12px;width:26px;height:26px;transform:translateX(-50%);animation:pop .4s}
 .price{margin-top:14px;display:flex;align-items:center;gap:10px;font-size:14px;color:var(--muted)} .price i{flex:1;height:14px;border-radius:7px;background:rgba(255,255,255,.08);overflow:hidden} .price u{display:block;height:100%;width:20%;background:linear-gradient(90deg,var(--gold),var(--bear));transition:width .6s}
-.price b{font:900 16px var(--f-num);color:var(--ink);min-width:4.5ch;text-align:right}
+.price b{font:900 16px var(--f-num);color:var(--ink);min-width:6ch;text-align:right} .price span{line-height:1.15} .price small{font-size:12px}
 @media (max-width:520px){ .flow{gap:4px} .fp{padding:6px 2px} .fp .e{font-size:20px} .fp b{font-size:10px;word-break:break-word} .fp small{display:none} .fp .k{font-size:11px} }
 </style>
 </head>
@@ -42,7 +42,7 @@
     <h2 id="h1s">Neues Geld fließt durch die Stadt</h2>
     <div class="idea">Die Zentralbank bringt <b>neues Geld</b> in Umlauf. Es landet erst bei den Banken, dann bei großen Firmen, dann bei Händlern und erst zum Schluss bei Arbeitern und Rentnern. Bei jedem Schritt <b>steigen die Preise</b> ein Stück.</div>
     <div class="flow" id="flow"></div>
-    <div class="price"><span>Preise</span><i><u id="pu"></u></i><b id="pv">100</b></div>
+    <div class="price"><span>🛒 Wocheneinkauf<br><small>kostet</small></span><i><u id="pu"></u></i><b id="pv">100 €</b></div>
     <div class="seg"><button class="btn" id="go" type="button">🖨 Neues Geld in Umlauf bringen</button><button class="btn ghost" id="again" type="button" hidden>↺ Nochmal</button></div>
     <div class="res" id="res" hidden></div>
   </section>
@@ -72,7 +72,7 @@
   <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
 </div>
 
-<script src="../lern.js?v=24"></script>
+<script src="../lern.js?v=25"></script>
 <script>
 /* =====================================================================
    GELDFLUSS – Lernwelt von Satsland
@@ -82,15 +82,15 @@ const $ = id => document.getElementById(id);
 // [Symbol, Name, Kaufkraft-Effekt in %]
 const F = [["🏦", "Banken", 8], ["🏢", "Große Firmen", 5], ["🛒", "Händler", 1], ["👷", "Arbeiter", -4], ["👵", "Rentner", -7]];
 let busy = false;
-function base(){ $("flow").innerHTML = F.map(([e, n]) => `<div class="fp"><span class="e">${e}</span><b>${n}</b><small>Kaufkraft</small><span class="k">±0 %</span></div>`).join(""); $("pu").style.width = "20%"; $("pv").textContent = "100"; $("res").hidden = true; }
+function base(){ $("flow").innerHTML = F.map(([e, n]) => `<div class="fp"><span class="e">${e}</span><b>${n}</b><small>Kaufkraft</small><span class="k">±0 %</span></div>`).join(""); $("pu").style.width = "20%"; $("pv").textContent = "100 €"; $("res").hidden = true; }
 $("go").onclick = () => {
   if (busy) return; busy = true; $("go").disabled = true; base();
   F.forEach(([, , eff], i) => setTimeout(() => {
     const el = $("flow").children[i]; el.classList.add("got"); el.insertAdjacentHTML("beforeend", `<span class="coin">${Lern.art("coin")}</span>`);
     const k = el.querySelector(".k"); k.textContent = (eff > 0 ? "+" : "") + eff + " %"; k.className = "k " + (eff >= 0 ? "up" : "dn");
-    const p = 100 + (i + 1)*2; $("pu").style.width = 20 + (i + 1)*16 + "%"; $("pv").textContent = p;
+    const p = 100 + (i + 1)*2; $("pu").style.width = 20 + (i + 1)*16 + "%"; $("pv").textContent = p + " €";
     if (i === F.length - 1){ const R = $("res"); R.hidden = false; R.className = "res warn";
-      R.innerHTML = `<strong>Die Preise stiegen von 100 auf 110.</strong>Die <b>Banken</b> konnten noch zu alten Preisen kaufen und gewinnen Kaufkraft. Bei <b>Arbeitern und Rentnern</b> kam das Geld erst an, als alles schon teurer war: Sie verlieren. Die Zahlen sind ein vereinfachtes Beispiel.`;
+      R.innerHTML = `<strong>Der Wocheneinkauf kostet jetzt 110 € statt 100 €.</strong>Die <b>Banken</b> konnten noch zu alten Preisen kaufen und gewinnen Kaufkraft. Bei <b>Arbeitern und Rentnern</b> kam das Geld erst an, als alles schon teurer war: Sie verlieren. Die Zahlen sind ein vereinfachtes Beispiel.`;
       $("again").hidden = false; busy = false; }
   }, 500 + i*900));
 };

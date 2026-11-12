@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#0b0f2a">
 <link rel="icon" href="../icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-<link rel="stylesheet" href="../lern.css?v=24">
+<link rel="stylesheet" href="../lern.css?v=25">
 <style>
 /* Lernwelt "Seed-Trainer": nur seitenspezifische Teile, der Rest kommt aus lern.css */
 .warn{border-color:rgba(255,92,115,.45);background:rgba(255,92,115,.07)}
@@ -23,14 +23,17 @@
 .ask label{font-size:13px;color:var(--muted)}
 .ask input{width:100%;font:600 16px var(--f-body);padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:#0b0f2a;color:var(--ink)}
 .ask input.ok{border-color:var(--bull)} .ask input.no{border-color:var(--bear)}
-.chainS{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:12px}
-.chainS div{position:relative;border-radius:12px;padding:8px;text-align:center;font-size:12px;border:2px solid var(--line);background:rgba(255,255,255,.03)} .chainS b{display:block;font:900 13px var(--f-display);margin-bottom:2px}
-.chainS code{display:block;font:11px var(--f-num);color:var(--muted);word-break:break-all}
-.chainS div:not(:last-child)::after{content:"→";position:absolute;right:-9px;top:50%;transform:translateY(-50%);color:var(--gold);font-weight:900}
+.sx{display:flex;align-items:center;justify-content:space-between;gap:2px;margin-top:14px}
+.sx button{flex:0 0 auto;width:52px;height:52px;border-radius:16px;border:3px solid #0d1230;background:#232a6a;font-size:24px;cursor:pointer;box-shadow:3px 3px 0 #0d1230;transition:transform .2s,background .2s;opacity:.55}
+.sx button.done{opacity:1;background:#2b5a4a} .sx button[aria-selected=true]{opacity:1;background:#ffc94d;transform:translateY(-4px) scale(1.08)}
+.sx i{flex:1;height:4px;border-radius:2px;background:#323a7a;position:relative} .sx i.on{background:#ffc94d} .sx i::after{content:"";position:absolute;right:-2px;top:-5px;border:7px solid transparent;border-left-color:inherit;border-left:7px solid #323a7a;border-right:0} .sx i.on::after{border-left-color:#ffc94d}
+.sxb{margin-top:14px;border-radius:16px;border:2px solid rgba(255,201,77,.5);background:rgba(255,201,77,.07);padding:14px;animation:fin .35s both}
+.sxb small{display:block;font:800 12px var(--f-body);color:var(--gold);letter-spacing:.5px;text-transform:uppercase} .sxb b.t{display:block;font:900 19px var(--f-display);margin:2px 0 6px}
+.sxb p{margin:0 0 10px;font-size:15px;line-height:1.5} .sxb .eg{display:flex;gap:10px;align-items:center;padding:10px 12px;border-radius:12px;background:rgba(0,0,0,.25);font-size:14px} .sxb .eg span{font-size:26px}
+.sxb code{display:block;margin-top:8px;font:12px var(--f-num);color:var(--muted);word-break:break-all}
 .addrs{margin:10px 0 0;padding-left:22px;display:grid;gap:4px;font:13px var(--f-num)} .addrs li{animation:pop .3s}
 .addrs b{color:var(--gold)}
-@media (max-width:620px){ .chainS{grid-template-columns:1fr 1fr} .chainS div:nth-child(2)::after{display:none} }
-.msg{margin:8px 0 0;font-weight:700;min-height:1.5em}
+@media (max-width:620px){ .msg{margin:8px 0 0;font-weight:700;min-height:1.5em}
 .msg.ok{color:var(--bull)} .msg.no{color:var(--bear)}
 .sort{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:10px}
 .it{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;padding:10px 12px}
@@ -55,7 +58,7 @@
   <!-- 1 · Merken und prüfen -->
   <section class="card" aria-labelledby="h1s">
     <h2 id="h1s">1 · Aufschreiben und prüfen</h2>
-    <p class="muted" style="margin:0">So läuft es bei einer echten Wallet: Du bekommst die Wörter einmal angezeigt, schreibst sie auf Papier ab, und die Wallet prüft danach ein paar davon.</p>
+    <p class="muted" style="margin:0">So läuft es bei einer echten Wallet: Du bekommst die Wörter einmal angezeigt und schreibst <b>alle</b> ab, in der richtigen Reihenfolge und mit Nummer. Die Wallet prüft danach nur ein paar davon als Stichprobe, gebraucht werden aber alle.</p>
     <div class="words" id="words" aria-live="polite"></div>
     <div class="row"><button class="btn" id="done" type="button">Hab ich aufgeschrieben</button><button class="btn ghost" id="newW" type="button">Neue Wörter</button></div>
     <div id="check" hidden>
@@ -68,7 +71,7 @@
   <!-- 2 · Sicher oder unsicher? -->
   <section class="card" aria-labelledby="h2s">
     <h2 id="h2s">2 · Wo bewahrst du die Wörter auf?</h2>
-    <p class="muted" style="margin:0">Sicher oder unsicher? Tippe deine Einschätzung an.</p>
+    <p class="muted" style="margin:0">Sicher oder unsicher? Tippe deine Einschätzung an. Kleiner Tipp vorab: Am sichersten ist der Seed <b>in Metall gestanzt</b>, an zwei getrennten Orten.</p>
     <div class="sort" id="sort"></div>
     <p class="score" id="score"></p>
   </section>
@@ -76,9 +79,13 @@
   <!-- 3 · Merksätze und Quiz -->
   <section class="card" aria-labelledby="hAs">
     <h2 id="hAs">3 · Vom Seed zu deinen Adressen</h2>
-    <p class="muted" style="margin:0">Aus deinen Wörtern berechnet die Wallet <b>einen Hauptschlüssel</b>, daraus beliebig viele <b>private Schlüssel</b>, daraus die <b>öffentlichen Schlüssel</b> und daraus die <b>Adressen</b>. Immer gleich, auf jedem Gerät. Darum reicht der Seed als Backup für alles.</p>
-    <div class="chainS" id="chainS"></div>
-    <div class="row" style="margin-top:10px"><button class="btn" id="nextAddr" type="button">➕ Nächste Adresse ableiten</button><span class="muted" style="font-size:13px">Neue Adresse, gleicher Seed</span></div>
+    <p class="muted" style="margin:0">Klingt kompliziert, funktioniert aber wie ein <b>Rezept</b>: gleiche Zutaten, immer das gleiche Ergebnis. Tippe dich durch die 5 Schritte.</p>
+    <div class="sx" id="sx" role="tablist" aria-label="Schritte"></div>
+    <div class="sxb" id="sxb" aria-live="polite"></div>
+    <div class="row" style="margin-top:10px"><button class="btn ghost" id="sxP" type="button">← Zurück</button><button class="btn" id="sxN" type="button">Weiter →</button></div>
+    <p class="note">➡️ <b>Jeder Pfeil geht nur vorwärts.</b> Aus der Adresse kommt niemand an deinen Schlüssel und aus dem Schlüssel niemand an deine Wörter. Aber aus den Wörtern kann jede Wallet <b>alles</b> jederzeit neu berechnen.</p>
+    <p class="qlbl" style="margin:16px 0 0;font-weight:800">Probier's: ein Seed, viele Adressen</p>
+    <div class="row" style="margin-top:8px"><button class="btn" id="nextAddr" type="button">➕ Nächste Adresse ableiten</button><span class="muted" style="font-size:13px">Neue Adresse, gleicher Seed</span></div>
     <ol class="addrs" id="addrs"></ol>
     <p class="muted" style="font-size:13px;margin:8px 0 0">Vereinfachte Rechnung zum Zeigen. Echte Wallets nutzen dafür die Standards BIP39 und BIP32, das Prinzip ist dasselbe: <b>Seed weg = alle Adressen weg, Seed da = alles wiederherstellbar.</b></p>
   </section>
@@ -100,7 +107,7 @@
   <p class="foot">Lernen und Unterhaltung, keine Anlage- oder Sicherheitsberatung. Die Übungswörter stammen nicht aus der echten Bitcoin-Wortliste.</p>
 </div>
 
-<script src="../lern.js?v=24"></script>
+<script src="../lern.js?v=25"></script>
 <script>
 /* =====================================================================
    SEED-TRAINER – Lernwelt von Satsland
@@ -155,11 +162,25 @@ $("sort").querySelectorAll("button").forEach(b => b.addEventListener("click", ()
 // Vom Seed zur Adresse (vereinfacht mit SHA-256 aus lern.js, Prinzip wie BIP32); nutzt die Übungswörter von oben
 {
   const H = Lern.sha256, addr = h => "bc1q" + h.slice(0, 30);
-  let n = 0, master = "";
+  let n = 0, master = "", ws = "", st = 0;
+  const S = () => { const p1 = H(master + 0), pub = "02" + H("pub" + p1).slice(0, 62); return [
+    ["📝", "Deine Wörter", "Die Wörter sind eigentlich <b>eine riesige Zufallszahl</b>, nur in Wörtern aufgeschrieben. So kannst du sie leicht und ohne Tippfehler abschreiben.", "🧾", "Wie die Zutatenliste eines Rezepts.", ws.split(" ").slice(0, 6).join(" ") + " …"],
+    ["🌱", "Hauptschlüssel", "Die Wallet steckt die Wörter in einen <b>Mixer</b> (eine Hash-Funktion). Heraus kommt der <b>Hauptschlüssel</b>. Gleiche Wörter ergeben immer genau denselben.", "🌰", "Wie ein Samen: Aus demselben Samen wächst immer derselbe Baum.", master.slice(0, 32) + "…"],
+    ["🔑", "Private Schlüssel", "Aus dem Hauptschlüssel wachsen <b>durchnummerierte Äste</b>: Schlüssel Nr. 1, Nr. 2, Nr. 3 … Mit ihnen <b>unterschreibst</b> du Zahlungen. Sie bleiben geheim.", "🌳", "Jede Wallet zählt gleich, darum findet sie alle Äste wieder.", "Nr. 1: " + p1.slice(0, 24) + "…<br>Nr. 2: " + H(master + 1).slice(0, 24) + "…"],
+    ["🔓", "Öffentlicher Schlüssel", "Aus jedem privaten Schlüssel wird ein <b>öffentlicher</b> berechnet. Damit kann jeder prüfen, dass deine Unterschrift echt ist. Zurückrechnen geht nicht.", "🔒", "Wie ein offenes Vorhängeschloss: Verteilen ist okay, den Schlüssel dazu hast nur du.", pub.slice(0, 34) + "…"],
+    ["📮", "Adresse", "Der öffentliche Schlüssel wird <b>gekürzt</b> und bekommt einen <b>Tippfehler-Schutz</b>. Fertig ist die Adresse, die du anderen gibst.", "📬", "Wie ein Briefkasten: Jeder kann etwas einwerfen, öffnen kannst nur du.", addr(H(H(master + 0)))]]; };
+  const show = () => { const L = S();
+    $("sx").innerHTML = L.map((x, i) => `<button type="button" role="tab" data-s="${i}" aria-selected="${i === st}" class="${i < st ? "done" : ""}" aria-label="Schritt ${i + 1}: ${x[1]}">${x[0]}</button>`).join(`<i></i>`);
+    [...$("sx").querySelectorAll("i")].forEach((e, i) => e.classList.toggle("on", i < st));
+    const x = L[st]; $("sxb").innerHTML = `<small>Schritt ${st + 1} von 5</small><b class="t">${x[0]} ${x[1]}</b><p>${x[2]}</p><div class="eg"><span>${x[3]}</span>${x[4]}</div><code>${x[5]}</code>`;
+    $("sxb").style.animation = "none"; void $("sxb").offsetWidth; $("sxb").style.animation = "";
+    $("sxP").disabled = !st; $("sxN").textContent = st === 4 ? "↺ Nochmal" : "Weiter →"; };
+  $("sx").onclick = e => { const b = e.target.closest("[data-s]"); if (b){ st = +b.dataset.s; show(); } };
+  $("sxP").onclick = () => { if (st){ st--; show(); } };
+  $("sxN").onclick = () => { st = st === 4 ? 0 : st + 1; show(); };
   const build = () => {
-    const ws = (words && words.length ? words : ["Übungswörter"]).join(" ");
-    master = H("seed:" + ws); n = 0; $("addrs").innerHTML = "";
-    $("chainS").innerHTML = [["📝 Seed", ws.split(" ").slice(0, 3).join(" ") + " …"], ["🔑 Hauptschlüssel", master.slice(0, 16) + "…"], ["🔒 Privater Schlüssel #1", H(master + 0).slice(0, 16) + "…"], ["📬 Adresse #1", addr(H(H(master + 0))).slice(0, 18) + "…"]].map(([t, v]) => `<div><b>${t}</b><code>${v}</code></div>`).join("");
+    ws = (words && words.length ? words : ["Übungswörter"]).join(" ");
+    master = H("seed:" + ws); n = 0; $("addrs").innerHTML = ""; show();
     add();
   };
   const add = () => { const a = addr(H(H(master + n))); $("addrs").insertAdjacentHTML("beforeend", `<li>Adresse <b>#${n + 1}</b>: ${a.slice(0, 22)}…</li>`); n++; };

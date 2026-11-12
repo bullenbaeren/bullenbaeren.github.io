@@ -9,13 +9,16 @@
 <meta name="theme-color" content="#0b0f2a">
 <link rel="icon" href="../icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-<link rel="stylesheet" href="../lern.css?v=24">
+<link rel="stylesheet" href="../lern.css?v=25">
 <style>
 /* Lernwelt "UTXO": nur seitenspezifische Teile, der Rest kommt aus lern.css */
 .idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
 .task{margin-top:14px;font-size:17px;font-weight:700} .task span{color:var(--gold)}
 .hint{margin:2px 0 0;font-size:14px;color:var(--muted)}
-.coins{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+.coins{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;padding:14px 10px 12px}
+.wlt{margin-top:12px;border-radius:22px;border:3px solid #0d1230;background:linear-gradient(#7a4a2a,#5a3418);box-shadow:4px 4px 0 #0d1230,inset 0 0 0 3px rgba(255,255,255,.08);position:relative}
+.wlt::after{content:"";position:absolute;inset:8px;border:2px dashed rgba(255,220,170,.35);border-radius:16px;pointer-events:none}
+.wlh{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap;padding:10px 16px 0;font:900 15px var(--f-display);color:#ffe2b8} .wlh small{font:600 12px var(--f-body);color:#e8c9a0}
 .coin{width:92px;height:92px;border-radius:50%;border:3px solid #b8700f;background:radial-gradient(circle at 35% 30%,#ffc46b,#f7931a 60%,#c66f08);color:#2a1600;font:800 14px var(--f-num);display:grid;place-items:center;text-align:center;cursor:pointer;line-height:1.15;transition:transform .15s,box-shadow .15s,opacity .3s}
 .coin small{display:block;font:600 10px var(--f-num);opacity:.75;white-space:nowrap}
 .coin[aria-pressed="true"]{transform:translateY(-6px);box-shadow:0 0 0 3px #fff,0 8px 18px rgba(0,0,0,.4)}
@@ -52,7 +55,7 @@
     <div class="idea">Eine Münze kannst du <b>nicht teilen</b>. Du gibst sie <b>ganz</b> aus. Was zu viel ist, kommt als <b>Wechselgeld</b> zu dir zurück, als neue Münze. Ein kleiner Rest geht als <b>Gebühr</b> an die Miner. Fachwort für so eine Münze: <b>UTXO</b> (unausgegebener Betrag).</div>
     <p class="task" id="task"></p>
     <p class="hint">Tippe auf Münzen, bis es reicht. Dann auf „Senden“.</p>
-    <div class="coins" id="coins"></div>
+    <div class="wlt"><div class="wlh"><span>👛 Deine Wallet</span><small>Guthaben = Summe aller Münzen</small></div><div class="coins" id="coins"></div></div>
     <div class="tx">
       <div class="col"><h3>Rein: diese Münzen gibst du aus</h3><ul id="ins"></ul></div>
       <span class="arr" aria-hidden="true">→</span>
@@ -85,7 +88,7 @@
   <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
 </div>
 
-<script src="../lern.js?v=24"></script>
+<script src="../lern.js?v=25"></script>
 <script>
 /* =====================================================================
    WECHSELGELD-KASSE – Lernwelt von Satsland

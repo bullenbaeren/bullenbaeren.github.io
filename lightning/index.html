@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#0b0f2a">
 <link rel="icon" href="../icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-<link rel="stylesheet" href="../lern.css?v=24">
+<link rel="stylesheet" href="../lern.css?v=25">
 <style>
 /* Lernwelt "Lightning": nur seitenspezifische Teile, der Rest kommt aus lern.css */
 .race{display:flex;flex-direction:column;gap:14px;margin-top:10px}
@@ -32,7 +32,7 @@
 .who span{display:block;font-size:30px}
 .pipe{height:26px;border-radius:999px;overflow:hidden;display:flex;border:2px solid var(--line)}
 .pipe i{display:block;height:100%;transition:width .3s}
-.pipe .a{background:var(--bull)} .pipe .b{background:var(--sky)}
+.pipe .pa{background:var(--bull)} .pipe .pb{background:var(--sky)}
 .bal{display:flex;justify-content:space-between;font:600 13px var(--f-num);color:var(--muted);margin-top:4px}
 .payrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
 .note{margin:10px 0 0;font-size:14px;color:var(--muted)} .note b{color:var(--ink)}
@@ -62,7 +62,7 @@
     <p class="muted" style="margin:0">Anna und Ben legen einmal in der Blockchain <b>100.000 sats</b> in einen gemeinsamen Kanal. Danach schieben sie sats beliebig oft hin und her, sofort und ohne Block.</p>
     <div class="chan">
       <div class="who"><span aria-hidden="true">👩</span>Anna</div>
-      <div><div class="pipe"><i class="a" id="pa"></i><i class="b" id="pb"></i></div><div class="bal"><span id="ba">–</span><span id="bb">–</span></div></div>
+      <div><div class="pipe"><i class="pa" id="pa"></i><i class="pb" id="pb"></i></div><div class="bal"><span id="ba">–</span><span id="bb">–</span></div></div>
       <div class="who"><span aria-hidden="true">👨</span>Ben</div>
     </div>
     <div class="payrow"><button class="btn" id="a2b" type="button">Anna zahlt Ben 10.000 sats</button><button class="btn ghost" id="b2a" type="button">Ben zahlt Anna 10.000 sats</button></div>
@@ -95,7 +95,7 @@
   <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
 </div>
 
-<script src="../lern.js?v=24"></script>
+<script src="../lern.js?v=25"></script>
 <script>
 /* =====================================================================
    LIGHTNING-RENNEN – Lernwelt von Satsland
