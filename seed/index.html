@@ -19,7 +19,8 @@
 .words div i{font:600 12px var(--f-num);font-style:normal;color:var(--muted);margin-right:6px}
 .words.hide div span{filter:blur(6px)}
 .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-.ask{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:12px 0}
+.ask{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:12px 0}
+.cheer{margin-top:12px;padding:12px 14px;border-radius:14px;border:2px solid rgba(52,217,130,.5);background:rgba(52,217,130,.08);font-size:14.5px;line-height:1.5}
 .ask label{font-size:13px;color:var(--muted)}
 .ask input{width:100%;font:600 16px var(--f-body);padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:#0b0f2a;color:var(--ink)}
 .ask input.ok{border-color:var(--bull)} .ask input.no{border-color:var(--bear)}
@@ -47,7 +48,7 @@
 .it.no{background:rgba(255,92,115,.1)} .it.no p{color:#ffb0bc} .it.no p::before{content:"✗ ";font-weight:900} .it.no{border-color:rgba(255,92,115,.6)}
 .it p{margin:6px 0 0;font-size:13px;color:var(--muted)}
 .score{margin:10px 0 0;font-weight:800;color:var(--gold)}
-@media (max-width:640px){ .words{grid-template-columns:repeat(3,minmax(0,1fr))} .ask{grid-template-columns:1fr} .sort{grid-template-columns:1fr} }
+@media (max-width:640px){ .words{grid-template-columns:repeat(3,minmax(0,1fr))} .ask{grid-template-columns:1fr 1fr} .sort{grid-template-columns:1fr} }
 </style>
 </head>
 <body>
@@ -63,9 +64,10 @@
   <!-- 1 · Merken und prüfen -->
   <section class="card" aria-labelledby="h1s">
     <h2 id="h1s">1 · Aufschreiben und prüfen</h2>
-    <p class="muted" style="margin:0">So läuft es bei einer echten Wallet: Du bekommst die Wörter einmal angezeigt und schreibst <b>alle</b> ab, in der richtigen Reihenfolge und mit Nummer. Die Wallet prüft danach nur ein paar davon als Stichprobe, gebraucht werden aber alle.</p>
+    <p class="muted" style="margin:0">So läuft es bei einer echten Wallet: Du bekommst die Wörter einmal angezeigt und schreibst <b>alle</b> ab, in der richtigen Reihenfolge und mit Nummer. Danach fragt die Wallet <b>alle Wörter</b> nacheinander ab, um sicherzugehen, dass dein Backup stimmt.</p>
     <div class="words" id="words" aria-live="polite"></div>
     <div class="row"><button class="btn" id="done" type="button">Hab ich aufgeschrieben</button><button class="btn ghost" id="newW" type="button">Neue Wörter</button></div>
+    <p class="cheer">💪 <b>Ja, das ist ein bisschen Arbeit.</b> 12 Wörter abschreiben und prüfen dauert ein paar Minuten. Aber du machst es <b>nur einmal</b>, und es schützt dein Erspartes für Jahrzehnte. Das sind die am besten investierten Minuten deiner Bitcoin-Reise. Hier kannst du es in Ruhe einmal üben.</p>
     <div id="check" hidden>
       <div class="ask" id="ask"></div>
       <div class="row"><button class="btn" id="test" type="button">Prüfen</button><button class="btn ghost" id="peek" type="button">Wörter nochmal zeigen</button></div>
@@ -132,7 +134,7 @@ function newWords(){
 $("newW").addEventListener("click", newWords);
 $("done").addEventListener("click", () => {
   $("words").classList.add("hide"); $("done").hidden = true; $("check").hidden = false;
-  askIdx = shuffle([...Array(12).keys()]).slice(0, 3).sort((a, b) => a - b);
+  askIdx = [...Array(12).keys()];   // echte Wallets fragen meist alle Wörter ab
   $("ask").innerHTML = askIdx.map(i => `<div><label for="a${i}">Wort Nr. ${i + 1}</label><input id="a${i}" autocomplete="off" autocapitalize="off" spellcheck="false"></div>`).join("");
   $("msg").textContent = ""; $("msg").className = "msg";
 });
@@ -141,8 +143,8 @@ $("test").addEventListener("click", () => {
   let right = 0;
   askIdx.forEach(i => { const el = $("a" + i), ok = el.value.trim().toLowerCase() === words[i].toLowerCase(); el.className = ok ? "ok" : "no"; if (ok) right++; });
   const m = $("msg");
-  if (right === 3){ m.className = "msg ok"; m.textContent = "Perfekt! Genau so prüft eine echte Wallet, ob dein Backup stimmt."; }
-  else { m.className = "msg no"; m.textContent = `${right} von 3 richtig. Bei echten Wörtern wäre das gefährlich: ein falsches Wort und die Wiederherstellung scheitert.`; }
+  if (right === askIdx.length){ m.className = "msg ok"; m.textContent = "Perfekt, alle 12 richtig! Genau so prüft eine echte Wallet dein Backup. Geschafft: Das musst du bei einer echten Wallet nur ein einziges Mal machen."; Lern.confetti && Lern.confetti(); }
+  else { m.className = "msg no"; m.textContent = `${right} von ${askIdx.length} richtig. Bei echten Wörtern wäre das gefährlich: Ein falsches Wort, und die Wiederherstellung scheitert. Schau nochmal nach und verbessere die roten Felder.`; }
 });
 
 // Sicher oder unsicher?
