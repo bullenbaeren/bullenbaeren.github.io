@@ -293,3 +293,15 @@ h2{scroll-margin-top:12px}
 @keyframes stamp{from{transform:translate(-50%,-50%) rotate(-8deg) scale(3);opacity:0}}
 @media (max-width:420px){ .boss .arena{height:230px} .boss .bimg{width:116px;height:116px;margin-left:-58px} .boss .bubble{max-width:44%;font-size:12.5px} }
 @media (prefers-reduced-motion:reduce){ .boss .rays,.boss .bimg.idle{animation:none} }
+
+/* ===== Ton-Schalter & Level geschafft ===== */
+@media (max-width:480px){ .top{flex-wrap:nowrap;gap:6px} .top .tx{display:none} }
+.snd{margin-left:-4px;width:38px;height:38px;flex:none;border-radius:12px;border:2px solid var(--line);background:rgba(255,255,255,.05);font-size:17px;cursor:pointer;line-height:1}
+.lvdone{position:fixed;inset:0;z-index:70;display:grid;place-items:center;padding:16px;background:rgba(5,8,25,.8);backdrop-filter:blur(3px);animation:rin .3s}
+.ldb{width:min(380px,100%);text-align:center;border-radius:24px;border:3px solid #0d1230;box-shadow:6px 6px 0 #0d1230;background:radial-gradient(ellipse at 50% 0%,rgba(255,201,77,.25),transparent 60%),linear-gradient(#232a6a,#141a48);padding:22px 18px 18px;animation:bpop .4s cubic-bezier(.2,1.5,.4,1)}
+.ldb > small{display:block;font:900 13px var(--f-body);color:var(--gold);letter-spacing:1px;text-transform:uppercase}
+.ldb .stars{display:flex;justify-content:center;gap:6px;margin:8px 0 4px} .ldb .stars span{font-size:52px;line-height:1;color:#2c3470;-webkit-text-stroke:3px #0d1230}
+.ldb .stars span.on{color:#ffc94d;animation:starIn .5s cubic-bezier(.2,1.8,.4,1) both;filter:drop-shadow(0 0 10px rgba(255,201,77,.7))} .ldb .stars span:nth-child(2){font-size:64px;transform:translateY(-8px)} .ldb .stars span.on:nth-child(2){animation-name:starIn2}
+.ldb .sc{display:block;font:900 22px var(--f-display);margin-top:4px} .ldb p{margin:6px 0 0;color:var(--muted);font-size:15px} .ldb .ru{color:var(--ink)} .ldb .ru2{font-size:13px}
+.ldb .acts{display:grid;gap:8px;margin-top:16px} .ldb .acts .btn{width:100%;justify-content:center;text-decoration:none}
+@keyframes starIn{from{transform:scale(0) rotate(-90deg);opacity:0}} @keyframes starIn2{from{transform:translateY(-8px) scale(0) rotate(-90deg);opacity:0}}

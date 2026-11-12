@@ -50,6 +50,7 @@ const Lern = (() => {
         d.querySelectorAll("button").forEach(x => { x.classList.remove("ok", "no"); if (+x.dataset.i === ok) x.classList.add("ok"); });
         if (i !== ok) b.classList.add("no");
         const w = d.querySelector(".why"); w.hidden = false; w.textContent = (i === ok ? "Richtig! " : "Nicht ganz. ") + why;
+        sfx(i === ok ? "ok" : "no");
         if (!(qi in answered)){ answered[qi] = i === ok; say(i === ok ? pickOne(PRAISE) : pickOne(OOPS), 3500); }
         if (Object.keys(answered).length === QUIZ.length) finish();
       }));
@@ -61,13 +62,9 @@ const Lern = (() => {
       s[id] = Object.assign({}, s[id], {quiz: Math.max(right, (s[id] && s[id].quiz) || 0), total: QUIZ.length}); save(s);
       const after = level(count(s));
       res.hidden = false; res.textContent = `${"⭐".repeat(right)}${"☆".repeat(QUIZ.length - right)}  ${right} von ${QUIZ.length} richtig. ✓ Dieses Level ist in deinem Lernpfad abgehakt.`;
-      if (right === QUIZ.length) confetti();
-      if (after.name !== before.name) toast(`${after.ico} Aufgestiegen! Du bist jetzt <b>${after.name}</b>.`);
-      else if (first) toast(`✓ Level geschafft · ${after.n} von ${PATH.length}`);
-      if (right === QUIZ.length) say("Alle Fragen richtig! ✨");
       if (new Date().getHours() < 4){ const tt = tget(); tt.owl = 1; tset(tt); }
       badge(); renderNext(id, root); titles();
-      renderNext(id, root);
+      setTimeout(() => lvDone(right, QUIZ.length, first, after.name !== before.name ? after : null, after), 700);
     }
   }
   // "Weiter mit …"-Karte am Seitenende
@@ -80,7 +77,7 @@ const Lern = (() => {
         : `<span class="muted">🔬 Profi-Pfad</span><b>Alle Vertiefungen dieser Welt geschafft!</b><a href="${root}#pro${pk + 1}">Zur Übersicht →</a>`; return; }
     const it = nextStep(id), n = it && it.w ? PATH.find(p => p[0] === it.w) : null;
     el.innerHTML = n ? `<span class="muted">Empfohlen als Nächstes</span><b>${n[1]}</b><a href="${root}${n[2]}">Los geht's →</a>`
-      : it ? `<span class="muted">Kapitel ${it.b + 1} geschafft! Jetzt wartet</span><b>👹 ${BOSSES[it.b][1]}</b><a href="${root}#boss${it.b + 1}">Zum Boss-Kampf →</a>`
+      : it ? `<span class="muted">Welt ${it.b + 1} geschafft! Jetzt wartet</span><b>👹 ${BOSSES[it.b][1]}</b><a href="${root}#boss${it.b + 1}">Zum Boss-Kampf →</a>`
       : `<b>🏆 Alles geschafft, alle Bosse besiegt!</b><a href="${root}">Zur Übersicht →</a>`;
   }
 
@@ -442,14 +439,14 @@ const Lern = (() => {
       box.querySelectorAll(".opts button").forEach(b => { b.disabled = true; if (+b.dataset.n === 0) b.classList.add("ok"); else if (+b.dataset.n === n) b.classList.add("no"); });
       const w = box.querySelector(".why"); w.hidden = false; w.innerHTML = `<b>${n < 0 ? "⏰ Zeit um!" : ok ? "✅ Treffer!" : "💥 Autsch."}</b> ${why}`;
       if (ok){ hp--; combo++;
-        const z = document.createElement("span"); z.className = "zap"; z.innerHTML = art("coin"); fx.appendChild(z); setTimeout(() => z.remove(), 700);
-        setTimeout(() => { re(im, "ouch"); re(A, "flash"); float(fast ? "SUPERSCHNELL!" : "TREFFER!", "hit"); if (combo >= 2) float(`${combo}× COMBO`, "cmb"); say2(pickOne(HIT)); hud(); }, 380);
-      } else { lives--; combo = 0; re(B, "hit"); re(A, "dmg"); re(im, "laugh"); float(n < 0 ? "ZEIT UM!" : "−1 ❤️", "miss"); say2(pickOne(MISS)); hud(); }
+        sfx("coin"); const z = document.createElement("span"); z.className = "zap"; z.innerHTML = art("coin"); fx.appendChild(z); setTimeout(() => z.remove(), 700);
+        setTimeout(() => { sfx("hit"); re(im, "ouch"); re(A, "flash"); float(fast ? "SUPERSCHNELL!" : "TREFFER!", "hit"); if (combo >= 2) float(`${combo}× COMBO`, "cmb"); say2(pickOne(HIT)); hud(); }, 380);
+      } else { sfx("no"); lives--; combo = 0; re(B, "hit"); re(A, "dmg"); re(im, "laugh"); float(n < 0 ? "ZEIT UM!" : "−1 ❤️", "miss"); say2(pickOne(MISS)); hud(); }
       i++; setTimeout(ask, 2300);
     }
     function end(){
       clearInterval(timer); const win = hp <= 0;
-      const st = document.createElement("div"); st.className = "stamp " + (win ? "ko" : "go"); st.textContent = win ? "K.O.!" : "GAME OVER"; A.appendChild(st);
+      sfx(win ? "ko" : "lose"); const st = document.createElement("div"); st.className = "stamp " + (win ? "ko" : "go"); st.textContent = win ? "K.O.!" : "GAME OVER"; A.appendChild(st);
       if (win){ im.classList.remove("idle"); im.classList.add("down"); A.classList.add("won"); say2("Neiiin … besiegt!"); const w = bossWon(); w[k] = lives === LIVES ? "perfect" : (w[k] === "perfect" ? "perfect" : true); try { localStorage.setItem(BK, JSON.stringify(w)); } catch(e){} setTimeout(confetti, 500); if (fin) toast("👑 Satoshis Rätsel gelöst! Die goldene Karte gehört dir."); titles(); }
       else { re(im, "laugh"); say2(pickOne(MISS)); }
       box.innerHTML = `<div class="end"><b>${win ? "🏆 Boss besiegt!" : "💀 Der Boss gewinnt diesmal"}</b><p class="muted">${win ? (lives === LIVES ? "Ohne einen Fehler! ✨ Du bekommst die Glanz-Bosskarte." : "Die Boss-Karte liegt jetzt in deinem Album. Ohne Fehler gibt es die Glanzkarte.") : "Lies die Erklärungen in den Leveln nochmal und versuch es erneut."}</p>
@@ -566,6 +563,54 @@ const Lern = (() => {
       if (++t < 160) requestAnimationFrame(f); else c.remove(); })();
   }
   function toast(html){ const t = document.createElement("div"); t.className = "toast"; t.innerHTML = html; document.body.appendChild(t); setTimeout(() => t.classList.add("out"), 3400); setTimeout(() => t.remove(), 3900); }
+  // ---------- Ton & Vibration (ohne Audio-Dateien, per Web Audio erzeugt; abschaltbar) ----------
+  const SND = "satsland-sound"; let AC = null;
+  const sndOn = () => { try { return localStorage.getItem(SND) !== "0"; } catch(e){ return true; } };
+  function tone(f, d, type = "sine", v = .12, delay = 0, slide = 0){
+    const t0 = AC.currentTime + delay, o = AC.createOscillator(), g = AC.createGain(); o.type = type; o.frequency.setValueAtTime(f, t0);
+    if (slide) o.frequency.exponentialRampToValueAtTime(slide, t0 + d);
+    g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(v, t0 + .01); g.gain.exponentialRampToValueAtTime(.001, t0 + d);
+    o.connect(g).connect(AC.destination); o.start(t0); o.stop(t0 + d + .05); }
+  const VIB = {ok: 15, no: [40, 40, 40], hit: 30, ko: [60, 40, 140], lose: [150], lvl: [20, 40, 20]};
+  const SFX = {click: () => tone(700, .05, "triangle", .04),
+    ok: () => { tone(660, .12, "triangle", .12); tone(990, .2, "triangle", .12, .08); },
+    no: () => tone(240, .28, "square", .05, 0, 130),
+    coin: () => { tone(988, .07, "square", .04); tone(1319, .22, "square", .04, .06); },
+    hit: () => { tone(160, .2, "square", .09, 0, 55); tone(1400, .06, "triangle", .06); },
+    ko: () => { tone(90, .5, "sawtooth", .07, 0, 40); [523, 659, 784, 1047].forEach((f, i) => tone(f, .25, "triangle", .11, .15 + i*.1)); },
+    lose: () => [392, 330, 262, 196].forEach((f, i) => tone(f, .28, "triangle", .1, i*.15)),
+    lvl: () => [523, 659, 784, 1047].forEach((f, i) => tone(f, .2, "triangle", .1, i*.08)),
+    star: () => tone(1100 + Math.random()*300, .18, "sine", .1)};
+  function sfx(k){
+    if (!sndOn()) return;
+    try { if (navigator.vibrate && VIB[k]) navigator.vibrate(VIB[k]); } catch(e){}
+    try { AC = AC || new (window.AudioContext || window.webkitAudioContext)(); if (AC.state === "suspended") AC.resume(); (SFX[k] || (() => {}))(); } catch(e){}
+  }
+  function sndBtn(){
+    const top = document.querySelector(".top"); if (!top || top.querySelector(".snd")) return;
+    const lx = top.querySelector('a[href*="lexikon"]'); if (lx && !lx.querySelector(".tx")) lx.innerHTML = lx.innerHTML.replace(/^(\S+)\s+(.+)$/, '$1<span class="tx"> $2</span>');
+    const b = document.createElement("button"); b.type = "button"; b.className = "snd";
+    const upd = () => { b.textContent = sndOn() ? "🔊" : "🔇"; b.title = sndOn() ? "Ton & Vibration aus" : "Ton & Vibration an"; b.setAttribute("aria-label", b.title); };
+    b.onclick = () => { try { localStorage.setItem(SND, sndOn() ? "0" : "1"); } catch(e){} upd(); sfx("click"); }; upd(); top.appendChild(b);
+  }
+  document.addEventListener("click", e => { if (e.target.closest(".btn:not(.q .btn)")) sfx("click"); });
+
+  // ---------- Level geschafft: Sterne und großer Weiter-Knopf ----------
+  function lvDone(right, total, first, rankUp, L){
+    const st = Math.round(right/total*3), nx = document.querySelector("#next a"), nb = document.querySelector("#next b");
+    const msg = st === 3 ? "Perfekt, alles richtig!" : st === 2 ? "Stark! Lies die eine Erklärung nochmal, dann sitzt alles." : "Geschafft! Wiederhole das Quiz für mehr Sterne.";
+    const o = document.createElement("div"); o.className = "lvdone"; o.setAttribute("role", "dialog"); o.setAttribute("aria-label", "Level geschafft");
+    o.innerHTML = `<div class="ldb"><small>${first ? "Level geschafft!" : "Quiz wiederholt"}</small><div class="stars">${[0, 1, 2].map(i => `<span class="${i < st ? "on" : ""}" style="animation-delay:${.25 + i*.28}s">★</span>`).join("")}</div>
+      <b class="sc">${right} von ${total} richtig</b><p>${msg}</p>${rankUp ? `<p class="ru">${rankUp.ico} Aufgestiegen! Du bist jetzt <b>${rankUp.name}</b>.</p>` : `<p class="ru2">${L.n} von ${PATH.length} Level geschafft</p>`}
+      <div class="acts">${nx ? `<a class="btn" href="${nx.getAttribute("href")}">Weiter: ${nb ? nb.textContent : "nächstes Level"} →</a>` : ""}<button class="btn ghost" type="button">Hier bleiben</button></div></div>`;
+    document.body.appendChild(o);
+    const close = () => o.remove();
+    o.querySelector("button").onclick = close; o.onclick = e => { if (e.target === o) close(); };
+    sfx("lvl"); for (let i = 0; i < st; i++) setTimeout(() => sfx("star"), 300 + i*280);
+    if (st === 3) setTimeout(confetti, 900);
+    (nx ? o.querySelector("a") : o.querySelector("button")).focus();
+  }
+
   // Level-Anzeige im Kopf jeder Seite
   function badge(){
     const L = level(count(load())), el = document.querySelector(".lvl") || document.createElement("a");
@@ -583,7 +628,7 @@ const Lern = (() => {
   }
   const seg = location.pathname.split("/").filter(Boolean), last = seg[seg.length - 1], here = PATH.some(([id]) => id === last) || proOf(last) >= 0 ? last : "";
   function init(){
-    badge(); intro(); glossify(); reveal(); guide(); setTimeout(titles, 1500);
+    badge(); sndBtn(); intro(); glossify(); reveal(); guide(); setTimeout(titles, 1500);
     if (here && CARD[here]){ const h = document.querySelector("h1"); if (h && !h.previousElementSibling){ const i = document.createElement("span"); i.className = "wico"; i.setAttribute("aria-hidden", "true"); i.innerHTML = art(CARD[here]); h.before(i);
       const pk = proOf(here), k = pk >= 0 ? pk : chapterOf(here), c = CHAPTERS[k], p = document.createElement("p"); p.className = "chap"; p.innerHTML = pk >= 0 ? `🔬 Profi-Pfad · Welt ${k + 1} · ${c[0]} ${c[1]} · Vertiefung ${PRO[k].indexOf(here) + 1} von ${PRO[k].length}` : `Welt ${k + 1} · ${c[0]} ${c[1]} · Level ${k + 1}-${c[3].indexOf(here) + 1} von ${c[3].length}`; i.after(p); } }
   }
@@ -610,5 +655,5 @@ const Lern = (() => {
   }
 
   init();
-  return {PRO, proOf, TITLES, syncExport, syncImport, TITLES_LIST, titles, finalCard, GLOSSAR, nextStep, PATH, CHAPTERS, ART, art, BOSSES, boss, bossWon, bossCard, CARD, daily, streak, say, GK, chapterOf, LEVELS, level, count, load, done, visit, quiz, renderNext, nextAfter, sha256, confetti, toast};
+  return {sfx, PRO, proOf, TITLES, syncExport, syncImport, TITLES_LIST, titles, finalCard, GLOSSAR, nextStep, PATH, CHAPTERS, ART, art, BOSSES, boss, bossWon, bossCard, CARD, daily, streak, say, GK, chapterOf, LEVELS, level, count, load, done, visit, quiz, renderNext, nextAfter, sha256, confetti, toast};
 })();
