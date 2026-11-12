@@ -279,7 +279,7 @@ body.stream .welcome{display:none}
     <div class="stats" id="stats"></div>
     </div>
     <div role="tabpanel" id="pane-skins" aria-labelledby="tab-skins" hidden>
-    <div class="ph"><h2>Skin-Sets</h2><span id="skinCount">1 / 13 freigeschaltet</span></div>
+    <div class="ph"><h2>Skin-Sets</h2><span id="skinCount">1 / 16 freigeschaltet</span></div>
     <div class="skins" id="skins"></div>
     <p class="wnote">Sets schaltest du in Satsland frei (Bosse besiegen, Profi-Level) oder hier in der Arena (seltene Live-Momente).</p>
     </div>
@@ -339,7 +339,7 @@ body.stream .welcome{display:none}
 
 <script>
 /* =====================================================================
-   BULLEN VS BÄREN – Bitcoin live als Comic-Schlacht
+   KURS-ARENA – Bitcoin live als Comic-Schlacht
    ---------------------------------------------------------------------
    Aufbau dieser Datei (alles in einer Datei, kein Build nötig):
      1. Welten & Zonen      Landschaft je Kursbereich (logarithmisch)
@@ -666,26 +666,42 @@ const G = {
     ctx.beginPath(); ctx.moveTo(hx - r*.95, hy - 7); ctx.quadraticCurveTo(hx, hy - r - 5, hx + r*.95, hy - 7); ctx.lineTo(hx - dir*13, hy - r - 7); ctx.closePath(); gFill("#3a4aa0");
     rr(hx - r, hy - 8.5, 2*r, 2.6, 1.2); gFill("#ffffff", 1); ctx.beginPath(); ctx.arc(hx - dir*13, hy - r - 7, 2, 0, TAU); gFill("#ffffff", 1);
   },
+  magier(b, hx, hy, r, dir){
+    ctx.beginPath(); ctx.moveTo(hx - r*.85, hy - 7); ctx.lineTo(hx - dir*3, hy - r - 15); ctx.lineTo(hx + r*.85, hy - 7); ctx.closePath(); gFill(b ? "#2a1a5a" : "#1a2a5a");
+    ctx.beginPath(); ctx.ellipse(hx, hy - 7, r + 3, 2.2, 0, 0, TAU); gFill(b ? "#2a1a5a" : "#1a2a5a", 1);
+    ctx.strokeStyle = C.gold; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(hx - r*.75, hy - 9.5); ctx.lineTo(hx + r*.75, hy - 9.5); ctx.stroke();
+    star(hx - dir, hy - r - 4, 2.4, C.gold); star(hx + dir*4, hy - r + 1, 1.6, "#fff");
+  },
+  candy(b, hx, hy, r, dir){
+    ctx.strokeStyle = "#3a7a2a"; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(hx, hy - r - 3); ctx.quadraticCurveTo(hx + dir*2, hy - r - 7, hx + dir*4, hy - r - 8); ctx.stroke();
+    ctx.beginPath(); ctx.arc(hx, hy - r - 2, 2.6, 0, TAU); gFill("#e0203a", 1);
+    ["#ffc94d", "#7cc4ff", "#fff", "#b26bff"].forEach((c, i) => { ctx.fillStyle = c; ctx.save(); ctx.translate(hx - 6 + i*4, hy - 6 - (i % 2)*2); ctx.rotate(i); ctx.fillRect(-1.2, -.5, 2.4, 1); ctx.restore(); });
+  },
   diamant(b, hx, hy, r){
     const y = hy - r - 3; ctx.beginPath(); ctx.moveTo(hx - 4, y); ctx.lineTo(hx - 2.5, y - 2.6); ctx.lineTo(hx + 2.5, y - 2.6); ctx.lineTo(hx + 4, y); ctx.lineTo(hx, y + 4.5); ctx.closePath(); gFill(b ? "#9ff0ff" : "#c8dcff", 1);
   }
 };
+// Kleiner Glitzerstern
+function star(x, y, s, c){ ctx.fillStyle = c; ctx.beginPath(); for (let i = 0; i < 8; i++){ const a = i*Math.PI/4, q = i % 2 ? s*.35 : s; ctx.lineTo(x + Math.cos(a)*q, y + Math.sin(a)*q); } ctx.closePath(); ctx.fill(); }
 const gear = f => (b, hx, hy, r, dir) => { ctx.save(); f(b, hx, hy, r, dir); ctx.restore(); };
 // id, Name, Freischalt-Hinweis, Bedingung, Paletten, Kopfbedeckung (null = Welt-Ausrüstung), geheim
 const SKINS = [
   {id: "klassik", n: "🐂 Klassik", how: "Standard", ok: () => true, bull: PAL.bull, bear: PAL.bear, gear: null},
-  {id: "antike", n: "🏛️ Antike", how: "Boss von Welt 1 besiegen", ok: () => !!SLS.b[0], bull: pal("#c98a4a", "#8a5a2a", "#f0d2a8"), bear: pal("#8a5a3a", "#5a3a22", "#e8c8a0", "#d8b08a"), gear: gear(G.antike)},
-  {id: "gold", n: "⛏️ Goldrausch", how: "Boss von Welt 2 besiegen", ok: () => !!SLS.b[1], bull: pal("#b07840", "#7a4e24", "#e8c08a"), bear: pal("#6a4a3a", "#4a3024", "#c8a07a", "#a8805a"), gear: gear(G.gold)},
-  {id: "ritter", n: "🛡️ Ritter", how: "Boss von Welt 3 besiegen", ok: () => !!SLS.b[2], bull: pal("#5a8ad8", "#3a5aa0", "#bcd4ff"), bear: pal("#b8484a", "#8a2a2c", "#f0c0c0", "#f0b0b0"), gear: gear(G.ritter)},
+  {id: "antike", n: "🏛️ Antike", how: "Boss von Welt 1 besiegen", ok: () => !!SLS.b[0], bull: pal("#5fbf86", "#2f8a58", "#cdf0da"), bear: pal("#d8605a", "#a03a36", "#ffd2cc", "#f4b8b0"), gear: gear(G.antike)},
+  {id: "gold", n: "⛏️ Goldrausch", how: "Boss von Welt 2 besiegen", ok: () => !!SLS.b[1], bull: pal("#3fae6a", "#1f7a44", "#bfeccf"), bear: pal("#c8503a", "#8a2e1e", "#f4c8b8", "#eab4a0"), gear: gear(G.gold)},
+  {id: "ritter", n: "🛡️ Ritter", how: "Boss von Welt 3 besiegen", ok: () => !!SLS.b[2], bull: pal("#4ab878", "#2a8050", "#c4f0d6"), bear: pal("#b8484a", "#8a2a2c", "#f0c0c0", "#f0b0b0"), gear: gear(G.ritter)},
   {id: "wall", n: "🏦 Wall Street", how: "Boss von Welt 4 besiegen", ok: () => !!SLS.b[3], bull: pal("#2fa866", "#1a7a48", "#a8e8c4"), bear: pal("#d0505a", "#9a2a34", "#f8d0d4", "#f4c0c4"), gear: gear(G.wall)},
-  {id: "neon", n: "⚡ Neon", how: "Boss von Welt 5 besiegen", ok: () => !!SLS.b[4], bull: pal("#11173a", "#0b0f2a", "#232a6a", 0, "#00f0ff"), bear: pal("#11173a", "#0b0f2a", "#232a6a", "#1a2050", "#ff3df0"), gear: () => {}},
-  {id: "robot", n: "🤖 Roboter", how: "Boss von Welt 6 besiegen", ok: () => !!SLS.b[5], bull: pal("#9aa2c8", "#6a7298", "#c8cee8"), bear: pal("#6a7298", "#4a5278", "#b8c0d8", "#9aa2c8"), gear: gear(G.robot)},
-  {id: "space", n: "🚀 Weltraum", how: "Endboss besiegen", ok: () => !!SLS.b.f, bull: PAL.bull, bear: pal("#8be04a", "#5aa02a", "#e4ffb8", "#d4ff9a"), gear: gear(G.space)},
-  {id: "satoshi", n: "🥷 Satoshi", how: "Alle 10 Profi-Level schaffen", ok: () => SL_PRO.every(id => SLS.s[id] && SLS.s[id].quiz), bull: pal("#2a2f55", "#1a1d3a", "#4a5088"), bear: pal("#3a2458", "#24163a", "#5a4478", "#4a3468"), gear: gear(G.satoshi)},
-  {id: "wal", n: "🐋 Wal", how: "Geheim: einen Kauf über 1 Mio. $ live sehen", secret: 1, ok: () => !!store.album.goldwal, bull: pal("#4aa3ff", "#2a6ac8", "#cfe8ff"), bear: pal("#2a6ac8", "#1a4a90", "#a8d0ff", "#8fc0ff"), gear: gear(G.wal)},
-  {id: "liq", n: "💀 Liquidation", how: "Geheim: eine Liquidation über 1 Mio. $ sehen", secret: 1, ok: () => !!store.album.liqbig, bull: pal("#c8ccd8", "#8a90a8", "#eef0f6"), bear: pal("#a8aec4", "#6a7088", "#e0e4ee", "#d0d4e0"), gear: gear(G.liq)},
-  {id: "nacht", n: "🌙 Nachtschicht", how: "Geheim: zwischen 0 und 5 Uhr live dabei sein", secret: 1, ok: () => !!store.album.eule, bull: pal("#3a4a8a", "#24306a", "#8a9ad8"), bear: pal("#2a3470", "#1a2250", "#7a88c8", "#6a78b8"), gear: gear(G.nacht)},
-  {id: "diamant", n: "💎 Diamanthände", how: "Geheim: 30 Minuten live zuschauen", secret: 1, ok: () => !!store.album.marathon, bull: pal("#7ae8f8", "#3ab0c8", "#d8fbff"), bear: pal("#a8c8ff", "#6a90d8", "#e8f0ff", "#d8e6ff"), gear: gear(G.diamant)}
+  {id: "neon", n: "⚡ Neon", how: "Boss von Welt 5 besiegen", ok: () => !!SLS.b[4], bull: pal("#11173a", "#0b0f2a", "#232a6a", 0, "#39ff88"), bear: pal("#11173a", "#0b0f2a", "#232a6a", "#1a2050", "#ff3d6a"), gear: () => {}},
+  {id: "robot", n: "🤖 Roboter", how: "Boss von Welt 6 besiegen", ok: () => !!SLS.b[5], bull: pal("#8ac8a0", "#5a9a72", "#d4f0de"), bear: pal("#d0868e", "#a05a62", "#f4d4d8", "#e8bcc2"), gear: gear(G.robot)},
+  {id: "space", n: "🚀 Weltraum", how: "Endboss besiegen", ok: () => !!SLS.b.f, bull: PAL.bull, bear: pal("#ff6a8a", "#c83a5a", "#ffd4de", "#ffc0cc"), gear: gear(G.space)},
+  {id: "satoshi", n: "🥷 Satoshi", how: "Alle 10 Profi-Level schaffen", ok: () => SL_PRO.every(id => SLS.s[id] && SLS.s[id].quiz), bull: pal("#1f4a36", "#12301f", "#3a7a5a"), bear: pal("#4a1a26", "#2e0f17", "#7a3a4a", "#6a2e3c"), gear: gear(G.satoshi)},
+  {id: "magier", n: "🧙 Magier", how: "Arena: Satoshis Geist erleben (goldenes Denkmal)", ok: () => !!store.album.satoshi, bull: pal("#4ac48a", "#22905c", "#c4f4da"), bear: pal("#e8506a", "#b02a44", "#ffd4dc", "#ffb8c4"), gear: gear(G.magier)},
+  {id: "candy", n: "🍬 Candy", how: "Arena: eine Schnapszahl beim Kurs sehen", ok: () => !!store.album.schnaps, bull: pal("#7ae8b0", "#3ab880", "#dcfff0"), bear: pal("#ff8ab0", "#d8508a", "#ffdcea", "#ffc8dc"), gear: gear(G.candy)},
+  {id: "lava", n: "🌋 Lava & Eis", how: "Arena: live durch ein Portal in eine neue Welt", ok: () => !!store.album.portal, bull: pal("#3a1414", "#220a0a", "#6a2a1a", 0, "#ff6a2a"), bear: pal("#d8f0ff", "#8ac0e0", "#ffffff", "#eef8ff", "#2a7ad8"), gear: () => {}},
+  {id: "wal", n: "🐋 Wal", how: "Geheim: einen Kauf über 1 Mio. $ live sehen", secret: 1, ok: () => !!store.album.goldwal, bull: pal("#3ac0a0", "#1f8a70", "#c0f4e6"), bear: pal("#c8507a", "#8a2a50", "#f4c8d8", "#eab4c8"), gear: gear(G.wal)},
+  {id: "liq", n: "💀 Liquidation", how: "Geheim: eine Liquidation über 1 Mio. $ sehen", secret: 1, ok: () => !!store.album.liqbig, bull: pal("#9cc8ac", "#6a9a7a", "#e4f4ea"), bear: pal("#d0a0a6", "#9a6a72", "#f4e0e2", "#ecd0d4"), gear: gear(G.liq)},
+  {id: "nacht", n: "🌙 Nachtschicht", how: "Geheim: zwischen 0 und 5 Uhr live dabei sein", secret: 1, ok: () => !!store.album.eule, bull: pal("#2a6a5a", "#1a4a3e", "#7ab8a8"), bear: pal("#7a2a4a", "#521a32", "#c07a96", "#a86a84"), gear: gear(G.nacht)},
+  {id: "diamant", n: "💎 Diamanthände", how: "Geheim: 30 Minuten live zuschauen", secret: 1, ok: () => !!store.album.marathon, bull: pal("#4ae8a0", "#20b070", "#d0ffe8"), bear: pal("#ff5c8a", "#c02a5a", "#ffd0e0", "#ffc0d4"), gear: gear(G.diamant)}
 ];
 let SKIN = null, inPrev = false;
 const skin = () => SKIN || (SKIN = SKINS.find(k => k.id === store.skin && k.ok()) || SKINS[0]);
