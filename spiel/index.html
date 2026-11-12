@@ -279,12 +279,12 @@ body.stream .welcome{display:none}
     <div class="stats" id="stats"></div>
     </div>
     <div role="tabpanel" id="pane-skins" aria-labelledby="tab-skins" hidden>
-    <div class="ph"><h2>Skin-Sets</h2><span id="skinCount">1 / 16 freigeschaltet</span></div>
+    <div class="ph"><h2>Skin-Sets</h2><span id="skinCount">1 / 7 freigeschaltet</span></div>
     <div class="skins" id="skins"></div>
     <!-- DEV-START: Entwickler-Knopf, vor Veröffentlichung entfernen -->
     <button class="pill" id="devSkins" type="button" style="margin-top:10px;background:#ff5c73;color:#fff;border:0">🛠️ DEV: alle Skins freischalten</button>
     <!-- DEV-END -->
-    <p class="wnote">Sets schaltest du in Satsland frei (Bosse besiegen, Profi-Level) oder hier in der Arena (seltene Live-Momente).</p>
+    <p class="wnote">Sets schaltest du in Satsland frei (Bosse besiegen, Profi-Level) oder hier in der Arena.</p>
     </div>
     <div role="tabpanel" id="pane-hilfe" aria-labelledby="tab-hilfe" hidden>
       <details class="legend lgroup" open><summary>Der Kampf</summary>
@@ -623,31 +623,6 @@ const pal = (main, dark, snout, belly, ink) => ({main, dark, snout, belly: belly
 const gFill = (c, w = 1.3) => { ctx.fillStyle = c; ctx.fill(); ctx.strokeStyle = C.ink; ctx.lineWidth = w; ctx.stroke(); };
 const cap = (hx, hy, r, c) => { ctx.beginPath(); ctx.ellipse(hx, hy - 7.5, r, r*.62, 0, Math.PI, TAU); ctx.closePath(); gFill(c); };
 const G = {
-  antike(b, hx, hy, r){
-    if (b){ cap(hx, hy, r + .5, C.gold); ctx.beginPath(); ctx.ellipse(hx, hy - r - 4.5, 6.5, 3.4, 0, Math.PI, TAU); ctx.closePath(); gFill("#e0405a"); }
-    else for (let i = 0; i < 7; i++){ const a = (-160 + i*23.3)*Math.PI/180, x = hx + Math.cos(a)*(r + .5), y = hy + Math.sin(a)*(r + .5);
-      ctx.beginPath(); ctx.ellipse(x, y, 2.8, 1.4, a + Math.PI/2, 0, TAU); gFill(C.gold, .8); }
-  },
-  gold(b, hx, hy, r, dir){
-    if (b){ cap(hx, hy, r*.95, "#ffc94d"); rr(hx - r - 1.5, hy - 9, 2*r + 3, 2.4, 1); gFill("#e0a52a", 1); ctx.beginPath(); ctx.arc(hx + dir*2, hy - r - 2.5, 2.3, 0, TAU); gFill("#fff6c0", 1); }
-    else { cap(hx, hy, r*.97, "#e0405a"); ctx.fillStyle = "#fff"; [-4, 0, 4].forEach(d => { ctx.beginPath(); ctx.arc(hx + d, hy - 10 - (d ? 0 : 1.5), .9, 0, TAU); ctx.fill(); });
-      ctx.beginPath(); ctx.moveTo(hx - dir*r, hy - 8); ctx.lineTo(hx - dir*(r + 5), hy - 11); ctx.lineTo(hx - dir*(r + 4), hy - 5); ctx.closePath(); gFill("#e0405a", 1); }
-  },
-  ritter(b, hx, hy, r, dir){
-    if (b){ cap(hx, hy, r + .8, "#b8c0d8"); ctx.strokeStyle = "#7cc4ff"; ctx.lineWidth = 2.6; ctx.lineCap = "round"; ctx.beginPath(); ctx.moveTo(hx, hy - r - 2); ctx.quadraticCurveTo(hx - dir*2, hy - r - 8, hx - dir*8, hy - r - 6); ctx.stroke(); }
-    else { ctx.lineCap = "round"; ctx.strokeStyle = C.ink; ctx.lineWidth = 5; ctx.beginPath(); ctx.arc(hx, hy, r + 2, .85*Math.PI, 2.15*Math.PI); ctx.stroke(); ctx.strokeStyle = "#9aa2c8"; ctx.lineWidth = 3.2; ctx.stroke(); }
-  },
-  wall(b, hx, hy, r){
-    if (b){ ctx.beginPath(); ctx.ellipse(hx - 1, hy - 8.8, r*.75, r*.32, 0, Math.PI, TAU); ctx.closePath(); gFill("#2a1a10", 1);
-      ctx.beginPath(); ctx.moveTo(6, -17); ctx.lineTo(10, -17); ctx.lineTo(9, -15); ctx.lineTo(10, -9); ctx.lineTo(8, -7); ctx.lineTo(6, -9); ctx.lineTo(7, -15); ctx.closePath(); gFill("#e0405a", 1); }
-    else { ctx.strokeStyle = C.ink; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.arc(hx - 4, hy - 2.2, 3.8, 0, TAU); ctx.moveTo(hx + 7.8, hy - 2.5); ctx.arc(hx + 4, hy - 2.5, 3.8, 0, TAU); ctx.moveTo(hx - .2, hy - 2.4); ctx.lineTo(hx + .2, hy - 2.4); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(hx, hy + 11.5); ctx.lineTo(hx - 4, hy + 9.5); ctx.lineTo(hx - 4, hy + 13.5); ctx.closePath(); ctx.moveTo(hx, hy + 11.5); ctx.lineTo(hx + 4, hy + 9.5); ctx.lineTo(hx + 4, hy + 13.5); ctx.closePath(); gFill("#e0405a", 1); }
-  },
-  robot(b, hx, hy, r){
-    ctx.strokeStyle = C.ink; ctx.lineWidth = 1.4; ctx.beginPath(); ctx.moveTo(hx, hy - r); ctx.lineTo(hx, hy - r - 6); ctx.stroke();
-    ctx.beginPath(); ctx.arc(hx, hy - r - 7, 1.9, 0, TAU); gFill(b ? "#ff5c73" : "#34d982", 1);
-    ctx.fillStyle = "rgba(13,18,48,.45)"; [-1, 1].forEach(d => { ctx.beginPath(); ctx.arc(hx + d*(r - 2), hy + 2, 1.1, 0, TAU); ctx.fill(); });
-  },
   space(b, hx, hy, r){
     if (b){ ctx.beginPath(); ctx.arc(hx, hy, r + 3, 0, TAU); ctx.fillStyle = "rgba(190,230,255,.18)"; ctx.fill(); ctx.strokeStyle = "rgba(220,240,255,.9)"; ctx.lineWidth = 1.5; ctx.stroke();
       ctx.strokeStyle = "rgba(255,255,255,.7)"; ctx.lineWidth = 1.3; ctx.beginPath(); ctx.arc(hx, hy, r, 1.15*Math.PI, 1.45*Math.PI); ctx.stroke(); }
@@ -656,18 +631,6 @@ const G = {
   satoshi(b, hx, hy, r){
     ctx.lineCap = "round"; ctx.strokeStyle = C.ink; ctx.lineWidth = 5.5; ctx.beginPath(); ctx.arc(hx, hy, r + 1.8, .8*Math.PI, 2.2*Math.PI); ctx.stroke(); ctx.strokeStyle = b ? "#1a1d3a" : "#24163a"; ctx.lineWidth = 3.6; ctx.stroke();
     ctx.fillStyle = C.gold; ctx.font = `900 6px ${FONT_D}`; ctx.textAlign = "center"; ctx.fillText("₿", hx, hy - r - .5);
-  },
-  wal(b, hx, hy, r, dir){
-    ctx.strokeStyle = "#8fd3ff"; ctx.lineWidth = 1.5; ctx.lineCap = "round"; ctx.beginPath(); ctx.moveTo(hx, hy - r - 1); ctx.lineTo(hx, hy - r - 5);
-    ctx.quadraticCurveTo(hx - 2, hy - r - 9, hx - 5, hy - r - 8); ctx.moveTo(hx, hy - r - 5); ctx.quadraticCurveTo(hx + 2, hy - r - 9, hx + 5, hy - r - 8); ctx.stroke();
-  },
-  liq(b, hx, hy, r, dir){
-    ctx.save(); ctx.translate(hx + dir*3, hy - 7); ctx.rotate(dir*.5); rr(-6, -1.6, 12, 3.2, 1); gFill("#ffffff", 1);
-    ctx.fillStyle = "#e0405a"; ctx.fillRect(-.6, -1.4, 1.2, 2.8); ctx.fillRect(-1.4, -.6, 2.8, 1.2); ctx.restore();
-  },
-  nacht(b, hx, hy, r, dir){
-    ctx.beginPath(); ctx.moveTo(hx - r*.95, hy - 7); ctx.quadraticCurveTo(hx, hy - r - 5, hx + r*.95, hy - 7); ctx.lineTo(hx - dir*13, hy - r - 7); ctx.closePath(); gFill("#3a4aa0");
-    rr(hx - r, hy - 8.5, 2*r, 2.6, 1.2); gFill("#ffffff", 1); ctx.beginPath(); ctx.arc(hx - dir*13, hy - r - 7, 2, 0, TAU); gFill("#ffffff", 1);
   },
   magier(b, hx, hy, r, dir){
     ctx.beginPath(); ctx.moveTo(hx - r*.85, hy - 7); ctx.lineTo(hx - dir*3, hy - r - 15); ctx.lineTo(hx + r*.85, hy - 7); ctx.closePath(); gFill(b ? "#2a1a5a" : "#1a2a5a");
@@ -679,9 +642,6 @@ const G = {
     ctx.strokeStyle = "#3a7a2a"; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(hx, hy - r - 3); ctx.quadraticCurveTo(hx + dir*2, hy - r - 7, hx + dir*4, hy - r - 8); ctx.stroke();
     ctx.beginPath(); ctx.arc(hx, hy - r - 2, 2.6, 0, TAU); gFill("#e0203a", 1);
     ["#ffc94d", "#7cc4ff", "#fff", "#b26bff"].forEach((c, i) => { ctx.fillStyle = c; ctx.save(); ctx.translate(hx - 6 + i*4, hy - 6 - (i % 2)*2); ctx.rotate(i); ctx.fillRect(-1.2, -.5, 2.4, 1); ctx.restore(); });
-  },
-  diamant(b, hx, hy, r){
-    const y = hy - r - 3; ctx.beginPath(); ctx.moveTo(hx - 4, y); ctx.lineTo(hx - 2.5, y - 2.6); ctx.lineTo(hx + 2.5, y - 2.6); ctx.lineTo(hx + 4, y); ctx.lineTo(hx, y + 4.5); ctx.closePath(); gFill(b ? "#9ff0ff" : "#c8dcff", 1);
   }
 };
 // Kleiner Glitzerstern
@@ -690,21 +650,12 @@ const gear = f => (b, hx, hy, r, dir) => { ctx.save(); f(b, hx, hy, r, dir); ctx
 // id, Name, Freischalt-Hinweis, Bedingung, Paletten, Kopfbedeckung (null = Welt-Ausrüstung), geheim
 const SKINS = [
   {id: "klassik", n: "🐂 Klassik", how: "Standard", ok: () => true, bull: PAL.bull, bear: PAL.bear, gear: null},
-  {id: "antike", n: "🏛️ Antike", how: "Boss von Welt 1 besiegen", ok: () => !!SLS.b[0], bull: pal("#5fbf86", "#2f8a58", "#cdf0da"), bear: pal("#d8605a", "#a03a36", "#ffd2cc", "#f4b8b0"), gear: gear(G.antike)},
-  {id: "gold", n: "⛏️ Goldrausch", how: "Boss von Welt 2 besiegen", ok: () => !!SLS.b[1], bull: pal("#3fae6a", "#1f7a44", "#bfeccf"), bear: pal("#c8503a", "#8a2e1e", "#f4c8b8", "#eab4a0"), gear: gear(G.gold)},
-  {id: "ritter", n: "🛡️ Ritter", how: "Boss von Welt 3 besiegen", ok: () => !!SLS.b[2], bull: pal("#4ab878", "#2a8050", "#c4f0d6"), bear: pal("#b8484a", "#8a2a2c", "#f0c0c0", "#f0b0b0"), gear: gear(G.ritter)},
-  {id: "wall", n: "🏦 Wall Street", how: "Boss von Welt 4 besiegen", ok: () => !!SLS.b[3], bull: pal("#2fa866", "#1a7a48", "#a8e8c4"), bear: pal("#d0505a", "#9a2a34", "#f8d0d4", "#f4c0c4"), gear: gear(G.wall)},
-  {id: "neon", n: "⚡ Neon", how: "Boss von Welt 5 besiegen", ok: () => !!SLS.b[4], bull: pal("#11173a", "#0b0f2a", "#232a6a", 0, "#39ff88"), bear: pal("#11173a", "#0b0f2a", "#232a6a", "#1a2050", "#ff3d6a"), gear: () => {}},
-  {id: "robot", n: "🤖 Roboter", how: "Boss von Welt 6 besiegen", ok: () => !!SLS.b[5], bull: pal("#8ac8a0", "#5a9a72", "#d4f0de"), bear: pal("#d0868e", "#a05a62", "#f4d4d8", "#e8bcc2"), gear: gear(G.robot)},
+  {id: "candy", n: "🍬 Candy", how: "Boss von Welt 2 besiegen", ok: () => !!SLS.b[1], bull: pal("#7ae8b0", "#3ab880", "#dcfff0"), bear: pal("#ff8ab0", "#d8508a", "#ffdcea", "#ffc8dc"), gear: gear(G.candy)},
+  {id: "magier", n: "🧙 Magier", how: "Boss von Welt 4 besiegen", ok: () => !!SLS.b[3], bull: pal("#4ac48a", "#22905c", "#c4f4da"), bear: pal("#e8506a", "#b02a44", "#ffd4dc", "#ffb8c4"), gear: gear(G.magier)},
+  {id: "neon", n: "⚡ Neon", how: "Boss von Welt 6 besiegen", ok: () => !!SLS.b[5], bull: pal("#11173a", "#0b0f2a", "#232a6a", 0, "#39ff88"), bear: pal("#11173a", "#0b0f2a", "#232a6a", "#1a2050", "#ff3d6a"), gear: () => {}},
   {id: "space", n: "🚀 Weltraum", how: "Endboss besiegen", ok: () => !!SLS.b.f, bull: PAL.bull, bear: pal("#ff6a8a", "#c83a5a", "#ffd4de", "#ffc0cc"), gear: gear(G.space)},
   {id: "satoshi", n: "🥷 Satoshi", how: "Alle 10 Profi-Level schaffen", ok: () => SL_PRO.every(id => SLS.s[id] && SLS.s[id].quiz), bull: pal("#1f4a36", "#12301f", "#3a7a5a"), bear: pal("#4a1a26", "#2e0f17", "#7a3a4a", "#6a2e3c"), gear: gear(G.satoshi)},
-  {id: "magier", n: "🧙 Magier", how: "Arena: Satoshis Geist erleben (goldenes Denkmal)", ok: () => !!store.album.satoshi, bull: pal("#4ac48a", "#22905c", "#c4f4da"), bear: pal("#e8506a", "#b02a44", "#ffd4dc", "#ffb8c4"), gear: gear(G.magier)},
-  {id: "candy", n: "🍬 Candy", how: "Arena: eine Schnapszahl beim Kurs sehen", ok: () => !!store.album.schnaps, bull: pal("#7ae8b0", "#3ab880", "#dcfff0"), bear: pal("#ff8ab0", "#d8508a", "#ffdcea", "#ffc8dc"), gear: gear(G.candy)},
-  {id: "lava", n: "🌋 Lava & Eis", how: "Arena: live durch ein Portal in eine neue Welt", ok: () => !!store.album.portal, bull: pal("#3a1414", "#220a0a", "#6a2a1a", 0, "#ff6a2a"), bear: pal("#d8f0ff", "#8ac0e0", "#ffffff", "#eef8ff", "#2a7ad8"), gear: () => {}},
-  {id: "wal", n: "🐋 Wal", how: "Geheim: einen Kauf über 1 Mio. $ live sehen", secret: 1, ok: () => !!store.album.goldwal, bull: pal("#3ac0a0", "#1f8a70", "#c0f4e6"), bear: pal("#c8507a", "#8a2a50", "#f4c8d8", "#eab4c8"), gear: gear(G.wal)},
-  {id: "liq", n: "💀 Liquidation", how: "Geheim: eine Liquidation über 1 Mio. $ sehen", secret: 1, ok: () => !!store.album.liqbig, bull: pal("#9cc8ac", "#6a9a7a", "#e4f4ea"), bear: pal("#d0a0a6", "#9a6a72", "#f4e0e2", "#ecd0d4"), gear: gear(G.liq)},
-  {id: "nacht", n: "🌙 Nachtschicht", how: "Geheim: zwischen 0 und 5 Uhr live dabei sein", secret: 1, ok: () => !!store.album.eule, bull: pal("#2a6a5a", "#1a4a3e", "#7ab8a8"), bear: pal("#7a2a4a", "#521a32", "#c07a96", "#a86a84"), gear: gear(G.nacht)},
-  {id: "diamant", n: "💎 Diamanthände", how: "Geheim: 30 Minuten live zuschauen", secret: 1, ok: () => !!store.album.marathon, bull: pal("#4ae8a0", "#20b070", "#d0ffe8"), bear: pal("#ff5c8a", "#c02a5a", "#ffd0e0", "#ffc0d4"), gear: gear(G.diamant)}
+  {id: "lava", n: "🌋 Lava & Eis", how: "Arena: live durch ein Portal in eine neue Welt", ok: () => !!store.album.portal, bull: pal("#3a1414", "#220a0a", "#6a2a1a", 0, "#ff6a2a"), bear: pal("#d8f0ff", "#8ac0e0", "#ffffff", "#eef8ff", "#2a7ad8"), gear: () => {}}
 ];
 let SKIN = null, inPrev = false;
 const okS = k => !!store.devSkins || k.ok();   // devSkins: Entwickler-Schalter, vor Veröffentlichung entfernen
