@@ -15,10 +15,11 @@
 .idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
 .task{margin-top:14px;font-size:17px;font-weight:700} .task span{color:var(--gold)}
 .hint{margin:2px 0 0;font-size:14px;color:var(--muted)}
-.coins{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;padding:14px 10px 12px}
-.wlt{margin-top:12px;border-radius:22px;border:3px solid #0d1230;background:linear-gradient(#7a4a2a,#5a3418);box-shadow:4px 4px 0 #0d1230,inset 0 0 0 3px rgba(255,255,255,.08);position:relative}
-.wlt::after{content:"";position:absolute;inset:8px;border:2px dashed rgba(255,220,170,.35);border-radius:16px;pointer-events:none}
-.wlh{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap;padding:10px 16px 0;font:900 15px var(--f-display);color:#ffe2b8} .wlh small{font:600 12px var(--f-body);color:#e8c9a0}
+.coins{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;padding:16px 10px;margin:0 10px 10px;border-radius:16px;background:rgba(0,0,0,.28);box-shadow:inset 0 3px 8px rgba(0,0,0,.45)}
+.wlt{margin-top:12px;border-radius:22px;border:3px solid #0d1230;background:linear-gradient(160deg,#2b347f,#161c4f);box-shadow:5px 5px 0 #0d1230;overflow:hidden;position:relative}
+.wlt::before{content:"";position:absolute;right:-30px;top:-30px;width:120px;height:120px;border-radius:50%;background:radial-gradient(rgba(247,147,26,.35),transparent 70%);pointer-events:none}
+.wlh{display:flex;align-items:center;gap:10px;padding:12px 14px} .wlh .wi{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-size:22px;background:#f7931a;border:2.5px solid #0d1230;box-shadow:2px 2px 0 #0d1230}
+.wlh b{display:block;font:900 16px var(--f-display)} .wlh small{display:block;font-size:12px;color:var(--muted)} .wlh em{margin-left:auto;font:900 17px var(--f-num);font-style:normal;color:var(--gold);white-space:nowrap}
 .coin{width:92px;height:92px;border-radius:50%;border:3px solid #b8700f;background:radial-gradient(circle at 35% 30%,#ffc46b,#f7931a 60%,#c66f08);color:#2a1600;font:800 14px var(--f-num);display:grid;place-items:center;text-align:center;cursor:pointer;line-height:1.15;transition:transform .15s,box-shadow .15s,opacity .3s}
 .coin small{display:block;font:600 10px var(--f-num);opacity:.75;white-space:nowrap}
 .coin[aria-pressed="true"]{transform:translateY(-6px);box-shadow:0 0 0 3px #fff,0 8px 18px rgba(0,0,0,.4)}
@@ -47,19 +48,19 @@
   <div class="top"><a class="back" href="../">← Satsland</a><a class="back" href="../lexikon/">📖 Lexikon</a></div>
   <div>
     <h1><span class="btc">Wechselgeld</span>-Kasse</h1>
-    <p class="lead">In deiner Wallet liegt kein Kontostand, sondern lauter einzelne <b>Bitcoin-Münzen</b>. Bezahlen funktioniert fast wie mit Bargeld.</p>
+    <p class="lead">In deiner Wallet liegt kein Kontostand, sondern lauter einzelne <b>Bitcoin-Beträge</b>, wie Scheine im Portemonnaie. Bezahlen funktioniert fast wie mit Bargeld.</p>
   </div>
 
   <section class="card" aria-labelledby="h1s">
-    <h2 id="h1s">Bezahl mit deinen Münzen <span class="mode" id="mode">Verbinde …</span></h2>
-    <div class="idea">Eine Münze kannst du <b>nicht teilen</b>. Du gibst sie <b>ganz</b> aus. Was zu viel ist, kommt als <b>Wechselgeld</b> zu dir zurück, als neue Münze. Ein kleiner Rest geht als <b>Gebühr</b> an die Miner. Fachwort für so eine Münze: <b>UTXO</b> (unausgegebener Betrag).</div>
+    <h2 id="h1s">Bezahl mit deinen Bitcoin <span class="mode" id="mode">Verbinde …</span></h2>
+    <div class="idea">Jeden Bitcoin-Betrag, den du bekommen hast, kannst du <b>nicht teilen</b>. Du gibst ihn <b>ganz</b> aus. Was zu viel ist, kommt als <b>Wechselgeld</b> zu dir zurück, als neuer Betrag. Ein kleiner Rest geht als <b>Gebühr</b> an die Miner. Fachwort für so einen Betrag: <b>UTXO</b> (unausgegebener Betrag).</div>
     <p class="task" id="task"></p>
-    <p class="hint">Tippe auf Münzen, bis es reicht. Dann auf „Senden“.</p>
-    <div class="wlt"><div class="wlh"><span>👛 Deine Wallet</span><small>Guthaben = Summe aller Münzen</small></div><div class="coins" id="coins"></div></div>
+    <p class="hint">Tippe auf deine Bitcoin, bis es reicht. Dann auf „Senden“.</p>
+    <div class="wlt"><div class="wlh"><span class="wi">👛</span><span><b>Deine Wallet</b><small>Guthaben = alle Beträge zusammen</small></span><em id="bal">–</em></div><div class="coins" id="coins"></div></div>
     <div class="tx">
-      <div class="col"><h3>Rein: diese Münzen gibst du aus</h3><ul id="ins"></ul></div>
+      <div class="col"><h3>Rein: diese Bitcoin gibst du aus</h3><ul id="ins"></ul></div>
       <span class="arr" aria-hidden="true">→</span>
-      <div class="col"><h3>Raus: daraus werden neue Münzen</h3><ul id="outs"></ul></div>
+      <div class="col"><h3>Raus: daraus werden neue Beträge</h3><ul id="outs"></ul></div>
     </div>
     <div class="st" id="st" aria-live="polite"></div>
     <div class="acts"><button class="btn" id="send" type="button" disabled>📤 Senden</button><button class="btn ghost" id="reset" type="button">↺ Von vorn</button></div>
@@ -67,7 +68,7 @@
 
   <section class="card" aria-labelledby="h2s">
     <h2 id="h2s">Eine echte Zahlung von gerade eben <span class="mode" id="mode2">Verbinde …</span></h2>
-    <p class="muted" style="margin:0">So sieht eine Transaktion aus, die gerade im Bitcoin-Netz unterwegs ist. Genau dasselbe Prinzip: Münzen rein, neue Münzen raus, der Rest ist Gebühr.</p>
+    <p class="muted" style="margin:0">So sieht eine Transaktion aus, die gerade im Bitcoin-Netz unterwegs ist. Genau dasselbe Prinzip: Bitcoin rein, neue Beträge raus, der Rest ist Gebühr.</p>
     <div class="real" id="real"><p class="muted">Lade …</p></div>
     <div class="acts"><button class="btn ghost" id="again" type="button">🔄 Andere Zahlung</button></div>
   </section>
@@ -75,16 +76,16 @@
   <section class="card" aria-labelledby="h3s">
     <h2 id="h3s">Das solltest du dir merken</h2>
     <div class="learn">
-      <div><b>Münzen statt Kontostand</b><span>Dein „Guthaben“ ist nur die <b>Summe deiner Münzen</b>. Die Wallet zählt sie für dich zusammen.</span></div>
-      <div><b>Ganz oder gar nicht</b><span>Eine Münze wird immer <b>komplett</b> ausgegeben. Der Rest kommt als Wechselgeld zurück.</span></div>
-      <div><b>Gebühr nach Größe</b><span>Die Gebühr hängt nicht vom Betrag ab, sondern davon, <b>wie viele Münzen</b> du einsetzt. Viele kleine Münzen machen es teurer.</span></div>
+      <div><b>Beträge statt Kontostand</b><span>Dein „Guthaben“ ist nur die <b>Summe deiner Bitcoin-Beträge</b>. Die Wallet zählt sie für dich zusammen.</span></div>
+      <div><b>Ganz oder gar nicht</b><span>Ein Betrag wird immer <b>komplett</b> ausgegeben. Der Rest kommt als Wechselgeld zurück.</span></div>
+      <div><b>Gebühr nach Größe</b><span>Die Gebühr hängt nicht vom Betrag ab, sondern davon, <b>wie viele Beträge</b> du einsetzt. Viele kleine Beträge machen es teurer.</span></div>
       <div><b>Neue Adresse</b><span>Gute Wallets schicken das Wechselgeld an eine <b>neue Adresse</b> von dir. Das schützt deine Privatsphäre.</span></div>
     </div>
     <details class="qz"><summary>Teste dich: 3 Fragen</summary><div id="quiz"></div></details>
   </section>
 
   <section class="card next" id="next" aria-label="Weiter"></section>
-  <details class="foot"><summary>Quellen</summary><p>Gebühren-Satz und echte Transaktionen live von <a href="https://mempool.space">mempool.space</a>. Die Gebühr in der Übung ist geschätzt: etwa 68 vByte pro Münze rein, 31 vByte pro Münze raus, plus 11 vByte Grundgröße (typisch für moderne Adressen).</p></details>
+  <details class="foot"><summary>Quellen</summary><p>Gebühren-Satz und echte Transaktionen live von <a href="https://mempool.space">mempool.space</a>. Die Gebühr in der Übung ist geschätzt: etwa 68 vByte pro Betrag rein, 31 vByte pro Betrag raus, plus 11 vByte Grundgröße (typisch für moderne Adressen).</p></details>
   <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
 </div>
 
@@ -92,7 +93,7 @@
 <script>
 /* =====================================================================
    WECHSELGELD-KASSE – Lernwelt von Satsland
-   Übung: Münzen (UTXOs) auswählen, Wechselgeld und Gebühr sehen.
+   Übung: Bitcoin-Beträge (UTXOs) auswählen, Wechselgeld und Gebühr sehen.
    Live: Gebühren-Satz und eine echte Transaktion von mempool.space.
    ===================================================================== */
 (() => {
@@ -116,6 +117,7 @@ function draw(){
     b.onclick = () => { sel.has(c.id) ? sel.delete(c.id) : sel.add(c.id); draw(); };
     $("coins").appendChild(b); c.fresh = false;
   });
+  $("bal").textContent = btc(coins.reduce((a, c) => a + c.v, 0));
   calc();
 }
 // Berechnet Wechselgeld und Gebühr für die aktuelle Auswahl
@@ -128,12 +130,12 @@ function plan(){
 }
 function calc(){
   const p = plan(), who = TASKS[t % TASKS.length][0];
-  $("ins").innerHTML = p.use.length ? p.use.map(c => `<li><span>🪙 Münze</span><b>${btc(c.v)}</b></li>`).join("") + `<li class="sum"><span>Summe</span><b>${btc(p.sum)}</b></li>` : `<li class="muted">noch keine Münze gewählt</li>`;
+  $("ins").innerHTML = p.use.length ? p.use.map(c => `<li><span>🟠 Bitcoin</span><b>${btc(c.v)}</b></li>`).join("") + `<li class="sum"><span>Summe</span><b>${btc(p.sum)}</b></li>` : `<li class="muted">noch nichts gewählt</li>`;
   $("outs").innerHTML = p.ok ? `<li><span>👤 an ${who}</span><b>${btc(p.amt)}</b></li>` + (p.chg > 0 ? `<li class="chg"><span>↩️ Wechselgeld an dich</span><b>${btc(p.chg)}</b></li>` : "") + `<li class="fee"><span>⛏ Gebühr an Miner</span><b>${p.fee.toLocaleString("de-DE")} sats</b></li>` : `<li class="muted">reicht noch nicht</li>`;
   const st = $("st");
-  if (!p.use.length){ st.className = "st"; st.textContent = "Wähle Münzen aus, die zusammen mindestens den Betrag ergeben."; }
-  else if (!p.ok){ st.className = "st bad"; const miss = p.amt - p.sum; st.textContent = miss > 0 ? `Es fehlen noch ${btc(miss)} (plus Gebühr). Nimm eine weitere Münze dazu.` : "Der Betrag ist erreicht, aber für die Gebühr reicht es nicht. Nimm eine weitere Münze dazu."; }
-  else { st.className = "st ok"; st.innerHTML = `Passt! ${p.use.length} Münze${p.use.length > 1 ? "n" : ""} = <b>${vbytes(p.use.length, p.chg > 0 ? 2 : 1)} vByte</b> × ${rate.toLocaleString("de-DE")} sat/vB = Gebühr.${p.use.length > 1 ? " Jede zusätzliche Münze macht die Zahlung größer und damit teurer." : ""}`; }
+  if (!p.use.length){ st.className = "st"; st.textContent = "Wähle Bitcoin aus, die zusammen mindestens den Betrag ergeben."; }
+  else if (!p.ok){ st.className = "st bad"; const miss = p.amt - p.sum; st.textContent = miss > 0 ? `Es fehlen noch ${btc(miss)} (plus Gebühr). Nimm noch einen Betrag dazu.` : "Der Betrag ist erreicht, aber für die Gebühr reicht es nicht. Nimm noch einen Betrag dazu."; }
+  else { st.className = "st ok"; st.innerHTML = `Passt! ${p.use.length} Betr${p.use.length > 1 ? "äge" : "ag"} = <b>${vbytes(p.use.length, p.chg > 0 ? 2 : 1)} vByte</b> × ${rate.toLocaleString("de-DE")} sat/vB = Gebühr.${p.use.length > 1 ? " Jeder zusätzliche Betrag macht die Zahlung größer und damit teurer." : ""}`; }
   $("send").disabled = !p.ok;
 }
 $("send").onclick = () => {
@@ -144,7 +146,7 @@ $("send").onclick = () => {
   const left = coins.reduce((a, c) => a + c.v, 0), need = TASKS[t % TASKS.length][1];
   draw();
   $("st").className = "st ok";
-  $("st").innerHTML = `✓ Gesendet. Die ${p.use.length > 1 ? p.use.length + " Münzen sind" : "Münze ist"} jetzt <b>komplett weg</b>${p.chg > 0 ? `, dafür hast du eine <b>neue Münze</b> über ${btc(p.chg)} als Wechselgeld (an eine neue Adresse von dir)` : ""}.` + (left < need ? ` Für die nächste Aufgabe reicht dein Geld nicht mehr. Tippe „Von vorn“.` : "");
+  $("st").innerHTML = `✓ Gesendet. Die ausgegebenen Bitcoin sind jetzt <b>komplett weg</b>${p.chg > 0 ? `, dafür hast du einen <b>neuen Betrag</b> über ${btc(p.chg)} als Wechselgeld (an eine neue Adresse von dir)` : ""}.` + (left < need ? ` Für die nächste Aufgabe reicht dein Geld nicht mehr. Tippe „Von vorn“.` : "");
 };
 $("reset").onclick = reset;
 
@@ -160,7 +162,7 @@ async function real(){
     const tx = await (await fetch(MP + "tx/" + pick.txid)).json();
     const ins = tx.vin.map(v => v.prevout ? v.prevout.value : 0), outs = tx.vout.map(v => v.value);
     const li = a => a.slice(0, 6).map(v => `<li>🪙 ${btc(v)}</li>`).join("") + (a.length > 6 ? `<li class="muted">… und ${a.length - 6} weitere</li>` : "");
-    $("real").innerHTML = `<div class="col"><b>Rein: ${ins.length} Münze${ins.length > 1 ? "n" : ""}</b><ul>${li(ins)}</ul></div><span class="arr" aria-hidden="true">→</span><div class="col"><b>Raus: ${outs.length} Münze${outs.length > 1 ? "n" : ""}</b><ul>${li(outs)}</ul></div>
+    $("real").innerHTML = `<div class="col"><b>Rein: ${ins.length} Betr${ins.length > 1 ? "äge" : "ag"}</b><ul>${li(ins)}</ul></div><span class="arr" aria-hidden="true">→</span><div class="col"><b>Raus: ${outs.length} Betr${outs.length > 1 ? "äge" : "ag"}</b><ul>${li(outs)}</ul></div>
       <p class="note" style="grid-column:1/-1">Gebühr: <b>${tx.fee.toLocaleString("de-DE")} sats</b> = alles, was rein ging, minus alles, was raus geht. <a href="https://mempool.space/tx/${tx.txid}" rel="noopener">Auf mempool.space ansehen</a></p>`;
     $("mode2").className = "mode live"; $("mode2").textContent = "Live";
   } catch(e){ $("real").innerHTML = `<p class="muted">Gerade keine Verbindung zu mempool.space.</p>`; $("mode2").className = "mode demo"; $("mode2").textContent = "Keine Live-Daten"; }
@@ -169,8 +171,8 @@ $("again").onclick = real; real();
 reset();
 
 const QUIZ = [
-  ["Du hast eine Münze über 0,05 BTC und zahlst 0,01 BTC. Was passiert?", ["Von der Münze werden 0,01 BTC abgezogen", "Die ganze Münze wird ausgegeben, etwa 0,04 BTC kommen als Wechselgeld zurück", "Das geht nicht"], 1, "Münzen (UTXOs) werden immer ganz ausgegeben. Der Rest kommt als neue Münze zu dir zurück, minus Gebühr."],
-  ["Wovon hängt die Gebühr vor allem ab?", ["Vom Betrag", "Von der Größe der Transaktion, also wie viele Münzen rein und raus gehen", "Von der Uhrzeit"], 1, "Miner werden pro vByte bezahlt. Mehr Münzen bedeuten mehr Daten und damit eine höhere Gebühr, egal wie groß der Betrag ist."],
+  ["Du hast einen Bitcoin-Betrag über 0,05 BTC und zahlst 0,01 BTC. Was passiert?", ["Von dem Betrag werden 0,01 BTC abgezogen", "Der ganze Betrag wird ausgegeben, etwa 0,04 BTC kommen als Wechselgeld zurück", "Das geht nicht"], 1, "Beträge (UTXOs) werden immer ganz ausgegeben. Der Rest kommt als neuer Betrag zu dir zurück, minus Gebühr."],
+  ["Wovon hängt die Gebühr vor allem ab?", ["Vom Betrag", "Von der Größe der Transaktion, also wie viele Beträge rein und raus gehen", "Von der Uhrzeit"], 1, "Miner werden pro vByte bezahlt. Mehr Beträge bedeuten mehr Daten und damit eine höhere Gebühr, egal wie groß der Betrag ist."],
   ["Wohin schickt eine gute Wallet das Wechselgeld?", ["An den Empfänger", "An eine neue Adresse, die dir gehört", "An die Miner"], 1, "Eine neue Adresse macht es schwerer, deine Zahlungen miteinander zu verbinden. Das schützt deine Privatsphäre."],
 ];
 Lern.quiz($("quiz"), "utxo", QUIZ, "../"); Lern.visit("utxo"); Lern.renderNext("utxo", "../");
