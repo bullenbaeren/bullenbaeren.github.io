@@ -187,7 +187,7 @@ function demoBlocks(){
 }
 function demoStep(dt){
   if (mode !== "demo") return;
-  if ((demoIn -= dt) <= 0){ demoIn = rnd(25, 60); newBlock({height: tip.h + 1, timestamp: Date.now()/1000, tx_count: mblocks[0].nTx, extras: {feeRange: mblocks[0].feeRange, pool: {name: ["Foundry USA", "AntPool", "ViaBTC", "F2Pool"][Math.floor(Math.random()*4)]}}}); setTimeout(demoBlocks, 2600); }
+  if ((demoIn -= dt) <= 0){ demoIn = rnd(25, 60); newBlock({height: tip.h + 1, timestamp: Date.now()/1000, tx_count: mblocks[0].nTx, extras: {feeRange: mblocks[0].feeRange, pool: {name: ["Foundry USA", "AntPool", "ViaBTC", "F2Pool"][Math.floor(Math.random()*4)]}}});  }
 }
 
 // ---------- Neuer Block = Zug fährt ab ----------
@@ -211,7 +211,13 @@ function newBlock(b){
 $("simB").onclick = () => { if (!mblocks || (anim && t - anim.t0 < 5.2)) return;
   if (mode === "demo"){ demoIn = rnd(25, 60); newBlock({height: tip.h + 1, timestamp: Date.now()/1000, tx_count: mblocks[0].nTx, extras: {feeRange: mblocks[0].feeRange, pool: {name: "Demo-Miner"}}}); return; }
   anim = {t0: t, h: tip.h + 1, pool: "", n: mblocks[0].nTx, sim: true};
-  say(`<b>So läuft es ab:</b> Ein Miner findet den nächsten Block. Die rund <b>${fmt(mblocks[0].nTx)}</b> Fahrgäste aus Abschnitt 1, also die mit der höchsten Gebühr, steigen ein, der Zug fährt ab und ihre Zahlungen sind <b>bestätigt</b>. Die anderen rücken auf. (Vorschau, der echte nächste Block kommt in ~10 Min.)`); };
+  say(`<b>So läuft es ab:</b> Ein Miner findet den nächsten Block. Die rund <b>${fmt(mblocks[0].nTx)}</b> Fahrgäste aus Abschnitt 1, also die mit der höchsten Gebühr, steigen ein, der Zug fährt ab und ihre Zahlungen sind <b>bestätigt</b>. Alle anderen <b>rücken einen Zug auf</b>.${mine && mine.state === "wait" ? (mine.fee >= mblocks[0].feeRange[0] ? " Dein Übungs-Fahrgast wäre jetzt mit eingestiegen." : " Dein Übungs-Fahrgast rückt mit auf.") : ""} (Vorschau, der echte nächste Block kommt in ~10 Min.)`); };
+
+// Nach der Abfahrt rücken alle einen Abschnitt nach vorne
+let shiftT = -9;
+function shiftZones(){ if (!mblocks || !mblocks.length) return; const last = mblocks[mblocks.length - 1];
+  mblocks = [...mblocks.slice(1), {nTx: last.nTx, feeRange: last.feeRange.map(v => Math.max(1, v*.8)), medianFee: Math.max(1, last.medianFee*.8)}];
+  layoutCrowd(); renderYou(); shiftT = t; }
 
 // ---------- Fahrgäste auf dem Bahnsteig ----------
 // Abschnitt 1 = nächster Block, 2 = übernächster, 3 = alle weiteren. 1 Figur steht für mehrere Transaktionen.
@@ -347,12 +353,14 @@ function draw(){
   ctx.fillStyle = "#20233a"; ctx.fillRect(0, plY + H*.06, W, H);
   ctx.strokeStyle = "#5b6079"; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(0, trY - 3); ctx.lineTo(W, trY - 3); ctx.moveTo(0, trY + 4); ctx.lineTo(W, trY + 4); ctx.stroke();
   // Zug: steht links; bei neuem Block steigen Abschnitt-1-Fahrgäste ein, Zug fährt nach links, neuer kommt von rechts
-  let tx = 14*k, boarding = 0;
+  // Zug hält direkt vor Abschnitt 1 (nicht ganz links am Rand)
+  const z0 = zoneRect(0), tx0 = Math.max(14*k, z0.x + z0.w/2 - 85*k*1.2);
+  let tx = tx0, boarding = 0;
   if (anim){
     const a = t - anim.t0;
     if (a < 1.4) boarding = a/1.4;
-    else if (a < 3.2) tx = 14*k - Math.pow((a - 1.4)/1.8, 2)*(W*.6);
-    else if (a < 5.2) tx = 14*k + (1 - easeOut((a - 3.2)/2))*W;
+    else if (a < 3.2) tx = tx0 - Math.pow((a - 1.4)/1.8, 2)*(tx0 + 180*k*1.2);
+    else if (a < 5.2){ tx = tx0 + (1 - easeOut((a - 3.2)/2))*W; if (!anim.shifted && (anim.sim || mode === "demo")){ anim.shifted = true; shiftZones(); } }
     else anim = null;
     if (a >= 1.4 && a < 3.2 && !reduce && Math.random() < .4) puffs.push({x: tx + 11*k*1.2, y: trY - 64*k, life: 1});
   }
@@ -372,6 +380,7 @@ function draw(){
       list.forEach((p, i) => {
         let px = zr.x + sp*(i % cols + .5) + ((Math.floor(i/cols)) % 2 ? sp*.3 : 0), py = plY - 6*k - Math.floor(i/cols)*15*k;
         if (py < plY - 112*k) return;
+        if (zi < 2 && t - shiftT < 1.2){ const q = 1 - easeOut((t - shiftT)/1.2); px += (zoneRect(zi + 1).x - zr.x)*q; }   // aufrücken
         if (zi === 0 && boarding){ px += (tx + 110*k - px)*easeOut(boarding); py += (trY - 40*k - py)*easeOut(boarding); if (boarding > .85) return; }
         passenger(px, py, k*1.05, ZCOL[zi], p.ph, false);
       });

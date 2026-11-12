@@ -119,7 +119,7 @@ details.fold[open] > summary{margin-bottom:12px}
 .ibox h2{margin:12px 0 6px;font:900 24px var(--f-display)} .ibox p{margin:0 0 16px;font-size:16px;line-height:1.5;color:var(--muted)} .ibox p b{color:var(--ink)}
 .ipic{display:grid;place-items:center;height:110px} .ipic img{border-radius:22%;filter:drop-shadow(0 8px 18px #0008)} .ipic .ib{width:96px;height:96px;display:block} .ipic .ib svg{width:100%;height:100%}
 .idots{display:flex;justify-content:center;gap:6px;margin-bottom:14px} .idots i{width:8px;height:8px;border-radius:50%;background:#3a4280} .idots i.on{background:var(--gold);width:22px;border-radius:4px}
-.ibox .ign{width:100%} .isk{position:absolute;right:12px;top:10px;background:none;border:0;color:var(--muted);font:700 13px var(--f-body);cursor:pointer;padding:6px}
+.ibox .ign{width:100%} .card.path.hl{animation:hlp 1.2s 2} @keyframes hlp{50%{box-shadow:0 0 0 4px #ffc94d,0 0 30px rgba(255,201,77,.6)}} .isk{position:absolute;right:12px;top:10px;background:none;border:0;color:var(--muted);font:700 13px var(--f-body);cursor:pointer;padding:6px}
 </style>
 </head>
 <body>
@@ -263,10 +263,10 @@ details.fold[open] > summary{margin-bottom:12px}
       ["map", `6 Welten, ${Lern.PATH.length} Level`, "Jedes Level dauert nur ein paar Minuten: <b>ausprobieren, lesen, 3 Quizfragen</b>. Am Ende jeder Welt wartet ein <b>Boss</b>, ganz oben Satoshi."],
       ["pro", "Profi-Pfad & Tagesfrage", "Wer tiefer will, findet nach jedem Boss <b>🔬 Vertiefungen</b>. Jeden Tag gibt es eine neue <b>🔥 Tagesfrage</b>. Dein Fortschritt bleibt nur in diesem Browser."]];
     let i = 0; const o = document.createElement("div"); o.className = "intro"; o.setAttribute("role", "dialog"); o.setAttribute("aria-modal", "true"); o.setAttribute("aria-label", "Einführung"); document.body.appendChild(o);
-    const end = go => { try { localStorage.setItem("satsland-intro", "1"); } catch(e){} o.remove(); if (go) location.href = Lern.TITLES[Lern.PATH[0][0]][1]; };
+    const end = go => { try { localStorage.setItem("satsland-intro", "1"); } catch(e){} o.remove(); if (go){ const pc = document.querySelector(".card.path"); if (pc){ pc.scrollIntoView({behavior: "smooth", block: "start"}); pc.classList.add("hl"); setTimeout(() => pc.classList.remove("hl"), 2600); } Lern.say && setTimeout(() => Lern.say("Das ist dein Lernpfad. Tipp auf START, dann geht's mit Level 1-1 los!", 6000), 900); } };
     const pic = k => k === "icon" ? `<img src="icon.svg" alt="" width="96" height="96">` : k === "map" ? `<span class="ib">${Lern.art("go")}</span>` : `<span class="ib">${Lern.art("atom")}</span>`;
     const show = () => { const [k, t, x] = IT[i];
-      o.innerHTML = `<div class="ibox"><button type="button" class="isk">Überspringen</button><div class="ipic">${pic(k)}</div><h2>${t}</h2><p>${x}</p><div class="idots">${IT.map((_, j) => `<i class="${j === i ? "on" : ""}"></i>`).join("")}</div><button type="button" class="btn ign">${i < IT.length - 1 ? "Weiter →" : "🚀 Los geht's mit Level 1-1"}</button></div>`;
+      o.innerHTML = `<div class="ibox"><button type="button" class="isk">Überspringen</button><div class="ipic">${pic(k)}</div><h2>${t}</h2><p>${x}</p><div class="idots">${IT.map((_, j) => `<i class="${j === i ? "on" : ""}"></i>`).join("")}</div><button type="button" class="btn ign">${i < IT.length - 1 ? "Weiter →" : "🗺️ Zum Lernpfad"}</button></div>`;
       o.querySelector(".isk").onclick = () => end(false); o.querySelector(".ign").onclick = () => { if (i < IT.length - 1){ i++; show(); } else end(true); }; o.querySelector(".ign").focus(); };
     show();
   }
