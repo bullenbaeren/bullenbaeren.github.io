@@ -74,7 +74,7 @@ canvas{display:block;width:100%;height:clamp(300px,52vw,430px)}
 
   <section class="stage"><canvas id="cv" role="img" aria-label="Bahnhof: Fahrgäste (Transaktionen) warten auf Züge (Blöcke). Vorne die mit der höchsten Gebühr."></canvas></section>
   <p class="news" id="news" aria-live="polite">Der Bahnhof öffnet …</p>
-  <div class="row" style="margin:-4px 0 14px"><button class="btn" type="button" id="simB">⛏️ Zeig mir: Ein Block wird gefunden</button></div>
+  <div class="row" style="margin:-4px 0 14px"><button class="btn" type="button" id="simB">⛏️ Zeig mir: Ein Block wird gefunden</button><button class="btn ghost" type="button" id="rush">🚦 Beispiel: viel Andrang</button></div>
 
   <section class="card you" aria-label="Deine Übungs-Überweisung">
     <div>
@@ -162,6 +162,8 @@ function connect(){
   ws.onmessage = ev => {
     let m; try { m = JSON.parse(ev.data); } catch(e){ return; }
     if (m.mempoolInfo && m.mempoolInfo.size) waiting = m.mempoolInfo.size;
+    if (rush){ if (m["mempool-blocks"]) pendingMB = m["mempool-blocks"]; return; }   // Beispiel-Modus: Live-Daten nur im Hintergrund merken
+    if (m["mempool-blocks"] && t < holdUntil){ pendingMB = m["mempool-blocks"]; return; }   // Vorschau läuft: nicht zurückspringen
     if (m.blocks && m.blocks.length){ const b = m.blocks.reduce((a, c) => c.height > a.height ? c : a); tip = {h: b.height, ts: b.timestamp}; }
     if (m["mempool-blocks"]){ mblocks = m["mempool-blocks"]; if (mode !== "live") goLive(); layoutCrowd(); renderYou(); }
     if (m.block) newBlock(m.block);
@@ -172,15 +174,24 @@ async function loadPrice(){ try { const j = await (await fetch("https://mempool.
 function goLive(){ mode = "live"; $("mode").className = "mode live"; $("mode").textContent = "Live"; say("<b>Live!</b> Das sind die echten Fahrgäste, die gerade auf einen Bitcoin-Block warten."); }
 
 // ---------- Testdaten, falls keine Verbindung ----------
-let demoIn = 40;
+let demoIn = 40, rush = false, holdUntil = 0, pendingMB = null, wasLive = false;
+// Umschalter: echtes (oft ruhiges) Netz ↔ Beispiel mit viel Andrang, damit man alle Plätze ausprobieren kann
+function toggleRush(){
+  rush = !rush; $("rush").textContent = rush ? "📡 Zurück zu Live" : "🚦 Beispiel: viel Andrang";
+  if (rush){ wasLive = mode === "live"; mode = "demo"; $("mode").className = "mode demo"; $("mode").textContent = "Beispiel: viel Andrang"; demoBlocks(true); demoIn = 40;
+    say("<b>Beispiel mit viel Andrang:</b> Jetzt kostet ein Platz im nächsten Zug richtig Gebühr. Schieb den Regler und schick einen Fahrgast los, dann siehst du, wie er Zug für Zug aufrückt."); }
+  else if (wasLive){ mode = "live"; if (pendingMB) mblocks = pendingMB; layoutCrowd(); goLive(); }
+  else startDemo();
+  renderYou();
+}
 function startDemo(){
   mode = "demo"; $("mode").className = "mode demo"; $("mode").textContent = "Testdaten – Live nicht erreichbar";
   tip = {h: 925500, ts: Date.now()/1000 - 300}; waiting = 42000; eur = 64000;
   demoBlocks();
   say("<b>Keine Live-Verbindung.</b> Du siehst Testdaten. Sobald mempool.space erreichbar ist, wird es echt.");
 }
-function demoBlocks(){
-  const base = rnd(2, 8); mblocks = [];
+function demoBlocks(hi){
+  const base = hi ? rnd(18, 30) : rnd(2, 8); mblocks = [];
   for (let i = 0; i < 8; i++){ const lo = Math.max(1, base/(1 + i*.7)); mblocks.push({nTx: Math.round(rnd(2800, 4200)), feeRange: [lo, lo*1.4, lo*2, lo*4, lo*12], medianFee: lo*1.6}); }
   mblocks[7].nTx = Math.round(rnd(8000, 30000));
   layoutCrowd(); renderYou();
@@ -208,9 +219,10 @@ function newBlock(b){
 }
 
 // Vorschau: Block sofort "finden", damit man nicht 10 Minuten warten muss (ändert keine echten Daten)
+$("rush").onclick = toggleRush;
 $("simB").onclick = () => { if (!mblocks || (anim && t - anim.t0 < 5.2)) return;
   if (mode === "demo"){ demoIn = rnd(25, 60); newBlock({height: tip.h + 1, timestamp: Date.now()/1000, tx_count: mblocks[0].nTx, extras: {feeRange: mblocks[0].feeRange, pool: {name: "Demo-Miner"}}}); return; }
-  anim = {t0: t, h: tip.h + 1, pool: "", n: mblocks[0].nTx, sim: true};
+  anim = {t0: t, h: tip.h + 1, pool: "", n: mblocks[0].nTx, sim: true}; holdUntil = t + 30;
   say(`<b>So läuft es ab:</b> Ein Miner findet den nächsten Block. Die rund <b>${fmt(mblocks[0].nTx)}</b> Fahrgäste aus Abschnitt 1, also die mit der höchsten Gebühr, steigen ein, der Zug fährt ab und ihre Zahlungen sind <b>bestätigt</b>. Alle anderen <b>rücken einen Zug auf</b>.${mine && mine.state === "wait" ? (mine.fee >= mblocks[0].feeRange[0] ? " Dein Übungs-Fahrgast wäre jetzt mit eingestiegen." : " Dein Übungs-Fahrgast rückt mit auf.") : ""} (Vorschau, der echte nächste Block kommt in ~10 Min.)`); };
 
 // Nach der Abfahrt rücken alle einen Abschnitt nach vorne
