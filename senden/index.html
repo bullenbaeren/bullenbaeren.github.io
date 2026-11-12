@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Senden & Empfangen · Satsland</title>
+<meta name="description" content="Lernwelt: Bitcoin empfangen und senden. Adresse prüfen, Testbetrag, Gebühr wählen, Bestätigungen verstehen und typische Fallen vermeiden.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0b0f2a">
+<link rel="icon" href="../icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="stylesheet" href="../lern.css?v=30">
+<style>
+/* Lernwelt "Senden & Empfangen": nur seitenspezifische Teile, der Rest kommt aus lern.css */
+.idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
+.kv{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}
+.kv div{border:1px solid var(--line);border-radius:12px;padding:8px 10px;font-size:12px;color:var(--muted)} .kv b{display:block;font:700 18px var(--f-num);color:var(--ink)} .kv .g{color:var(--gold)}
+.seg{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px} .seg .btn[aria-pressed="true"]{outline:2px solid var(--gold);background:rgba(247,147,26,.15)}
+.res{margin-top:12px;padding:12px 14px;border-radius:14px;border:2px solid var(--line);font-size:15px;line-height:1.5}
+.res strong{display:block;font-size:18px} .res.ok{border-color:var(--bull)} .res.ok strong{color:var(--bull)} .res.bad{border-color:var(--bear)} .res.bad strong{color:var(--bear)} .res.warn{border-color:var(--gold)} .res.warn strong{color:var(--gold)}
+.note{margin:10px 0 0;font-size:14px;color:var(--muted);line-height:1.5} .note b{color:var(--ink)} .note a{color:var(--gold)}
+@media (max-width:620px){ .kv{grid-template-columns:1fr 1fr} }
+.phone{max-width:300px;margin:12px auto 0;border-radius:28px;border:4px solid #0d1230;background:linear-gradient(#232a6a,#141a48);box-shadow:5px 5px 0 #0d1230;padding:14px;text-align:center}
+.phone small{display:block;color:var(--muted);font-size:12px}
+.qr{width:150px;height:150px;margin:8px auto;border-radius:12px;background:#fff;padding:8px} .qr svg{width:100%;height:100%;display:block}
+.adr{font:700 13px/1.4 var(--f-num);word-break:break-all;background:rgba(0,0,0,.3);border-radius:10px;padding:8px;margin-top:6px}
+.adr u{text-decoration:none;color:var(--gold);font-weight:900}
+.conf{display:flex;justify-content:center;gap:6px;margin:14px 0 6px} .conf i{width:34px;height:34px;border-radius:10px;border:2px solid #0d1230;background:#2a316e;display:grid;place-items:center;font:900 13px var(--f-num);font-style:normal;color:#6a72a8;transition:all .35s}
+.conf i.on{background:#34d982;color:#04240f;transform:translateY(-3px);box-shadow:2px 2px 0 #0d1230}
+.st{display:flex;justify-content:center;gap:6px;flex-wrap:wrap;margin-top:12px} .st span{font:800 12px var(--f-body);padding:5px 10px;border-radius:999px;background:#2a316e;color:var(--muted)} .st span.on{background:var(--gold);color:#0d1230}
+.sbox{margin-top:12px;border-radius:16px;border:2px solid var(--line);background:rgba(255,255,255,.03);padding:14px;animation:fin .35s both}
+.sbox h3{margin:0 0 6px;font:900 17px var(--f-display)}
+.cmp{display:grid;gap:8px;margin-top:10px} .cmp div{border-radius:12px;padding:8px 10px;background:rgba(0,0,0,.25)} .cmp small{display:block;font-size:12px;color:var(--muted)}
+.ch{display:grid;gap:8px;margin-top:10px} .ch button{text-align:left}
+.ch button.pick{border-color:var(--gold);background:rgba(255,201,77,.15)}
+.sum{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:14px;margin-top:8px} .sum span{color:var(--muted)}
+.fall{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px} .fall div{border-radius:14px;border:1px solid rgba(255,92,115,.4);background:rgba(255,92,115,.06);padding:12px;font-size:14px;line-height:1.5;color:var(--muted)}
+.fall .ft{display:block;font:900 15px var(--f-display);color:var(--ink);margin-bottom:4px}
+@media (max-width:620px){ .fall{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a class="back" href="../">← Satsland</a><a class="back" href="../lexikon/">📖 Lexikon</a></div>
+  <div>
+    <h1>Bitcoin <span class="btc">senden</span> &amp; empfangen</h1>
+    <p class="lead">Die erste eigene Überweisung macht vielen Angst: Was, wenn etwas schiefgeht? Hier übst du beides ohne Risiko, mit <b>Übungsdaten</b>. Danach weißt du genau, worauf du achten musst.</p>
+  </div>
+
+
+  <section class="card" aria-labelledby="h1s">
+    <h2 id="h1s">1 · Empfangen</h2>
+    <p class="muted" style="margin:0">Um Bitcoin zu bekommen, zeigst du in deiner Wallet auf <b>„Empfangen“</b>. Dort steht deine Adresse, auch als QR-Code. Die schickst du dem Absender. Warum es jedes Mal eine neue Adresse gibt, steht im Level <a href="../privatsphaere/">Privatsphäre</a>.</p>
+    <div class="phone"><small>Deine Wallet · Empfangen</small><div class="qr" id="qr"></div><div class="adr" id="myAdr"></div></div>
+    <p class="muted" style="margin:14px 0 0"><b>Wann ist das Geld wirklich da?</b> Erst steht die Zahlung im Warteraum, dann kommt sie in einen Block. Jeder weitere Block ist eine weitere <b>Bestätigung</b>.</p>
+    <div class="conf" id="conf"></div>
+    <div class="row" style="justify-content:center"><button class="btn" type="button" id="rcv">📥 Zahlung empfangen</button></div>
+    <p class="note" id="rcvN">Tipp auf den Knopf und sieh zu, wie die Bestätigungen kommen.</p>
+  </section>
+
+  <section class="card" aria-labelledby="h2s">
+    <h2 id="h2s">2 · Senden, Schritt für Schritt</h2>
+    <p class="muted" style="margin:0">Du willst Anna Bitcoin schicken. Sie hat dir ihre Adresse geschickt. Spiel die Überweisung durch:</p>
+    <div class="st" id="st"></div>
+    <div id="snd"></div>
+  </section>
+
+  <section class="card" aria-labelledby="h3s">
+    <h2 id="h3s">3 · Typische Fallen</h2>
+    <div class="fall">
+      <div><b class="ft">🦠 Vertauschte Adresse</b>Schadsoftware kann kopierte Adressen heimlich austauschen. Darum vor dem Senden immer <b>Anfang und Ende</b> vergleichen.</div>
+      <div><b class="ft">🔀 Falsches Netzwerk</b>Börsen bieten manchmal mehrere Netzwerke an. Für echte Bitcoin brauchst du das <b>Bitcoin-Netzwerk</b> (oder Lightning, wenn beide Seiten es können). Im falschen Netzwerk kann das Geld verloren sein.</div>
+      <div><b class="ft">🐌 Gebühr zu niedrig</b>Dann wartet die Zahlung lange im Warteraum. Viele Wallets können die Gebühr nachträglich erhöhen. Mehr dazu im <a href="../bahnhof/">Mempool-Bahnhof</a>.</div>
+      <div><b class="ft">⌨️ Tippfehler</b>Bitcoin-Adressen haben eine eingebaute <b>Prüfsumme</b>. Ein einzelner Tippfehler fällt fast immer auf, die Wallet lehnt die Adresse dann ab. Trotzdem: kopieren statt abtippen.</div>
+    </div>
+  </section>
+
+  <section class="card" aria-labelledby="hMs">
+    <h2 id="hMs">Das solltest du dir merken</h2>
+    <div class="learn">
+      <div><b>Adresse prüfen</b><span>Vor dem Senden die ersten und letzten Zeichen vergleichen. Eine falsche Adresse kann niemand rückgängig machen.</span></div>
+      <div><b>Erst testen</b><span>Beim ersten Mal an eine neue Adresse: einen kleinen Testbetrag schicken, dann den Rest.</span></div>
+      <div><b>Bestätigungen</b><span>0 = im Warteraum, 1 = im ersten Block. Für große Beträge gelten 6 Bestätigungen als sicher.</span></div>
+      <div><b>Kein Zurück</b><span>Es gibt keine Bank, die eine Bitcoin-Zahlung zurückholt. Genauigkeit ist deine Versicherung.</span></div>
+    </div>
+    <details class="qz"><summary>Teste dich: 3 Fragen</summary><div id="quiz"></div></details>
+  </section>
+
+  <section class="card next" id="next" aria-label="Weiter"></section>
+  <details class="foot"><summary>Quellen</summary><p><a href="https://en.bitcoin.it/wiki/Confirmation">Bitcoin Wiki: Confirmation</a>; <a href="https://github.com/bitcoin/bips/blob/master/bip-0173.mediawiki">BIP 173: Bech32-Adressen mit Prüfsumme</a>; <a href="https://mempool.space">mempool.space: aktuelle Gebühren</a>. Alle Adressen auf dieser Seite sind Übungsadressen.</p></details>
+  <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
+</div>
+
+<script src="../lern.js?v=30"></script>
+<script>
+/* =====================================================================
+   SENDEN & EMPFANGEN – Lernwelt von Satsland
+   ===================================================================== */
+(() => {
+const $ = id => document.getElementById(id);
+// Übungs-Adressen (gültig aussehend, aber nur für dieses Training)
+const MY = "bc1q8c6fshw2dlwun7ekn9qwf37cu2rn755upcp6el", ANNA = "bc1qxy2kgdyg2rqq5lu7wq6fe3rmsr9x0h4sk9tzp8";
+const SWAP = "bc1qxy2kgdyg2rqq5lu7wq6fe3rmsr9x7m2fq4dla3";   // Schadsoftware ersetzt das Ende
+const hl = a => `<u>${a.slice(0, 7)}</u>${a.slice(7, -6)}<u>${a.slice(-6)}</u>`;
+$("myAdr").innerHTML = hl(MY);
+// Pseudo-QR (nur Optik): Muster aus dem Hash der Adresse
+{ const h = Lern.sha256(MY), N = 25; let r = "";
+  const fin = (x, y) => `<rect x="${x}" y="${y}" width="7" height="7" fill="#0d1230"/><rect x="${x + 1}" y="${y + 1}" width="5" height="5" fill="#fff"/><rect x="${x + 2}" y="${y + 2}" width="3" height="3" fill="#0d1230"/>`;
+  for (let y = 0; y < N; y++) for (let x = 0; x < N; x++){ if ((x < 8 && y < 8) || (x > 16 && y < 8) || (x < 8 && y > 16)) continue;
+    if (parseInt(h[(x * 7 + y * 13) % 64], 16) % 2) r += `<rect x="${x}" y="${y}" width="1" height="1" fill="#0d1230"/>`; }
+  $("qr").innerHTML = `<svg viewBox="0 0 25 25" shape-rendering="crispEdges">${r}${fin(0, 0)}${fin(18, 0)}${fin(0, 18)}</svg>`; }
+
+// Empfangen: Bestätigungen zählen hoch
+const CN = ["Im Warteraum (0 Bestätigungen). Die Wallet zeigt die Zahlung schon an, aber noch <b>unbestätigt</b>.", "<b>1 Bestätigung:</b> Die Zahlung steckt im ersten Block. Für kleine Beträge reicht das meist.", "2 Bestätigungen.", "3 Bestätigungen.", "4 Bestätigungen.", "5 Bestätigungen.", "<b>6 Bestätigungen:</b> Jetzt gilt die Zahlung als praktisch unumkehrbar. So lange warten viele bei großen Beträgen, also rund eine Stunde."];
+let ct = 0;
+const conf = n => { $("conf").innerHTML = [1, 2, 3, 4, 5, 6].map(i => `<i class="${i <= n ? "on" : ""}">${i}</i>`).join(""); };
+conf(-1);
+$("rcv").onclick = () => { clearTimeout(ct); let n = 0; $("rcv").disabled = true; Lern.sfx && Lern.sfx("coin");
+  const go = () => { conf(n); $("rcvN").innerHTML = CN[n]; if (n > 0) Lern.sfx && Lern.sfx("star"); if (n < 6){ n++; ct = setTimeout(go, n === 1 ? 1600 : 900); } else { $("rcv").disabled = false; $("rcv").textContent = "↺ Nochmal"; } };
+  go(); };
+
+// Senden: 4 Schritte
+const STEPS = ["Adresse", "Betrag", "Gebühr", "Senden"];
+let s = 0, swap = false, amt = 0, fee = 0, mist = 0;
+const step = () => { $("st").innerHTML = STEPS.map((t, i) => `<span class="${i === s ? "on" : ""}">${i + 1} · ${t}</span>`).join(""); };
+function view(){
+  step(); const B = $("snd");
+  if (s === 0){ swap = Math.random() < .5;
+    B.innerHTML = `<div class="sbox"><h3>Adresse einfügen und prüfen</h3><p class="muted" style="margin:0">Du hast Annas Adresse kopiert und fügst sie ein. Vergleiche <b>Anfang und Ende</b> mit dem, was Anna dir geschickt hat:</p>
+      <div class="cmp"><div><small>Von Anna geschickt</small><span class="adr" style="display:block">${hl(ANNA)}</span></div><div><small>Eingefügt in deiner Wallet</small><span class="adr" style="display:block">${hl(swap ? SWAP : ANNA)}</span></div></div>
+      <div class="ch"><button class="btn ghost" type="button" data-a="1">✓ Stimmt überein, weiter</button><button class="btn ghost" type="button" data-a="0">✗ Stimmt nicht, abbrechen</button></div><p class="note" id="sN"></p></div>`;
+    B.querySelector(".ch").onclick = e => { const b = e.target.closest("[data-a]"); if (!b) return; const same = b.dataset.a === "1";
+      if (same === !swap){ Lern.sfx && Lern.sfx("ok"); if (swap){ $("sN").innerHTML = "<b>Gut aufgepasst!</b> Das Ende war anders. Hier hätte Schadsoftware die Adresse ausgetauscht. Neuer Versuch:"; setTimeout(view, 2200); } else { s = 1; view(); } }
+      else { mist++; Lern.sfx && Lern.sfx("no"); $("sN").innerHTML = swap ? "<b>Achtung!</b> Schau aufs Ende: Die Adressen sind <b>verschieden</b>. Das Geld wäre beim Betrüger gelandet." : "Schau nochmal genau hin: Anfang und Ende sind <b>gleich</b>."; } };
+  }
+  else if (s === 1){
+    B.innerHTML = `<div class="sbox"><h3>Wie viel?</h3><p class="muted" style="margin:0">Du willst Anna 0,01 BTC schicken. Es ist das erste Mal an diese Adresse.</p>
+      <div class="ch"><button class="btn ghost" type="button" data-v="test">🧪 Erst ein Testbetrag: 0,0001 BTC</button><button class="btn ghost" type="button" data-v="all">💸 Gleich alles: 0,01 BTC</button></div><p class="note" id="sN"></p></div>`;
+    B.querySelector(".ch").onclick = e => { const b = e.target.closest("[data-v]"); if (!b) return; amt = b.dataset.v === "test" ? .0001 : .01;
+      if (amt < .01){ Lern.sfx && Lern.sfx("ok"); s = 2; view(); } else { $("sN").innerHTML = "Geht auch, aber beim <b>ersten Mal</b> ist ein kleiner Test schlauer: Kommt er an, schickst du den Rest. So kostet ein Fehler fast nichts. <a href='#' id='tst'>Doch lieber testen</a> · <a href='#' id='nxt'>Trotzdem weiter</a>";
+        $("tst").onclick = ev => { ev.preventDefault(); amt = .0001; s = 2; view(); }; $("nxt").onclick = ev => { ev.preventDefault(); s = 2; view(); }; } };
+  }
+  else if (s === 2){
+    const F = [["🐢 Langsam", 2, "ca. 1 Std. oder länger"], ["🚶 Normal", 6, "ca. 30 Min."], ["🚀 Schnell", 15, "nächster Block, ca. 10 Min."]];
+    B.innerHTML = `<div class="sbox"><h3>Gebühr wählen</h3><p class="muted" style="margin:0">Die Gebühr hängt <b>nicht vom Betrag</b> ab, sondern davon, wie eilig es ist (Beispielwerte):</p>
+      <div class="ch">${F.map(([t, v, z], i) => `<button class="btn ghost" type="button" data-i="${i}">${t} · ${v} sat/vB · ${z} · ≈ ${(v * 140).toLocaleString("de-DE")} sats</button>`).join("")}</div></div>`;
+    B.querySelector(".ch").onclick = e => { const b = e.target.closest("[data-i]"); if (!b) return; fee = F[+b.dataset.i]; Lern.sfx && Lern.sfx("click"); s = 3; view(); };
+  }
+  else if (s === 3){
+    B.innerHTML = `<div class="sbox"><h3>Nochmal prüfen, dann senden</h3><div class="sum"><span>An</span><b class="adr" style="padding:2px 6px">${hl(ANNA)}</b><span>Betrag</span><b>${amt.toLocaleString("de-DE",{maximumFractionDigits:8})} BTC</b><span>Gebühr</span><b>${fee[0]} · ${fee[1]} sat/vB</b><span>Dauer</span><b>${fee[2]}</b></div>
+      <div class="row" style="margin-top:12px"><button class="btn" type="button" id="go">📤 Jetzt senden</button></div><div class="conf" id="sc" hidden></div><p class="note" id="sN"></p></div>`;
+    $("go").onclick = () => { $("go").disabled = true; Lern.sfx && Lern.sfx("coin"); const c = $("sc"); c.hidden = false; let n = 0;
+      const tick = () => { c.innerHTML = [1, 2, 3, 4, 5, 6].map(i => `<i class="${i <= n ? "on" : ""}">${i}</i>`).join("");
+        $("sN").innerHTML = n === 0 ? "Gesendet! Die Zahlung wartet jetzt im Warteraum auf einen Block …" : n < 6 ? `${n} Bestätigung${n > 1 ? "en" : ""} …` : `<b>Angekommen und 6-mal bestätigt!</b> ${amt < .01 ? "Der Test hat geklappt. Jetzt kannst du den Rest beruhigt schicken." : "Geschafft."} ${mist ? `(${mist} Fehler unterwegs, beim nächsten Mal genauer hinschauen.)` : "Alles richtig gemacht!"} <button class="btn ghost" type="button" id="again" style="margin-top:8px">↺ Nochmal üben</button>`;
+        if (n > 0) Lern.sfx && Lern.sfx("star");
+        if (n < 6){ n++; setTimeout(tick, n === 1 ? (fee[1] > 10 ? 1200 : fee[1] > 4 ? 2200 : 3400) : 700); } else { Lern.sfx && Lern.sfx("lvl"); $("again").onclick = () => { s = 0; mist = 0; view(); }; } };
+      tick(); };
+  }
+}
+view();
+
+const QUIZ = [["Was solltest du vor dem Senden immer prüfen?", ["Anfang und Ende der Empfänger-Adresse", "Nur die Länge der Adresse", "Ob die Adresse schön aussieht"], 0, "Schadsoftware kann kopierte Adressen austauschen. Ein Blick auf Anfang und Ende entlarvt das."], ["Wovon hängt die Bitcoin-Gebühr ab?", ["Wie eilig es ist und wie groß die Transaktion in Daten ist", "Vom Betrag in Euro", "Von der Uhrzeit"], 0, "Auch eine Million Euro kann wenig Gebühr kosten. Es zählt der Platz im Block."], ["Wie viele Bestätigungen gelten bei großen Beträgen als sicher?", ["6", "1", "100"], 0, "Nach 6 Blöcken (rund eine Stunde) gilt eine Zahlung als praktisch unumkehrbar."]];
+Lern.quiz($("quiz"), "senden", QUIZ, "../"); Lern.visit("senden"); Lern.renderNext("senden", "../");
+})();
+</script>
+</body>
+</html>
