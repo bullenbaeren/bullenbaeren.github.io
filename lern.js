@@ -440,10 +440,10 @@ const Lern = (() => {
       if (lock) return; lock = true; clearInterval(timer);
       const ok = n === 0, [, , why] = order[i], fast = ok && t > TIME*.7;
       box.querySelectorAll(".opts button").forEach(b => { b.disabled = true; if (+b.dataset.n === 0) b.classList.add("ok"); else if (+b.dataset.n === n) b.classList.add("no"); });
-      const w = box.querySelector(".why"); w.hidden = false; w.innerHTML = `<b>${n < 0 ? "⏰ Zeit um!" : ok ? "⚡ Treffer!" : "💥 Autsch."}</b> ${why}`;
+      const w = box.querySelector(".why"); w.hidden = false; w.innerHTML = `<b>${n < 0 ? "⏰ Zeit um!" : ok ? "✅ Treffer!" : "💥 Autsch."}</b> ${why}`;
       if (ok){ hp--; combo++;
-        const z = document.createElement("span"); z.className = "zap"; z.textContent = "⚡"; fx.appendChild(z); setTimeout(() => z.remove(), 700);
-        setTimeout(() => { re(im, "ouch"); re(A, "flash"); float(fast ? "BLITZSCHNELL!" : "TREFFER!", "hit"); if (combo >= 2) float(`${combo}× COMBO`, "cmb"); say2(pickOne(HIT)); hud(); }, 380);
+        const z = document.createElement("span"); z.className = "zap"; z.innerHTML = art("coin"); fx.appendChild(z); setTimeout(() => z.remove(), 700);
+        setTimeout(() => { re(im, "ouch"); re(A, "flash"); float(fast ? "SUPERSCHNELL!" : "TREFFER!", "hit"); if (combo >= 2) float(`${combo}× COMBO`, "cmb"); say2(pickOne(HIT)); hud(); }, 380);
       } else { lives--; combo = 0; re(B, "hit"); re(A, "dmg"); re(im, "laugh"); float(n < 0 ? "ZEIT UM!" : "−1 ❤️", "miss"); say2(pickOne(MISS)); hud(); }
       i++; setTimeout(ask, 2300);
     }
