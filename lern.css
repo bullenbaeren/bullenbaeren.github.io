@@ -265,7 +265,7 @@ h2{scroll-margin-top:12px}
 .boss .bhp .hp i{position:absolute;inset:0 auto 0 0;width:100%;border-radius:6px;transition:width .35s} .boss .bhp .hp .gh{background:#fff;transition:width .6s .1s} .boss .bhp .hp .cur{background:linear-gradient(90deg,#ff3d5a,#ff9a6a)}
 .boss .bhp small{position:absolute;inset:0;display:flex;pointer-events:none} .boss .bhp small s{flex:1;border-right:2px solid rgba(13,18,48,.7)} .boss .bhp small s:last-child{border:0}
 .boss .me{position:absolute;left:10px;bottom:8px;z-index:3;display:flex;align-items:center;gap:6px;background:rgba(0,0,0,.4);border:2px solid #0d1230;border-radius:12px;padding:4px 8px}
-.boss .me .av{font-size:22px} .boss .lives{font-size:16px;letter-spacing:0} .boss .lives i{font-style:normal;display:inline-block} .boss .lives i.lost{animation:hbreak .5s}
+.boss .lives{font-size:16px;letter-spacing:0} .boss .lives i{font-style:normal;display:inline-block} .boss .lives i.lost{animation:hbreak .5s}
 .boss .combo{font:900 12px var(--f-body);color:#ffc94d}
 .boss .fx{position:absolute;inset:0;z-index:4;pointer-events:none}
 .boss .zap{position:absolute;left:30px;bottom:30px;font-size:34px;animation:zap .45s ease-in forwards;filter:drop-shadow(0 0 8px #ffe066)}
@@ -273,9 +273,6 @@ h2{scroll-margin-top:12px}
 .boss .ft.hit{color:#ffe066} .boss .ft.cmb{color:#ff9a3d;top:58%;font-size:18px;animation-delay:.15s} .boss .ft.miss{color:#ff5c73;left:22%;top:66%}
 .boss .arena.flash::after,.boss .arena.dmg::after{content:"";position:absolute;inset:0;z-index:5;pointer-events:none;animation:aflash .35s forwards}
 .boss .arena.flash::after{background:#fff} .boss .arena.dmg::after{background:radial-gradient(transparent 40%,rgba(255,40,70,.7))}
-.boss .vs{position:absolute;inset:0;z-index:6;display:flex;align-items:center;justify-content:space-between;padding:0 16px;background:rgba(5,8,25,.75);animation:vsout .4s 1.7s forwards}
-.boss .vs .v1,.boss .vs .v2{display:grid;place-items:center;font-size:56px;line-height:1} .boss .vs .v1{animation:vsl .5s both} .boss .vs .v2{width:120px;height:120px;animation:vsr .5s both}
-.boss .vs .v1 b{font:900 18px var(--f-display);color:#7cc4ff} .boss .vs .v0{font:900 64px var(--f-display);color:#ffc94d;-webkit-text-stroke:3px #0d1230;animation:vsz .5s .35s both}
 .boss .stamp{position:absolute;left:50%;top:40%;z-index:7;font:900 54px var(--f-display);-webkit-text-stroke:3px #0d1230;transform:translate(-50%,-50%) rotate(-8deg);animation:stamp .5s cubic-bezier(.2,1.6,.4,1) both;white-space:nowrap}
 .boss .stamp.ko{color:#ffc94d} .boss .stamp.go{color:#ff5c73;font-size:42px}
 .boss .arena.won .rays{background:repeating-conic-gradient(rgba(255,214,90,.25) 0 10deg,transparent 10deg 20deg);animation-duration:6s}
@@ -292,9 +289,6 @@ h2{scroll-margin-top:12px}
 @keyframes zap{to{left:38%;bottom:58%;transform:scale(1.8) rotate(25deg);opacity:.2}}
 @keyframes ftup{0%{opacity:0;transform:translate(-50%,10px) scale(.6)}20%{opacity:1;transform:translate(-50%,0) scale(1.15)}100%{opacity:0;transform:translate(-50%,-50px) scale(1)}}
 @keyframes aflash{from{opacity:.85}to{opacity:0}}
-@keyframes vsl{from{transform:translateX(-120px);opacity:0}} @keyframes vsr{from{transform:translateX(120px);opacity:0}} @keyframes vsz{from{transform:scale(3);opacity:0}}
-@keyframes vsout{to{opacity:0;visibility:hidden}}
 @keyframes stamp{from{transform:translate(-50%,-50%) rotate(-8deg) scale(3);opacity:0}}
 @media (max-width:420px){ .boss .arena{height:230px} .boss .bimg{width:116px;height:116px;margin-left:-58px} .boss .bubble{max-width:44%;font-size:12.5px} }
-.boss .arena:has(.vs) .bubble{opacity:0}
 @media (prefers-reduced-motion:reduce){ .boss .rays,.boss .bimg.idle{animation:none} }

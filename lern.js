@@ -414,9 +414,8 @@ const Lern = (() => {
       <div class="arena"><div class="rays"></div>
         <div class="bhp"><div class="hp"><i class="gh"></i><i class="cur"></i></div><small>${"<s></s>".repeat(HP)}</small></div>
         <div class="bubble">${taunt}</div><div class="bimg idle">${art(img)}</div><div class="floor"></div>
-        <div class="me"><span class="av">🦸</span><span class="lives"></span><span class="combo"></span></div>
+        <div class="me"><span class="lives"></span><span class="combo"></span></div>
         <div class="fx" aria-hidden="true"></div>
-        <div class="vs"><span class="v1">🦸<b>DU</b></span><span class="v0">VS</span><span class="v2">${art(img)}</span></div>
       </div><div id="bq"></div></div>`;
     document.body.appendChild(bg);
     const B = bg.querySelector(".boss"), A = bg.querySelector(".arena"), im = bg.querySelector(".bimg"), bub = bg.querySelector(".bubble"), box = bg.querySelector("#bq"), fx = bg.querySelector(".fx");
@@ -457,7 +456,7 @@ const Lern = (() => {
         <div class="acts" style="justify-content:center;display:flex;gap:8px;margin-top:10px">${win ? "" : '<button class="btn" type="button" data-a="again">↺ Nochmal</button>'}<button class="btn ghost" type="button" data-a="close">Schließen</button></div></div>`;
       box.querySelector(".end").onclick = e => { const a = e.target.closest("button"); if (!a) return; close(); if (a.dataset.a === "again") boss(k); else if (win) location.reload(); };
     }
-    hud(); setTimeout(() => { bg.querySelector(".vs").remove(); ask(); }, 2100);
+    hud(); setTimeout(ask, 1200);
   }
   function finalCard(){ const won = bossWon().f;
     return `<span class="tcard bosscard goldcard ${won ? "got" : "lock"}"><span class="tn">★</span><span class="tart">${won ? art("satoshi") : "?"}</span><b>${won ? "Satoshis Rätsel" : "Endboss"}</b><small>${won ? "👑 Goldene Karte" : "Alle Bosse besiegen"}</small></span>`; }
