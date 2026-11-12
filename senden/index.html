@@ -38,6 +38,7 @@
 .bks{display:flex;gap:6px;overflow:hidden;min-height:96px;align-items:flex-end}
 .bk{flex:0 0 74px;border:3px solid #0d1230;border-radius:10px;background:linear-gradient(#7b54ff,#4b2fc2);box-shadow:3px 3px 0 #0d1230;padding:5px;text-align:center;animation:bkIn .45s cubic-bezier(.3,1.5,.5,1) both}
 .bk b{display:block;font:900 10px var(--f-num);color:#fff;margin-bottom:3px} .bk div{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;justify-items:center} .bk small{display:block;font:800 10px var(--f-body);color:#e6dcff;margin-top:3px}
+.lg{grid-column:1/-1;margin:0;display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted)} .lg span{display:flex;align-items:center;gap:6px} .lg i{width:12px;height:12px;border-radius:4px;background:#5a63a8;display:block} .lg i.me{background:var(--gold)}
 .bk.hit{background:linear-gradient(#34d982,#139c57)} .bk.hit small{color:#04240f}
 @keyframes bkIn{from{transform:translateX(-30px) scale(.4);opacity:0}}
 .sum{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:14px;margin-top:8px} .sum span{color:var(--muted)}
@@ -144,7 +145,7 @@ function view(){
   }
   else if (s === 3){
     B.innerHTML = `<div class="sbox"><h3>Nochmal prüfen, dann senden</h3><div class="sum"><span>An</span><b class="adr" style="padding:2px 6px">${hl(ANNA)}</b><span>Betrag</span><b>${amt.toLocaleString("de-DE",{maximumFractionDigits:8})} BTC</b><span>Gebühr</span><b>${fee[0]} · ${fee[1]} sat/vB</b><span>Dauer</span><b>${fee[2]}</b></div>
-      <div class="row" style="margin-top:12px"><button class="btn" type="button" id="go">📤 Jetzt senden</button></div><div class="mine" id="mine" hidden><div class="mp"><small>Warteraum</small><div class="mq" id="mq"></div></div><div class="bks" id="bks"></div></div><p class="note" id="sN"></p></div>`;
+      <div class="row" style="margin-top:12px"><button class="btn" type="button" id="go">📤 Jetzt senden</button></div><div class="mine" id="mine" hidden><div class="mp"><small>Warteraum</small><div class="mq" id="mq"></div></div><div class="bks" id="bks"></div><p class="lg"><span><i class="me"></i> deine Zahlung</span><span><i></i> Zahlungen anderer Leute</span></p></div><p class="note" id="sN"></p></div>`;
     $("go").onclick = () => { $("go").disabled = true; Lern.sfx && Lern.sfx("coin"); $("mine").hidden = false;
       // Mindestgebühr pro Block sinkt, je leerer der Warteraum wird (Zeitraffer: 1 Block ≈ 10 Min.)
       const MIN = [12, 9, 5, 4, 3, 2]; let k = 0, q = 11;
