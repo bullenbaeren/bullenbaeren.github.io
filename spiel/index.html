@@ -125,6 +125,13 @@ canvas.drag{cursor:grabbing}
 .badge.got{border:1px solid rgba(255,201,77,.55);background:linear-gradient(180deg,rgba(255,201,77,.10),rgba(255,201,77,.02))}
 .badge.got b{color:var(--gold)}
 .badge.flash{animation:flash 1.4s 3}
+.skins{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.sk{font:inherit;color:var(--ink);text-align:left;background:var(--card2);border:1px dashed rgba(255,255,255,.08);border-radius:12px;padding:8px 10px 10px;cursor:pointer;min-width:0}
+.sk canvas{width:100%;height:auto;display:block;border-radius:8px;background:rgba(0,0,0,.25);margin-bottom:6px}
+.sk b{display:block;font-size:14px}.sk small{display:block;color:var(--muted);font-size:12px;line-height:1.35}
+.sk.on{border:2px solid var(--gold);background:linear-gradient(180deg,rgba(255,201,77,.14),rgba(255,201,77,.03))}
+.sk.lock{cursor:default}.sk.lock canvas{filter:brightness(0) opacity(.35)}.sk.lock b{color:#56609a}
+@media (max-width:560px){ .skins{grid-template-columns:repeat(2,minmax(0,1fr))} }
 @keyframes flash{50%{background:rgba(255,201,77,.25)}}
 .stats{display:flex;flex-wrap:wrap;gap:6px 20px;margin-top:14px;font-size:13px;color:var(--muted)}
 .stats b{color:var(--ink);font-family:var(--f-num);font-weight:500}
@@ -210,7 +217,7 @@ body.stream .welcome{display:none}
   <div class="top">
     <h1><span class="b">Kurs</span><span class="v">⚔️</span><span class="r">Arena</span></h1>
     <div class="tools">
-      <a class="pill learn" id="slPill" href="../index.html" title="Satsland: Kapitel schaffen schaltet Accessoires im Spiel frei">🎓 Satsland</a>
+      <a class="pill learn" id="slPill" href="../index.html" title="Zurück zu Satsland">🎓 Satsland</a>
       <button class="pill time" id="timeBtn" type="button">Zeitreise</button>
       <div class="tgroup" role="group" aria-label="Einstellungen">
         <button class="ib" id="snd" type="button" aria-pressed="false" aria-label="Ton" title="Ton"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg></button>
@@ -255,6 +262,7 @@ body.stream .welcome{display:none}
     <div class="tabs" role="tablist" aria-label="Bereiche">
       <button class="tab" role="tab" id="tab-welten" aria-controls="pane-welten" aria-selected="true" type="button">Welten</button>
       <button class="tab" role="tab" id="tab-album" aria-controls="pane-album" aria-selected="false" type="button">Album</button>
+      <button class="tab" role="tab" id="tab-skins" aria-controls="pane-skins" aria-selected="false" type="button">Skins</button>
       <button class="tab" role="tab" id="tab-hilfe" aria-controls="pane-hilfe" aria-selected="false" type="button">Erklärung</button>
     </div>
     <div role="tabpanel" id="pane-welten" aria-labelledby="tab-welten">
@@ -269,6 +277,11 @@ body.stream .welcome{display:none}
     <div class="prog"><span id="albumProg" style="width:0%"></span></div>
     <div class="grid" id="grid"></div>
     <div class="stats" id="stats"></div>
+    </div>
+    <div role="tabpanel" id="pane-skins" aria-labelledby="tab-skins" hidden>
+    <div class="ph"><h2>Skin-Sets</h2><span id="skinCount">1 / 13 freigeschaltet</span></div>
+    <div class="skins" id="skins"></div>
+    <p class="wnote">Sets schaltest du in Satsland frei (Bosse besiegen, Profi-Level) oder hier in der Arena (seltene Live-Momente).</p>
     </div>
     <div role="tabpanel" id="pane-hilfe" aria-labelledby="tab-hilfe" hidden>
       <details class="legend lgroup" open><summary>Der Kampf</summary>
@@ -598,20 +611,117 @@ const laneY = l => groundY + 18 + l*(H - groundY - 46)/3;
 // Figurengröße je Reihe
 const unitScale = l => (KS)*(0.95 + l*0.14)*(W < 560 ? .95 : 1.1);
 
-// ---------- Satsland-Verbindung: geschaffte Kapitel schalten Accessoires frei ----------
-// 1 Kapitel = Doktorhut (5), 3 Kapitel = Krone (6), alle 6 = Laseraugen (7)
-const SL_CH = [["geld","geldgeschichte","geldschoepfung","cantillon","inflation","digitalgeld"],["start","doppelt","eigenschaften","wert","halving","knappheit","geschichte","besitzer","mythen"],["wallets","seed","betrug","krypto","risiken"],["kaufen","sparplan","zyklen","fomo","hebel"],["utxo","bahnhof","lightning","privatsphaere"],["hashing","schluessel","blockchain","mining","nodes","konsens","reise"]];
-const slDone = (() => { try { const s = JSON.parse(localStorage.getItem("bvb-lernen")) || {}; return SL_CH.filter(c => c.every(id => s[id] && s[id].quiz)).length; } catch(e){ return 0; } })();
-const SL_ACC = [[1, 5, "🎓 Doktorhut"], [3, 6, "👑 Krone"], [6, 7, "🔴 Laseraugen"]].filter(a => slDone >= a[0]);
-{ const pill = document.getElementById("slPill"); if (pill) pill.textContent = `🎓 Satsland ${slDone}/6`; }
-if (SL_ACC.length) setTimeout(() => news(`<b>Satsland-Bonus:</b> ${SL_ACC.map(a => a[2]).join(", ")} freigeschaltet!`, true), 6000);
+// ---------- Skin-Sets: Bulle und Bär im gemeinsamen Look ----------
+// Freischalten über Satsland (Bosse, Endboss, Profi-Level) oder Arena-Momente (Album).
+const SLS = (() => { const r = {s: {}, b: {}}; try { r.s = JSON.parse(localStorage.getItem("bvb-lernen")) || {}; r.b = JSON.parse(localStorage.getItem("satsland-boss")) || {}; } catch(e){} return r; })();
+const SL_PRO = ["whitepaper", "entropie", "ableitung", "sha256", "kurven", "signaturen", "adressen", "merkle", "script", "quanten"];
+const pal = (main, dark, snout, belly, ink) => ({main, dark, snout, belly: belly || snout, ink});
+// Kleine Zeichenhelfer für Kopfbedeckungen (Figur-Koordinaten, Kopfmitte hx/hy, Radius r, Blickrichtung dir)
+const gFill = (c, w = 1.3) => { ctx.fillStyle = c; ctx.fill(); ctx.strokeStyle = C.ink; ctx.lineWidth = w; ctx.stroke(); };
+const cap = (hx, hy, r, c) => { ctx.beginPath(); ctx.ellipse(hx, hy - 7.5, r, r*.62, 0, Math.PI, TAU); ctx.closePath(); gFill(c); };
+const G = {
+  antike(b, hx, hy, r){
+    if (b){ cap(hx, hy, r + .5, C.gold); ctx.beginPath(); ctx.ellipse(hx, hy - r - 4.5, 6.5, 3.4, 0, Math.PI, TAU); ctx.closePath(); gFill("#e0405a"); }
+    else for (let i = 0; i < 7; i++){ const a = (-160 + i*23.3)*Math.PI/180, x = hx + Math.cos(a)*(r + .5), y = hy + Math.sin(a)*(r + .5);
+      ctx.beginPath(); ctx.ellipse(x, y, 2.8, 1.4, a + Math.PI/2, 0, TAU); gFill(C.gold, .8); }
+  },
+  gold(b, hx, hy, r, dir){
+    if (b){ cap(hx, hy, r*.95, "#ffc94d"); rr(hx - r - 1.5, hy - 9, 2*r + 3, 2.4, 1); gFill("#e0a52a", 1); ctx.beginPath(); ctx.arc(hx + dir*2, hy - r - 2.5, 2.3, 0, TAU); gFill("#fff6c0", 1); }
+    else { cap(hx, hy, r*.97, "#e0405a"); ctx.fillStyle = "#fff"; [-4, 0, 4].forEach(d => { ctx.beginPath(); ctx.arc(hx + d, hy - 10 - (d ? 0 : 1.5), .9, 0, TAU); ctx.fill(); });
+      ctx.beginPath(); ctx.moveTo(hx - dir*r, hy - 8); ctx.lineTo(hx - dir*(r + 5), hy - 11); ctx.lineTo(hx - dir*(r + 4), hy - 5); ctx.closePath(); gFill("#e0405a", 1); }
+  },
+  ritter(b, hx, hy, r, dir){
+    if (b){ cap(hx, hy, r + .8, "#b8c0d8"); ctx.strokeStyle = "#7cc4ff"; ctx.lineWidth = 2.6; ctx.lineCap = "round"; ctx.beginPath(); ctx.moveTo(hx, hy - r - 2); ctx.quadraticCurveTo(hx - dir*2, hy - r - 8, hx - dir*8, hy - r - 6); ctx.stroke(); }
+    else { ctx.lineCap = "round"; ctx.strokeStyle = C.ink; ctx.lineWidth = 5; ctx.beginPath(); ctx.arc(hx, hy, r + 2, .85*Math.PI, 2.15*Math.PI); ctx.stroke(); ctx.strokeStyle = "#9aa2c8"; ctx.lineWidth = 3.2; ctx.stroke(); }
+  },
+  wall(b, hx, hy, r){
+    if (b){ ctx.beginPath(); ctx.ellipse(hx - 1, hy - 8.8, r*.75, r*.32, 0, Math.PI, TAU); ctx.closePath(); gFill("#2a1a10", 1);
+      ctx.beginPath(); ctx.moveTo(6, -17); ctx.lineTo(10, -17); ctx.lineTo(9, -15); ctx.lineTo(10, -9); ctx.lineTo(8, -7); ctx.lineTo(6, -9); ctx.lineTo(7, -15); ctx.closePath(); gFill("#e0405a", 1); }
+    else { ctx.strokeStyle = C.ink; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.arc(hx - 4, hy - 2.2, 3.8, 0, TAU); ctx.moveTo(hx + 7.8, hy - 2.5); ctx.arc(hx + 4, hy - 2.5, 3.8, 0, TAU); ctx.moveTo(hx - .2, hy - 2.4); ctx.lineTo(hx + .2, hy - 2.4); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(hx, hy + 11.5); ctx.lineTo(hx - 4, hy + 9.5); ctx.lineTo(hx - 4, hy + 13.5); ctx.closePath(); ctx.moveTo(hx, hy + 11.5); ctx.lineTo(hx + 4, hy + 9.5); ctx.lineTo(hx + 4, hy + 13.5); ctx.closePath(); gFill("#e0405a", 1); }
+  },
+  robot(b, hx, hy, r){
+    ctx.strokeStyle = C.ink; ctx.lineWidth = 1.4; ctx.beginPath(); ctx.moveTo(hx, hy - r); ctx.lineTo(hx, hy - r - 6); ctx.stroke();
+    ctx.beginPath(); ctx.arc(hx, hy - r - 7, 1.9, 0, TAU); gFill(b ? "#ff5c73" : "#34d982", 1);
+    ctx.fillStyle = "rgba(13,18,48,.45)"; [-1, 1].forEach(d => { ctx.beginPath(); ctx.arc(hx + d*(r - 2), hy + 2, 1.1, 0, TAU); ctx.fill(); });
+  },
+  space(b, hx, hy, r){
+    if (b){ ctx.beginPath(); ctx.arc(hx, hy, r + 3, 0, TAU); ctx.fillStyle = "rgba(190,230,255,.18)"; ctx.fill(); ctx.strokeStyle = "rgba(220,240,255,.9)"; ctx.lineWidth = 1.5; ctx.stroke();
+      ctx.strokeStyle = "rgba(255,255,255,.7)"; ctx.lineWidth = 1.3; ctx.beginPath(); ctx.arc(hx, hy, r, 1.15*Math.PI, 1.45*Math.PI); ctx.stroke(); }
+    else [-1, 1].forEach(d => { ctx.strokeStyle = C.ink; ctx.lineWidth = 1.3; ctx.beginPath(); ctx.moveTo(hx + d*4, hy - r + 1); ctx.lineTo(hx + d*7, hy - r - 6); ctx.stroke(); ctx.beginPath(); ctx.arc(hx + d*7, hy - r - 7, 1.8, 0, TAU); gFill("#b6ff5c", 1); });
+  },
+  satoshi(b, hx, hy, r){
+    ctx.lineCap = "round"; ctx.strokeStyle = C.ink; ctx.lineWidth = 5.5; ctx.beginPath(); ctx.arc(hx, hy, r + 1.8, .8*Math.PI, 2.2*Math.PI); ctx.stroke(); ctx.strokeStyle = b ? "#1a1d3a" : "#24163a"; ctx.lineWidth = 3.6; ctx.stroke();
+    ctx.fillStyle = C.gold; ctx.font = `900 6px ${FONT_D}`; ctx.textAlign = "center"; ctx.fillText("₿", hx, hy - r - .5);
+  },
+  wal(b, hx, hy, r, dir){
+    ctx.strokeStyle = "#8fd3ff"; ctx.lineWidth = 1.5; ctx.lineCap = "round"; ctx.beginPath(); ctx.moveTo(hx, hy - r - 1); ctx.lineTo(hx, hy - r - 5);
+    ctx.quadraticCurveTo(hx - 2, hy - r - 9, hx - 5, hy - r - 8); ctx.moveTo(hx, hy - r - 5); ctx.quadraticCurveTo(hx + 2, hy - r - 9, hx + 5, hy - r - 8); ctx.stroke();
+  },
+  liq(b, hx, hy, r, dir){
+    ctx.save(); ctx.translate(hx + dir*3, hy - 7); ctx.rotate(dir*.5); rr(-6, -1.6, 12, 3.2, 1); gFill("#ffffff", 1);
+    ctx.fillStyle = "#e0405a"; ctx.fillRect(-.6, -1.4, 1.2, 2.8); ctx.fillRect(-1.4, -.6, 2.8, 1.2); ctx.restore();
+  },
+  nacht(b, hx, hy, r, dir){
+    ctx.beginPath(); ctx.moveTo(hx - r*.95, hy - 7); ctx.quadraticCurveTo(hx, hy - r - 5, hx + r*.95, hy - 7); ctx.lineTo(hx - dir*13, hy - r - 7); ctx.closePath(); gFill("#3a4aa0");
+    rr(hx - r, hy - 8.5, 2*r, 2.6, 1.2); gFill("#ffffff", 1); ctx.beginPath(); ctx.arc(hx - dir*13, hy - r - 7, 2, 0, TAU); gFill("#ffffff", 1);
+  },
+  diamant(b, hx, hy, r){
+    const y = hy - r - 3; ctx.beginPath(); ctx.moveTo(hx - 4, y); ctx.lineTo(hx - 2.5, y - 2.6); ctx.lineTo(hx + 2.5, y - 2.6); ctx.lineTo(hx + 4, y); ctx.lineTo(hx, y + 4.5); ctx.closePath(); gFill(b ? "#9ff0ff" : "#c8dcff", 1);
+  }
+};
+const gear = f => (b, hx, hy, r, dir) => { ctx.save(); f(b, hx, hy, r, dir); ctx.restore(); };
+// id, Name, Freischalt-Hinweis, Bedingung, Paletten, Kopfbedeckung (null = Welt-Ausrüstung), geheim
+const SKINS = [
+  {id: "klassik", n: "🐂 Klassik", how: "Standard", ok: () => true, bull: PAL.bull, bear: PAL.bear, gear: null},
+  {id: "antike", n: "🏛️ Antike", how: "Boss von Welt 1 besiegen", ok: () => !!SLS.b[0], bull: pal("#c98a4a", "#8a5a2a", "#f0d2a8"), bear: pal("#8a5a3a", "#5a3a22", "#e8c8a0", "#d8b08a"), gear: gear(G.antike)},
+  {id: "gold", n: "⛏️ Goldrausch", how: "Boss von Welt 2 besiegen", ok: () => !!SLS.b[1], bull: pal("#b07840", "#7a4e24", "#e8c08a"), bear: pal("#6a4a3a", "#4a3024", "#c8a07a", "#a8805a"), gear: gear(G.gold)},
+  {id: "ritter", n: "🛡️ Ritter", how: "Boss von Welt 3 besiegen", ok: () => !!SLS.b[2], bull: pal("#5a8ad8", "#3a5aa0", "#bcd4ff"), bear: pal("#b8484a", "#8a2a2c", "#f0c0c0", "#f0b0b0"), gear: gear(G.ritter)},
+  {id: "wall", n: "🏦 Wall Street", how: "Boss von Welt 4 besiegen", ok: () => !!SLS.b[3], bull: pal("#2fa866", "#1a7a48", "#a8e8c4"), bear: pal("#d0505a", "#9a2a34", "#f8d0d4", "#f4c0c4"), gear: gear(G.wall)},
+  {id: "neon", n: "⚡ Neon", how: "Boss von Welt 5 besiegen", ok: () => !!SLS.b[4], bull: pal("#11173a", "#0b0f2a", "#232a6a", 0, "#00f0ff"), bear: pal("#11173a", "#0b0f2a", "#232a6a", "#1a2050", "#ff3df0"), gear: () => {}},
+  {id: "robot", n: "🤖 Roboter", how: "Boss von Welt 6 besiegen", ok: () => !!SLS.b[5], bull: pal("#9aa2c8", "#6a7298", "#c8cee8"), bear: pal("#6a7298", "#4a5278", "#b8c0d8", "#9aa2c8"), gear: gear(G.robot)},
+  {id: "space", n: "🚀 Weltraum", how: "Endboss besiegen", ok: () => !!SLS.b.f, bull: PAL.bull, bear: pal("#8be04a", "#5aa02a", "#e4ffb8", "#d4ff9a"), gear: gear(G.space)},
+  {id: "satoshi", n: "🥷 Satoshi", how: "Alle 10 Profi-Level schaffen", ok: () => SL_PRO.every(id => SLS.s[id] && SLS.s[id].quiz), bull: pal("#2a2f55", "#1a1d3a", "#4a5088"), bear: pal("#3a2458", "#24163a", "#5a4478", "#4a3468"), gear: gear(G.satoshi)},
+  {id: "wal", n: "🐋 Wal", how: "Geheim: einen Kauf über 1 Mio. $ live sehen", secret: 1, ok: () => !!store.album.goldwal, bull: pal("#4aa3ff", "#2a6ac8", "#cfe8ff"), bear: pal("#2a6ac8", "#1a4a90", "#a8d0ff", "#8fc0ff"), gear: gear(G.wal)},
+  {id: "liq", n: "💀 Liquidation", how: "Geheim: eine Liquidation über 1 Mio. $ sehen", secret: 1, ok: () => !!store.album.liqbig, bull: pal("#c8ccd8", "#8a90a8", "#eef0f6"), bear: pal("#a8aec4", "#6a7088", "#e0e4ee", "#d0d4e0"), gear: gear(G.liq)},
+  {id: "nacht", n: "🌙 Nachtschicht", how: "Geheim: zwischen 0 und 5 Uhr live dabei sein", secret: 1, ok: () => !!store.album.eule, bull: pal("#3a4a8a", "#24306a", "#8a9ad8"), bear: pal("#2a3470", "#1a2250", "#7a88c8", "#6a78b8"), gear: gear(G.nacht)},
+  {id: "diamant", n: "💎 Diamanthände", how: "Geheim: 30 Minuten live zuschauen", secret: 1, ok: () => !!store.album.marathon, bull: pal("#7ae8f8", "#3ab0c8", "#d8fbff"), bear: pal("#a8c8ff", "#6a90d8", "#e8f0ff", "#d8e6ff"), gear: gear(G.diamant)}
+];
+let SKIN = null, inPrev = false;
+const skin = () => SKIN || (SKIN = SKINS.find(k => k.id === store.skin && k.ok()) || SKINS[0]);
+// Vorschau: Bulle und Bär nebeneinander (gleiche Zeichenfunktionen wie im Spiel)
+function skinPrev(k){
+  const R = 3, c = document.createElement("canvas"); c.width = 130*R; c.height = 66*R;
+  const prev = ctx, ps = SKIN; ctx = c.getContext("2d"); SKIN = k; inPrev = true;
+  try {
+    ctx.setTransform(R*1.1, 0, 0, R*1.1, 36*R, 62*R); bullLegs(k.bull, () => 0, 0); bullBody({fight: false, ph: 0}, k.bull, false, false);
+    ctx.setTransform(R*1.1, 0, 0, R*1.1, 94*R, 62*R); bearLegs(k.bear, () => 0); bearBody({fight: false, ph: 0}, k.bear, false, false, false);
+  } finally { ctx = prev; SKIN = ps; inPrev = false; }
+  return c;
+}
+function renderSkins(){
+  const box = $("skins"); if (!box) return; const cur = skin().id; let n = 0; box.innerHTML = "";
+  SKINS.forEach(k => { const ok = k.ok(), on = k.id === cur; n += ok ? 1 : 0;
+    const b = document.createElement("button"); b.type = "button"; b.className = "sk" + (on ? " on" : "") + (ok ? "" : " lock"); b.setAttribute("aria-pressed", on);
+    b.appendChild(skinPrev(k));
+    b.insertAdjacentHTML("beforeend", `<b>${ok || !k.secret ? k.n : "??? Geheim"}</b><small>${on ? "✓ Angezogen" : ok ? "Tippen zum Anziehen" : "🔒 " + k.how.replace("Geheim: ", "")}</small>`);
+    if (ok && !on) b.onclick = () => { store.skin = k.id; save(); SKIN = k; renderSkins(); sfx("sparkle"); news(`<b>${k.n}</b> angezogen!`, true); };
+    box.appendChild(b); });
+  $("skinCount").textContent = `${n} / ${SKINS.length} freigeschaltet`;
+}
+// Neu freigeschaltete Sets einmalig melden
+function skinCheck(){
+  const got = SKINS.filter(k => k.ok()).map(k => k.id), seen = store.skinsSeen || ["klassik"], nw = got.filter(id => !seen.includes(id));
+  if (!nw.length) return; store.skinsSeen = got; save();
+  news(`<b>Neues Skin-Set:</b> ${nw.map(id => SKINS.find(k => k.id === id).n).join(", ")}! Anziehen unter „Skins“.`, true);
+  if (!$("pane-skins").hidden) renderSkins();
+}
+setTimeout(skinCheck, 6000);
 
 // ---------- Einheiten & Effekte ----------
 function spawn(side, x){
   const lane = Math.floor(Math.random()*4);
-  let acc = Math.random() < .45 ? 0 : 1 + Math.floor(Math.random()*3);
-  if (SL_ACC.length && Math.random() < .3) acc = SL_ACC[Math.floor(Math.random()*SL_ACC.length)][1];   // freigeschaltet in Satsland
-  const u = {side, lane, acc, y: laneY(lane), x: x !== undefined ? x : (side === "bull" ? -30 : W + 30), sp: rnd(55,95), off: rnd(4, 62), ph: Math.random()*6, fight:false, s: unitScale(lane)*rnd(.9,1.1)};
+  const u = {side, lane, y: laneY(lane), x: x !== undefined ? x : (side === "bull" ? -30 : W + 30), sp: rnd(55,95), off: rnd(4, 62), ph: Math.random()*6, fight:false, s: unitScale(lane)*rnd(.9,1.1)};
   if (side === "bull" && store.visit.streak >= 7 && Math.random() < .06) u.pal = PAL.goldBull;
   (side === "bull" ? bulls : bears).push(u);
 }
@@ -1312,8 +1422,8 @@ let introFig = null;
 function introStep(dt){
   if (mode === "connecting"){
     if (!introFig) introFig = {t0: t, leave: 0,
-      bull: {side:"bull", x:-90, y:0, s:1, ph:0, fight:false, acc:2, atkUntil:0, stuck:0},
-      bear: {side:"bear", x:W + 90, y:0, s:1, ph:0, fight:false, acc:2, atkUntil:0, stuck:0}};
+      bull: {side:"bull", x:-90, y:0, s:1, ph:0, fight:false, atkUntil:0, stuck:0},
+      bear: {side:"bear", x:W + 90, y:0, s:1, ph:0, fight:false, atkUntil:0, stuck:0}};
   } else if (introFig && !introFig.leave) introFig.leave = t;
   if (!introFig) return;
   const gap = 96*KS;
@@ -1378,7 +1488,7 @@ function unlock(id){
   const a = ALBUM.find(x => x.id === id);
   banner = {text: "NEU IM ALBUM", sub: a.n.toUpperCase(), color: C.gold, until: t + 3.2};
   sfx("sparkle"); confetti(40);
-  renderAlbum(id);
+  renderAlbum(id); skinCheck();
 }
 // Sammelalbum und Statistik neu zeichnen
 function renderAlbum(flashId){
@@ -1393,10 +1503,10 @@ function renderAlbum(flashId){
 }
 
 // ---------- Reiter: Welten | Album | Erklärung ----------
-const TABS = ["welten", "album", "hilfe"];
+const TABS = ["welten", "album", "skins", "hilfe"];
 function showTab(id){
   TABS.forEach(k => { const on = k === id; $("tab-" + k).setAttribute("aria-selected", on ? "true" : "false"); $("pane-" + k).hidden = !on; });
-  store.tab = id; save();
+  store.tab = id; save(); if (id === "skins") setTimeout(renderSkins);
 }
 TABS.forEach((k, i) => {
   const b = $("tab-" + k);
@@ -2238,6 +2348,7 @@ function sign(x, y, text, bg, fg){
 }
 // Ausrüstung je Zone: Helm, Cowboyhut, Schal
 function worldGear(hx, hy, facing){
+  if (inPrev) return;
   const a = zoneAt(camP).z.acc;
   if (a === "helmet"){ ctx.strokeStyle = "rgba(200,230,255,.85)"; ctx.fillStyle = "rgba(180,220,255,.18)"; ctx.lineWidth = 1.4; ctx.beginPath(); ctx.arc(hx, hy, 13, 0, Math.PI*2); ctx.fill(); ctx.stroke(); ctx.fillStyle = "rgba(255,255,255,.6)"; ctx.beginPath(); ctx.arc(hx - 5*facing, hy - 6, 2.4, 0, Math.PI*2); ctx.fill(); }
   else if (a === "cowboy"){ ctx.fillStyle = "#7a4a22"; ctx.beginPath(); ctx.ellipse(hx, hy - 9, 12, 2.6, 0, 0, Math.PI*2); ctx.fill(); rr(hx - 6, hy - 17, 12, 8, [4,4,0,0]); ctx.fill(); ctx.fillStyle = "#3a2210"; ctx.fillRect(hx - 6, hy - 11, 12, 1.6); }
@@ -2301,18 +2412,8 @@ function closedEye(x, y){ ctx.strokeStyle = C.ink; ctx.lineWidth = 1.5; ctx.line
 
 // ---------- Bulle: Teile ----------
 // Beine mit Turnschuhen und Schwanz; leg(i) = Versatz des i-ten Beins, tw = Schwanzschwung
-// Satsland-Accessoires: Doktorhut, Krone, Laseraugen
-function slGear(u, hx, hy, r, dir, eyes){
-  const O = C.ink, top = hy - r;
-  if (u.acc === 5){ ctx.fillStyle = "#1b1b2a"; ctx.strokeStyle = O; ctx.lineWidth = 1.4; ctx.beginPath(); ctx.moveTo(hx - 11, top - 2); ctx.lineTo(hx, top - 7); ctx.lineTo(hx + 11, top - 2); ctx.lineTo(hx, top + 3); ctx.closePath(); ctx.fill(); ctx.stroke();
-    rr(hx - 5, top - 1, 10, 4, 1); ctx.fill(); ctx.strokeStyle = C.gold; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(hx, top - 2.5); ctx.lineTo(hx + 8*dir, top + 1); ctx.lineTo(hx + 8*dir, top + 6); ctx.stroke(); }
-  if (u.acc === 6){ ctx.fillStyle = C.gold; ctx.strokeStyle = O; ctx.lineWidth = 1.4; ctx.beginPath(); ctx.moveTo(hx - 8, top + 2); ctx.lineTo(hx - 8, top - 6); ctx.lineTo(hx - 4, top - 2); ctx.lineTo(hx, top - 8); ctx.lineTo(hx + 4, top - 2); ctx.lineTo(hx + 8, top - 6); ctx.lineTo(hx + 8, top + 2); ctx.closePath(); ctx.fill(); ctx.stroke();
-    ctx.fillStyle = "#ff5c73"; ctx.beginPath(); ctx.arc(hx, top - 1, 1.3, 0, TAU); ctx.fill(); }
-  if (u.acc === 7){ ctx.save(); ctx.globalAlpha = .55 + .35*Math.sin(t*12 + u.ph); ctx.strokeStyle = "#ff2a2a"; ctx.lineWidth = 2.2; ctx.shadowColor = "#ff2a2a"; ctx.shadowBlur = 8; ctx.lineCap = "round";
-    eyes.forEach(([ex, ey]) => { ctx.beginPath(); ctx.moveTo(ex, ey); ctx.lineTo(ex + 34*dir, ey + 3); ctx.stroke(); }); ctx.restore(); }
-}
 function bullLegs(P, leg, tw){
-  const O = C.ink, L = 2;
+  const O = P.ink || C.ink, L = 2;
   [-10,-3,4,10].forEach((x,i) => { const dx = x + leg(i);
     rr(dx,-8,5,8,2); ctx.fillStyle = P.dark; ctx.fill(); ctx.strokeStyle = O; ctx.lineWidth = L; ctx.stroke();
     rr(dx - 1,-2,7.5,3.6,1.8); ctx.fillStyle = "#fff"; ctx.fill(); ctx.lineWidth = 1.4; ctx.stroke(); });
@@ -2322,11 +2423,9 @@ function bullLegs(P, leg, tw){
 }
 // Körper, Hörner, Kopf, Gesicht und feste Accessoires
 function bullBody(u, P, losing, closed){
-  const O = C.ink, L = 2;
+  const O = P.ink || C.ink, L = 2;
   ctx.beginPath(); ctx.ellipse(-1,-14,15,10,0,0,TAU); ctx.fillStyle = P.main; ctx.fill(); ctx.strokeStyle = O; ctx.lineWidth = L; ctx.stroke();
   ctx.fillStyle = "rgba(255,255,255,.3)"; ctx.beginPath(); ctx.ellipse(-3,-18,7,2.4,0,0,TAU); ctx.fill();
-  // Goldkette mit ₿
-  if (u.acc === 2){ ctx.strokeStyle = C.gold; ctx.lineWidth = 1.8; ctx.beginPath(); ctx.arc(10,-17,7,.6,2.3); ctx.stroke(); ctx.beginPath(); ctx.arc(8,-10,2.6,0,TAU); ctx.fillStyle = C.gold; ctx.fill(); ctx.strokeStyle = O; ctx.lineWidth = 1; ctx.stroke(); ctx.fillStyle = O; ctx.font = `900 4px ${FONT_D}`; ctx.textAlign = "center"; ctx.fillText("₿",8,-8.6); }
   // Hörner: kurz, kräftig, seitlich ausladend, dunklere Spitzen
   const horn = (bx,by,cx,cy,tx,ty) => {
     ctx.lineCap = "round";
@@ -2341,9 +2440,8 @@ function bullBody(u, P, losing, closed){
   ctx.beginPath(); ctx.ellipse(20,-18,7,5,0,0,TAU); ctx.fillStyle = P.snout; ctx.fill(); ctx.lineWidth = 1.6; ctx.stroke();
   ctx.fillStyle = O; ctx.beginPath(); ctx.arc(18,-18.5,1.1,0,TAU); ctx.arc(22,-18.5,1.1,0,TAU); ctx.fill();
   ctx.strokeStyle = C.gold; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(20,-13.4,2.2,0,TAU); ctx.stroke();
-  // Augen und Augenbrauen (Sonnenbrille, Statue, offen oder blinzelnd)
-  if (u.acc === 1){ rr(7,-30.5,15.5,5.2,2); ctx.fillStyle = O; ctx.fill(); ctx.fillStyle = "rgba(255,255,255,.55)"; ctx.fillRect(9.5,-29.5,3,1.2); ctx.fillRect(16.5,-29.5,3,1.2); }
-  else if (u.statue){ ctx.fillStyle = P.dark; ctx.beginPath(); ctx.arc(11,-27,1.6,0,TAU); ctx.arc(18,-27.5,1.6,0,TAU); ctx.fill(); }
+  // Augen und Augenbrauen (Statue, offen oder blinzelnd)
+  if (u.statue){ ctx.fillStyle = P.dark; ctx.beginPath(); ctx.arc(11,-27,1.6,0,TAU); ctx.arc(18,-27.5,1.6,0,TAU); ctx.fill(); }
   else {
     if (closed){ closedEye(11,-27); closedEye(18,-27.5); } else { stickerEye(11,-27,u,1); stickerEye(18,-27.5,u,1); }
     ctx.strokeStyle = O; ctx.lineWidth = 2.1; ctx.lineCap = "round"; ctx.beginPath();
@@ -2351,15 +2449,11 @@ function bullBody(u, P, losing, closed){
     else { ctx.moveTo(7.5,-32.6); ctx.lineTo(13,-30.6); ctx.moveTo(15.5,-30.9); ctx.lineTo(21,-33); }
     ctx.stroke();
   }
-  // Partyhut und HODL-Schild
-  if (u.acc === 3){ ctx.beginPath(); ctx.moveTo(9,-33); ctx.lineTo(14,-47); ctx.lineTo(19,-33); ctx.closePath(); ctx.fillStyle = C.bear; ctx.fill(); ctx.strokeStyle = O; ctx.lineWidth = 1.6; ctx.stroke(); ctx.fillStyle = C.gold; ctx.fillRect(11,-38,6,2); ctx.beginPath(); ctx.arc(14,-47,2,0,TAU); ctx.fill(); }
-  if (u.acc === 4) sign(-4,-48,"HODL",C.gold,C.ink);
-  if (u.acc >= 5) slGear(u, 14, -24, 10.5, 1, [[11,-27],[18,-27.5]]);
-  else if (!u.statue && u.acc !== 3) worldGear(14,-24,1);
+  if (!u.statue){ const g = skin().gear; g ? g(1, 14, -24, 10.5, 1) : worldGear(14,-24,1); }
 }
 // Bulle zeichnen (Angriff, Flug, Drehung, Rückzug, Gesten berücksichtigt)
 function drawBull(u){
-  const P = u.pal || PAL.bull, idle = idleOf(u);
+  const P = u.pal || skin().bull, idle = idleOf(u);
   const lunge = u.fight && !idle ? Math.max(0, Math.sin(u.ph))*4 : 0;
   const bob = u.fight ? 0 : Math.abs(Math.sin(u.ph))*-2.5;
   const losing = !u.statue && (pressure < -.35 || (fng && fng.v < 25));
@@ -2378,12 +2472,12 @@ function drawBull(u){
   }
   if (u.statue || u.s > sprMaxS){ bullLegs(P, legFn, tw); bullBody(u, P, losing, closed); }
   else {
-    blit(sprite("BL|" + P.main + "|" + legKey, "bull", "legs", () => bullLegs(P, legFn, tw)), "bull", "legs");
-    blit(sprite("BB|" + P.main + "|" + u.acc + "|" + (losing ? 1 : 0) + (closed ? "c" : "o") + "|" + gearNow, "bull", "body", () => bullBody({acc: u.acc, fight: false, ph: 0}, P, losing, closed)), "bull", "body");
+    blit(sprite("BL|" + skin().id + P.main + "|" + legKey, "bull", "legs", () => bullLegs(P, legFn, tw)), "bull", "legs");
+    blit(sprite("BB|" + skin().id + P.main + "|" + (losing ? 1 : 0) + (closed ? "c" : "o") + "|" + gearNow, "bull", "body", () => bullBody({fight: false, ph: 0}, P, losing, closed)), "bull", "body");
   }
   // Bewegte Teile werden immer live gezeichnet
   if (u.fight && Math.sin(u.ph*.5) > .7){ ctx.fillStyle = "rgba(255,255,255,.6)"; ctx.beginPath(); ctx.arc(28,-17,2.4,0,TAU); ctx.arc(31,-21,1.8,0,TAU); ctx.fill(); }
-  if (fest && !u.statue && u.acc !== 3) festHat(14, -33, 1);
+  if (fest && !u.statue && !skin().gear) festHat(14, -33, 1);
   if (losing) sweat(4,-34);
   if (t < laserUntil && !u.statue){ ctx.strokeStyle = "rgba(255,40,60,.9)"; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(18,-27); ctx.lineTo(70,-31); ctx.stroke(); }
   ctx.restore();
@@ -2392,19 +2486,17 @@ function drawBull(u){
 // ---------- Bär: Teile ----------
 // Beine mit Turnschuhen; leg(i) = Versatz des i-ten Beins
 function bearLegs(P, leg){
-  const O = C.ink, L = 2;
+  const O = P.ink || C.ink, L = 2;
   [-12,-5,2,9].forEach((x,i) => { const dx = x + leg(i);
     rr(dx,-8,5,8,2); ctx.fillStyle = P.dark; ctx.fill(); ctx.strokeStyle = O; ctx.lineWidth = L; ctx.stroke();
     rr(dx - 2,-2,7.5,3.6,1.8); ctx.fillStyle = "#fff"; ctx.fill(); ctx.lineWidth = 1.4; ctx.stroke(); });
 }
 // Körper, Kopf, Gesicht und feste Accessoires; yawn = Gähnen (Maul offen)
 function bearBody(u, P, losing, closed, yawn){
-  const O = C.ink, L = 2;
+  const O = P.ink || C.ink, L = 2;
   ctx.beginPath(); ctx.ellipse(1,-15,15,12,0,0,TAU); ctx.fillStyle = P.main; ctx.fill(); ctx.strokeStyle = O; ctx.lineWidth = L; ctx.stroke();
   ctx.beginPath(); ctx.ellipse(-1,-12,8.5,7,0,0,TAU); ctx.fillStyle = P.belly; ctx.fill();
   ctx.fillStyle = "rgba(255,255,255,.25)"; ctx.beginPath(); ctx.ellipse(4,-21,6,2.2,0,0,TAU); ctx.fill();
-  // Krawatte
-  if (u.acc === 1){ ctx.fillStyle = "#ffffff"; ctx.beginPath(); ctx.moveTo(-10,-20); ctx.lineTo(-5,-20); ctx.lineTo(-7.5,-16.5); ctx.fill(); ctx.beginPath(); ctx.moveTo(-7.5,-17.5); ctx.lineTo(-5.8,-15); ctx.lineTo(-7.5,-8); ctx.lineTo(-9.2,-15); ctx.closePath(); ctx.fillStyle = "#2a3a8a"; ctx.fill(); ctx.strokeStyle = O; ctx.lineWidth = 1; ctx.stroke(); }
   // Ohren
   [[-21,-34],[-7,-35]].forEach(([x,y]) => { ctx.beginPath(); ctx.arc(x,y,4.2,0,TAU); ctx.fillStyle = P.main; ctx.fill(); ctx.strokeStyle = O; ctx.lineWidth = L; ctx.stroke(); ctx.beginPath(); ctx.arc(x,y,2,0,TAU); ctx.fillStyle = P.belly; ctx.fill(); });
   // Kopf
@@ -2423,16 +2515,11 @@ function bearBody(u, P, losing, closed, yawn){
     else { ctx.moveTo(-22,-31.8); ctx.lineTo(-16,-30.4); ctx.moveTo(-12.5,-30.9); ctx.lineTo(-7,-33); }
     ctx.stroke();
   }
-  // Zylinder, Monokel, SELL-Schild
-  if (u.acc === 2){ rr(-21,-46,13,10,1.5); ctx.fillStyle = "#1b1b2a"; ctx.fill(); ctx.strokeStyle = O; ctx.lineWidth = 1.4; ctx.stroke(); rr(-24.5,-37.5,20,2.6,1); ctx.fill(); ctx.stroke(); ctx.fillStyle = C.bear; ctx.fillRect(-21,-39.8,13,1.8); }
-  if (u.acc === 3){ ctx.strokeStyle = C.gold; ctx.lineWidth = 1.3; ctx.beginPath(); ctx.arc(-10,-27.5,4,0,TAU); ctx.moveTo(-6.3,-26); ctx.lineTo(-5,-17); ctx.stroke(); }
-  if (u.acc === 4) sign(6,-46,"SELL",C.bear,"#ffffff");
-  if (u.acc >= 5) slGear(u, -14, -25, 11, -1, [[-18,-27],[-10,-27.5]]);
-  else if (!u.statue && u.acc !== 2) worldGear(-14,-25,-1);
+  if (!u.statue){ const g = skin().gear; g ? g(0, -14, -25, 11, -1) : worldGear(-14,-25,-1); }
 }
 // Bär zeichnen
 function drawBear(u){
-  const P = u.pal || PAL.bear, idle = idleOf(u);
+  const P = u.pal || skin().bear, idle = idleOf(u);
   const lunge = u.fight && !idle ? Math.max(0, Math.sin(u.ph))*4 : 0;
   const bob = u.fight ? 0 : Math.abs(Math.sin(u.ph))*-2.5;
   const losing = !u.statue && (pressure > .35 || (fng && fng.v > 75));
@@ -2443,10 +2530,10 @@ function drawBear(u){
   const f = u.statue || yawn ? 0 : legFrame(u.ph), lg = u.statue || yawn ? 0 : Math.sin(frameAng(f))*3, legFn = i => i%2 ? -lg : lg;
   if (u.statue || u.s > sprMaxS){ bearLegs(P, legFn); bearBody(u, P, losing, closed, yawn); }
   else {
-    blit(sprite("RL|" + P.main + "|" + (yawn ? "y" : f), "bear", "legs", () => bearLegs(P, legFn)), "bear", "legs");
-    blit(sprite("RB|" + P.main + "|" + u.acc + "|" + (losing ? 1 : 0) + (closed ? "c" : "o") + (yawn ? "y" : "") + "|" + gearNow, "bear", "body", () => bearBody({acc: u.acc, fight: false, ph: 0}, P, losing, closed, yawn)), "bear", "body");
+    blit(sprite("RL|" + skin().id + P.main + "|" + (yawn ? "y" : f), "bear", "legs", () => bearLegs(P, legFn)), "bear", "legs");
+    blit(sprite("RB|" + skin().id + P.main + "|" + (losing ? 1 : 0) + (closed ? "c" : "o") + (yawn ? "y" : "") + "|" + gearNow, "bear", "body", () => bearBody({fight: false, ph: 0}, P, losing, closed, yawn)), "bear", "body");
   }
-  if (fest && !u.statue && u.acc !== 2 && !(t < snowUntil)) festHat(-14, -35, -1);
+  if (fest && !u.statue && !skin().gear && !(t < snowUntil)) festHat(-14, -35, -1);
   if (t < snowUntil && !u.statue){ ctx.fillStyle = "#ffffff"; ctx.fillRect(-25,-38,21,3); ctx.beginPath(); ctx.arc(-14,-40,2.6,0,TAU); ctx.fill(); }
   if (losing) sweat(-3,-37);
   ctx.restore();
@@ -2586,8 +2673,8 @@ function drawPortal(i){
   ctx.restore();
   if (Math.abs(price - B) < viewUsd(price)*.9){
     const s = 3.2*k, below = price < B;
-    if (below) drawBear({x: x + wid*.15, y: groundY + 26*k, s, ph: t*3, fight:true, acc:2, side:"bear"});
-    else drawBull({x: x - wid*.15, y: groundY + 26*k, s, ph: t*3, fight:true, acc:1, side:"bull"});
+    if (below) drawBear({x: x + wid*.15, y: groundY + 26*k, s, ph: t*3, fight:true, side:"bear"});
+    else drawBull({x: x - wid*.15, y: groundY + 26*k, s, ph: t*3, fight:true, side:"bull"});
 
   }
 }
@@ -2597,7 +2684,7 @@ function drawMonument(L, n){
   if (n % 5 === 0){
     ctx.fillStyle = "#6a6a8a"; rr(x - 26*k, groundY - 18*k, 52*k, 20*k, 3); ctx.fill();
     const odd = Math.abs(n/5) % 2;
-    const st = {x, y: groundY - 18*k, s: 2*k, ph: 0, fight:false, statue:true, pal: odd ? PAL.goldBear : PAL.goldBull, acc:0};
+    const st = {x, y: groundY - 18*k, s: 2*k, ph: 0, fight:false, statue:true, pal: odd ? PAL.goldBear : PAL.goldBull};
     odd ? drawBear(st) : drawBull(st);
     ctx.fillStyle = "#ffffff"; ctx.font = `600 ${W<560?9:10}px ${FONT_N}`; ctx.textAlign = "center"; ctx.fillText(usd(L), x, groundY - 5*k);
   } else {
@@ -2790,7 +2877,7 @@ function draw(){
   const drawBoss = (side, start, end, color) => {
     const k = KS, inP = clamp((t - start)/.6, 0, 1), outP = clamp((end - t)/.6, 0, 1), e = Math.min(inP, outP);
     const bx = side === "bull" ? -90 + e*(110 + 30*k) : W + 90 - e*(110 + 30*k);
-    const boss = {x: bx, y: groundY + 14*k, s: 2.8*k, ph: t*8, fight:true, acc: side === "bull" ? 1 : 2, side};
+    const boss = {x: bx, y: groundY + 14*k, s: 2.8*k, ph: t*8, fight:true, side};
     side === "bull" ? drawBull(boss) : drawBear(boss);
     const tg = bossTarget && !bossTarget.dead && (bossTarget.side !== side) ? bossTarget : null;
     if (e > .9 && tg){
