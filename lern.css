@@ -247,3 +247,54 @@ svg.line path{fill:none;stroke-width:4;stroke-linecap:round;stroke-dasharray:900
 h2{scroll-margin-top:12px}
 .xref{border-style:dashed}
 @media (hover:none){ .btn:not(.ghost)::after{display:none} }
+
+/* ===== Boss-Arena v2 ===== */
+.boss{width:min(540px,100%);padding:12px;background:linear-gradient(#1a1240,#0e1238)}
+.boss .bt{gap:8px} .boss .bnum{font:900 11px var(--f-body);letter-spacing:1px;background:#ff5c73;color:#fff;border:2px solid #0d1230;border-radius:8px;padding:3px 7px}
+.boss .bt b{font-size:19px}
+.boss .arena{display:block;height:250px;margin-top:10px;border-radius:16px;border:3px solid #0d1230;overflow:hidden;background:radial-gradient(ellipse at 50% 30%,rgba(255,255,255,.18),transparent 55%),linear-gradient(var(--c1),var(--c2));box-shadow:inset 0 -30px 40px rgba(0,0,0,.35)}
+.boss .rays{position:absolute;left:50%;top:38%;width:520px;height:520px;margin:-260px;background:repeating-conic-gradient(rgba(255,255,255,.06) 0 10deg,transparent 10deg 20deg);animation:spin 40s linear infinite;pointer-events:none}
+.boss .floor{position:absolute;left:38%;bottom:44px;width:200px;height:26px;margin-left:-100px;border-radius:50%;background:rgba(0,0,0,.35)}
+.boss .bimg{position:absolute;left:38%;bottom:52px;width:140px;height:140px;margin-left:-70px;z-index:2;filter:drop-shadow(0 6px 0 rgba(0,0,0,.35))}
+.boss .bimg.idle{animation:bidle 2.4s ease-in-out infinite}
+.boss .bimg.ouch{animation:bouch .5s} .boss .bimg.laugh{animation:blaugh .6s}
+.boss .bimg.down{animation:none;transform:rotate(90deg) translate(30px,10px) scale(.85);opacity:.35;filter:grayscale(1);transition:1.2s cubic-bezier(.3,1.4,.5,1)}
+.boss .bubble{position:absolute;right:8px;top:40px;max-width:42%;transition:opacity .3s;margin:0;z-index:3;font-size:13.5px} .boss .bubble::after{content:"";position:absolute;left:-10px;bottom:12px;border:8px solid transparent;border-right-color:#fff}
+.boss .bubble.pop{animation:bpop .35s}
+.boss .bhp{position:absolute;left:12px;right:12px;top:10px;z-index:3} .boss .bhp .hp{position:relative;height:16px;border-radius:8px;background:rgba(0,0,0,.45);border:2.5px solid #0d1230}
+.boss .bhp .hp i{position:absolute;inset:0 auto 0 0;width:100%;border-radius:6px;transition:width .35s} .boss .bhp .hp .gh{background:#fff;transition:width .6s .1s} .boss .bhp .hp .cur{background:linear-gradient(90deg,#ff3d5a,#ff9a6a)}
+.boss .bhp small{position:absolute;inset:0;display:flex;pointer-events:none} .boss .bhp small s{flex:1;border-right:2px solid rgba(13,18,48,.7)} .boss .bhp small s:last-child{border:0}
+.boss .me{position:absolute;left:10px;bottom:8px;z-index:3;display:flex;align-items:center;gap:6px;background:rgba(0,0,0,.4);border:2px solid #0d1230;border-radius:12px;padding:4px 8px}
+.boss .me .av{font-size:22px} .boss .lives{font-size:16px;letter-spacing:0} .boss .lives i{font-style:normal;display:inline-block} .boss .lives i.lost{animation:hbreak .5s}
+.boss .combo{font:900 12px var(--f-body);color:#ffc94d}
+.boss .fx{position:absolute;inset:0;z-index:4;pointer-events:none}
+.boss .zap{position:absolute;left:30px;bottom:30px;font-size:34px;animation:zap .45s ease-in forwards;filter:drop-shadow(0 0 8px #ffe066)}
+.boss .ft{position:absolute;left:38%;top:44%;transform:translateX(-50%);font:900 26px var(--f-display);white-space:nowrap;-webkit-text-stroke:2px #0d1230;animation:ftup 1.3s ease-out forwards}
+.boss .ft.hit{color:#ffe066} .boss .ft.cmb{color:#ff9a3d;top:58%;font-size:18px;animation-delay:.15s} .boss .ft.miss{color:#ff5c73;left:22%;top:66%}
+.boss .arena.flash::after,.boss .arena.dmg::after{content:"";position:absolute;inset:0;z-index:5;pointer-events:none;animation:aflash .35s forwards}
+.boss .arena.flash::after{background:#fff} .boss .arena.dmg::after{background:radial-gradient(transparent 40%,rgba(255,40,70,.7))}
+.boss .vs{position:absolute;inset:0;z-index:6;display:flex;align-items:center;justify-content:space-between;padding:0 16px;background:rgba(5,8,25,.75);animation:vsout .4s 1.7s forwards}
+.boss .vs .v1,.boss .vs .v2{display:grid;place-items:center;font-size:56px;line-height:1} .boss .vs .v1{animation:vsl .5s both} .boss .vs .v2{width:120px;height:120px;animation:vsr .5s both}
+.boss .vs .v1 b{font:900 18px var(--f-display);color:#7cc4ff} .boss .vs .v0{font:900 64px var(--f-display);color:#ffc94d;-webkit-text-stroke:3px #0d1230;animation:vsz .5s .35s both}
+.boss .stamp{position:absolute;left:50%;top:40%;z-index:7;font:900 54px var(--f-display);-webkit-text-stroke:3px #0d1230;transform:translate(-50%,-50%) rotate(-8deg);animation:stamp .5s cubic-bezier(.2,1.6,.4,1) both;white-space:nowrap}
+.boss .stamp.ko{color:#ffc94d} .boss .stamp.go{color:#ff5c73;font-size:42px}
+.boss .arena.won .rays{background:repeating-conic-gradient(rgba(255,214,90,.25) 0 10deg,transparent 10deg 20deg);animation-duration:6s}
+.boss .tm{height:8px;border-radius:4px;border:2px solid #0d1230} .boss .tm i{transition:width .1s linear,background .3s} .boss .tm.low i{background:#ff5c73;animation:blink .5s infinite}
+.boss .bq{font-size:16.5px} .boss .bq span{display:block;font:800 11px var(--f-body);color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px}
+.boss .opts button{border-radius:14px;transition:transform .12s} .boss .opts button:not(:disabled):hover{transform:translateX(4px)}
+.boss .why b{color:var(--ink)}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes bidle{50%{transform:translateY(-8px) rotate(-2deg)}}
+@keyframes bouch{0%{filter:brightness(3) drop-shadow(0 6px 0 rgba(0,0,0,.35))}20%{transform:translateX(14px) rotate(8deg)}40%{transform:translateX(-12px) rotate(-6deg)}60%{transform:translateX(8px)}100%{transform:none}}
+@keyframes blaugh{25%{transform:translateY(-14px) scale(1.06)}50%{transform:translateY(0)}75%{transform:translateY(-8px) scale(1.03)}}
+@keyframes bpop{from{transform:scale(.7);opacity:0}}
+@keyframes hbreak{0%{transform:scale(1.6)}50%{transform:scale(.6) rotate(-20deg)}100%{transform:none}}
+@keyframes zap{to{left:38%;bottom:58%;transform:scale(1.8) rotate(25deg);opacity:.2}}
+@keyframes ftup{0%{opacity:0;transform:translate(-50%,10px) scale(.6)}20%{opacity:1;transform:translate(-50%,0) scale(1.15)}100%{opacity:0;transform:translate(-50%,-50px) scale(1)}}
+@keyframes aflash{from{opacity:.85}to{opacity:0}}
+@keyframes vsl{from{transform:translateX(-120px);opacity:0}} @keyframes vsr{from{transform:translateX(120px);opacity:0}} @keyframes vsz{from{transform:scale(3);opacity:0}}
+@keyframes vsout{to{opacity:0;visibility:hidden}}
+@keyframes stamp{from{transform:translate(-50%,-50%) rotate(-8deg) scale(3);opacity:0}}
+@media (max-width:420px){ .boss .arena{height:230px} .boss .bimg{width:116px;height:116px;margin-left:-58px} .boss .bubble{max-width:44%;font-size:12.5px} }
+.boss .arena:has(.vs) .bubble{opacity:0}
+@media (prefers-reduced-motion:reduce){ .boss .rays,.boss .bimg.idle{animation:none} }

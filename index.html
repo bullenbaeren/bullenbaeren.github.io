@@ -14,7 +14,7 @@
 <meta property="og:description" content="Bitcoin spielerisch verstehen, mit echten Live-Daten.">
 <meta property="og:image" content="https://satsland.github.io/og.png">
 <meta property="og:url" content="https://satsland.github.io/">
-<link rel="stylesheet" href="lern.css?v=25">
+<link rel="stylesheet" href="lern.css?v=26">
 <style>
 /* Übersicht der Lernwelten: gleiche Farben und Schriften wie das Spiel. */
 .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
@@ -208,7 +208,7 @@ details.fold[open] > summary{margin-bottom:12px}
   </details>
   <p class="foot">Unterhaltung und Lernen, keine Anlageberatung. Keine Cookies, kein Tracking. <a href="#" id="guideOn" style="color:inherit">Satoshi zurückholen</a> · <a href="#" id="introOn" style="color:inherit">Einführung ansehen</a></p>
 </div>
-<script src="lern.js?v=25"></script>
+<script src="lern.js?v=26"></script>
 <script>
 // Lernpfad: Fortschritt aus dem eigenen Browser, Häkchen an den Karten, Empfehlung als Nächstes
 (() => {
@@ -404,5 +404,33 @@ details.fold[open] > summary{margin-bottom:12px}
     if (last && (!st || st.w !== last)){ const a = document.getElementById("alt"); a.hidden = false; a.innerHTML = `oder zurück zu <a href="${Lern.TITLES[last][1]}">${Lern.TITLES[last][0]}</a>`; } }
 })();
 </script>
+<!-- DEV-START: Entwickler-Werkzeuge. Vor der Veröffentlichung diesen ganzen Block bis DEV-END löschen. -->
+<div id="dev" style="position:fixed;left:10px;bottom:10px;z-index:55;font:600 13px system-ui">
+  <button type="button" id="devT" style="border:2px solid #0d1230;border-radius:12px;background:#ff5c73;color:#fff;font:900 12px system-ui;padding:6px 10px;cursor:pointer;box-shadow:2px 2px 0 #0d1230">🛠️ DEV</button>
+  <div id="devP" hidden style="margin-bottom:8px;width:230px;padding:10px;border-radius:14px;border:3px solid #0d1230;background:#1a1f55;color:#eef0ff;box-shadow:4px 4px 0 #0d1230;position:absolute;bottom:38px;left:0">
+    <b style="display:block;margin-bottom:6px">Entwickler-Modus</b>
+    <button type="button" data-d="all" style="width:100%;margin-bottom:6px">🔓 Alles freischalten</button>
+    <button type="button" data-d="reset" style="width:100%;margin-bottom:8px">↺ Mein Fortschritt zurück</button>
+    <small style="display:block;margin-bottom:4px;color:#aab2d8">Boss direkt testen:</small>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px"><button type="button" data-b="0">1</button><button type="button" data-b="1">2</button><button type="button" data-b="2">3</button><button type="button" data-b="3">4</button><button type="button" data-b="4">5</button><button type="button" data-b="5">6</button><button type="button" data-b="f" style="grid-column:span 2">👑 End</button></div>
+  </div>
+</div>
+<script>
+(() => {
+  const K = ["bvb-lernen", "satsland-boss", "satsland-titles", "satsland-daily", "satsland-intro"], BK = "satsland-dev-backup";
+  document.getElementById("devT").onclick = () => { const p = document.getElementById("devP"); p.hidden = !p.hidden; };
+  document.getElementById("devP").onclick = e => { const b = e.target.closest("button"); if (!b) return;
+    if (b.dataset.b){ document.getElementById("devP").hidden = true; return Lern.boss(b.dataset.b === "f" ? "f" : +b.dataset.b); }
+    if (b.dataset.d === "all"){
+      if (!localStorage.getItem(BK)){ const bk = {}; K.forEach(k => bk[k] = localStorage.getItem(k)); localStorage.setItem(BK, JSON.stringify(bk)); }
+      const p = {}; [...Lern.PATH.map(x => x[0]), ...Lern.PRO.flat()].forEach(id => p[id] = {quiz: 3, total: 3, seen: 1});
+      localStorage.setItem("bvb-lernen", JSON.stringify(p)); localStorage.setItem("satsland-boss", JSON.stringify({v2: 1, 0: true, 1: true, 2: true, 3: true, 4: true, 5: true, f: true})); localStorage.setItem("satsland-intro", "1");
+      location.reload(); }
+    if (b.dataset.d === "reset"){ const bk = JSON.parse(localStorage.getItem(BK) || "null"); if (!bk) return Lern.toast && Lern.toast("Kein Backup vorhanden.");
+      K.forEach(k => bk[k] == null ? localStorage.removeItem(k) : localStorage.setItem(k, bk[k])); localStorage.removeItem(BK); location.reload(); }
+  };
+})();
+</script>
+<!-- DEV-END -->
 </body>
 </html>
