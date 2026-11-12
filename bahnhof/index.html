@@ -59,10 +59,11 @@ canvas{display:block;width:100%;height:clamp(300px,52vw,430px)}
   </div>
   <div>
     <h1>Mempool-<span class="btc">Bahnhof</span></h1>
-    <p class="lead">So kommt eine Bitcoin-Überweisung in einen Block: Jede Transaktion ist ein Fahrgast, jeder Block ein Zug. Wer mehr Gebühr zahlt, darf zuerst einsteigen. Alles mit echten Daten.</p>
+    <p class="lead">So kommt eine Bitcoin-Überweisung in einen Block: Jede Transaktion ist ein Fahrgast, jeder Block ein Zug. Wer mehr Gebühr zahlt, darf zuerst einsteigen. Oben die echten Live-Werte, darunter der Spiel-Bahnhof zum Ausprobieren.</p>
   </div>
 
   <section class="card" aria-label="Live-Werte">
+    <p class="muted" style="margin:0 0 8px;font-size:14px">📡 <b>Das echte Netz, gerade jetzt:</b></p>
     <span class="mode" id="mode">Verbinde …</span>
     <div class="stats">
       <div class="stat"><small>Wartende Transaktionen</small><b id="sWait">–</b></div>
@@ -72,14 +73,15 @@ canvas{display:block;width:100%;height:clamp(300px,52vw,430px)}
     </div>
   </section>
 
+  <p class="muted" style="margin:0 0 8px;font-size:14px">🎮 <b>Spiel-Bahnhof</b> (Beispiel mit viel Andrang, damit du jeden Platz ausprobieren kannst):</p>
   <section class="stage"><canvas id="cv" role="img" aria-label="Bahnhof: Fahrgäste (Transaktionen) warten auf Züge (Blöcke). Vorne die mit der höchsten Gebühr."></canvas></section>
   <p class="news" id="news" aria-live="polite">Der Bahnhof öffnet …</p>
-  <div class="row" style="margin:-4px 0 14px"><button class="btn" type="button" id="simB">⛏️ Zeig mir: Ein Block wird gefunden</button><button class="btn ghost" type="button" id="rush">🚦 Beispiel: viel Andrang</button></div>
+  <div class="row" style="margin:-4px 0 14px"><button class="btn" type="button" id="simB">⛏️ Zeig mir: Ein Block wird gefunden</button></div>
 
   <section class="card you" aria-label="Deine Übungs-Überweisung">
     <div>
       <h2>Deine Übungs-Überweisung</h2>
-      <p>Wähle eine Gebühr und schick einen Übungs-Fahrgast los. Es wird <b>kein echtes Bitcoin</b> bewegt. Der Bahnhof prüft mit den echten Blöcken, wann du mitgekommen wärst.</p>
+      <p>Wähle eine Gebühr und schick einen Übungs-Fahrgast los. Es wird <b>kein echtes Bitcoin</b> bewegt. Im Spiel-Bahnhof siehst du, mit welchem Zug du mitkommst und wie du aufrückst.</p>
     </div>
     <div class="ctrl">
       <div class="feeRow"><input id="fee" type="range" min="0" max="100" value="30" aria-label="Gebühr in sat pro vByte"><span class="feeVal" id="feeVal">–</span></div>
@@ -154,41 +156,30 @@ function resize(){
 }
 addEventListener("resize", resize);
 
-// ---------- Live-Daten ----------
+// ---------- Live-Daten: nur für die Info-Karte oben (das Spiel unten läuft als flüssige Simulation) ----------
+const LV = {waiting: 0, tip: {h: 0, ts: 0}, min: 0, ok: false};
 function connect(){
   let ws;
   try { ws = new WebSocket("wss://mempool.space/api/v1/ws"); } catch(e){ return; }
   ws.onopen = () => ws.send(JSON.stringify({action: "want", data: ["blocks", "stats", "mempool-blocks"]}));
   ws.onmessage = ev => {
     let m; try { m = JSON.parse(ev.data); } catch(e){ return; }
-    if (m.mempoolInfo && m.mempoolInfo.size) waiting = m.mempoolInfo.size;
-    if (rush){ if (m["mempool-blocks"]) pendingMB = m["mempool-blocks"]; return; }   // Beispiel-Modus: Live-Daten nur im Hintergrund merken
-    if (m["mempool-blocks"] && t < holdUntil){ pendingMB = m["mempool-blocks"]; return; }   // Vorschau läuft: nicht zurückspringen
-    if (m.blocks && m.blocks.length){ const b = m.blocks.reduce((a, c) => c.height > a.height ? c : a); tip = {h: b.height, ts: b.timestamp}; }
-    if (m["mempool-blocks"]){ mblocks = m["mempool-blocks"]; if (mode !== "live") goLive(); layoutCrowd(); renderYou(); }
-    if (m.block) newBlock(m.block);
+    if (m.mempoolInfo && m.mempoolInfo.size) LV.waiting = m.mempoolInfo.size;
+    if (m.blocks && m.blocks.length){ const b = m.blocks.reduce((a, c) => c.height > a.height ? c : a); LV.tip = {h: b.height, ts: b.timestamp}; }
+    if (m.block) LV.tip = {h: m.block.height, ts: m.block.timestamp};
+    if (m["mempool-blocks"] && m["mempool-blocks"][0]){ LV.min = m["mempool-blocks"][0].feeRange[0]; if (!LV.ok){ LV.ok = true; $("mode").className = "mode live"; $("mode").textContent = "Live"; } }
+    if (LV.tip.h && tip.h < LV.tip.h - 1) tip = {h: LV.tip.h, ts: tip.ts};   // Spiel nutzt echte Blocknummern
   };
   ws.onclose = () => setTimeout(connect, 5000);
 }
 async function loadPrice(){ try { const j = await (await fetch("https://mempool.space/api/v1/prices")).json(); if (j.EUR > 0) eur = j.EUR; } catch(e){} }
-function goLive(){ mode = "live"; $("mode").className = "mode live"; $("mode").textContent = "Live"; say("<b>Live!</b> Das sind die echten Fahrgäste, die gerade auf einen Bitcoin-Block warten."); }
 
-// ---------- Testdaten, falls keine Verbindung ----------
-let demoIn = 40, rush = false, holdUntil = 0, pendingMB = null, wasLive = false;
-// Umschalter: echtes (oft ruhiges) Netz ↔ Beispiel mit viel Andrang, damit man alle Plätze ausprobieren kann
-function toggleRush(){
-  rush = !rush; $("rush").textContent = rush ? "📡 Zurück zu Live" : "🚦 Beispiel: viel Andrang";
-  if (rush){ wasLive = mode === "live"; mode = "demo"; $("mode").className = "mode demo"; $("mode").textContent = "Beispiel: viel Andrang"; demoBlocks(true); demoIn = 40;
-    say("<b>Beispiel mit viel Andrang:</b> Jetzt kostet ein Platz im nächsten Zug richtig Gebühr. Schieb den Regler und schick einen Fahrgast los, dann siehst du, wie er Zug für Zug aufrückt."); }
-  else if (wasLive){ mode = "live"; if (pendingMB) mblocks = pendingMB; layoutCrowd(); goLive(); }
-  else startDemo();
-  renderYou();
-}
+// ---------- Spiel-Bahnhof: Beispiel mit Andrang, damit jeder Platz erreichbar ist ----------
+let demoIn = 25;
 function startDemo(){
-  mode = "demo"; $("mode").className = "mode demo"; $("mode").textContent = "Testdaten – Live nicht erreichbar";
-  tip = {h: 925500, ts: Date.now()/1000 - 300}; waiting = 42000; eur = 64000;
-  demoBlocks();
-  say("<b>Keine Live-Verbindung.</b> Du siehst Testdaten. Sobald mempool.space erreichbar ist, wird es echt.");
+  mode = "demo"; tip = {h: LV.tip.h || 925500, ts: Date.now()/1000 - 300}; waiting = 42000; if (!eur) eur = 64000;
+  demoBlocks(true);
+  say("<b>Spiel-Bahnhof:</b> Schick unten einen Übungs-Fahrgast los und schau zu, wie er Zug für Zug aufrückt. Etwa alle 30 Sekunden fährt ein Zug, oder du tippst auf „Block gefunden“.");
 }
 function demoBlocks(hi){
   const base = hi ? rnd(18, 30) : rnd(2, 8); mblocks = [];
@@ -198,7 +189,7 @@ function demoBlocks(hi){
 }
 function demoStep(dt){
   if (mode !== "demo") return;
-  if ((demoIn -= dt) <= 0){ demoIn = rnd(25, 60); newBlock({height: tip.h + 1, timestamp: Date.now()/1000, tx_count: mblocks[0].nTx, extras: {feeRange: mblocks[0].feeRange, pool: {name: ["Foundry USA", "AntPool", "ViaBTC", "F2Pool"][Math.floor(Math.random()*4)]}}});  }
+  if ((demoIn -= dt) <= 0){ demoIn = rnd(26, 34); newBlock({height: tip.h + 1, timestamp: Date.now()/1000, tx_count: mblocks[0].nTx, extras: {feeRange: mblocks[0].feeRange, pool: {name: ["Foundry USA", "AntPool", "ViaBTC", "F2Pool"][Math.floor(Math.random()*4)]}}});  }
 }
 
 // ---------- Neuer Block = Zug fährt ab ----------
@@ -213,17 +204,14 @@ function newBlock(b){
   if (mine){
     if (mine.state === "wait" && mine.fee >= minFee){ mine.state = "in"; mine.h = b.height; mine.conf = 1; say(`<b>Du bist eingestiegen!</b> Deine Übungs-Überweisung ist in Block ${fmt(b.height)}: 1 Bestätigung.`); }
     else if (mine.state === "in"){ mine.conf = b.height - mine.h + 1; if (mine.conf === 6) say("<b>6 Bestätigungen!</b> Deine Übungs-Überweisung gilt jetzt als praktisch unumkehrbar."); }
-    else if (mine.state === "wait") say(`Dein Fahrgast mit ${fmtFee(mine.fee)} sat/vB musste leider draußen bleiben. Andere haben mehr geboten.`);
+    else if (mine.state === "wait") say(`Zug ${fmt(b.height)} ist voll, dein Fahrgast mit ${fmtFee(mine.fee)} sat/vB wartet noch. Andere haben mehr geboten. Gleich rückt er einen Zug auf.`);
   }
   renderYou();
 }
 
 // Vorschau: Block sofort "finden", damit man nicht 10 Minuten warten muss (ändert keine echten Daten)
-$("rush").onclick = toggleRush;
-$("simB").onclick = () => { if (!mblocks || (anim && t - anim.t0 < 5.2)) return;
-  if (mode === "demo"){ demoIn = rnd(25, 60); newBlock({height: tip.h + 1, timestamp: Date.now()/1000, tx_count: mblocks[0].nTx, extras: {feeRange: mblocks[0].feeRange, pool: {name: "Demo-Miner"}}}); return; }
-  anim = {t0: t, h: tip.h + 1, pool: "", n: mblocks[0].nTx, sim: true}; holdUntil = t + 30;
-  say(`<b>So läuft es ab:</b> Ein Miner findet den nächsten Block. Die rund <b>${fmt(mblocks[0].nTx)}</b> Fahrgäste aus Abschnitt 1, also die mit der höchsten Gebühr, steigen ein, der Zug fährt ab und ihre Zahlungen sind <b>bestätigt</b>. Alle anderen <b>rücken einen Zug auf</b>.${mine && mine.state === "wait" ? (mine.fee >= mblocks[0].feeRange[0] ? " Dein Übungs-Fahrgast wäre jetzt mit eingestiegen." : " Dein Übungs-Fahrgast rückt mit auf.") : ""} (Vorschau, der echte nächste Block kommt in ~10 Min.)`); };
+$("simB").onclick = () => { if (!mblocks || (anim && t - anim.t0 < 5.2)) return; demoIn = rnd(26, 34);
+  newBlock({height: tip.h + 1, timestamp: Date.now()/1000, tx_count: mblocks[0].nTx, extras: {feeRange: mblocks[0].feeRange, pool: {name: "einem Miner"}}}); };
 
 // Nach der Abfahrt rücken alle einen Abschnitt nach vorne
 let shiftT = -9;
@@ -398,6 +386,11 @@ function draw(){
       });
     }
     // Übungs-Fahrgast
+    // Einsteigen: dein Fahrgast läuft wie die anderen in den Zug
+    if (mine && mine.state === "in" && anim && mine.h === anim.h && t - anim.t0 < 1.4 && mine.px != null){
+      const q = easeOut((t - anim.t0)/1.4), yx = mine.px + (tx + 110*k - mine.px)*q, yy = plY + H*.05 + (trY - 40*k - plY - H*.05)*q;
+      passenger(yx, yy, k*1.7*(1 - q*.4), "#ffc94d", 0, true);
+    }
     if (mine && mine.state === "wait"){
       const zn = zoneFor(mine.fee), zi = Math.min(2, zn), zr = zoneRect(zi);
       // steht vorne an der Bahnsteigkante; in „Weitere Züge“ je nach Zug-Nummer weiter hinten
@@ -418,17 +411,17 @@ const easeOut = x => 1 - Math.pow(1 - clamp(x, 0, 1), 3);
 
 // ---------- Werte oben ----------
 function renderStats(){
-  $("sWait").textContent = waiting ? fmt(waiting) : "–";
-  $("sMin").innerHTML = mblocks && mblocks[0] ? `${fmtFee(mblocks[0].feeRange[0])} <small style="font-size:.55em;color:var(--muted)">sat/vB</small>` : "–";
-  $("sAgo").textContent = tip.ts ? `${Math.floor(Math.max(0, Date.now()/1000 - tip.ts)/60)} Min` : "–";
-  $("sNext").textContent = tip.h ? fmt(tip.h + 1) : "–";
+  $("sWait").textContent = LV.waiting ? fmt(LV.waiting) : "–";
+  $("sMin").innerHTML = LV.min ? `${fmtFee(LV.min)} <small style="font-size:.55em;color:var(--muted)">sat/vB</small>` : "–";
+  $("sAgo").textContent = LV.tip.ts ? `${Math.floor(Math.max(0, Date.now()/1000 - LV.tip.ts)/60)} Min` : "–";
+  $("sNext").textContent = LV.tip.h ? fmt(LV.tip.h + 1) : "–";
+  if (!LV.ok && t > 8 && $("mode").textContent.startsWith("Verbinde")){ $("mode").className = "mode demo"; $("mode").textContent = "Live nicht erreichbar"; }
 }
 
 // ---------- Schleife ----------
 let last = performance.now(), statT = 0;
 function frame(now){
   const dt = clamp((now - last)/1000, 0, .05); last = now; t += dt;
-  if (mode === "connecting" && t > 8) startDemo();
   demoStep(dt);
   if ((statT -= dt) <= 0){ statT = 1; renderStats(); }
   draw();
@@ -455,7 +448,7 @@ const QUIZ = [
   ["Ab wann gilt eine Bitcoin-Zahlung als praktisch unumkehrbar?", ["Sofort beim Abschicken", "Nach etwa 6 Bestätigungen", "Nach 30 Tagen"], 1, "Mit jedem weiteren Block obendrauf wird es schwerer, die Zahlung rückgängig zu machen. Nach 6 Blöcken gilt sie als sicher."],
 ];
 Lern.quiz($("quiz"), "bahnhof", QUIZ, "../"); Lern.visit("bahnhof"); Lern.renderNext("bahnhof", "../");
-resize(); renderYou(); connect(); loadPrice(); setInterval(loadPrice, 5*60*1000);
+resize(); startDemo(); connect(); loadPrice(); setInterval(loadPrice, 5*60*1000);
 setInterval(renderYou, 30000);
 requestAnimationFrame(frame);
 })();
