@@ -39,7 +39,12 @@
 .it{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;padding:10px 12px}
 .it b{display:block;margin-bottom:6px}
 .it .row button{font:700 13px var(--f-body);padding:7px 12px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.05);color:var(--ink);cursor:pointer}
-.it.ok{border-color:rgba(52,217,130,.55)} .it.no{border-color:rgba(255,92,115,.6)}
+.it{transition:background .3s,border-color .3s}
+.it .row button[data-v="1"].pick{background:#34d982;border-color:#0d1230;color:#04240f}
+.it .row button[data-v="0"].pick{background:#ff5c73;border-color:#0d1230;color:#2a0610}
+.it .row button.pick{transform:scale(1.06);box-shadow:2px 2px 0 #0d1230} .it[data-done] .row button:not(.pick){opacity:.4}
+.it.ok{border-color:rgba(52,217,130,.7);background:rgba(52,217,130,.1)} .it.ok p{color:#9ff0c4} .it.ok p::before{content:"✓ ";font-weight:900}
+.it.no{background:rgba(255,92,115,.1)} .it.no p{color:#ffb0bc} .it.no p::before{content:"✗ ";font-weight:900} .it.no{border-color:rgba(255,92,115,.6)}
 .it p{margin:6px 0 0;font-size:13px;color:var(--muted)}
 .score{margin:10px 0 0;font-weight:800;color:var(--gold)}
 @media (max-width:640px){ .words{grid-template-columns:repeat(3,minmax(0,1fr))} .ask{grid-template-columns:1fr} .sort{grid-template-columns:1fr} }
@@ -153,7 +158,7 @@ let pts = 0, answered = 0;
 $("sort").innerHTML = ITEMS.map(([t], i) => `<div class="it" id="it${i}"><b>${t}</b><div class="row"><button type="button" data-i="${i}" data-v="1">✓ Sicher</button><button type="button" data-i="${i}" data-v="0">✗ Unsicher</button></div><p hidden></p></div>`).join("");
 $("sort").querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
   const i = +b.dataset.i, el = $("it" + i); if (el.dataset.done) return;
-  const ok = +b.dataset.v === ITEMS[i][1]; el.dataset.done = 1; el.classList.add(ok ? "ok" : "no");
+  const ok = +b.dataset.v === ITEMS[i][1]; el.dataset.done = 1; b.classList.add("pick"); el.classList.add(ok ? "ok" : "no");
   const p = el.querySelector("p"); p.hidden = false; p.textContent = (ok ? "Richtig. " : "Leider falsch. ") + ITEMS[i][2];
   answered++; if (ok) pts++;
   if (answered === ITEMS.length) $("score").textContent = `${pts} von ${ITEMS.length} richtig eingeschätzt.`;
