@@ -305,3 +305,8 @@ h2{scroll-margin-top:12px}
 .ldb .sc{display:block;font:900 22px var(--f-display);margin-top:4px} .ldb p{margin:6px 0 0;color:var(--muted);font-size:15px} .ldb .ru{color:var(--ink)} .ldb .ru2{font-size:13px}
 .ldb .acts{display:grid;gap:8px;margin-top:16px} .ldb .acts .btn{width:100%;justify-content:center;text-decoration:none}
 @keyframes starIn{from{transform:scale(0) rotate(-90deg);opacity:0}} @keyframes starIn2{from{transform:translateY(-8px) scale(0) rotate(-90deg);opacity:0}}
+
+/* Kein grauer Tipp-Kasten auf dem Handy; Tastatur-Fokus bleibt sichtbar */
+*{-webkit-tap-highlight-color:transparent}
+svg a:focus:not(:focus-visible),svg [role=button]:focus:not(:focus-visible){outline:none}
+svg a:focus-visible,svg [role=button]:focus-visible{outline:3px solid #ffc94d;outline-offset:2px}
