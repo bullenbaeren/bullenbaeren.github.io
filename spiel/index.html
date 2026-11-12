@@ -279,7 +279,7 @@ body.stream .welcome{display:none}
     <div class="stats" id="stats"></div>
     </div>
     <div role="tabpanel" id="pane-skins" aria-labelledby="tab-skins" hidden>
-    <div class="ph"><h2>Skin-Sets</h2><span id="skinCount">1 / 7 freigeschaltet</span></div>
+    <div class="ph"><h2>Skin-Sets</h2><span id="skinCount">1 / 10 freigeschaltet</span></div>
     <div class="skins" id="skins"></div>
     <!-- DEV-START: Entwickler-Knopf, vor Veröffentlichung entfernen -->
     <button class="pill" id="devSkins" type="button" style="margin-top:10px;background:#ff5c73;color:#fff;border:0">🛠️ DEV: alle Skins freischalten</button>
@@ -638,22 +638,42 @@ const G = {
     ctx.strokeStyle = C.gold; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(hx - r*.75, hy - 9.5); ctx.lineTo(hx + r*.75, hy - 9.5); ctx.stroke();
     star(hx - dir, hy - r - 4, 2.4, C.gold); star(hx + dir*4, hy - r + 1, 1.6, "#fff");
   },
+  geist(b, hx, hy, r){
+    ctx.fillStyle = b ? "rgba(90,255,170,.55)" : "rgba(255,90,120,.55)"; eyesOf(b, hx, hy).forEach(([x, y]) => { ctx.beginPath(); ctx.arc(x, y, 4.6, 0, TAU); ctx.fill(); });
+  },
+  metall(b, hx, hy, r, dir){
+    ctx.fillStyle = "rgba(255,255,255,.75)"; ctx.beginPath(); b ? ctx.ellipse(-4, -19.5, 8, 2, -.1, 0, TAU) : ctx.ellipse(3, -22.5, 7, 2, .1, 0, TAU); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(hx - 3*dir, hy - 6.5, 4, 1.5, -.4*dir, 0, TAU); ctx.fill();
+    ctx.save(); ctx.beginPath(); b ? ctx.ellipse(-1, -14, 15, 10, 0, 0, TAU) : ctx.ellipse(1, -15, 15, 12, 0, 0, TAU); ctx.moveTo(hx + r, hy); ctx.arc(hx, hy, r, 0, TAU); ctx.clip();
+    ctx.fillStyle = "rgba(0,0,0,.3)"; ctx.fillRect(-40, b ? -13 : -14, 80, 20); ctx.fillRect(hx - r, hy + 1, 2*r, r); ctx.fillStyle = "rgba(255,255,255,.35)"; ctx.fillRect(-40, b ? -15 : -16, 80, 1.2); ctx.restore();
+    star(hx + dir*(r - 1), hy - r + 1, 2.6, "#fff");
+  },
+  skizze(b, hx, hy, r){
+    ctx.save(); ctx.beginPath(); b ? ctx.ellipse(-1, -14, 15, 10, 0, 0, TAU) : ctx.ellipse(1, -15, 15, 12, 0, 0, TAU); ctx.moveTo(hx + r, hy); ctx.arc(hx, hy, r, 0, TAU); ctx.clip();
+    ctx.strokeStyle = b ? "rgba(42,160,100,.5)" : "rgba(210,60,80,.5)"; ctx.lineWidth = .8; ctx.beginPath();
+    for (let x = -40; x < 40; x += 3){ ctx.moveTo(x, -2); ctx.lineTo(x + 24, -40); } ctx.stroke(); ctx.restore();
+  },
   candy(b, hx, hy, r, dir){
     ctx.strokeStyle = "#3a7a2a"; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(hx, hy - r - 3); ctx.quadraticCurveTo(hx + dir*2, hy - r - 7, hx + dir*4, hy - r - 8); ctx.stroke();
     ctx.beginPath(); ctx.arc(hx, hy - r - 2, 2.6, 0, TAU); gFill("#e0203a", 1);
     ["#ffc94d", "#7cc4ff", "#fff", "#b26bff"].forEach((c, i) => { ctx.fillStyle = c; ctx.save(); ctx.translate(hx - 6 + i*4, hy - 6 - (i % 2)*2); ctx.rotate(i); ctx.fillRect(-1.2, -.5, 2.4, 1); ctx.restore(); });
   }
 };
+// Augenpositionen von Bulle (b = 1) und Bär
+const eyesOf = (b, hx, hy) => b ? [[hx - 3, hy - 3], [hx + 4, hy - 3.5]] : [[hx - 4, hy - 2], [hx + 4, hy - 2.5]];
 // Kleiner Glitzerstern
 function star(x, y, s, c){ ctx.fillStyle = c; ctx.beginPath(); for (let i = 0; i < 8; i++){ const a = i*Math.PI/4, q = i % 2 ? s*.35 : s; ctx.lineTo(x + Math.cos(a)*q, y + Math.sin(a)*q); } ctx.closePath(); ctx.fill(); }
 const gear = f => (b, hx, hy, r, dir) => { ctx.save(); f(b, hx, hy, r, dir); ctx.restore(); };
 // id, Name, Freischalt-Hinweis, Bedingung, Paletten, Kopfbedeckung (null = Welt-Ausrüstung), geheim
 const SKINS = [
   {id: "klassik", n: "🐂 Klassik", how: "Standard", ok: () => true, bull: PAL.bull, bear: PAL.bear, gear: null},
+  {id: "pixel", n: "🟩 Pixel", how: "Boss von Welt 1 besiegen", ok: () => !!SLS.b[0], px: 1, bull: PAL.bull, bear: PAL.bear, gear: () => {}},
   {id: "candy", n: "🍬 Candy", how: "Boss von Welt 2 besiegen", ok: () => !!SLS.b[1], bull: pal("#7ae8b0", "#3ab880", "#dcfff0"), bear: pal("#ff8ab0", "#d8508a", "#ffdcea", "#ffc8dc"), gear: gear(G.candy)},
+  {id: "metall", n: "🥇 Metall", how: "Boss von Welt 3 besiegen", ok: () => !!SLS.b[2], bull: pal("#22c47e", "#05402a", "#a8ffd8"), bear: pal("#f0284a", "#5a0010", "#ffb0c0", "#ff9aae"), gear: gear(G.metall)},
   {id: "magier", n: "🧙 Magier", how: "Boss von Welt 4 besiegen", ok: () => !!SLS.b[3], bull: pal("#4ac48a", "#22905c", "#c4f4da"), bear: pal("#e8506a", "#b02a44", "#ffd4dc", "#ffb8c4"), gear: gear(G.magier)},
+  {id: "skizze", n: "✏️ Skizze", how: "Boss von Welt 5 besiegen", ok: () => !!SLS.b[4], bull: pal("#f4f1e8", "#d8d2c0", "#ffffff", 0, "#2a6a4a"), bear: pal("#f4f1e8", "#d8d2c0", "#ffffff", "#ffffff", "#8a2a3a"), gear: gear(G.skizze)},
   {id: "neon", n: "⚡ Neon", how: "Boss von Welt 6 besiegen", ok: () => !!SLS.b[5], bull: pal("#11173a", "#0b0f2a", "#232a6a", 0, "#39ff88"), bear: pal("#11173a", "#0b0f2a", "#232a6a", "#1a2050", "#ff3d6a"), gear: () => {}},
-  {id: "space", n: "🚀 Weltraum", how: "Endboss besiegen", ok: () => !!SLS.b.f, bull: PAL.bull, bear: pal("#ff6a8a", "#c83a5a", "#ffd4de", "#ffc0cc"), gear: gear(G.space)},
+  {id: "geist", n: "👻 Geister", how: "Endboss besiegen", ok: () => !!SLS.b.f, alpha: .6, bull: pal("#bff5d6", "#7ad8a8", "#ffffff", 0, "#2fb878"), bear: pal("#ffc8d0", "#f08a9a", "#ffffff", "#ffe4e8", "#e0405a"), gear: gear(G.geist)},
   {id: "satoshi", n: "🥷 Satoshi", how: "Alle 10 Profi-Level schaffen", ok: () => SL_PRO.every(id => SLS.s[id] && SLS.s[id].quiz), bull: pal("#1f4a36", "#12301f", "#3a7a5a"), bear: pal("#4a1a26", "#2e0f17", "#7a3a4a", "#6a2e3c"), gear: gear(G.satoshi)},
   {id: "lava", n: "🌋 Lava & Eis", how: "Arena: live durch ein Portal in eine neue Welt", ok: () => !!store.album.portal, bull: pal("#3a1414", "#220a0a", "#6a2a1a", 0, "#ff6a2a"), bear: pal("#d8f0ff", "#8ac0e0", "#ffffff", "#eef8ff", "#2a7ad8"), gear: () => {}}
 ];
@@ -662,13 +682,14 @@ const okS = k => !!store.devSkins || k.ok();   // devSkins: Entwickler-Schalter,
 const skin = () => SKIN || (SKIN = SKINS.find(k => k.id === store.skin && okS(k)) || SKINS[0]);
 // Vorschau: Bulle und Bär nebeneinander (gleiche Zeichenfunktionen wie im Spiel)
 function skinPrev(k){
-  const R = 3, c = document.createElement("canvas"); c.width = 130*R; c.height = 66*R;
-  const prev = ctx, ps = SKIN; ctx = c.getContext("2d"); SKIN = k; inPrev = true;
+  const R = k.px ? .7 : 3, c = document.createElement("canvas"); c.width = 130*R; c.height = 66*R;
+  const prev = ctx, ps = SKIN; ctx = c.getContext("2d"); SKIN = k; inPrev = true; ctx.globalAlpha = k.alpha || 1;
   try {
     ctx.setTransform(R*1.1, 0, 0, R*1.1, 36*R, 62*R); bullLegs(k.bull, () => 0, 0); bullBody({fight: false, ph: 0}, k.bull, false, false);
     ctx.setTransform(R*1.1, 0, 0, R*1.1, 94*R, 62*R); bearLegs(k.bear, () => 0); bearBody({fight: false, ph: 0}, k.bear, false, false, false);
   } finally { ctx = prev; SKIN = ps; inPrev = false; }
-  return c;
+  if (!k.px) return c;
+  const big = document.createElement("canvas"); big.width = 390; big.height = 198; const g = big.getContext("2d"); g.imageSmoothingEnabled = false; g.drawImage(c, 0, 0, 390, 198); return big;
 }
 function renderSkins(){
   const box = $("skins"); if (!box) return; const cur = skin().id; let n = 0; box.innerHTML = "";
@@ -2358,7 +2379,7 @@ function spriteSetup(){
 function sprite(key, kind, part, paint){
   let c = SPR.get(key);
   if (c){ SPR.delete(key); SPR.set(key, c); return c; }
-  const bx = BOX[kind], by = BOX[part], R = sprRes;
+  const bx = BOX[kind], by = BOX[part], R = skin().px ? .55 : sprRes;   // Pixel-Skin: absichtlich grob
   c = document.createElement("canvas"); c.width = Math.ceil(bx.w*R); c.height = Math.ceil(by.h*R);
   const prev = ctx; ctx = c.getContext("2d");
   ctx.setTransform(R, 0, 0, R, -bx.x*R, -by.y*R); paint();
@@ -2366,7 +2387,7 @@ function sprite(key, kind, part, paint){
   SPR.set(key, c); if (SPR.size > SPR_MAX) SPR.delete(SPR.keys().next().value);
   return c;
 }
-const blit = (c, kind, part) => ctx.drawImage(c, BOX[kind].x, BOX[part].y, BOX[kind].w, BOX[part].h);
+const blit = (c, kind, part) => { if (skin().px) ctx.imageSmoothingEnabled = false; ctx.drawImage(c, BOX[kind].x, BOX[part].y, BOX[kind].w, BOX[part].h); ctx.imageSmoothingEnabled = true; };
 // Beinphase auf eines von 12 Einzelbildern runden
 const legFrame = ph => Math.floor((((ph % TAU) + TAU) % TAU)/TAU*LEG_FRAMES);
 const frameAng = f => (f + .5)/LEG_FRAMES*TAU;
@@ -2434,7 +2455,7 @@ function drawBull(u){
   const losing = !u.statue && (pressure < -.35 || (fng && fng.v < 25));
   const atk = u.atkUntil > t ? 10*u.s*Math.sin((u.atkUntil - t)/.22*Math.PI) : 0;
   if (u.stuck > t){ drawStuck(u, drawBullBody); return; }
-  ctx.save(); ctx.translate(u.x + lunge + atk, u.y + bob + (u.yOff || 0)); if (u.retreat) ctx.scale(-1, 1); if (u.rot){ ctx.translate(0, -12*u.s); ctx.rotate(u.rot); ctx.translate(0, 12*u.s); } ctx.scale(u.s, u.s);
+  ctx.save(); ctx.translate(u.x + lunge + atk, u.y + bob + (u.yOff || 0)); if (u.retreat) ctx.scale(-1, 1); if (u.rot){ ctx.translate(0, -12*u.s); ctx.rotate(u.rot); ctx.translate(0, 12*u.s); } ctx.scale(u.s, u.s); if (!u.pal && skin().alpha) ctx.globalAlpha = skin().alpha;
   const closed = eyesClosed(u);
   // Beinstellung: Laufen/Kämpfen oder Huf-Scharren (nur das vordere Bein bewegt sich)
   let legKey, legFn, tw;
@@ -2500,7 +2521,7 @@ function drawBear(u){
   const losing = !u.statue && (pressure > .35 || (fng && fng.v > 75));
   const atk = u.atkUntil > t ? 10*u.s*Math.sin((u.atkUntil - t)/.22*Math.PI) : 0;
   if (u.stuck > t){ drawStuck(u, drawBearBody); return; }
-  ctx.save(); ctx.translate(u.x - lunge - atk, u.y + bob + (u.yOff || 0)); if (u.retreat) ctx.scale(-1, 1); if (u.rot){ ctx.translate(0, -12*u.s); ctx.rotate(u.rot); ctx.translate(0, 12*u.s); } ctx.scale(u.s, u.s);
+  ctx.save(); ctx.translate(u.x - lunge - atk, u.y + bob + (u.yOff || 0)); if (u.retreat) ctx.scale(-1, 1); if (u.rot){ ctx.translate(0, -12*u.s); ctx.rotate(u.rot); ctx.translate(0, 12*u.s); } ctx.scale(u.s, u.s); if (!u.pal && skin().alpha) ctx.globalAlpha = skin().alpha;
   const closed = eyesClosed(u), yawn = !!(idle && idle.k === "yawn");
   const f = u.statue || yawn ? 0 : legFrame(u.ph), lg = u.statue || yawn ? 0 : Math.sin(frameAng(f))*3, legFn = i => i%2 ? -lg : lg;
   if (u.statue || u.s > sprMaxS){ bearLegs(P, legFn); bearBody(u, P, losing, closed, yawn); }
