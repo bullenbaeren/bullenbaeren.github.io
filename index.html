@@ -119,7 +119,7 @@ details.fold[open] > summary{margin-bottom:12px}
 <body>
 <div class="wrap">
   <div class="top"><a class="back" href="spiel/">🐂 Spiel</a><a class="back" href="lexikon/">📖 Lexikon</a></div>
-  <header class="hero2"><span class="wico" aria-hidden="true" id="heroIc"></span><div><h1>Sats<span>land</span></h1><p>Bitcoin spielerisch verstehen</p></div></header>
+  <header class="hero2"><img class="wico" id="heroIc" src="icon.svg" alt="" style="border-radius:22%"><div><h1>Sats<span>land</span></h1><p>Bitcoin spielerisch verstehen</p></div></header>
   <div class="stats" id="stats"></div>
   <a class="resume" id="resume" hidden></a>
   <p class="alt" id="alt" hidden></p>
@@ -229,7 +229,6 @@ details.fold[open] > summary{margin-bottom:12px}
     const m = location.hash.match(/^#sync=(.+)$/); if (m){ history.replaceState(null, "", location.pathname); take(m[1]); }
   }
   // Comic-Zeichnungen statt Emojis
-  document.getElementById("heroIc").innerHTML = Lern.art("coin");
   Lern.PATH.forEach(([id, , path]) => { const ic = document.querySelector(`a.w[href="${path}"] .ic`); if (ic) ic.innerHTML = Lern.art(Lern.CARD[id]); });
   // Kapitel-Boss am Ende jedes Kapitels
   const won = Lern.bossWon();
