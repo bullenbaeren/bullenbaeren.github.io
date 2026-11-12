@@ -335,6 +335,7 @@ details.fold[open] > summary{margin-bottom:12px}
         <rect x="${W - 104}" y="${cy - 5}" width="70" height="10" rx="5" fill="#0a0d26"/><rect x="${W - 104}" y="${cy - 5}" width="${70 * dn / c[3].length}" height="10" rx="5" fill="${CH[k]}"/>
         <text x="${W - 69}" y="${cy - 11}" fill="#aab2d8" font-size="11" font-weight="800" text-anchor="middle" font-family="system-ui">${all3 ? "✓ fertig" : dn + "/" + c[3].length}</text></g>`; });
     // Stationen
+    let bubble = "";
     nodes.forEach((n, i) => { const [cx, cy] = P[i], ok = isDone(n), now = i === cur, boss = n.t === "b", r = boss ? R + 9 : R, locked = !ok && !now;
       const ready = boss && L.CHAPTERS[n.k][3].every(id => Lern.done(s, id)), base = boss ? (ok ? "#c4581c" : ready ? "#a33a5a" : "#3a2a4a") : ok ? "#28c46f" : now ? "#ffc94d" : "#323a7a";
       const lip = boss ? (ok ? "#7a3410" : "#21162e") : ok ? "#178a4c" : now ? "#c98a00" : "#1c2256";
@@ -346,7 +347,9 @@ details.fold[open] > summary{margin-bottom:12px}
       if (ok) g += `<circle cx="${cx + r * .75}" cy="${cy - r * .7}" r="10" fill="#fff" stroke="#0a0d26" stroke-width="2.5"/><path d="M${cx + r * .75 - 5} ${cy - r * .7}l3.5 3.5 6.5-7.5" fill="none" stroke="#178a4c" stroke-width="3" stroke-linecap="round"/>`;
       if (boss && !ok) g += `<text x="${cx}" y="${cy - r - 6}" font-size="16" text-anchor="middle">👑</text>`;
       g += chip(cx + side * (r + 8), cy, (boss ? (ok ? "🏆 " : "👹 ") : "") + name, side, boss ? "#ffb3c2" : now ? "#ffc94d" : ok ? "#c9f2da" : "#9aa2c8", boss ? "rgba(58,20,40,.92)" : "rgba(11,15,42,.88)", boss ? 13 : 12.5);
-      if (now) g += `<g class="bob"><rect x="${cx - 32}" y="${cy - r - 50}" width="64" height="30" rx="15" fill="#fff" stroke="#0a0d26" stroke-width="3"/><path d="M${cx - 7} ${cy - r - 21}l7 9 7-9z" fill="#fff" stroke="#0a0d26" stroke-width="3" stroke-linejoin="round"/><rect x="${cx - 8}" y="${cy - r - 24}" width="16" height="5" fill="#fff"/><text x="${cx}" y="${cy - r - 30}" font-size="14" font-weight="900" text-anchor="middle" font-family="system-ui" fill="#0a0d26">${boss ? "KAMPF!" : "START"}</text></g>`;
+      // Sprechblase zuletzt zeichnen (liegt dann oben) und vom nächsten Knoten weg schieben
+      if (now){ const nx = P[i + 1] ? P[i + 1][0] : cx, bx = Math.max(36, Math.min(W - 36, cx + (nx > cx ? -22 : 22))), by = cy - r - 14;
+        bubble = `<g class="bob"><path d="M${cx - 6} ${by - 3}l${(cx - bx) * .2 + 6} 12 6-12z" fill="#fff" stroke="#0a0d26" stroke-width="3" stroke-linejoin="round"/><rect x="${bx - 32}" y="${by - 30}" width="64" height="30" rx="15" fill="#fff" stroke="#0a0d26" stroke-width="3"/><rect x="${cx - 7}" y="${by - 4}" width="14" height="4" fill="#fff"/><text x="${bx}" y="${by - 10}" font-size="14" font-weight="900" text-anchor="middle" font-family="system-ui" fill="#0a0d26">${boss ? "KAMPF!" : "START"}</text></g>`; }
       g += boss ? "</g>" : "</a>";
       // Profi-Abzweigung: kleines Portal neben dem Boss
       if (boss && L.PRO[n.k].length){ const open = !!won[n.k], pd = L.PRO[n.k].filter(id => Lern.done(s, id)).length, tot = L.PRO[n.k].length, px = Math.max(26, Math.min(W - 26, cx + side * (nar ? 112 : 150))), py = cy + 46;
@@ -355,6 +358,7 @@ details.fold[open] > summary{margin-bottom:12px}
           <circle cx="${px + 15}" cy="${py - 14}" r="10" fill="${open ? "#b26bff" : "#5a4a80"}" stroke="#0a0d26" stroke-width="2.5"/><text x="${px + 15}" y="${py - 10}" fill="#fff" font-size="11" font-weight="900" text-anchor="middle" font-family="system-ui">${open ? tot - pd || "✓" : "🔒"}</text></a>`; }
     });
     // Gipfel
+    g += bubble;
     const fw = Lern.bossWon().f, finReady = [0, 1, 2, 3, 4, 5].every(k => won[k]), sx = W / 2, sy = peakY;
     g += `<g data-b="f" role="button" tabindex="0" aria-label="Endboss: Satoshis Rätsel"><circle cx="${sx}" cy="${sy}" r="90" fill="url(#mglow)"/><ellipse cx="${sx}" cy="${sy + 9}" rx="46" ry="42" fill="${fw ? "#b8860b" : "#5a4a14"}" stroke="#0a0d26" stroke-width="3"/><circle class="nb ${cur >= N && !fw ? "curr" : ""}" cx="${sx}" cy="${sy}" r="46" fill="${fw || finReady ? "#ffd36b" : "#8a7a3a"}" stroke="#0a0d26" stroke-width="3"/>${art("satoshi", sx, sy, 66)}
       <path d="M${sx + 30} ${sy - 44}V${sy - 112}" stroke="#0a0d26" stroke-width="5"/><path class="flag" d="M${sx + 30} ${sy - 112}l46 13-46 15z" fill="#f7931a" stroke="#0a0d26" stroke-width="3.5"/><text x="${sx + 46}" y="${sy - 93}" font-size="14" font-weight="900" fill="#fff" font-family="Arial">₿</text>
