@@ -281,6 +281,9 @@ body.stream .welcome{display:none}
     <div role="tabpanel" id="pane-skins" aria-labelledby="tab-skins" hidden>
     <div class="ph"><h2>Skin-Sets</h2><span id="skinCount">1 / 16 freigeschaltet</span></div>
     <div class="skins" id="skins"></div>
+    <!-- DEV-START: Entwickler-Knopf, vor Veröffentlichung entfernen -->
+    <button class="pill" id="devSkins" type="button" style="margin-top:10px;background:#ff5c73;color:#fff;border:0">🛠️ DEV: alle Skins freischalten</button>
+    <!-- DEV-END -->
     <p class="wnote">Sets schaltest du in Satsland frei (Bosse besiegen, Profi-Level) oder hier in der Arena (seltene Live-Momente).</p>
     </div>
     <div role="tabpanel" id="pane-hilfe" aria-labelledby="tab-hilfe" hidden>
@@ -704,7 +707,8 @@ const SKINS = [
   {id: "diamant", n: "💎 Diamanthände", how: "Geheim: 30 Minuten live zuschauen", secret: 1, ok: () => !!store.album.marathon, bull: pal("#4ae8a0", "#20b070", "#d0ffe8"), bear: pal("#ff5c8a", "#c02a5a", "#ffd0e0", "#ffc0d4"), gear: gear(G.diamant)}
 ];
 let SKIN = null, inPrev = false;
-const skin = () => SKIN || (SKIN = SKINS.find(k => k.id === store.skin && k.ok()) || SKINS[0]);
+const okS = k => !!store.devSkins || k.ok();   // devSkins: Entwickler-Schalter, vor Veröffentlichung entfernen
+const skin = () => SKIN || (SKIN = SKINS.find(k => k.id === store.skin && okS(k)) || SKINS[0]);
 // Vorschau: Bulle und Bär nebeneinander (gleiche Zeichenfunktionen wie im Spiel)
 function skinPrev(k){
   const R = 3, c = document.createElement("canvas"); c.width = 130*R; c.height = 66*R;
@@ -717,7 +721,7 @@ function skinPrev(k){
 }
 function renderSkins(){
   const box = $("skins"); if (!box) return; const cur = skin().id; let n = 0; box.innerHTML = "";
-  SKINS.forEach(k => { const ok = k.ok(), on = k.id === cur; n += ok ? 1 : 0;
+  SKINS.forEach(k => { const ok = okS(k), on = k.id === cur; n += ok ? 1 : 0;
     const b = document.createElement("button"); b.type = "button"; b.className = "sk" + (on ? " on" : "") + (ok ? "" : " lock"); b.setAttribute("aria-pressed", on);
     b.appendChild(skinPrev(k));
     b.insertAdjacentHTML("beforeend", `<b>${ok || !k.secret ? k.n : "??? Geheim"}</b><small>${on ? "✓ Angezogen" : ok ? "Tippen zum Anziehen" : "🔒 " + k.how.replace("Geheim: ", "")}</small>`);
@@ -733,6 +737,10 @@ function skinCheck(){
   if (!$("pane-skins").hidden) renderSkins();
 }
 setTimeout(skinCheck, 6000);
+// DEV-START
+{ const d = $("devSkins"); if (d){ const lbl = () => d.textContent = store.devSkins ? "🛠️ DEV: Freischaltung zurücksetzen" : "🛠️ DEV: alle Skins freischalten"; lbl();
+  d.onclick = () => { store.devSkins = !store.devSkins; if (!store.devSkins){ SKIN = null; store.skin = skin().id; } save(); lbl(); renderSkins(); }; } }
+// DEV-END
 
 // ---------- Einheiten & Effekte ----------
 function spawn(side, x){
