@@ -313,3 +313,11 @@ svg a:focus-visible,svg [role=button]:focus-visible{outline:3px solid #ffc94d;ou
 
 /* Hinweis auf ein Thema, das später im Pfad kommt (bewusst kein Link) */
 .later{display:inline-block;font-size:.8em;font-weight:800;color:#9aa2d6;background:rgba(255,255,255,.07);border-radius:999px;padding:0 7px;white-space:nowrap}
+
+/* Schalter „Weniger Bewegung“: Animationen und Übergänge praktisch aus */
+html.calm *,html.calm *::before,html.calm *::after{animation-duration:.01ms!important;animation-iteration-count:1!important;animation-delay:0s!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+html.calm .twk,html.calm .shoot,html.calm .fly2,html.calm .confetti{display:none!important}
+
+/* Kennzeichnung: bewusste Vereinfachung bzw. fachlich umstritten */
+.mk{display:inline-block;vertical-align:1px;font:800 11px var(--f-body);letter-spacing:.3px;text-transform:uppercase;padding:2px 8px;border-radius:999px;background:rgba(124,196,255,.15);color:#9fd4ff;border:1px solid rgba(124,196,255,.35)}
+.mk.mk2{background:rgba(255,201,77,.12);color:#ffc94d;border-color:rgba(255,201,77,.4)}

@@ -8,7 +8,7 @@ const Lern = (() => {
   // Kapitel für Einsteiger: [Symbol, Titel, Kurzbeschreibung, Welten in Reihenfolge]
   const CHAPTERS = [
     ["🏦", "Geld verstehen", "Was Geld ist, woher es kommt und warum es an Wert verliert.", ["geld", "geldgeschichte", "geldschoepfung", "cantillon", "inflation"]],
-    ["🌱", "Warum Bitcoin?", "Das Kopier-Problem, gutes Geld, Knappheit und wie alles anfing.", ["start", "doppelt", "eigenschaften", "wert", "halving", "knappheit", "geschichte", "besitzer", "mythen"]],
+    ["🌱", "Warum Bitcoin?", "Das Kopier-Problem, gutes Geld, Knappheit und wie alles anfing.", ["start", "doppelt", "eigenschaften", "wert", "halving", "knappheit", "geschichte", "besitzer", "mythen", "kritik"]],
     ["🛡️", "Sicher starten", "Bevor du Bitcoin kaufst: Wallet, Seed, Betrug und echte Risiken.", ["wallets", "seed", "senden", "betrug", "krypto", "risiken"]],
     ["🧠", "Klug investieren", "Richtig kaufen, Sparplan statt Bauchgefühl, und Finger weg vom Hebel.", ["kaufen", "sparplan", "zyklen", "fomo", "hebel"]],
     ["💸", "Bezahlen & Senden", "Wie eine Zahlung wirklich abläuft, schnell und günstig.", ["utxo", "bahnhof", "lightning", "privatsphaere"]],
@@ -18,7 +18,7 @@ const Lern = (() => {
   const PRO = [[], [], ["entropie", "ableitung"], [], [], ["whitepaper", "sha256", "kurven", "signaturen", "adressen", "merkle", "script", "quanten"]];
   const proOf = id => PRO.findIndex(c => c.includes(id));
   // Lernpfad = alle Welten in Kapitel-Reihenfolge: [id, Titel, Pfad]
-  const TITLES = {geld: ["Tausch-Insel", "geld/"], geldgeschichte: ["Geld-Zeitreise", "geldgeschichte/"], geldschoepfung: ["Geld-Maschine", "geldschoepfung/"], cantillon: ["Geldfluss", "cantillon/"], knappheit: ["Knappheits-Messer", "knappheit/"], doppelt: ["Kopier-Problem", "doppelt/"], wert: ["Wert-Waage", "wert/"], risiken: ["Risiko-Radar", "risiken/"], reise: ["Reise einer Zahlung", "reise/"], eigenschaften: ["Geld-Duell", "eigenschaften/"], inflation: ["Geld & Inflation", "inflation/"], halving: ["Knappheit & Halving", "halving/"], geschichte: ["Zeitreise", "geschichte/"], wallets: ["Wallet-Check", "wallets/"], seed: ["Seed-Trainer", "seed/"], senden: ["Senden & Empfangen", "senden/"], betrug: ["Betrug erkennen", "betrug/"], krypto: ["Coin-Check", "krypto/"], sparplan: ["Sparplan", "sparplan/"], fomo: ["Gefühls-Achterbahn", "fomo/"], hebel: ["Hebel-Falle", "hebel/"], utxo: ["Wechselgeld-Kasse", "utxo/"], bahnhof: ["Mempool-Bahnhof", "bahnhof/"], lightning: ["Lightning", "lightning/"], hashing: ["Fingerabdruck-Maschine", "hashing/"], schluessel: ["Schlüssel-Labor", "schluessel/"], blockchain: ["Blockchain", "blockchain/"], mining: ["Mining-Werkstatt", "mining/"], nodes: ["Node-Wache", "nodes/"], entropie: ["Würfel-Seed", "entropie/"], ableitung: ["Seed-Fabrik", "ableitung/"], sha256: ["SHA-256 von innen", "sha256/"], kurven: ["Kurven-Labor", "kurven/"], signaturen: ["Signatur-Duell", "signaturen/"], adressen: ["Adress-Zoo", "adressen/"], merkle: ["Merkle-Baum", "merkle/"], quanten: ["Quanten-Check", "quanten/"], kaufen: ["Erster Kauf", "kaufen/"], mythen: ["Mythen-Check", "mythen/"], privatsphaere: ["Spuren-Detektiv", "privatsphaere/"], script: ["Script-Labor", "script/"], zyklen: ["Kurs-Achterbahn", "zyklen/"], besitzer: ["Wem gehört Bitcoin?", "besitzer/"], start: ["Bitcoin in 5 Minuten", "start/"], konsens: ["Einigungs-Labor", "konsens/"], whitepaper: ["Whitepaper-Tour", "whitepaper/"]};
+  const TITLES = {geld: ["Tausch-Insel", "geld/"], geldgeschichte: ["Geld-Zeitreise", "geldgeschichte/"], geldschoepfung: ["Geld-Maschine", "geldschoepfung/"], cantillon: ["Geldfluss", "cantillon/"], knappheit: ["Knappheits-Messer", "knappheit/"], doppelt: ["Kopier-Problem", "doppelt/"], wert: ["Wert-Waage", "wert/"], risiken: ["Risiko-Radar", "risiken/"], reise: ["Reise einer Zahlung", "reise/"], eigenschaften: ["Geld-Duell", "eigenschaften/"], inflation: ["Geld & Inflation", "inflation/"], halving: ["Knappheit & Halving", "halving/"], geschichte: ["Zeitreise", "geschichte/"], wallets: ["Wallet-Check", "wallets/"], seed: ["Seed-Trainer", "seed/"], senden: ["Senden & Empfangen", "senden/"], betrug: ["Betrug erkennen", "betrug/"], krypto: ["Coin-Check", "krypto/"], sparplan: ["Sparplan", "sparplan/"], fomo: ["Gefühls-Achterbahn", "fomo/"], hebel: ["Hebel-Falle", "hebel/"], utxo: ["Wechselgeld-Kasse", "utxo/"], bahnhof: ["Mempool-Bahnhof", "bahnhof/"], lightning: ["Lightning", "lightning/"], hashing: ["Fingerabdruck-Maschine", "hashing/"], schluessel: ["Schlüssel-Labor", "schluessel/"], blockchain: ["Blockchain", "blockchain/"], mining: ["Mining-Werkstatt", "mining/"], nodes: ["Node-Wache", "nodes/"], entropie: ["Würfel-Seed", "entropie/"], ableitung: ["Seed-Fabrik", "ableitung/"], sha256: ["SHA-256 von innen", "sha256/"], kurven: ["Kurven-Labor", "kurven/"], signaturen: ["Signatur-Duell", "signaturen/"], adressen: ["Adress-Zoo", "adressen/"], merkle: ["Merkle-Baum", "merkle/"], quanten: ["Quanten-Check", "quanten/"], kaufen: ["Erster Kauf", "kaufen/"], mythen: ["Mythen-Check", "mythen/"], kritik: ["Kritik-Check", "kritik/"], privatsphaere: ["Spuren-Detektiv", "privatsphaere/"], script: ["Script-Labor", "script/"], zyklen: ["Kurs-Achterbahn", "zyklen/"], besitzer: ["Wem gehört Bitcoin?", "besitzer/"], start: ["Bitcoin in 5 Minuten", "start/"], konsens: ["Einigungs-Labor", "konsens/"], whitepaper: ["Whitepaper-Tour", "whitepaper/"]};
   const PATH = CHAPTERS.flatMap(c => c[3].map(id => [id, ...TITLES[id]]));
   const chapterOf = id => CHAPTERS.findIndex(c => c[3].includes(id));
   const load = () => { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch(e){ return {}; } };
@@ -51,7 +51,7 @@ const Lern = (() => {
         if (i !== ok) b.classList.add("no");
         const w = d.querySelector(".why"); w.hidden = false; w.textContent = (i === ok ? "Richtig! " : "Nicht ganz. ") + why;
         sfx(i === ok ? "ok" : "no");
-        if (!(qi in answered)){ answered[qi] = i === ok; say(i === ok ? pickOne(PRAISE) : pickOne(OOPS), 3500); }
+        if (!(qi in answered)){ answered[qi] = i === ok; say(i === ok ? pickOne(PRAISE) : pickOne(OOPS), 3500); repAdd(id, qi, QUIZ[qi], i === ok); }
         if (Object.keys(answered).length === QUIZ.length) finish();
       }));
       box.appendChild(d);
@@ -161,7 +161,7 @@ const Lern = (() => {
   const art = n => `<svg viewBox="0 0 100 100" width="100%" height="100%" aria-hidden="true">${ART[n]}</svg>`;
 
   // Zeichnung je Welt (Weltsymbol und Karte im Lernpfad)
-  const CARD = {whitepaper: "scroll", start: "go", konsens: "shake", zyklen: "coaster", besitzer: "pie", kaufen: "cart", mythen: "myth", privatsphaere: "shades", script: "term", entropie: "dice", ableitung: "factory", sha256: "gear", kurven: "curve", signaturen: "pen", adressen: "tag", merkle: "tree", quanten: "atom", geld: "shell", geldgeschichte: "trophy", geldschoepfung: "printer", cantillon: "tower", knappheit: "gauge", doppelt: "copy", wert: "coin", risiken: "eye", reise: "phone", eigenschaften: "scale", inflation: "dollar", halving: "scissors", geschichte: "pizza", wallets: "bank2", seed: "letter", senden: "phone", betrug: "mask", krypto: "rocket",
+  const CARD = {whitepaper: "scroll", start: "go", konsens: "shake", zyklen: "coaster", besitzer: "pie", kaufen: "cart", mythen: "myth", kritik: "scale", privatsphaere: "shades", script: "term", entropie: "dice", ableitung: "factory", sha256: "gear", kurven: "curve", signaturen: "pen", adressen: "tag", merkle: "tree", quanten: "atom", geld: "shell", geldgeschichte: "trophy", geldschoepfung: "printer", cantillon: "tower", knappheit: "gauge", doppelt: "copy", wert: "coin", risiken: "eye", reise: "phone", eigenschaften: "scale", inflation: "dollar", halving: "scissors", geschichte: "pizza", wallets: "bank2", seed: "letter", senden: "phone", betrug: "mask", krypto: "rocket",
     sparplan: "pig", fomo: "boom", hebel: "volcano", utxo: "bag", bahnhof: "train", lightning: "bolt", hashing: "finger", schluessel: "key", blockchain: "chain", mining: "pick", nodes: "server"};
 
   // ---------- Tages-Challenge mit Serie ----------
@@ -245,6 +245,7 @@ const Lern = (() => {
     besitzer: "21 Millionen Bitcoin, aber wer hat sie eigentlich?",
     kaufen: "Bitcoin kaufen ist leicht. Richtig kaufen lernst du hier!",
     mythen: "Kriminalität, Strom, Schneeball? Prüfen wir die Gerüchte!",
+    kritik: "Jetzt die Gegenseite: Was spricht wirklich gegen Bitcoin?",
     privatsphaere: "Psst! Jede Zahlung ist öffentlich. Werde zum Spuren-Detektiv.",
     script: "Jede Zahlung hat ein kleines Programm. Lass uns den Stapel füttern!",
     entropie: "Zufall ist dein bester Bodyguard. Wirf mal ein paar Würfel!",
@@ -452,10 +453,32 @@ const Lern = (() => {
       if (win){ im.classList.remove("idle"); im.classList.add("down"); A.classList.add("won"); say2("Neiiin … besiegt!"); const w = bossWon(); w[k] = lives === LIVES ? "perfect" : (w[k] === "perfect" ? "perfect" : true); try { localStorage.setItem(BK, JSON.stringify(w)); } catch(e){} setTimeout(confetti, 500); if (fin) toast("👑 Satoshis Rätsel gelöst! Die goldene Karte gehört dir."); titles(); }
       else { re(im, "laugh"); say2(pickOne(MISS)); }
       box.innerHTML = `<div class="end"><b>${win ? "🏆 Boss besiegt!" : "💀 Der Boss gewinnt diesmal"}</b><p class="muted">${win ? (lives === LIVES ? "Ohne einen Fehler! ✨ Du bekommst die Glanz-Bosskarte." : "Die Boss-Karte liegt jetzt in deinem Album. Ohne Fehler gibt es die Glanzkarte.") : "Lies die Erklärungen in den Leveln nochmal und versuch es erneut."}</p>
-        <div class="acts" style="justify-content:center;display:flex;gap:8px;margin-top:10px">${win ? "" : '<button class="btn" type="button" data-a="again">↺ Nochmal</button>'}<button class="btn ghost" type="button" data-a="close">Schließen</button></div></div>`;
-      box.querySelector(".end").onclick = e => { const a = e.target.closest("button"); if (!a) return; close(); if (a.dataset.a === "again") boss(k); else if (win) location.reload(); };
+        ${win && fin ? '<label class="muted sm" style="display:block;margin-top:8px">Name für die Urkunde (bleibt auf deinem Gerät)<input id="shN" maxlength="28" autocomplete="off" style="display:block;width:100%;margin-top:4px;padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.2);background:rgba(0,0,0,.3);color:inherit;font:inherit"></label>' : ""}
+        <div class="acts" style="justify-content:center;display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">${win ? `<button class="btn" type="button" data-a="share">📤 ${fin ? "Urkunde" : "Teilen"}</button>` : '<button class="btn" type="button" data-a="again">↺ Nochmal</button>'}<button class="btn ghost" type="button" data-a="close">Schließen</button></div></div>`;
+      box.querySelector(".end").onclick = e => { const a = e.target.closest("button"); if (!a) return;
+        if (a.dataset.a === "share"){ const n = box.querySelector("#shN"); shareCard(k, lives === LIVES, n ? n.value.trim() : ""); return; }
+        close(); if (a.dataset.a === "again") boss(k); else if (win) location.reload(); };
     }
     hud(); setTimeout(ask, 1200);
+  }
+  // Teilen-Karte nach Bosssieg bzw. Urkunde nach dem Endboss (Bild, nur auf dem Gerät erzeugt)
+  function shareCard(k, perfect, who){
+    const fin = k === "f", [img, name] = fin ? FINAL : BOSSES[k], s = load(), lv = level(count(s)), S = 1080;
+    const c = document.createElement("canvas"); c.width = c.height = S; const g = c.getContext("2d");
+    const bg = g.createLinearGradient(0, 0, 0, S); bg.addColorStop(0, fin ? "#3a2a08" : "#1d2463"); bg.addColorStop(1, "#0b0f2a"); g.fillStyle = bg; g.fillRect(0, 0, S, S);
+    g.strokeStyle = fin ? "#ffc94d" : "#f7931a"; g.lineWidth = 14; g.strokeRect(40, 40, S - 80, S - 80); g.lineWidth = 3; g.strokeRect(66, 66, S - 132, S - 132);
+    const txt = (t, y, size, col, w = 900) => { g.font = `${w} ${size}px "Arial Black", Arial, sans-serif`; g.fillStyle = col; g.textAlign = "center"; g.fillText(t, S/2, y); };
+    const im = new Image(); im.onload = () => {
+      if (fin){ txt("URKUNDE", 190, 92, "#ffc94d"); txt("Satsland durchgespielt", 260, 46, "#ffffff", 700); if (who) txt(who, 400, 70, "#ffffff");
+        g.drawImage(im, S/2 - 170, who ? 450 : 330, 340, 340); txt("Alle 6 Welten · alle Bosse · Satoshis Rätsel gelöst", who ? 860 : 760, 34, "#dfe3ff", 700); }
+      else { txt(perfect ? "✨ BOSS BESIEGT – OHNE FEHLER" : "🏆 BOSS BESIEGT", 180, 52, "#ffc94d"); g.drawImage(im, S/2 - 210, 230, 420, 420);
+        txt(name, 740, 64, "#ffffff"); txt(`Welt ${k + 1} · ${CHAPTERS[k][0]} ${CHAPTERS[k][1]}`, 810, 38, "#dfe3ff", 700); }
+      txt(`${lv.ico} Rang: ${lv.name} · ${count(s)} von ${PATH.length} Level`, 930, 34, "#9aa2d6", 700);
+      txt("satsland.github.io", 990, 34, fin ? "#ffc94d" : "#f7931a");
+      c.toBlob(async b => { if (!b) return; const f = new File([b], fin ? "satsland-urkunde.png" : `satsland-boss-${k + 1}.png`, {type: "image/png"});
+        try { if (navigator.canShare && navigator.canShare({files: [f]})){ await navigator.share({files: [f], text: fin ? "Ich habe Satsland durchgespielt! 👑" : `Boss besiegt: ${name} 🏆`}); return; } } catch(e){ if (e && e.name === "AbortError") return; }
+        const a = document.createElement("a"); a.href = URL.createObjectURL(b); a.download = f.name; document.body.appendChild(a); a.click(); a.remove(); toast("📥 Bild gespeichert"); }, "image/png"); };
+    im.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="400" height="400">${ART[img]}</svg>`);
   }
   function finalCard(){ const won = bossWon().f;
     return `<span class="tcard bosscard goldcard ${won ? "got" : "lock"}"><span class="tn">★</span><span class="tart">${won ? art("satoshi") : "?"}</span><b>${won ? "Satoshis Rätsel" : "Endboss"}</b><small>${won ? "👑 Goldene Karte" : "Alle Bosse besiegen"}</small></span>`; }
@@ -530,7 +553,7 @@ const Lern = (() => {
 
 
   // ---------- Fortschritt mitnehmen: alles als Code, ohne Konto und ohne Server ----------
-  const SYNC_KEYS = ["bvb-lernen", "satsland-boss", "satsland-daily", "satsland-titles"];
+  const SYNC_KEYS = ["bvb-lernen", "satsland-boss", "satsland-daily", "satsland-titles", "satsland-rep"];
   function syncExport(){
     const o = {}; SYNC_KEYS.forEach(k => { try { const v = localStorage.getItem(k); if (v) o[k] = JSON.parse(v); } catch(e){} });
     return btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
@@ -544,15 +567,43 @@ const Lern = (() => {
     const B = get("satsland-boss"); const B0 = bossWon(); localStorage.setItem("satsland-boss", JSON.stringify(Object.assign({}, o["satsland-boss"] || {}))); const B1 = bossWon(); Object.entries(B1).forEach(([k, v]) => { if (v === "perfect" || !B0[k]) B0[k] = v; }); put("satsland-boss", B0);
     const D = get("satsland-daily"), d2 = o["satsland-daily"] || {}; if ((d2.last || "") > (D.last || "") || (d2.streak || 0) > (D.streak || 0)) put("satsland-daily", Object.assign({}, D, d2, {best: Math.max(D.best || 0, d2.best || 0)}));
     const T = get("satsland-titles"), t2 = o["satsland-titles"] || {}; T.got = Object.assign({}, t2.got || {}, T.got || {}); T.words = Math.max(T.words || 0, t2.words || 0); T.owl = T.owl || t2.owl; T.wp = [...new Set([...(T.wp || []), ...(t2.wp || [])])]; put("satsland-titles", T);
+    const Rp = get("satsland-rep"); Object.entries(o["satsland-rep"] || {}).forEach(([k, v]) => { if (!Rp[k] || (v.b || 0) > (Rp[k].b || 0)) Rp[k] = v; }); put("satsland-rep", Rp);
     return true;
+  }
+
+  // ---------- Wiederholen: Lernkartei mit wachsenden Abständen ----------
+  // Fach 0 = morgen, dann 3, 7, 21, 60 Tage. Falsch = zurück in Fach 0.
+  const RK = "satsland-rep", RINT = [1, 3, 7, 21, 60], DAY = 864e5;
+  const repGet = () => { try { return JSON.parse(localStorage.getItem(RK)) || {}; } catch(e){ return {}; } }, repSet = o => { try { localStorage.setItem(RK, JSON.stringify(o)); } catch(e){} };
+  function repAdd(id, qi, [q, opts, ok, why], right){
+    const R = repGet(), k = id + ":" + qi; if (R[k]) return;
+    const box = right ? 1 : 0; R[k] = {id, q, o: opts, ok, w: why, b: box, d: Date.now() + RINT[box]*DAY}; repSet(R);
+  }
+  const repDue = () => Object.entries(repGet()).filter(([, r]) => r.d <= Date.now()).sort((a, b) => a[1].d - b[1].d);
+  function review(box, onChange){
+    const due = repDue(), all = Object.keys(repGet()).length;
+    if (!due.length){ box.innerHTML = `<p class="muted" style="margin:0">${all ? `✓ Alles wiederholt! Neue Fragen kommen zurück, bevor du sie vergisst. <b>${all}</b> Fragen in deiner Lernkartei.` : "Hier landen deine Quizfragen aus den Leveln. Sie kommen nach 1, 3, 7 und 21 Tagen zurück, damit das Wissen hängen bleibt."}</p>`; onChange && onChange(0); return; }
+    const [k, r] = due[0], order = r.o.map((o, i) => [Math.random(), i, o]).sort((a, b) => a[0] - b[0]);
+    box.innerHTML = `<p class="muted sm" style="margin:0 0 6px">Noch <b>${due.length}</b> fällig · aus „${TITLES[r.id] ? TITLES[r.id][0] : r.id}“</p><p class="dq">${r.q}</p>
+      <div class="opts">${order.map(([, i, o]) => `<button type="button" data-i="${i}">${o}</button>`).join("")}</div><p class="why" hidden></p>`;
+    onChange && onChange(due.length);
+    box.querySelector(".opts").onclick = e => { const b = e.target.closest("button"); if (!b || b.disabled) return;
+      const right = +b.dataset.i === r.ok, R = repGet(), c = R[k];
+      box.querySelectorAll(".opts button").forEach(x => { x.disabled = true; if (+x.dataset.i === r.ok) x.classList.add("ok"); }); if (!right) b.classList.add("no");
+      c.b = right ? Math.min(c.b + 1, RINT.length - 1) : 0; c.d = Date.now() + RINT[c.b]*DAY; repSet(R); sfx(right ? "ok" : "no");
+      const w = box.querySelector(".why"); w.hidden = false; w.innerHTML = (right ? `✓ Sitzt! Wieder in ${RINT[c.b]} Tagen. ` : "Nicht ganz, morgen kommt sie wieder. ") + r.w + ` <button class="btn ghost" type="button" style="margin-top:8px">Weiter →</button>`;
+      w.querySelector("button").onclick = () => review(box, onChange); };
   }
 
   // ---------- Spaß-Schicht: Level, Konfetti, Einblenden ----------
   // Sats-Level nach geschafften Welten (angelehnt an die Bitcoin-Tierwelt von Garnele bis Wal)
-  const LEVELS = [[0, "🦠", "Plankton", "plankton"], [1, "🦐", "Garnele", "shrimp"], [3, "🦀", "Krabbe", "crab"], [7, "🐟", "Fisch", "fish"], [12, "🐬", "Delfin", "dolphin"], [20, "🦈", "Hai", "shark"], [28, "🐳", "Buckelwal", "humpback"], [36, "🐋", "Wal", "whale"]];
+  const LEVELS = [[0, "🦠", "Plankton", "plankton"], [1, "🦐", "Garnele", "shrimp"], [3, "🦀", "Krabbe", "crab"], [7, "🐟", "Fisch", "fish"], [12, "🐬", "Delfin", "dolphin"], [20, "🦈", "Hai", "shark"], [28, "🐳", "Buckelwal", "humpback"], [37, "🐋", "Wal", "whale"]];
   const count = s => PATH.filter(([id]) => done(s, id)).length;
   function level(n){ let L = LEVELS[0]; for (const l of LEVELS) if (n >= l[0]) L = l; return {n, ico: L[1], name: L[2], art: L[3]}; }
-  const calm = false;   // Effekte immer zeigen; viele Firmen-PCs melden "Bewegung reduzieren", obwohl Animationen gewünscht sind
+  // „Weniger Bewegung“ ist ein eigener Schalter (Fußzeile der Startseite): Firmen-PCs melden die Systemeinstellung oft, obwohl Animationen gewünscht sind
+  const CK = "satsland-calm", calm = (() => { try { return localStorage.getItem(CK) === "1"; } catch(e){ return false; } })();
+  if (calm) document.documentElement.classList.add("calm");
+  function calmToggle(){ try { localStorage.setItem(CK, calm ? "0" : "1"); } catch(e){} location.reload(); }
   function confetti(){
     if (calm) return;
     const c = document.createElement("canvas"); c.className = "confetti"; document.body.appendChild(c);
@@ -660,5 +711,5 @@ const Lern = (() => {
   }
 
   init();
-  return {sfx, PRO, proOf, TITLES, syncExport, syncImport, TITLES_LIST, titles, finalCard, GLOSSAR, nextStep, PATH, CHAPTERS, ART, art, BOSSES, boss, bossWon, bossCard, CARD, daily, streak, say, GK, chapterOf, LEVELS, level, count, load, done, visit, quiz, renderNext, nextAfter, sha256, confetti, toast};
+  return {sfx, review, repDue, shareCard, calm, calmToggle, PRO, proOf, TITLES, syncExport, syncImport, TITLES_LIST, titles, finalCard, GLOSSAR, nextStep, PATH, CHAPTERS, ART, art, BOSSES, boss, bossWon, bossCard, CARD, daily, streak, say, GK, chapterOf, LEVELS, level, count, load, done, visit, quiz, renderNext, nextAfter, sha256, confetti, toast};
 })();

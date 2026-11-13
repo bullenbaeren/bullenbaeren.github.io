@@ -14,7 +14,7 @@
 <meta property="og:description" content="Bitcoin spielerisch verstehen, mit echten Live-Daten.">
 <meta property="og:image" content="https://satsland.github.io/og.png">
 <meta property="og:url" content="https://satsland.github.io/">
-<link rel="stylesheet" href="lern.css?v=32">
+<link rel="stylesheet" href="lern.css?v=33">
 <style>
 /* Übersicht der Lernwelten: gleiche Farben und Schriften wie das Spiel. */
 .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
@@ -131,6 +131,7 @@ details.fold[open] > summary{margin-bottom:12px}
   <a class="resume" id="resume" hidden></a>
   <p class="alt" id="alt" hidden></p>
   <details class="card daily fold" data-k="daily"><summary><h2 id="dly">🔥 Tagesfrage</h2><span class="muted sm" id="dlyS"></span></summary><div id="daily"></div></details>
+  <details class="card daily fold" data-k="rep"><summary><h2 id="rpH">🔁 Wiederholen</h2><span class="muted sm" id="rpS"></span></summary><div id="rep"></div></details>
   <section class="card path" aria-labelledby="pth"><div class="ph"><h2 id="pth">🗺️ Lernpfad</h2><div class="vsw" id="vsw" role="group" aria-label="Ansicht wählen"><button type="button" data-v="map">🗺️ Pfad</button><button type="button" data-v="list">📋 Liste</button></div></div>
     <p class="muted pinfo" id="pathCount"></p>
     <div class="next" id="next" hidden></div>
@@ -155,6 +156,7 @@ details.fold[open] > summary{margin-bottom:12px}
         <a class="w" href="geschichte/"><span class="tag live">Live</span><span class="ic" aria-hidden="true">📜</span><b>Geschichte</b><span>Vom Whitepaper bis 100.000 $: Bitcoin in 15 Momenten.</span><span class="go">Zeitreise →</span></a>
         <a class="w" href="besitzer/"><span class="tag live">Neu</span><span class="ic" aria-hidden="true"></span><b>Wem gehört Bitcoin?</b><span>Satoshi, ETFs, Firmen, Staaten und verlorene Coins im Überblick.</span><span class="go">Wem gehört Bitcoin? →</span></a>
         <a class="w" href="mythen/"><span class="tag live">Neu</span><span class="ic" aria-hidden="true"></span><b>Mythen-Check</b><span>Kriminalität, Strom, Schneeball? 10 Gerüchte im ehrlichen Faktencheck.</span><span class="go">Mythen-Check →</span></a>
+        <a class="w" href="kritik/"><span class="tag live">Neu</span><span class="ic" aria-hidden="true">⚖️</span><b>Kritik-Check</b><span>Die 8 stärksten Einwände gegen Bitcoin, fair mit Gegenargument. Du entscheidest.</span><span class="go">Kritik-Check →</span></a>
       </div>
     </details>
     <details class="kap fold" data-k="3"><summary><span class="cn">3</span><span class="ct"><b>🛡️ Sicher starten</b><small>Bevor du Bitcoin kaufst: Wallet, Seed, Betrug und echte Risiken.</small></span><span class="cp" data-cnt="3"><i><u></u></i><em></em></span></summary>
@@ -209,9 +211,10 @@ details.fold[open] > summary{margin-bottom:12px}
     <div class="acts"><button class="btn ghost" id="syI" type="button">📥 Code übernehmen</button></div>
     <p class="msg2" id="syM"></p>
   </details>
-  <p class="foot">Unterhaltung und Lernen, keine Anlageberatung. Keine Cookies, kein Tracking. <a href="#" id="guideOn" style="color:inherit">Satoshi zurückholen</a> · <a href="#" id="introOn" style="color:inherit">Einführung ansehen</a></p>
+  <div class="card" id="inst" hidden><h2 style="margin:0 0 4px">📱 Satsland als App</h2><p class="muted" id="instT" style="margin:0 0 8px;font-size:14px">Mit einem Symbol auf dem Startbildschirm bist du mit einem Tipp wieder da. Ohne App-Store, nichts wird hochgeladen.</p><div class="acts"><button class="btn" id="instB" type="button">📲 Installieren</button></div></div>
+  <p class="foot">Unterhaltung und Lernen, keine Anlageberatung. Keine Cookies, kein Tracking. <a href="#" id="guideOn" style="color:inherit">Satoshi zurückholen</a> · <a href="#" id="introOn" style="color:inherit">Einführung ansehen</a> · <a href="#" id="calmOn" style="color:inherit">Weniger Bewegung</a><br><a href="ueber/" style="color:inherit">Über Satsland</a> · <a href="datenschutz/" style="color:inherit">Datenschutz</a></p>
 </div>
-<script src="lern.js?v=32"></script>
+<script src="lern.js?v=33"></script>
 <script>
 // Lernpfad: Fortschritt aus dem eigenen Browser, Häkchen an den Karten, Empfehlung als Nächstes
 (() => {
@@ -259,7 +262,13 @@ details.fold[open] > summary{margin-bottom:12px}
   document.querySelectorAll("[data-cnt]").forEach(el => { const c = Lern.CHAPTERS[+el.dataset.cnt - 1], dn = c[3].filter(id => Lern.done(s, id)).length;
     el.querySelector("u").style.width = dn/c[3].length*100 + "%"; el.querySelector("em").textContent = dn === c[3].length ? "✓ geschafft" : `${dn}/${c[3].length}`;
     if (dn === c[3].length) el.closest(".kap").classList.add("full"); });
+  // App-Installation: Android/Chrome über das Browser-Angebot, iPhone mit kurzer Anleitung
+  { const box = document.getElementById("inst"), B = document.getElementById("instB"), app = matchMedia("(display-mode: standalone)").matches || navigator.standalone; let ev = null;
+    if (!app){ addEventListener("beforeinstallprompt", e => { e.preventDefault(); ev = e; box.hidden = false; });
+      if (/iphone|ipad|ipod/i.test(navigator.userAgent)){ box.hidden = false; B.hidden = true; document.getElementById("instT").innerHTML += " <b>So geht's auf dem iPhone:</b> unten auf <b>Teilen</b> (□↑) tippen, dann <b>„Zum Home-Bildschirm“</b>."; }
+      B.onclick = async () => { if (!ev) return; ev.prompt(); const r = await ev.userChoice; if (r.outcome === "accepted"){ box.hidden = true; Lern.toast("📱 Satsland ist jetzt auf deinem Startbildschirm!"); } ev = null; }; } }
   Lern.daily(document.getElementById("daily"));
+  Lern.review(document.getElementById("rep"), n => { document.getElementById("rpS").textContent = n ? n + " fällig" : ""; });
   // Einführung beim allerersten Besuch (3 kurze Karten)
   function intro(){
     const IT = [["icon", "Willkommen in Satsland!", "Hier lernst du Bitcoin <b>spielerisch</b>, ganz ohne Vorwissen. Ein paar Minuten am Tag reichen."],
@@ -275,6 +284,7 @@ details.fold[open] > summary{margin-bottom:12px}
   }
   { let seen = false; try { seen = localStorage.getItem("satsland-intro") === "1"; } catch(e){} if (!seen && !Lern.count(s)) intro(); }
   document.getElementById("introOn").onclick = e => { e.preventDefault(); intro(); };
+  { const c = document.getElementById("calmOn"); c.textContent = Lern.calm ? "Bewegung wieder an" : "Weniger Bewegung"; c.onclick = e => { e.preventDefault(); Lern.calmToggle(); }; }
   document.getElementById("guideOn").onclick = e => { e.preventDefault(); try { localStorage.removeItem(Lern.GK); } catch(x){} location.reload(); };
   document.getElementById("album").innerHTML = Lern.BOSSES.map((b, k) => Lern.bossCard(k)).join("") + Lern.finalCard();
   { const w5 = Lern.bossWon(), ready5 = Lern.BOSSES.every((x, k) => w5[k]);
@@ -284,7 +294,7 @@ details.fold[open] > summary{margin-bottom:12px}
   // Klappbereiche: gemerkter Zustand, sonst sinnvoller Standard
   let fold = {}; try { fold = JSON.parse(localStorage.getItem("satsland-fold")) || {}; } catch(e){}
   const nxCh = nxS ? (nxS.w ? Lern.chapterOf(nxS.w) : nxS.b) + 1 : Lern.count(s) ? 6 : 1, dly = Lern.streak();
-  const def = {daily: false, album: false};
+  const def = {daily: false, album: false, rep: Lern.repDue().length > 0};
   document.querySelectorAll("details.fold").forEach(d => {
     const k = d.dataset.k; d.open = k in fold ? fold[k] : k in def ? def[k] : +k === nxCh;
     d.addEventListener("toggle", () => { fold[k] = d.open; try { localStorage.setItem("satsland-fold", JSON.stringify(fold)); } catch(e){} });
@@ -429,7 +439,7 @@ details.fold[open] > summary{margin-bottom:12px}
 </div>
 <script>
 (() => {
-  const K = ["bvb-lernen", "satsland-boss", "satsland-titles", "satsland-daily", "satsland-intro"], BK = "satsland-dev-backup";
+  const K = ["bvb-lernen", "satsland-boss", "satsland-titles", "satsland-daily", "satsland-intro", "satsland-rep"], BK = "satsland-dev-backup";
   document.getElementById("devT").onclick = () => { const p = document.getElementById("devP"); p.hidden = !p.hidden; };
   document.getElementById("devP").onclick = e => { const b = e.target.closest("button"); if (!b) return;
     if (b.dataset.b){ document.getElementById("devP").hidden = true; return Lern.boss(b.dataset.b === "f" ? "f" : +b.dataset.b); }
