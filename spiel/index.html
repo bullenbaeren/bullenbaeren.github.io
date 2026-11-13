@@ -60,8 +60,6 @@ h1 .b{color:var(--bull)} h1 .r{color:var(--bear)} h1 .v{color:var(--muted);font-
 .ib:focus-visible,.pill:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 .pill{font:700 14px var(--f-body);height:44px;padding:0 18px;border-radius:999px;cursor:pointer;border:1px solid var(--line);background:var(--card);color:var(--ink);display:inline-flex;align-items:center;gap:8px}
 .pill.learn{text-decoration:none;background:linear-gradient(180deg,#5a3a0e,#3d2708);border-color:rgba(247,147,26,.45);color:#ffe2b8}
-.pill.time{background:linear-gradient(180deg,#2a4f8f,#1d3a70);border-color:rgba(124,196,255,.35);color:#dff0ff}
-.pill.time.on{background:var(--sky);color:#04203a}
 .pill.back{height:28px;padding:0 12px;font-size:12px;background:var(--bull);color:#04240f;border-color:var(--bull)}
 
 .hud{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:22px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px 18px}
@@ -218,7 +216,6 @@ body.stream .welcome{display:none}
     <h1><span class="b">Kurs</span><span class="v">⚔️</span><span class="r">Arena</span></h1>
     <div class="tools">
       <a class="pill learn" id="slPill" href="../index.html" title="Zurück zu Satsland">🎓 Satsland</a>
-      <button class="pill time" id="timeBtn" type="button">Zeitreise</button>
       <div class="tgroup" role="group" aria-label="Einstellungen">
         <button class="ib" id="snd" type="button" aria-pressed="false" aria-label="Ton" title="Ton"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg></button>
         <button class="ib" id="mus" type="button" aria-pressed="false" aria-label="Musik" title="Musik"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg></button>
@@ -350,7 +347,7 @@ body.stream .welcome{display:none}
      3. Ton & Musik         alles synthetisch per Web Audio
      4. Einheiten           Bullen/Bären, Angriffe, K.-o.-Arten
      5. Datenquellen        Coinbase, Kraken, Binance (+Futures), mempool.space
-     6. Modi                live | demo (Testkurs) | test (gezogen) | zeit (Zeitreise)
+     6. Modi                live | demo (Testkurs) | test (gezogen)
      7. update(dt)          Spiellogik pro Frame
      8. draw()              Zeichnen auf dem Canvas
    Grundsatz: Alles Sichtbare hängt an echten Daten. Kills nur durch echte
@@ -467,9 +464,8 @@ if (store.visit.last !== today()){
   store.visit.last = today(); save();
 }
 
-// Zeitreise: vereinfachter Verlauf (ungefähre Monatswerte in $)
+// Kurs-Historie: vereinfachter Verlauf (ungefähre Monatswerte in $)
 const HIST = [["2010-05",0.004],["2010-07",0.06],["2010-11",0.25],["2011-02",1],["2011-06",30],["2011-11",2.5],["2012-06",6],["2012-12",13],["2013-04",200],["2013-07",80],["2013-12",1000],["2014-06",600],["2015-01",200],["2015-12",430],["2016-07",650],["2016-12",960],["2017-06",2500],["2017-09",4300],["2017-12",19000],["2018-02",7000],["2018-12",3300],["2019-06",12000],["2019-12",7200],["2020-03",5000],["2020-10",13000],["2020-12",29000],["2021-04",63000],["2021-07",31000],["2021-11",67000],["2022-06",19000],["2022-11",16000],["2023-06",30000],["2023-12",42000],["2024-03",71000],["2024-08",55000],["2024-12",100000],["2025-04",78000],["2025-07",118000],["2025-10",124000]];
-const HIST_EV = [["2010-05","Pizza-Tag: 10.000 BTC für zwei Pizzen"],["2012-11","Erstes Halving"],["2014-02","Mt. Gox bricht zusammen"],["2016-07","Zweites Halving"],["2017-12","Der erste große Hype"],["2020-03","Corona-Crash"],["2020-05","Drittes Halving"],["2021-11","Neues Hoch bei rund 69.000 $"],["2022-11","FTX-Pleite"],["2024-01","Bitcoin-ETFs in den USA"],["2024-04","Viertes Halving"],["2024-12","Erstmals über 100.000 $"]];
 // Datum 'JJJJ-MM' in fortlaufende Monatszahl umrechnen
 const ym = s => { const [y,m] = s.split("-").map(Number); return y*12 + m - 1; };
 const MONTHS = ["Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"];
@@ -489,7 +485,6 @@ const ALBUM = [
   {id:"marathon", n:"Marathon",          d:"30 Minuten live zugeschaut."},
   {id:"liqbig",   n:"Liquidiert!",       d:"Eine einzelne Zwangsschließung über 1 Mio. $."},
   {id:"kaskade",  n:"Kaskade",           d:"Über 5 Mio. $ Liquidationen in 30 Sekunden."},
-  {id:"zeitreise",n:"Zeitreisender",     d:"Die ganze Zeitreise von 2010 bis heute gesehen."},
   {id:"treue",    n:"Treue Seele",       d:"An 7 Tagen in Folge vorbeigeschaut."},
   {id:"rekord",   n:"Rekordjäger",       d:"Ein neues Allzeithoch live miterlebt."}
 ];
@@ -497,7 +492,7 @@ const ALBUM = [
 // ---------- Zustand ----------
 let W = 800, H = 420, dpr = 1, groundY = 300, ppu = 5, KS = 1, ghostCd = 0;
 let mode = "connecting";   // connecting | live | demo (kein Live) | test (gezogen)
-let price = 0, livePrice = 0, frontP = 0, camP = 0, startP = 0;
+let price = 0, livePrice = 0, tgtP = 0, frontP = 0, camP = 0, startP = 0;   // tgtP: letzter Live-Trade, price gleitet sanft hinterher
 let pressure = 0, flowE = 0, absE = 1, emaR = 0, lastP = 0;
 let bulls = [], bears = [], fx = [], amb = [], drops = [], ghosts = [];
 let shake = 0, snowUntil = 0, laserUntil = 0, laserCd = 0, winterCd = 0, hiTime = 0, loTime = 0;
@@ -511,7 +506,6 @@ let candles = [];
 let simDrift = 0, simDriftIn = 10, simAcc = 0, simTradeIn = 2;
 let drag = null, vel = 0, dragged = false;
 let meteors = [], liqWin = [], kaskadeCd = 0;
-let zt = null;              // Zeitreise-Zustand
 let eurPx = 0, eurRate = 0, usdCb = 0;
 let stream = location.hash === "#stream", newsText = "", lowPerf = false, frameAvg = 1/60, introUntil = 0;
 let skyA = [0,0,0], skyB = [0,0,0], hillC = [0,0,0], groundC = [0,0,0];
@@ -540,7 +534,7 @@ let newsLock = 0;
 function news(html, prio){ if (!prio && t < newsLock) return; $("news").innerHTML = html; newsText = html.replace(/<[^>]+>/g, ""); newsLock = t + (prio ? 4 : 1.5); }
 // Modus-Abfragen
 const isLive = () => mode === "live";
-const isTest = () => mode === "demo" || mode === "test" || mode === "zeit";
+const isTest = () => mode === "demo" || mode === "test";
 
 // ---------- Ton ----------
 let ac = null; const lastSnd = {};
@@ -780,7 +774,7 @@ function hit(buy, v){
 }
 // Ruhe-Gesten: ist am Markt wenig los, scharrt ab und zu ein Bulle mit dem Huf oder ein Bär gähnt
 function updateIdle(dt){
-  const calm = Math.abs(pressure) < .25 && mode !== "zeit" && mode !== "connecting";
+  const calm = Math.abs(pressure) < .25 && mode !== "connecting";
   for (const u of bulls.concat(bears)){
     if (u.idle && (u.idle.until < t || u.kb || u.retreat || !u.fight)) u.idle = null;
     if (!u.idle && calm && u.fight && !u.kb && !(u.dizzy > t) && !(u.stuck > t) && Math.random() < dt*.03)
@@ -832,7 +826,7 @@ function welcomeStep(dt){
 let rt = 0, slowmo = null, slowCd = -99, camFx = null;
 // Zeitlupe mit Zoom auf einen Einschlag – nur bei echten Großereignissen ab 1 Mio. $
 function cinema(x, y){
-  if (mode === "zeit" || mode === "connecting" || rt < slowCd) return;
+  if (mode === "connecting" || rt < slowCd) return;
   slowCd = rt + 45;   // höchstens alle 45 Sekunden, damit es besonders bleibt
   slowmo = {t0: rt, dur: 2.4};
   if (!reduce) camFx = {kind: "impact", t0: rt, dur: 2.8, fx: clamp(x, W*.2, W*.8), fy: clamp(y, H*.3, groundY)};
@@ -870,7 +864,6 @@ let wxSamples = [], wxAcc = 0, wxLvl = 0, wxTarget = 0, wxBp = 0, wxStage = -1, 
 const wxRnd = i => { const v = Math.sin(i*12.9898)*43758.5453; return v - Math.floor(v); };   // feste Zufallszahl je Index
 function weatherStep(dt){
   if (mode !== wxMode){ wxMode = mode; wxSamples = []; wxAcc = 0; }   // Moduswechsel: neu messen
-  if (mode === "zeit") wxTarget = 0;
   else if ((mode === "live" || mode === "demo") && price > 0 && (wxAcc += dt) >= 1){
     wxAcc = 0; wxSamples.push(price); if (wxSamples.length > 120) wxSamples.shift();
     if (wxSamples.length >= 15){
@@ -898,7 +891,6 @@ function weatherStep(dt){
 function nightAmt(){ const d = new Date(), hr = d.getHours() + d.getMinutes()/60; return hr < 5.5 || hr > 21.5 ? .45 : hr < 7.5 ? (7.5 - hr)/2*.45 : hr > 19.5 ? (hr - 19.5)/2*.45 : 0; }
 // Himmel: Sonne, Verdunkelung, Wolken oder Sternenstaub-Schleier
 function drawWeatherSky(wi){
-  if (mode === "zeit") return;
   const sp = wi >= 7, L = wxLvl;
   if (!sp && wi >= 1 && L < .8 && nightAmt() === 0){
     const a = 1 - L/.8, sx0 = W*.84, sy0 = groundY*.2, r = 16*KS;
@@ -925,7 +917,6 @@ function drawWeatherSky(wi){
 }
 // Vordergrund: Regen bzw. Mikrometeoriten und Blitze bzw. Plasma-Bögen
 function drawWeatherFront(wi){
-  if (mode === "zeit") return;
   const sp = wi >= 7, L = wxLvl;
   if (L > 1.2){
     const n = Math.round((L - 1.2)*(reduce ? 30 : 75)), wind = sp ? .9 : .25 + L*.08, v = sp ? 520 : 760, len = sp ? 26 : 12;
@@ -950,7 +941,7 @@ function drawWeatherFront(wi){
 }
 // Heller Blitz über das ganze Bild (nicht bei "Bewegung reduzieren")
 function weatherFlash(){
-  if (!bolt || reduce || mode === "zeit") return;
+  if (!bolt || reduce) return;
   const k = (t - bolt.t0)/.3; if (k > 1) return;
   ctx.fillStyle = `rgba(255,255,255,${(1 - k)*.28})`; ctx.fillRect(-20, -20, W + 40, H + 40);
 }
@@ -1002,14 +993,14 @@ function nextLine(key, list){
   return bag.pop();
 }
 function say(u, key, force){
-  if (!u || mode === "zeit" || mode === "connecting" || (!force && t < bubbleCd) || bubbles.length >= 2 || bubbles.some(b => b.u === u)) return;
+  if (!u || mode === "connecting" || (!force && t < bubbleCd) || bubbles.length >= 2 || bubbles.some(b => b.u === u)) return;
   bubbleCd = t + rnd(2.5, 4);
   bubbles.push({u, text: nextLine(key, SAY[key]), t0: t, until: t + 2.2});
 }
 const sayAt = (x, y, text) => { if (bubbles.length < 3) bubbles.push({x, y, text, t0: t, until: t + 3, stone: true}); };
 function bubbleStep(dt){
   bubbles = bubbles.filter(b => t < b.until && !(b.u && (b.u.dead || b.u.retreat)));
-  if (mode === "zeit" || mode === "connecting") return;
+  if (mode === "connecting") return;
   if ((talkIn -= dt) <= 0){
     talkIn = rnd(4, 8);
     const side = Math.random() < .5 ? "bull" : "bear", arr = (side === "bull" ? bulls : bears).filter(u => u.fight && !u.kb);
@@ -1104,7 +1095,6 @@ function renderNet(){
 }
 // Hintergrund: Mining-Fabrik (Erde) bzw. Mining-Station (Weltall), raucht je nach echter Hashrate; dazu Lightning-Blitze
 function drawNetSky(wi){
-  if (mode === "zeit") return;
   if (hashNet){
     const k = KS, x = W*.1, y = groundY - 34*k, L = hashNet.lvl;
     ctx.save(); ctx.globalAlpha = .85;
@@ -1199,7 +1189,7 @@ const SATOSHI_Q = [
 ];
 let satQCd = 0;
 function satoshiQuote(x, y){
-  if (mode === "zeit" || t < satQCd || Math.random() > .6) return;
+  if (t < satQCd || Math.random() > .6) return;
   satQCd = t + 45;
   const [q, yr] = nextLine("satq", SATOSHI_Q.map(a => a.join("|"))).split("|");
   bubbles.push({x, y, text: "„" + q + "“", t0: t, until: t + 6, quote: true});
@@ -1212,7 +1202,6 @@ function satoshiQuote(x, y){
 let crabSamples = [], crabAcc = 0, crabs = [], crabFlat = false, crabMode = "", crabNewsCd = 0;
 function crabStep(dt){
   if (mode !== crabMode){ crabMode = mode; crabSamples = []; crabAcc = 0; crabFlat = false; }
-  if (mode === "zeit"){ crabs = []; return; }
   if ((mode === "live" || mode === "demo") && price > 0 && (crabAcc += dt) >= 5){
     crabAcc = 0; crabSamples.push(price); if (crabSamples.length > 96) crabSamples.shift();
     let hi = -Infinity, lo = Infinity; for (const v of crabSamples){ if (v > hi) hi = v; if (v < lo) lo = v; }
@@ -1293,7 +1282,7 @@ function festStep(dt){
     if (f.x < -70 || f.x > W + 70) f.life = 0;
   }
   festFx = festFx.filter(f => f.life > 0 && f.y < H + 40);
-  if (!fest || mode === "zeit" || mode === "connecting") return;
+  if (!fest || mode === "connecting") return;
   // Einmaliger Auftritt pro Fest
   if (festShown !== fest && t - modeSince > 3 && !banner){
     festShown = fest;
@@ -1327,7 +1316,7 @@ function festStep(dt){
 }
 // Skelett erscheinen lassen (nur an Halloween, höchstens 6 gleichzeitig)
 function spawnSkel(side, x, y){
-  if (fest !== "halloween" || mode === "zeit" || festFx.filter(f => f.k === "skel").length >= 6) return;
+  if (fest !== "halloween" || festFx.filter(f => f.k === "skel").length >= 6) return;
   festFx.push({k:"skel", side, x, y, t0:t, dir: side === "bull" ? -1 : 1, vx:0, vy:0, r:0, life:99});
 }
 // Halloween: Skelett-Bulle bzw. -Bär steigt aus dem Grab, tanzt kurz und klappert davon
@@ -1461,7 +1450,7 @@ function ko(u, kind, val){
   if (kind === "flat"){ c.life = 1.6; burst(u.x, u.y - 4, ["#c9cde8","#ffffff"], 6, 60); }
   else if (kind === "launch"){ c.life = 2.2; c.vx = rnd(-60, 60); c.vy = -rnd(620, 820); c.vr = reduce ? 0 : rnd(-14, 14); c.rot = 0; c.sc = 1; }
   else if (kind === "grave"){ c.life = .01; graves.push({x:u.x, y:u.y, side:u.side, label: val ? "R.I.P. " + usdK(val) : "R.I.P.", life:6}); if (Math.random() < .6) spawnSkel(u.side, u.x, u.y);
-    if (mode !== "zeit" && t > epitaphCd && Math.random() < .35){ epitaphCd = t + 3; sayAt(u.x, u.y - 34*KS, nextLine("ep_" + u.side, EPITAPH[u.side])); } burst(u.x, u.y - 8, ["#ff9a3a","#ffd76a","#ffffff"], 10, 110); }
+    if (t > epitaphCd && Math.random() < .35){ epitaphCd = t + 3; sayAt(u.x, u.y - 34*KS, nextLine("ep_" + u.side, EPITAPH[u.side])); } burst(u.x, u.y - 8, ["#ff9a3a","#ffd76a","#ffffff"], 10, 110); }
   corpses.push(c);
 }
 // Figur verschwindet in einer Staubwolke
@@ -1479,7 +1468,7 @@ function confetti(n){ if (reduce) n = Math.ceil(n/5); for (let i=0;i<n;i++) fx.p
 
 // ---------- Album ----------
 function unlock(id){
-  if ((!isLive() && id !== "zeitreise" && id !== "treue") || store.album[id]) return;
+  if ((!isLive() && id !== "treue") || store.album[id]) return;
   store.album[id] = Date.now(); save();
   const a = ALBUM.find(x => x.id === id);
   banner = {text: "NEU IM ALBUM", sub: a.n.toUpperCase(), color: C.gold, until: t + 3.2};
@@ -1578,7 +1567,7 @@ function enterTest(){
 $("backLive").onclick = () => {
   if (!livePrice) return;
   mode = "live"; vel = 0;
-  price = frontP = camP = lastP = livePrice; initFlags(livePrice); candles = [];
+  price = tgtP = frontP = camP = lastP = livePrice; initFlags(livePrice); candles = [];
   $("mode").className = "mode live"; $("mode").textContent = "Live"; $("backLive").hidden = true;
   news("Zurück an der echten Front.", true);
 };
@@ -1599,20 +1588,20 @@ function checkFlags(prev, cur){
     const L = n*st, key = fk(L);
     if (L === lo && up) continue;
     // Denkmal überquert (alle 10 Fahnen)
-    if (n % 10 === 0 && t > ghostCd && mode !== "zeit"){ ghostCd = t + 10; ghosts.push({x: sx(L), y: groundY - 20, life: 4}); satoshiQuote(sx(L), groundY - 80*KS); if (isLive()){ news(`<b>Satoshis Geist</b> schwebt vorbei: ${usd(L)} ${up ? "geknackt!" : "verloren!"}`, true); unlock("satoshi"); } sfx("sparkle"); }
+    if (n % 10 === 0 && t > ghostCd){ ghostCd = t + 10; ghosts.push({x: sx(L), y: groundY - 20, life: 4}); satoshiQuote(sx(L), groundY - 80*KS); if (isLive()){ news(`<b>Satoshis Geist</b> schwebt vorbei: ${usd(L)} ${up ? "geknackt!" : "verloren!"}`, true); unlock("satoshi"); } sfx("sparkle"); }
     const side = up ? "bull" : "bear";
     if (flags[key] === side) continue;
     flags[key] = side;
     if (flagCd[key] && t < flagCd[key]) continue;
     flagCd[key] = t + 30;
     if (isLive()){ store.day[side]++; store.all[side]++; save(); }
-    if (mode !== "zeit"){ burst(sx(L), groundY - 70, up ? [C.bull,C.gold,"#ffffff"] : [C.bear,C.gold,"#ffffff"], 18, 120); sfx("fanfare"); }
+    burst(sx(L), groundY - 70, up ? [C.bull,C.gold,"#ffffff"] : [C.bear,C.gold,"#ffffff"], 18, 120); sfx("fanfare");
     if (streak.side === side) streak.n++; else streak = {side, n:1};
-    if (streak.n >= 5 && !banner && mode !== "zeit"){
+    if (streak.n >= 5 && !banner){
       banner = {text: up ? `BULLEN-SERIE ×${streak.n}!` : `BÄREN-SERIE ×${streak.n}!`, sub: usd(L) + " erobert", color: up ? C.bull : C.bear, until: t + 2.4};
       unlock("blitz");
     }
-    if (!drag && mode !== "zeit") news(up ? pick([`<b>Fahne bei ${usd(L)}!</b> Die Bullen rammen sie in den Boden.`, `<b>${usd(L)} erobert!</b> Muuuh!`]) : pick([`<b>Fahne bei ${usd(L)}!</b> Die Bären holen sie sich.`, `<b>${usd(L)} gefallen!</b> Brummmm.`]));
+    if (!drag) news(up ? pick([`<b>Fahne bei ${usd(L)}!</b> Die Bullen rammen sie in den Boden.`, `<b>${usd(L)} erobert!</b> Muuuh!`]) : pick([`<b>Fahne bei ${usd(L)}!</b> Die Bären holen sie sich.`, `<b>${usd(L)} gefallen!</b> Brummmm.`]));
     renderAlbum();
   }
 }
@@ -1629,26 +1618,26 @@ function checkWorld(){
     worldCd = t + 2.5;
     const w = world(i), B = WORLDS[Math.max(i, prev)].lo, x = sx(B);
     // Wird an derselben Grenze hin und her gekämpft, nur leise wechseln: großer Auftritt
-    // (Kamerafahrt, Banner, Konfetti) höchstens alle 10 Minuten je Grenze, in der Zeitreise alle 20 s
-    const quietFor = mode === "zeit" ? 20 : 600;
+    // (Kamerafahrt, Banner, Konfetti) höchstens alle 10 Minuten je Grenze
+    const quietFor = 600;
     if (rt - (borderFx[B] ?? -1e9) < quietFor){
-      if (mode !== "zeit") news(`Die Front wankt an der Grenze ${usd(B)}: jetzt wieder <b>${w.n}</b>.`);
+      news(`Die Front wankt an der Grenze ${usd(B)}: jetzt wieder <b>${w.n}</b>.`);
       return;
     }
     borderFx[B] = rt;
     banner = {text: "NEUE WELT: " + w.n.toUpperCase(), sub: w.year, color: C.gold, until: t + 3.2};
-    if (!reduce) camFx = {kind: "world", t0: rt, dur: mode === "zeit" ? 1.6 : 2.6, z0: 1.9, fx: clamp(x, W*.15, W*.85), fy: groundY - 50};
+    if (!reduce) camFx = {kind: "world", t0: rt, dur: 2.6, z0: 1.9, fx: clamp(x, W*.15, W*.85), fy: groundY - 50};
     burst(x, groundY - 60, [C.gold, "#ffffff", zn.z.grass], 50, 220);
     shake = reduce ? 0 : 14;
-    if (mode !== "zeit") pop("BOSS BESIEGT!", x, groundY - 130, C.gold, 22, 1.8);
-    sfx("portal"); confetti(mode === "zeit" ? 20 : 70);
+    pop("BOSS BESIEGT!", x, groundY - 130, C.gold, 22, 1.8);
+    sfx("portal"); confetti(70);
     news(`<b>Portal durchbrochen!</b> Willkommen in der Welt ${w.n}. ${i > prev ? "Alles wird eine Nummer größer." : "Alles wird eine Nummer kleiner."}`, true);
     if (isLive()) unlock("portal");
     return;
   }
   if (zkey !== curZone){
     curZone = zkey;
-    if (t < zoneCd || drag || mode === "zeit") return;
+    if (t < zoneCd || drag) return;
     zoneCd = t + 3;
     sfx("sparkle");
     news(`<b>Neue Zone:</b> ${zn.z.n}. ${pick(["Die Armeen schauen sich staunend um.", "Ein Bär macht ein Foto.", "Ein Bulle schreibt eine Postkarte nach Hause."])}`, true);
@@ -1705,85 +1694,18 @@ function onLiq(longs, v, demo){
   if (v >= 250000){ const vic = (longs ? bulls : bears).filter(u => u.fight); if (vic.length) say(pick(vic), longs ? "liqLong" : "liqShort", v >= 1e6); }
   liqWin.push({t, v}); liqWin = liqWin.filter(x => t - x.t < 30);
   const sum = liqWin.reduce((a,x) => a + x.v, 0), fs = sx(frontP);
-  const n = Math.min(mode === "zeit" ? 4 : 24, Math.max(1, Math.round(v/1e5)));
+  const n = Math.min(24, Math.max(1, Math.round(v/1e5)));
   for (let i=0;i<n;i++) meteors.push({v: v/n, x: fs + (longs ? -1 : 1)*rnd(20, W*.45) - (longs ? -1 : 1)*60, y: rnd(-260, -20), vx: (longs ? -1 : 1)*rnd(30, 90), vy: rnd(260, 380), side: longs ? "bull" : "bear", r: rnd(5, 9)});
   if (v >= 1e6){ cinema(fs + (longs ? -1 : 1)*W*.2, groundY - 40); news(longs ? `<b>LIQUIDIERT!</b> Gehebelte Bullen verlieren ${usdK(v)} auf einen Schlag.` : `<b>LIQUIDIERT!</b> Gehebelte Bären verlieren ${usdK(v)} auf einen Schlag.`, true); unlock("liqbig"); }
   else if (v >= 100000) news(longs ? `Meteoritenschauer! ${usdK(v)} Long-Positionen zwangsgeschlossen.` : `Meteoritenschauer! ${usdK(v)} Short-Positionen zwangsgeschlossen.`);
   if (sum >= 5e6 && t > kaskadeCd){ kaskadeCd = t + 60; banner = {text: "LIQUIDATIONS-KASKADE!", sub: usdK(sum) + " in 30 Sekunden", color: C.gold, until: t + 3}; shake = reduce ? 0 : 16; unlock("kaskade"); sfx("piano"); }
 }
 
-// ---------- Zeitreise ----------
-const timeBtn = $("timeBtn");
-// Sanfter Übergang: abblenden, aufräumen, wieder aufblenden
-let trans = null;  // {t0, dur, mid, done}
-// Abblende mit Aufgabe in der Mitte (z. B. Zeitreise starten)
-function transition(mid){ trans = {t0: t, dur: 1.4, mid, done: false}; }
-// Schlachtfeld komplett leeren
-function clearField(){
-  bulls = []; bears = []; fx = []; drops = []; meteors = []; corpses = []; graves = []; ghosts = [];
-  flows = []; volBuy = volSell = 0; banner = null; combo = {side:null, n:0}; streak = {side:null, n:0};
-  laserUntil = 0; snowUntil = 0; flowE = 0; absE = 1; pressure = 0; frontV = 0;
-}
-// Zeitreise 2010 -> heute starten
-function startTime(){
-  if (mode === "connecting" || trans) return;
-  timeBtn.classList.add("on"); timeBtn.textContent = "Zeitreise stoppen";
-  transition(() => {
-    clearField();
-    zt = {from: mode, back: price, m: ym(HIST[0][0]), end: ym(HIST[HIST.length-1][0]) + (livePrice ? 13 : 0), ev: 0, rw: 1};
-    mode = "zeit"; modeSince = t; vel = 0; candles = []; curWorld = -1;
-    price = frontP = camP = lastP = HIST[0][1]; initFlags(price);
-    $("mode").className = "mode demo"; $("mode").textContent = "Zeitreise · ungefähre Werte";
-    $("backLive").hidden = true;
-    banner = {text: "ZEITREISE", sub: "Mai 2010 bis heute", color: "#7cc4ff", until: t + 3};
-    news("<b>Zeitreise!</b> Die Bitcoin-Geschichte im Zeitraffer, vom Pizza-Krümel bis heute.", true);
-  });
-}
-// Zeitreise beenden und zurück ins Jetzt
-function endTime(finished){
-  if (!zt || trans) return;
-  const from = zt.from, back = zt.back;
-  timeBtn.classList.remove("on"); timeBtn.textContent = "Zeitreise";
-  if (finished){ banner = {text: "HEUTE ANGEKOMMEN", sub: "Willkommen zurück", color: "#7cc4ff", until: t + 2}; confetti(60); unlock("zeitreise"); }
-  zt.stopping = true;
-  transition(() => {
-    zt = null; clearField(); modeSince = t; curWorld = -1;
-    if (livePrice && from !== "demo"){ mode = "test"; $("backLive").onclick(); }
-    else { mode = "demo"; $("mode").className = "mode demo"; $("mode").textContent = "Testkurs – nicht live"; price = back || 99780; initFlags(price); frontP = camP = lastP = price; }
-  });
-}
-timeBtn.onclick = () => zt ? endTime(false) : startTime();
-// Zeitreise-Fortschritt: Kurs aus Monatswerten, langsamer an Ereignissen
-function zeitStep(dt){
-  if (zt.stopping) return;
-  const near = HIST_EV.some(e => Math.abs(ym(e[0]) - zt.m) < 2.5);
-  const speed = (zt.end - ym(HIST[0][0]))/260*(near ? .4 : 1);   // ca. 5 Minuten, an Ereignissen langsamer
-  zt.m += dt*speed;
-  if (zt.m >= zt.end){ endTime(true); return; }
-  const lastM = ym(HIST[HIST.length-1][0]);
-  let p;
-  if (zt.m > lastM && livePrice){ const f = (zt.m - lastM)/(zt.end - lastM); p = HIST[HIST.length-1][1]*Math.pow(livePrice/HIST[HIST.length-1][1], f); }
-  else {
-    let i = 0; while (i < HIST.length - 2 && ym(HIST[i+1][0]) <= zt.m) i++;
-    const a = HIST[i], b = HIST[i+1], f = clamp((zt.m - ym(a[0]))/(ym(b[0]) - ym(a[0])), 0, 1);
-    p = a[1]*Math.pow(b[1]/a[1], f);
-  }
-  zt.rw = clamp(zt.rw*Math.exp(gauss()*0.004 - (zt.rw - 1)*0.05), .94, 1.06);
-  const prev = price; price = p*zt.rw;
-  const r = Math.log(price/prev);
-  flowE += .2*((r > 0 ? 1 : -1)*Math.min(3e6, Math.abs(r)*3e8) - flowE); absE += .2*(Math.min(3e6, Math.abs(r)*3e8) - absE);
-  if (Math.random() < dt*.2) onBigTrade(r > 0, Math.exp(rnd(Math.log(250000), Math.log(2e6))), "einer Börse");
-  if (Math.random() < dt*6) addFlow(Math.random() < .5 + clamp(r*80, -.4, .4), Math.exp(rnd(Math.log(30000), Math.log(300000))));
-  if (Math.random() < dt*5) hit(r > 0, Math.exp(rnd(Math.log(500), Math.log(500000))));
-  if (r < -0.006 && Math.random() < dt*.8) onLiq(true, Math.exp(rnd(Math.log(1e5), Math.log(3e6))), true);
-  while (zt.ev < HIST_EV.length && ym(HIST_EV[zt.ev][0]) <= zt.m){ const e = HIST_EV[zt.ev++]; banner = {text: e[1].toUpperCase(), sub: MONTHS[ym(e[0]) % 12] + " " + Math.floor(ym(e[0])/12), color: "#7cc4ff", until: t + 2.6}; news(`<b>${MONTHS[ym(e[0]) % 12]} ${Math.floor(ym(e[0])/12)}:</b> ${e[1]}.`, true); sfx("sparkle"); }
-}
-
 // ---------- Moment speichern ----------
 $("shot").onclick = async () => {
   const blob = await new Promise(r => cv.toBlob(r, "image/png"));
   if (!blob) return;
-  const name = "bullen-gegen-baeren.png";
+  const name = "kurs-arena.png";
   try { const d = window.claude && await window.claude.use("downloads"); if (d){ await d.save({filename: name, data: blob}); return; } } catch(e){ if (e && e.code === "declined") return; }
   try { const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); a.remove(); } catch(e){}
 };
@@ -1952,13 +1874,13 @@ function recordStep(prev, cur){
       } else if (t > athCd){ athCd = t + 60; news(`<b>Noch ein Rekord:</b> ${money(livePrice)}.`, true); confetti(40); }
       ath = livePrice;
     }
-  } else if (isTest() && mode !== "zeit" && ath && prev < ath && cur >= ath && !banner){
+  } else if (isTest() && ath && prev < ath && cur >= ath && !banner){
     banner = {text: "ALLZEITHOCH!", sub: "Nur im Testmodus – live wäre das ein Rekord", color: C.gold, until: t + 2.5}; confetti(50);
   }
 }
 // Gestrichelte Linien für Hoch und Tief der letzten 24 Stunden
 function drawDayLines(){
-  if (!day24 || mode === "zeit") return;
+  if (!day24) return;
   for (const [v, lab] of [[day24.hi, "24h-Hoch"], [day24.lo, "24h-Tief"]]){
     const x = sx(v); if (x < -40 || x > W + 40) continue;
     ctx.save(); ctx.strokeStyle = "rgba(238,240,255,.45)"; ctx.lineWidth = 1.5; ctx.setLineDash([6, 5]);
@@ -1971,7 +1893,7 @@ function drawDayLines(){
 }
 // Goldenes Tor am Allzeithoch
 function drawAthGate(){
-  if (!ath || mode === "zeit") return;
+  if (!ath) return;
   const x = sx(ath), k = KS, hw = 46*k, h = 118*k;
   if (x < -hw - 60 || x > W + hw + 60) return;
   const top = groundY - h, glow = .5 + .5*Math.sin(t*2.4);
@@ -2023,7 +1945,7 @@ function checkMarkets(){
   if (t < mktNext) return; mktNext = t + 5;
   for (const m of MARKETS){
     const o = mktOpen(m);
-    if (mktState[m.n] !== undefined && o !== mktState[m.n] && mode !== "zeit"){
+    if (mktState[m.n] !== undefined && o !== mktState[m.n]){
       const hhmm = new Date().toLocaleTimeString("de-DE", {hour:"2-digit", minute:"2-digit"});
       banner = {text: (o ? m.open : m.close).toUpperCase() + (o ? "!" : ""), sub: o ? m.openSub + " · " + hhmm + " Uhr" : m.n + " schließt · " + hhmm + " Uhr", color: o ? C.gold : "#c9cde8", until: t + 3.2};
       news(`<b>${o ? m.open : m.close}.</b> ${o ? m.openSub + "." : "Der Handel dort ist für heute vorbei."}`, true);
@@ -2048,12 +1970,12 @@ function onTrade(src, p, qty, takerBuy){
   const fresh = n => feeds[n] && performance.now() - feeds[n].at < 15000;
   const ref = fresh("Coinbase") ? "Coinbase" : fresh("Kraken") ? "Kraken" : "Binance";
   if (src === ref || !fresh(ref)) livePrice = p;
-  if (mode === "connecting" || (mode === "demo" && !zt)){
+  if (mode === "connecting" || mode === "demo"){
     if (!firstTradeAt) firstTradeAt = t;
     if (fresh("Coinbase") || t - firstTradeAt > 2.5) startLive(livePrice); else return;
   }
   if (mode !== "live") return;
-  price = livePrice;
+  tgtP = livePrice;
   const notional = p*qty;
   flowE += 0.02*((takerBuy ? 1 : -1)*notional - flowE);
   absE += 0.02*(notional - absE);
@@ -2063,7 +1985,7 @@ function onTrade(src, p, qty, takerBuy){
 }
 // Welt auf einen Startkurs setzen
 function resetWorld(p){
-  price = frontP = camP = startP = lastP = sessionHi = p;
+  price = tgtP = frontP = camP = startP = lastP = sessionHi = p;
   initFlags(p);
 }
 // Kursverlauf mit Vorgeschichte füllen (Testkurs)
@@ -2159,7 +2081,9 @@ function update(dt){
   if (!store.intro && mode !== "connecting" && !introUntil){ introUntil = t + 5.5; store.intro = true; save(); }
   if (store.visit.streak >= 7 && t > 6) unlock("treue");
   welcomeStep(dt); histStep(); weatherStep(dt); introStep(dt); bubbleStep(dt); crabStep(dt); festStep(dt);
-  if (mode === "zeit") zeitStep(dt);
+  if (mode === "live" && tgtP){   // Glättung: lieber minimal hinterher als ruckartig
+    if (Math.abs(tgtP - price) > viewUsd(price)*3) price = tgtP; else price += (tgtP - price)*(1 - Math.exp(-dt*1.8));
+  }
   else if (isTest()){
     simAcc += dt; while (simAcc >= .2){ simAcc -= .2; demoStep(); }
     if (!drag && Math.abs(vel) > price*1e-6){ const dp = vel*dt; price = clamp(price + dp, P_MIN, P_MAX); vel *= Math.pow(.08, dt); }
@@ -2176,7 +2100,7 @@ function update(dt){
     checkWorld();
     const flowP = absE > 0 ? flowE/absE : 0;
     pressure += (clamp(.6*flowP + .4*Math.tanh(emaR/0.00025), -1, 1) - pressure)*Math.min(1, dt*1.5);
-    frontV += ((price - frontP)*7 - frontV*5.3)*Math.min(dt, .05);
+    frontV += ((price - frontP)*3.2 - frontV*3.6)*Math.min(dt, .05);   // weich gefedert, ohne Überschwingen
     frontP += frontV*Math.min(dt, .05);
     if (Math.abs(price - frontP) > viewUsd(price)*4){ frontP = camP = price; frontV = 0; }
     const oldCam = camP;
@@ -2265,8 +2189,8 @@ function update(dt){
   laserCd -= dt; winterCd -= dt;
   hiTime = pressure > .65 ? hiTime + dt : 0;
   loTime = pressure < -.65 ? loTime + dt : 0;
-  if (hiTime > 4 && laserCd <= 0 && !drag && mode !== "zeit"){ laserCd = 30; laserStart = t; laserUntil = t + 7; banner = {text: "LASER-BULLE!", sub: "Die Käufer dominieren seit 4 Sekunden", color: C.bull, until: t + 2.6}; news("<b>Laser-Bulle!</b> Die Käufer haben seit Sekunden klar die Oberhand. Der Boss schießt die Bären von der Front.", true); unlock("laser"); sfx("portal"); }
-  if (loTime > 4 && winterCd <= 0 && !drag && mode !== "zeit"){ winterCd = 30; winterStart = t; snowUntil = t + 8; banner = {text: "EIS-BÄR!", sub: "Die Verkäufer dominieren seit 4 Sekunden", color: "#9ad8ff", until: t + 2.6}; news("<b>Bärenwinter!</b> Die Verkäufer haben seit Sekunden klar die Oberhand. Der Eis-Bär friert die Bullen ein.", true); unlock("winter"); sfx("portal"); }
+  if (hiTime > 4 && laserCd <= 0 && !drag){ laserCd = 30; laserStart = t; laserUntil = t + 7; banner = {text: "LASER-BULLE!", sub: "Die Käufer dominieren seit 4 Sekunden", color: C.bull, until: t + 2.6}; news("<b>Laser-Bulle!</b> Die Käufer haben seit Sekunden klar die Oberhand. Der Boss schießt die Bären von der Front.", true); unlock("laser"); sfx("portal"); }
+  if (loTime > 4 && winterCd <= 0 && !drag){ winterCd = 30; winterStart = t; snowUntil = t + 8; banner = {text: "EIS-BÄR!", sub: "Die Verkäufer dominieren seit 4 Sekunden", color: "#9ad8ff", until: t + 2.6}; news("<b>Bärenwinter!</b> Die Verkäufer haben seit Sekunden klar die Oberhand. Der Eis-Bär friert die Bullen ein.", true); unlock("winter"); sfx("portal"); }
   // Bosse feuern alle 0,4 s auf die Front (Rückstoß, keine Kills)
   const bossOn = t < laserUntil ? "bull" : t < snowUntil && t - winterStart < 8 ? "bear" : null;
   if (bossOn && (bossZap -= dt) <= 0){
@@ -2287,7 +2211,7 @@ function update(dt){
   shake *= Math.pow(0.02, dt);
   if (banner && t > banner.until) banner = null;
 
-  if ((chatterIn -= dt) <= 0 && mode !== "connecting" && mode !== "zeit" && !drag){
+  if ((chatterIn -= dt) <= 0 && mode !== "connecting" && !drag){
     chatterIn = rnd(8, 14);
     const wn = zoneAt(price).z.n;
     if (pressure > .4) news(pick(["Die Bullen frühstücken Bären.","Grüne Kerzen, so weit das Auge reicht.","Die Bären rufen nach Mama.","Irgendwo kauft gerade ein Zahnarzt.",`Die Bullen fühlen sich wohl in ${wn}.`]));
@@ -2298,7 +2222,7 @@ function update(dt){
 
 // Wetter/Partikel je Zone (Schnee, Blasen, Glut ...)
 function spawnAmbient(w, dt){
-  if (reduce || amb.length > (lowPerf || mode === "zeit" ? 30 : 90)) return;
+  if (reduce || amb.length > (lowPerf ? 30 : 90)) return;
   const r = Math.random;
   switch (w.amb){
     case "snow":     if (r() < dt*25) amb.push({k:"dot", c:"#ffffff", x:rnd(0,W), y:-5, vx:rnd(-15,15), vy:rnd(25,55), life:8, r:rnd(1.5,3)}); break;
@@ -2700,7 +2624,7 @@ function drawCandles(){
   const vis = candles.slice(-n);
   let lo = Infinity, hi = -Infinity; for (const c of vis){ if (c.l < lo) lo = c.l; if (c.h > hi) hi = c.h; }
   let Y;
-  if (lo > 0 && hi/lo > 1.5){ // große Sprünge (Zeitreise): logarithmisch
+  if (lo > 0 && hi/lo > 1.5){ // große Sprünge: logarithmisch
     const L0 = Math.log(lo), L1 = Math.log(hi), pad = (L1 - L0)*.1, a = L0 - pad, b = L1 + pad;
     lo = Math.exp(a); hi = Math.exp(b); Y = p => bot - (Math.log(Math.max(p, 1e-9)) - a)/(b - a)*(bot - top);
   } else {
@@ -2756,7 +2680,7 @@ function draw(){
   for (let i=0;i<40;i++){ let x = ((i*137.5) - so) % W; if (x < 0) x += W; ctx.fillRect(x, (i*61.3) % (groundY*.7), 1.5, 1.5); }
   if (w.planet) drawPlanet(w.planet);
   const wiNow = zoneAt(camP || 1).wi;
-  if (wiNow >= 1 && wiNow <= 6 && mode !== "zeit"){
+  if (wiNow >= 1 && wiNow <= 6){
     const d = new Date(), hr = d.getHours() + d.getMinutes()/60;
     const night = hr < 5.5 || hr > 21.5 ? .45 : hr < 7.5 ? (7.5 - hr)/2*.45 : hr > 19.5 ? (hr - 19.5)/2*.45 : 0;
     if (night > 0){ ctx.fillStyle = `rgba(5,8,35,${night})`; ctx.fillRect(-20,-20,W+40,groundY+20); ctx.fillStyle = `rgba(255,244,214,${night*1.6})`; ctx.beginPath(); ctx.arc(W*.85, H*.12, H*.035, 0, Math.PI*2); ctx.fill(); }
@@ -2931,25 +2855,6 @@ function draw(){
   letterbox();
   const big = (txt, y, size, color) => { ctx.font = `900 ${size}px ${FONT_D}`; ctx.textAlign = "center"; ctx.lineWidth = Math.max(4, size/6); ctx.strokeStyle = C.ink; ctx.strokeText(txt, W/2, y); ctx.fillStyle = color; ctx.fillText(txt, W/2, y); };
   if (banner){ let sz = Math.round(Math.min(W/13, 38)); ctx.font = `900 ${sz}px ${FONT_D}`; while (ctx.measureText(banner.text).width > W - 30 && sz > 12){ sz--; ctx.font = `900 ${sz}px ${FONT_D}`; } big(banner.text, H*0.3, sz, banner.color); big(banner.sub, H*0.3 + sz*.9, Math.max(12, Math.round(sz*.5)), "#ffffff"); }
-  if (trans){
-    const k = (t - trans.t0)/trans.dur;
-    if (!trans.done && k >= .5){ trans.done = true; try { trans.mid(); } catch(e){ console.error(e); } }
-    const a = k < .5 ? k*2 : Math.max(0, (1 - k)*2);
-    ctx.fillStyle = `rgba(5,7,20,${Math.min(1, a)})`; ctx.fillRect(-20, -20, W + 40, H + 40);
-    if (k < .5){ ctx.fillStyle = `rgba(124,196,255,${Math.min(1, a)})`; ctx.font = `900 ${Math.round(Math.min(W/16, 30))}px ${FONT_D}`; ctx.textAlign = "center"; ctx.fillText(zt && zt.stopping ? "ZURÜCK INS JETZT" : "ZURÜCKSPULEN …", W/2, H/2); }
-    if (k >= 1) trans = null;
-  }
-  if (zt){
-    const mo = Math.floor(zt.m);
-    // Datum klein oben links, damit es Ereignis-Banner nicht überdeckt
-    const yz = Math.round(Math.min(W/14, 36));
-    ctx.textAlign = "left"; ctx.font = `900 ${yz}px ${FONT_D}`; ctx.lineWidth = 5; ctx.strokeStyle = C.ink; ctx.fillStyle = "#7cc4ff";
-    ctx.strokeText(String(Math.floor(mo/12)), 16, 16 + yz); ctx.fillText(String(Math.floor(mo/12)), 16, 16 + yz);
-    ctx.font = `900 ${Math.round(yz*.4)}px ${FONT_D}`; ctx.lineWidth = 3; ctx.fillStyle = "#ffffff";
-    ctx.strokeText(MONTHS[mo % 12].toUpperCase(), 18, 22 + yz + yz*.45); ctx.fillText(MONTHS[mo % 12].toUpperCase(), 18, 22 + yz + yz*.45);
-    const prog = clamp((zt.m - ym(HIST[0][0]))/(zt.end - ym(HIST[0][0])), 0, 1);
-    ctx.fillStyle = "rgba(255,255,255,.2)"; ctx.fillRect(0, 0, W, 4); ctx.fillStyle = "#7cc4ff"; ctx.fillRect(0, 0, W*prog, 4);
-  }
   if (t < introUntil){
     const a = Math.min(1, (introUntil - t)/.6, (t - (introUntil - 5.5))/.4);
     ctx.globalAlpha = Math.max(0, a);
@@ -2983,7 +2888,7 @@ function hud(){
     } else pe.textContent = money(price);
     const d = price - startP;
     const el = $("chg");
-    el.textContent = isTest() ? (mode === "zeit" && zt ? `Zeitreise · ${MONTHS[Math.floor(zt.m) % 12]} ${Math.floor(Math.floor(zt.m)/12)}` : mode === "test" ? "Testmodus · live: " + money(livePrice) : "Testkurs · nicht echt") : (d >= 0 ? "+" : "−") + usd(Math.abs(d)) + " seit du zuschaust";
+    el.textContent = isTest() ? (mode === "test" ? "Testmodus · live: " + money(livePrice) : "Testkurs · nicht echt") : (d >= 0 ? "+" : "−") + usd(Math.abs(d)) + " seit du zuschaust";
     el.className = isTest() ? "" : (d >= 0 ? "up" : "down");
     if (!isTest() && day24){
       const ch = (price/day24.open - 1)*100;
@@ -2992,7 +2897,7 @@ function hud(){
       el.title = (d >= 0 ? "+" : "−") + usd(Math.abs(d)) + " seit du zuschaust";
     }
     const ae = $("ath");
-    if (ath && mode !== "zeit"){
+    if (ath){
       const gap = (ath/price - 1)*100;
       ae.textContent = gap <= .05 ? "Allzeithoch!" : `Rekord ${money(ath)} · noch ${gap.toLocaleString("de-DE", {maximumFractionDigits: gap < 10 ? 1 : 0})} %`;
       ae.hidden = false;
@@ -3007,7 +2912,7 @@ function hud(){
     const hint = $("hint");
     if (isTest() && !dragged) hint.textContent = "Zieh mich nach links oder rechts";
     else hint.textContent = "1 Figur = " + usdK(unitV) + " Volumen · letzte 3 Min.";
-    hint.hidden = mode === "zeit";
+    hint.hidden = false;
     $("wNote").textContent = isTest() ? "Tippe oder zieh über die Karte, um in eine Welt zu springen." : "Tippe auf eine Welt, um in den Testmodus zu springen. Entdeckt werden Welten nur live.";
   }
   $("mfill").style.width = Math.round(50 + pressure*50) + "%";
