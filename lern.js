@@ -588,6 +588,9 @@ const Lern = (() => {
     try { if (navigator.vibrate && VIB[k]) navigator.vibrate(VIB[k]); } catch(e){}
     try { AC = AC || new (window.AudioContext || window.webkitAudioContext)(); if (AC.state === "suspended") AC.resume(); (SFX[k] || (() => {}))(); } catch(e){}
   }
+  // Stand der fachlichen Prüfung unter jeder Quellenangabe (ein Ort zum Aktualisieren)
+  const STAND = "November 2026";
+  function stand(){ document.querySelectorAll("details.foot > p").forEach(p => p.insertAdjacentHTML("beforeend", `<br><span class="muted" style="font-size:12px">Stand der fachlichen Prüfung: ${STAND}. Vereinfachungen für Einsteiger sind bewusst gewählt, Details in den Quellen.</span>`)); }
   function sndBtn(){
     const top = document.querySelector(".top"); if (!top || top.querySelector(".snd")) return;
     const lx = top.querySelector('a[href*="lexikon"]'); if (lx && !lx.querySelector(".tx")) lx.innerHTML = lx.innerHTML.replace(/^(\S+)\s+(.+)$/, '$1<span class="tx"> $2</span>');
@@ -630,7 +633,7 @@ const Lern = (() => {
   }
   const seg = location.pathname.split("/").filter(Boolean), last = seg[seg.length - 1], here = PATH.some(([id]) => id === last) || proOf(last) >= 0 ? last : "";
   function init(){
-    badge(); sndBtn(); intro(); glossify(); reveal(); guide(); setTimeout(titles, 1500);
+    badge(); sndBtn(); intro(); stand(); glossify(); reveal(); guide(); setTimeout(titles, 1500);
     if (here && CARD[here]){ const h = document.querySelector("h1"); if (h && !h.previousElementSibling){ const i = document.createElement("span"); i.className = "wico"; i.setAttribute("aria-hidden", "true"); i.innerHTML = art(CARD[here]); h.before(i);
       const pk = proOf(here), k = pk >= 0 ? pk : chapterOf(here), c = CHAPTERS[k], p = document.createElement("p"); p.className = "chap"; p.innerHTML = pk >= 0 ? `🔬 Profi-Pfad · Welt ${k + 1} · ${c[0]} ${c[1]} · Vertiefung ${PRO[k].indexOf(here) + 1} von ${PRO[k].length}` : `Welt ${k + 1} · ${c[0]} ${c[1]} · Level ${k + 1}-${c[3].indexOf(here) + 1} von ${c[3].length}`; i.after(p); } }
   }

@@ -76,7 +76,7 @@
   <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
 </div>
 
-<script src="../lern.js?v=31"></script>
+<script src="../lern.js?v=32"></script>
 <script>
 /* =====================================================================
    BITCOIN IN 5 MINUTEN – Lernwelt von Satsland
@@ -116,7 +116,7 @@ $("match").onclick = e => { const b = e.target.closest("button"); if (!b || b.cl
   else { err++; b.classList.remove("no"); void b.offsetWidth; b.classList.add("no"); } };
 match();
 
-const QUIZ = [["Wer hat eine Kopie der Bitcoin-Blockchain?", ["Nur Satoshi", "Tausende Nodes auf der ganzen Welt", "Eine Bank in der Schweiz", "Niemand"], 1, "Jeder kann eine Node betreiben. Tausende tun es und prüfen jede Zahlung selbst."], ["Wie oft wird im Schnitt ein neuer Block angehängt?", ["Jede Sekunde", "Etwa alle 10 Minuten", "Einmal im Jahr", "Nie"], 1, "Im Schnitt alle 10 Minuten, dafür sorgt die Difficulty-Anpassung."], ["Was beweist, dass dir Bitcoin gehören?", ["Dein Name im Kassenbuch", "Dein privater Schlüssel, mit dem du unterschreiben kannst", "Dein Personalausweis", "Ein Vertrag"], 1, "Bitcoin kennt keine Namen. Wer den Schlüssel hat, kann ausgeben."]];
+const QUIZ = [["Wer hat eine Kopie der Bitcoin-Blockchain?", ["Nur Satoshi", "Tausende Nodes auf der ganzen Welt", "Eine Bank in der Schweiz", "Niemand"], 1, "Jeder kann eine Node betreiben. Tausende tun es und prüfen jede Zahlung selbst."], ["Wie oft wird im Schnitt ein neuer Block angehängt?", ["Jede Sekunde", "Etwa alle 10 Minuten", "Einmal im Jahr", "Nie"], 1, "Im Schnitt alle 10 Minuten, dafür sorgt die Difficulty-Anpassung."], ["Was beweist, dass dir Bitcoin gehören?", ["Dein Name im Kassenbuch", "Dein privater Schlüssel, mit dem du unterschreiben kannst", "Dein Personalausweis", "Ein Vertrag"], 1, "Bitcoin kennt keine Namen. Wer den Schlüssel hat, kann ausgeben. (Bei Multisig-Wallets braucht es mehrere Schlüssel.)"]];
 Lern.quiz($("quiz"), "start", QUIZ, "../"); Lern.visit("start"); Lern.renderNext("start", "../");
 })();
 </script>
