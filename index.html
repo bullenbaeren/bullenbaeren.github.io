@@ -14,7 +14,7 @@
 <meta property="og:description" content="Bitcoin spielerisch verstehen, mit echten Live-Daten.">
 <meta property="og:image" content="https://satsland.github.io/og.png">
 <meta property="og:url" content="https://satsland.github.io/">
-<link rel="stylesheet" href="lern.css?v=35">
+<link rel="stylesheet" href="lern.css?v=36">
 <style>
 /* Übersicht der Lernwelten: gleiche Farben und Schriften wie das Spiel. */
 .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
@@ -214,7 +214,7 @@ details.fold[open] > summary{margin-bottom:12px}
   <div class="card" id="inst" hidden><h2 style="margin:0 0 4px">📱 Satsland als App</h2><p class="muted" id="instT" style="margin:0 0 8px;font-size:14px">Mit einem Symbol auf dem Startbildschirm bist du mit einem Tipp wieder da. Ohne App-Store, nichts wird hochgeladen.</p><div class="acts"><button class="btn" id="instB" type="button">📲 Installieren</button></div></div>
   <p class="foot">Unterhaltung und Lernen, keine Anlageberatung. Keine Cookies, kein Tracking. <a href="#" id="guideOn" style="color:inherit">Satoshi zurückholen</a> · <a href="#" id="introOn" style="color:inherit">Einführung ansehen</a> · <a href="#" id="calmOn" style="color:inherit">Weniger Bewegung</a><br><a href="ueber/" style="color:inherit">Über Satsland</a> · <a href="datenschutz/" style="color:inherit">Datenschutz</a></p>
 </div>
-<script src="lern.js?v=35"></script>
+<script src="lern.js?v=36"></script>
 <script>
 // Lernpfad: Fortschritt aus dem eigenen Browser, Häkchen an den Karten, Empfehlung als Nächstes
 (() => {
@@ -288,7 +288,7 @@ details.fold[open] > summary{margin-bottom:12px}
   document.getElementById("guideOn").onclick = e => { e.preventDefault(); try { localStorage.removeItem(Lern.GK); } catch(x){} location.reload(); };
   document.getElementById("album").innerHTML = Lern.BOSSES.map((b, k) => Lern.bossCard(k)).join("") + Lern.finalCard();
   { const w5 = Lern.bossWon(), ready5 = Lern.BOSSES.every((x, k) => w5[k]);
-    document.getElementById("album").insertAdjacentHTML("afterend", `<button class="bossbtn ${w5.f ? "won" : ""}" id="finalBtn" type="button" ${ready5 ? "" : "disabled"}><span class="bi">${Lern.art("satoshi")}</span><span>${w5.f ? "👑 Satoshis Rätsel gelöst" : "★ Endboss: Satoshis Rätsel"}<small>${ready5 ? "10 Fragen aus allen Welten, 12 Sekunden je Frage" : "🔒 Besiege erst alle 6 Kapitel-Bosse"}</small></span></button>`);
+    document.getElementById("album").insertAdjacentHTML("afterend", `<button class="bossbtn ${w5.f ? "won" : ""}" id="finalBtn" type="button" ${ready5 ? "" : "disabled"}><span class="bi">${Lern.art("satoshi")}</span><span>${w5.f ? "👑 Satoshis Rätsel gelöst" : "★ Endboss: Satoshis Rätsel"}<small>${ready5 ? "10 Fragen aus allen Welten, 12 Sekunden je Frage" : "🔒 Besiege erst alle 6 Welt-Bosse"}</small></span></button>`);
     document.getElementById("finalBtn").onclick = () => Lern.boss("f"); }
   document.getElementById("albN").textContent = `${Lern.BOSSES.filter((x, k) => Lern.bossWon()[k]).length} von ${Lern.BOSSES.length}${Lern.bossWon().f ? " · 👑" : ""}`;
   // Klappbereiche: gemerkter Zustand, sonst sinnvoller Standard
