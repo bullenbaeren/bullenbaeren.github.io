@@ -324,3 +324,7 @@ html.calm .twk,html.calm .shoot,html.calm .fly2,html.calm .confetti{display:none
 
 /* Einzelner Lern-Kasten nimmt die ganze Breite */
 .learn > div:only-child{grid-column:1/-1}
+
+/* Einstufungstest */
+.pbar{height:6px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden;margin:0 0 10px} .pbar i{display:block;height:100%;background:linear-gradient(90deg,#ffb04a,#f7931a);transition:width .3s}
+.opts .idk{opacity:.75;font-weight:700}

@@ -14,7 +14,7 @@
 <meta property="og:description" content="Bitcoin spielerisch verstehen, mit echten Live-Daten.">
 <meta property="og:image" content="https://satsland.github.io/og.png">
 <meta property="og:url" content="https://satsland.github.io/">
-<link rel="stylesheet" href="lern.css?v=36">
+<link rel="stylesheet" href="lern.css?v=39">
 <style>
 /* Übersicht der Lernwelten: gleiche Farben und Schriften wie das Spiel. */
 .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
@@ -132,6 +132,7 @@ details.fold[open] > summary{margin-bottom:12px}
   <p class="alt" id="alt" hidden></p>
   <details class="card daily fold" data-k="daily"><summary><h2 id="dly">🔥 Tagesfrage</h2><span class="muted sm" id="dlyS"></span></summary><div id="daily"></div></details>
   <details class="card daily fold" data-k="rep"><summary><h2 id="rpH">🔁 Wiederholen</h2><span class="muted sm" id="rpS"></span></summary><div id="rep"></div></details>
+  <details class="card daily fold" data-k="place" id="plC"><summary><h2>🎯 Einstufungstest</h2><span class="muted sm">Schon Vorwissen?</span></summary><div id="place"><p class="muted" style="margin:0 0 10px">Du kennst dich schon etwas aus? Beantworte ein paar Fragen pro Welt. Was du schon weißt, überspringst du, die Bosse bleiben als Prüfung. Dauert 2–4 Minuten.</p><button class="btn" type="button" id="plGo">🎯 Test starten</button></div></details>
   <section class="card path" aria-labelledby="pth"><div class="ph"><h2 id="pth">🗺️ Lernpfad</h2><div class="vsw" id="vsw" role="group" aria-label="Ansicht wählen"><button type="button" data-v="map">🗺️ Pfad</button><button type="button" data-v="list">📋 Liste</button></div></div>
     <p class="muted pinfo" id="pathCount"></p>
     <div class="next" id="next" hidden></div>
@@ -214,7 +215,7 @@ details.fold[open] > summary{margin-bottom:12px}
   <div class="card" id="inst" hidden><h2 style="margin:0 0 4px">📱 Satsland als App</h2><p class="muted" id="instT" style="margin:0 0 8px;font-size:14px">Mit einem Symbol auf dem Startbildschirm bist du mit einem Tipp wieder da. Ohne App-Store, nichts wird hochgeladen.</p><div class="acts"><button class="btn" id="instB" type="button">📲 Installieren</button></div></div>
   <p class="foot">Unterhaltung und Lernen, keine Anlageberatung. Keine Cookies, kein Tracking. <a href="#" id="guideOn" style="color:inherit">Satoshi zurückholen</a> · <a href="#" id="introOn" style="color:inherit">Einführung ansehen</a> · <a href="#" id="calmOn" style="color:inherit">Weniger Bewegung</a><br><a href="ueber/" style="color:inherit">Über Satsland</a> · <a href="datenschutz/" style="color:inherit">Datenschutz</a></p>
 </div>
-<script src="lern.js?v=38"></script>
+<script src="lern.js?v=39"></script>
 <script>
 // Lernpfad: Fortschritt aus dem eigenen Browser, Häkchen an den Karten, Empfehlung als Nächstes
 (() => {
@@ -267,6 +268,9 @@ details.fold[open] > summary{margin-bottom:12px}
     if (!app){ addEventListener("beforeinstallprompt", e => { e.preventDefault(); ev = e; box.hidden = false; });
       if (/iphone|ipad|ipod/i.test(navigator.userAgent)){ box.hidden = false; B.hidden = true; document.getElementById("instT").innerHTML += " <b>So geht's auf dem iPhone:</b> unten auf <b>Teilen</b> (□↑) tippen, dann <b>„Zum Home-Bildschirm“</b>."; }
       B.onclick = async () => { if (!ev) return; ev.prompt(); const r = await ev.userChoice; if (r.outcome === "accepted"){ box.hidden = true; Lern.toast("📱 Satsland ist jetzt auf deinem Startbildschirm!"); } ev = null; }; } }
+  // Einstufungstest: nur für Einsteiger mit wenig Fortschritt sichtbar
+  { const C = document.getElementById("plC"); if (Lern.count(Lern.load()) >= 8) C.remove();
+    else document.getElementById("plGo").onclick = () => Lern.placement(document.getElementById("place"), (n, took) => { if (took) setTimeout(() => location.reload(), 1600); }); }
   Lern.daily(document.getElementById("daily"));
   Lern.review(document.getElementById("rep"), n => { document.getElementById("rpS").textContent = n ? n + " fällig" : ""; });
   // Einführung beim allerersten Besuch (3 kurze Karten)
@@ -278,8 +282,9 @@ details.fold[open] > summary{margin-bottom:12px}
     const end = go => { try { localStorage.setItem("satsland-intro", "1"); } catch(e){} o.remove(); if (go){ const pc = document.querySelector(".card.path"); if (pc){ pc.scrollIntoView({behavior: "smooth", block: "start"}); pc.classList.add("hl"); setTimeout(() => pc.classList.remove("hl"), 2600); } Lern.say && setTimeout(() => Lern.say("Das ist dein Lernpfad. Tipp auf START, dann geht's mit Level 1-1 los!", 6000), 900); } };
     const pic = k => k === "icon" ? `<img src="icon.svg" alt="" width="96" height="96">` : k === "map" ? `<span class="ib">${Lern.art("go")}</span>` : `<span class="ib">${Lern.art("atom")}</span>`;
     const show = () => { const [k, t, x] = IT[i];
-      o.innerHTML = `<div class="ibox"><button type="button" class="isk">Überspringen</button><div class="ipic">${pic(k)}</div><h2>${t}</h2><p>${x}</p><div class="idots">${IT.map((_, j) => `<i class="${j === i ? "on" : ""}"></i>`).join("")}</div><button type="button" class="btn ign">${i < IT.length - 1 ? "Weiter →" : "🗺️ Zum Lernpfad"}</button></div>`;
-      o.querySelector(".isk").onclick = () => end(false); o.querySelector(".ign").onclick = () => { if (i < IT.length - 1){ i++; show(); } else end(true); }; o.querySelector(".ign").focus(); };
+      o.innerHTML = `<div class="ibox"><button type="button" class="isk">Überspringen</button><div class="ipic">${pic(k)}</div><h2>${t}</h2><p>${x}</p><div class="idots">${IT.map((_, j) => `<i class="${j === i ? "on" : ""}"></i>`).join("")}</div><button type="button" class="btn ign">${i < IT.length - 1 ? "Weiter →" : "🗺️ Zum Lernpfad"}</button>${i === IT.length - 1 && document.getElementById("plC") ? '<button type="button" class="btn ghost ipl" style="width:100%;margin-top:8px">🎯 Ich kenne mich schon aus</button>' : ""}</div>`;
+      o.querySelector(".isk").onclick = () => end(false); o.querySelector(".ign").onclick = () => { if (i < IT.length - 1){ i++; show(); } else end(true); }; const pl = o.querySelector(".ipl"); if (pl) pl.onclick = () => { end(false); const C = document.getElementById("plC"); C.open = true; C.scrollIntoView({behavior: "smooth", block: "start"}); document.getElementById("plGo").click(); };
+      o.querySelector(".ign").focus(); };
     show();
   }
   { let seen = false; try { seen = localStorage.getItem("satsland-intro") === "1"; } catch(e){} if (!seen && !Lern.count(s)) intro(); }
