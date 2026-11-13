@@ -603,26 +603,6 @@ const Lern = (() => {
   // „Weniger Bewegung“ ist ein eigener Schalter (Fußzeile der Startseite): Firmen-PCs melden die Systemeinstellung oft, obwohl Animationen gewünscht sind
   const CK = "satsland-calm", calm = (() => { try { return localStorage.getItem(CK) === "1"; } catch(e){ return false; } })();
   if (calm) document.documentElement.classList.add("calm");
-  // Heller Modus: eigener Schalter, gilt für alle Seiten
-  const LK = "satsland-theme", light = (() => { try { return localStorage.getItem(LK) === "light"; } catch(e){ return false; } })();
-  if (light){ document.documentElement.classList.add("light"); const m = document.querySelector('meta[name="theme-color"]'); if (m) m.content = "#f4f1e8"; }
-  // Kontrast-Wächter im hellen Modus: Viele Seiten haben eigene, für Dunkel gedachte Farben.
-  // Prüft Text gegen den tatsächlich sichtbaren Hintergrund und dunkelt bzw. hellt ihn bei zu wenig Kontrast auf (Ziel ≥ 4,5:1).
-  function contrastFix(root){
-    const rgba = c => { const m = c.match(/[\d.]+/g); return m ? m.map(Number).concat([1]).slice(0, 4) : null; };
-    const lum = ([r, g, b]) => [r, g, b].map(x => (x /= 255) <= .03928 ? x/12.92 : ((x + .055)/1.055) ** 2.4).reduce((s, x, i) => s + x*[.2126, .7152, .0722][i], 0);
-    const bgOf = e => { const L = []; for (; e && e !== document.documentElement; e = e.parentElement){ const cs = getComputedStyle(e);
-        if (cs.backgroundImage !== "none" && !/radial/.test(cs.backgroundImage)) return null; const c = rgba(cs.backgroundColor); if (c && c[3] > 0){ L.push(c); if (c[3] >= .99) break; } }
-      let out = [244, 241, 232]; for (let i = L.length - 1; i >= 0; i--){ const [r, g, b, a] = L[i]; out = [r*a + out[0]*(1 - a), g*a + out[1]*(1 - a), b*a + out[2]*(1 - a)]; } return out; };
-    (root || document).querySelectorAll(".wrap *").forEach(e => {
-      if (e.closest("svg,canvas,.boss,.arena,.lvdone,.mapw") || !e.offsetParent || ![...e.childNodes].some(n => n.nodeType === 3 && n.textContent.trim())) return;
-      const f = rgba(getComputedStyle(e).color), bg = bgOf(e); if (!f || !bg) return;
-      const a = lum(f), b = lum(bg), r = (Math.max(a, b) + .05)/(Math.min(a, b) + .05);
-      if (r < 4.5) e.style.setProperty("color", b > .35 ? "#151a3a" : "#ffffff", "important");
-    });
-  }
-  if (light) addEventListener("load", () => { contrastFix(); let t = 0; new MutationObserver(() => { if (!t) t = setTimeout(() => { t = 0; contrastFix(); }, 250); }).observe(document.body, {childList: true, subtree: true}); });
-  function lightToggle(){ try { localStorage.setItem(LK, light ? "dark" : "light"); } catch(e){} location.reload(); }
   function calmToggle(){ try { localStorage.setItem(CK, calm ? "0" : "1"); } catch(e){} location.reload(); }
   function confetti(){
     if (calm) return;
@@ -731,5 +711,5 @@ const Lern = (() => {
   }
 
   init();
-  return {sfx, review, repDue, shareCard, calm, calmToggle, light, lightToggle, PRO, proOf, TITLES, syncExport, syncImport, TITLES_LIST, titles, finalCard, GLOSSAR, nextStep, PATH, CHAPTERS, ART, art, BOSSES, boss, bossWon, bossCard, CARD, daily, streak, say, GK, chapterOf, LEVELS, level, count, load, done, visit, quiz, renderNext, nextAfter, sha256, confetti, toast};
+  return {sfx, review, repDue, shareCard, calm, calmToggle, PRO, proOf, TITLES, syncExport, syncImport, TITLES_LIST, titles, finalCard, GLOSSAR, nextStep, PATH, CHAPTERS, ART, art, BOSSES, boss, bossWon, bossCard, CARD, daily, streak, say, GK, chapterOf, LEVELS, level, count, load, done, visit, quiz, renderNext, nextAfter, sha256, confetti, toast};
 })();

@@ -14,7 +14,7 @@
 <meta property="og:description" content="Bitcoin spielerisch verstehen, mit echten Live-Daten.">
 <meta property="og:image" content="https://satsland.github.io/og.png">
 <meta property="og:url" content="https://satsland.github.io/">
-<link rel="stylesheet" href="lern.css?v=34">
+<link rel="stylesheet" href="lern.css?v=35">
 <style>
 /* Übersicht der Lernwelten: gleiche Farben und Schriften wie das Spiel. */
 .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
@@ -212,9 +212,9 @@ details.fold[open] > summary{margin-bottom:12px}
     <p class="msg2" id="syM"></p>
   </details>
   <div class="card" id="inst" hidden><h2 style="margin:0 0 4px">📱 Satsland als App</h2><p class="muted" id="instT" style="margin:0 0 8px;font-size:14px">Mit einem Symbol auf dem Startbildschirm bist du mit einem Tipp wieder da. Ohne App-Store, nichts wird hochgeladen.</p><div class="acts"><button class="btn" id="instB" type="button">📲 Installieren</button></div></div>
-  <p class="foot">Unterhaltung und Lernen, keine Anlageberatung. Keine Cookies, kein Tracking. <a href="#" id="guideOn" style="color:inherit">Satoshi zurückholen</a> · <a href="#" id="introOn" style="color:inherit">Einführung ansehen</a> · <a href="#" id="calmOn" style="color:inherit">Weniger Bewegung</a> · <a href="#" id="lightOn" style="color:inherit">Heller Modus</a><br><a href="ueber/" style="color:inherit">Über Satsland</a> · <a href="datenschutz/" style="color:inherit">Datenschutz</a></p>
+  <p class="foot">Unterhaltung und Lernen, keine Anlageberatung. Keine Cookies, kein Tracking. <a href="#" id="guideOn" style="color:inherit">Satoshi zurückholen</a> · <a href="#" id="introOn" style="color:inherit">Einführung ansehen</a> · <a href="#" id="calmOn" style="color:inherit">Weniger Bewegung</a><br><a href="ueber/" style="color:inherit">Über Satsland</a> · <a href="datenschutz/" style="color:inherit">Datenschutz</a></p>
 </div>
-<script src="lern.js?v=34"></script>
+<script src="lern.js?v=35"></script>
 <script>
 // Lernpfad: Fortschritt aus dem eigenen Browser, Häkchen an den Karten, Empfehlung als Nächstes
 (() => {
@@ -284,7 +284,6 @@ details.fold[open] > summary{margin-bottom:12px}
   }
   { let seen = false; try { seen = localStorage.getItem("satsland-intro") === "1"; } catch(e){} if (!seen && !Lern.count(s)) intro(); }
   document.getElementById("introOn").onclick = e => { e.preventDefault(); intro(); };
-  { const l = document.getElementById("lightOn"); l.textContent = Lern.light ? "Dunkler Modus" : "Heller Modus"; l.onclick = e => { e.preventDefault(); Lern.lightToggle(); }; }
   { const c = document.getElementById("calmOn"); c.textContent = Lern.calm ? "Bewegung wieder an" : "Weniger Bewegung"; c.onclick = e => { e.preventDefault(); Lern.calmToggle(); }; }
   document.getElementById("guideOn").onclick = e => { e.preventDefault(); try { localStorage.removeItem(Lern.GK); } catch(x){} location.reload(); };
   document.getElementById("album").innerHTML = Lern.BOSSES.map((b, k) => Lern.bossCard(k)).join("") + Lern.finalCard();
