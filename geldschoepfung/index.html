@@ -102,15 +102,37 @@ const X = i => 34 + i/(D.length - 1)*436, Y = v => 150 - v/23.5*128, nf = v => v
 const TXT = {e: `Von etwa <b>4,5 Billionen €</b> (1999) auf etwa <b>17,3 Billionen €</b> (Januar 2026), also fast das <b>Vierfache</b>.`,
   d: `Von etwa <b>4,6 Billionen $</b> (1999) auf etwa <b>22,4 Billionen $</b> (Anfang 2026), also fast das <b>Fünffache</b>. Allein 2020 kamen rund 4 Billionen dazu.`,
   b: `Beide wachsen und wachsen: Euro <b>fast ×4</b>, Dollar <b>fast ×5</b>. Bei Bitcoin steht die Höchstmenge fest: <b>21 Millionen</b>.`};
+// Ein festes Diagramm: Balken „morphen“ beim Wechsel (Höhe, Breite, Position, Farbe)
+const NS = "http://www.w3.org/2000/svg", BARS = [];
+$("m3").innerHTML = `<div class="m3t" role="group" aria-label="Währung wählen"><button type="button" data-m="e">€ Euro</button><button type="button" data-m="d">$ Dollar</button><button type="button" data-m="b">Beide</button></div>
+  <div id="m3v"><svg viewBox="0 0 500 175" aria-label="Geldmenge im Zeitverlauf"><text id="m3u" x="4" y="14" font-size="11" fill="#9aa2d6" font-family="Arial"></text>
+  <g id="m3l" style="transition:opacity .4s"><rect x="300" y="4" width="12" height="12" rx="3" fill="#f7931a"/><text x="317" y="14" font-size="11" fill="#dfe3ff" font-family="Arial">Euro (M3)</text><rect x="390" y="4" width="12" height="12" rx="3" fill="#34d982"/><text x="407" y="14" font-size="11" fill="#dfe3ff" font-family="Arial">Dollar (M2)</text></g>
+  <g id="m3b"></g></svg><p class="note" id="m3n" style="transition:opacity .25s"></p></div>`;
+D.forEach(([y], i) => { const g = $("m3b"), mk = (t, at) => { const e = document.createElementNS(NS, t); for (const k in at) e.setAttribute(k, at[k]); g.appendChild(e); return e; };
+  BARS.push({a: mk("rect", {rx: 4, fill: "#f7931a", stroke: "#0d1230", "stroke-width": 2}), b: mk("rect", {rx: 4, fill: "#34d982", stroke: "#0d1230", "stroke-width": 2}),
+    t: mk("text", {"font-size": 12, "font-weight": 800, "text-anchor": "middle", fill: "#fff", "font-family": "Arial"}), cur: null});
+  mk("text", {x: X(i), y: 168, "font-size": 11, "text-anchor": "middle", fill: "#9aa2d6", "font-family": "Arial"}).textContent = y; });
+// Zielzustand je Ansicht: [Versatz, Breite, Wert, Deckkraft] für Euro- (a) und Dollar-Balken (b), dazu Beschriftung
+const goal = (mode, e, d) => mode === "e" ? {a: [0, 32, e, 1], b: [0, 32, e, 0], v: e, tv: 1}
+  : mode === "d" ? {a: [0, 32, d, 0], b: [0, 32, d, 1], v: d, tv: 1} : {a: [-9, 17, e, 1], b: [9, 17, d, 1], v: Math.max(e, d), tv: 0};
+const lerp = (p, q, k) => p.map((x, j) => x + (q[j] - x)*k), ease = k => k < .5 ? 2*k*k : 1 - (-2*k + 2)**2/2;
+let anim = 0;
 function m3(mode){
-  const bar = (i, v, dx, w, col, k) => `<rect x="${X(i) + dx - w/2}" y="${Y(v)}" width="${w}" height="${150 - Y(v)}" rx="4" fill="${col}" stroke="#0d1230" stroke-width="2"><animate attributeName="height" from="0" to="${150 - Y(v)}" dur=".7s" begin="${i*.08}s" fill="freeze"/><animate attributeName="y" from="150" to="${Y(v)}" dur=".7s" begin="${i*.08}s" fill="freeze"/></rect>` + (mode === "b" ? "" : `<text x="${X(i)}" y="${Y(v) - 6}" font-size="12" font-weight="800" text-anchor="middle" fill="#fff" font-family="Arial">${nf(v)}</text>`);
-  const g = D.map(([y, e, d], i) => (mode === "e" ? bar(i, e, 0, 32, "#f7931a") : mode === "d" ? bar(i, d, 0, 32, "#34d982") : bar(i, e, -9, 17, "#f7931a") + bar(i, d, 9, 17, "#34d982"))
-    + `<text x="${X(i)}" y="168" font-size="11" text-anchor="middle" fill="#9aa2d6" font-family="Arial">${y}</text>`).join("");
-  const leg = mode === "b" ? `<rect x="300" y="4" width="12" height="12" rx="3" fill="#f7931a"/><text x="317" y="14" font-size="11" fill="#dfe3ff" font-family="Arial">Euro (M3)</text><rect x="390" y="4" width="12" height="12" rx="3" fill="#34d982"/><text x="407" y="14" font-size="11" fill="#dfe3ff" font-family="Arial">Dollar (M2)</text>` : "";
-  $("m3v").innerHTML = `<svg viewBox="0 0 500 175" aria-label="Geldmenge im Zeitverlauf"><text x="4" y="14" font-size="11" fill="#9aa2d6" font-family="Arial">${mode === "e" ? "Billionen €" : mode === "d" ? "Billionen $" : "Billionen (€ bzw. $)"}</text>${leg}${g}</svg><p class="note">${TXT[mode]}</p>`;
   document.querySelectorAll("#m3 [data-m]").forEach(b => b.setAttribute("aria-pressed", b.dataset.m === mode));
+  $("m3u").textContent = mode === "e" ? "Billionen €" : mode === "d" ? "Billionen $" : "Billionen (€ bzw. $)";
+  $("m3l").style.opacity = mode === "b" ? 1 : 0;
+  const n = $("m3n"); n.style.opacity = 0; setTimeout(() => { n.innerHTML = TXT[mode]; n.style.opacity = 1; }, 250);
+  const from = BARS.map((B, i) => B.cur || {a: [0, 32, 0, 1], b: [0, 32, 0, 0], v: 0, tv: 1}), to = D.map(([, e, d]) => goal(mode, e, d)), t0 = performance.now(), my = ++anim;
+  const set = (el, i, [dx, w, v, o]) => { el.setAttribute("x", X(i) + dx - w/2); el.setAttribute("width", w); el.setAttribute("y", Y(v)); el.setAttribute("height", 150 - Y(v)); el.setAttribute("opacity", o); };
+  const step = now => { if (my !== anim) return;
+    BARS.forEach((B, i) => { const k = ease(Math.min(1, Math.max(0, (now - t0 - (from[i].v ? 0 : i*60))/650))), f = from[i], g = to[i];
+      const c = {a: lerp(f.a, g.a, k), b: lerp(f.b, g.b, k), v: f.v + (g.v - f.v)*k, tv: f.tv + (g.tv - f.tv)*k}; B.cur = c;
+      set(B.a, i, c.a); set(B.b, i, c.b);
+      B.t.setAttribute("x", X(i)); B.t.setAttribute("y", Y(Math.max(c.a[2], c.b[2])) - 6); B.t.setAttribute("opacity", c.tv);
+      B.t.textContent = nf(Math.round(c.v*10)/10); });
+    if (now - t0 < 650 + D.length*60) requestAnimationFrame(step); };
+  requestAnimationFrame(step);
 }
-$("m3").innerHTML = `<div class="m3t" role="group" aria-label="Währung wählen"><button type="button" data-m="e">€ Euro</button><button type="button" data-m="d">$ Dollar</button><button type="button" data-m="b">Beide</button></div><div id="m3v"></div>`;
 $("m3").onclick = e => { const b = e.target.closest("[data-m]"); if (b) m3(b.dataset.m); };
 m3("e");
 
