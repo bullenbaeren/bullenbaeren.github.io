@@ -310,3 +310,6 @@ h2{scroll-margin-top:12px}
 *{-webkit-tap-highlight-color:transparent}
 svg a:focus:not(:focus-visible),svg [role=button]:focus:not(:focus-visible){outline:none}
 svg a:focus-visible,svg [role=button]:focus-visible{outline:3px solid #ffc94d;outline-offset:2px}
+
+/* Hinweis auf ein Thema, das später im Pfad kommt (bewusst kein Link) */
+.later{display:inline-block;font-size:.8em;font-weight:800;color:#9aa2d6;background:rgba(255,255,255,.07);border-radius:999px;padding:0 7px;white-space:nowrap}
