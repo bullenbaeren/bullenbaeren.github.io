@@ -213,7 +213,8 @@ details.fold[open] > summary{margin-bottom:12px}
     <p class="msg2" id="syM"></p>
   </details>
   <div class="card" id="inst" hidden><h2 style="margin:0 0 4px">📱 Satsland als App</h2><p class="muted" id="instT" style="margin:0 0 8px;font-size:14px">Mit einem Symbol auf dem Startbildschirm bist du mit einem Tipp wieder da. Ohne App-Store, nichts wird hochgeladen.</p><div class="acts"><button class="btn" id="instB" type="button">📲 Installieren</button></div></div>
-  <p class="foot">Unterhaltung und Lernen, keine Anlageberatung. Keine Cookies, kein Tracking. <a href="#" id="guideOn" style="color:inherit">Satoshi zurückholen</a> · <a href="#" id="introOn" style="color:inherit">Einführung ansehen</a> · <a href="#" id="calmOn" style="color:inherit">Weniger Bewegung</a><br><a href="ueber/" style="color:inherit">Über Satsland</a> · <a href="datenschutz/" style="color:inherit">Datenschutz</a></p>
+  <p class="foot">Unterhaltung und Lernen, keine Anlageberatung. Keine Cookies, kein Tracking. <a href="#" id="guideOn" style="color:inherit">Satoshi zurückholen</a> · <a href="#" id="introOn" style="color:inherit">Einführung ansehen</a> · <a href="#" id="calmOn" style="color:inherit">Weniger Bewegung</a><br><a href="ueber/" style="color:inherit">Über Satsland</a> · <a href="datenschutz/" style="color:inherit">Datenschutz</a> · <a href="#" id="rstOn" style="color:inherit">Fortschritt zurücksetzen</a></p>
+  <div class="card" id="rstBox" hidden><h2 style="margin:0 0 4px">🗑️ Fortschritt zurücksetzen?</h2><p class="muted" style="margin:0 0 10px;font-size:14px">Alle geschafften Level, Sterne, Bosse, Titel, die Serie und die Wiederholungsfragen werden auf diesem Gerät gelöscht. Einstellungen wie Ton bleiben. Tipp: Vorher unter „Fortschritt mitnehmen“ einen Code sichern.</p><div class="acts" style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" type="button" id="rstYes" style="background:linear-gradient(180deg,#ff7a8c,#e0405a);color:#fff">Ja, alles löschen</button><button class="btn ghost" type="button" id="rstNo">Abbrechen</button></div></div>
 </div>
 <script src="lern.js?v=39"></script>
 <script>
@@ -271,6 +272,11 @@ details.fold[open] > summary{margin-bottom:12px}
   // Einstufungstest: nur für Einsteiger mit wenig Fortschritt sichtbar
   { const C = document.getElementById("plC"); if (Lern.count(Lern.load()) >= 8) C.remove();
     else document.getElementById("plGo").onclick = () => Lern.placement(document.getElementById("place"), (n, took) => { if (took) setTimeout(() => location.reload(), 1600); }); }
+  // Fortschritt zurücksetzen (mit Rückfrage, ohne Browser-Dialog)
+  { const B = document.getElementById("rstBox");
+    document.getElementById("rstOn").onclick = e => { e.preventDefault(); B.hidden = false; B.scrollIntoView({behavior: "smooth", block: "center"}); };
+    document.getElementById("rstNo").onclick = () => { B.hidden = true; };
+    document.getElementById("rstYes").onclick = () => { ["bvb-lernen", "satsland-boss", "satsland-titles", "satsland-daily", "satsland-rep", "satsland-kritik", "satsland-fold", "satsland-intro"].forEach(k => { try { localStorage.removeItem(k); } catch(e){} }); location.replace(location.pathname); }; }
   Lern.daily(document.getElementById("daily"));
   Lern.review(document.getElementById("rep"), n => { document.getElementById("rpS").textContent = n ? n + " fällig" : ""; });
   // Einführung beim allerersten Besuch (3 kurze Karten)
