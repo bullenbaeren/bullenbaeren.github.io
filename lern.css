@@ -321,3 +321,18 @@ html.calm .twk,html.calm .shoot,html.calm .fly2,html.calm .confetti{display:none
 /* Kennzeichnung: bewusste Vereinfachung bzw. fachlich umstritten */
 .mk{display:inline-block;vertical-align:1px;font:800 11px var(--f-body);letter-spacing:.3px;text-transform:uppercase;padding:2px 8px;border-radius:999px;background:rgba(124,196,255,.15);color:#9fd4ff;border:1px solid rgba(124,196,255,.35)}
 .mk.mk2{background:rgba(255,201,77,.12);color:#ffc94d;border-color:rgba(255,201,77,.4)}
+
+/* ---------- Heller Modus (Schalter in der Fußzeile; Comic-Szenen und Spiele bleiben bewusst dunkel) ---------- */
+html.light{--night:#f4f1e8;--night2:#fffdf6;--card:#ffffff;--line:rgba(13,18,48,.14);--ink:#151a3a;--muted:#4f5677;--gold:#956000;--sky:#1f63c4;--bull:#11804e;--bear:#c42e48;--btc:#c96a00;--eur:#2f5fd8;color-scheme:light}
+html.light body{background:var(--night)}
+html.light .card{background:#fff;border:1px solid rgba(13,18,48,.12);box-shadow:0 10px 30px -22px rgba(13,18,48,.35)}
+html.light .btn{color:#2a1400}
+html.light .btn.ghost{background:rgba(13,18,48,.05);color:var(--ink);border-color:rgba(13,18,48,.18)}
+html.light .sync textarea,html.light input,html.light textarea,html.light select{background:#fff!important;color:var(--ink)!important;border-color:rgba(13,18,48,.2)!important}
+html.light .top .back{background:#fff;color:var(--ink);border-color:rgba(13,18,48,.15)}
+html.light ::selection{background:#ffd98a}
+html.light .later{color:var(--muted);background:rgba(13,18,48,.07)}
+html.light .mk{background:#e6f1ff;color:#1f4f9a;border-color:#9cc3f2} html.light .mk.mk2{background:#fff3d6;color:#7a4e00;border-color:#e8c46a}
+html.light .adr{background:#eef0f8!important;color:var(--ink)}
+/* Einzelner Lern-Kasten nimmt die ganze Breite */
+.learn > div:only-child{grid-column:1/-1}
