@@ -55,6 +55,7 @@
     <h2 id="h2s">2 · „Mal G“: die Einbahnstraße</h2>
     <p class="muted" style="margin:0">Bitcoin rechnet nicht mit Kommazahlen, sondern mit ganzen Zahlen „modulo“ einer Primzahl. Dann wird aus der Kurve eine <b>Punktwolke</b>. Hier eine Mini-Version mit nur <b>79 Punkten</b>. Starte bei <b>G</b> und addiere immer wieder G dazu: 2G, 3G, 4G …</p>
     <div class="plot nogl" id="toy"></div>
+    <p class="note" style="margin:8px 0 0"><b style="color:#34d982">G</b> = Startpunkt, für alle gleich · <b>k</b> = wie oft du springst, geheim (privater Schlüssel) · <b style="color:#ffc94d">k × G</b> = wo du landest, öffentlich (öffentlicher Schlüssel)</p>
     <div class="ctl"><label class="lbl2" for="kk">k (dein „privater Schlüssel“)</label><div class="row"><input id="kk" type="range" min="1" max="78" value="7"><b id="kV" class="num">7</b></div></div>
     <p class="note" id="toyN"></p>
     <h3 style="margin:16px 0 4px">Rätsel: Welches k führt zum roten Punkt?</h3>
@@ -132,9 +133,9 @@ function toy(){
   const T = target ? MUL[target] : null;
   $("toy").innerHTML = `<svg viewBox="0 0 360 360" role="img" aria-label="Punktwolke der Mini-Kurve">${PTS.map(q => `<circle cx="${tx(q[0])}" cy="${ty(q[1])}" r="2.6" fill="#3a4a8a"/>`).join("")}
     <polyline points="${path}" fill="none" stroke="#ffc94d" stroke-width="1.2" opacity=".55"/>
-    ${T ? `<circle cx="${tx(T[0])}" cy="${ty(T[1])}" r="8" fill="none" stroke="#ff5c73" stroke-width="3"/>` : ""}
-    <circle cx="${tx(Gp[0])}" cy="${ty(Gp[1])}" r="6" fill="#34d982" stroke="#0d1230" stroke-width="2"/><text x="${tx(Gp[0]) + 8}" y="${ty(Gp[1]) - 6}" fill="#34d982" font-size="13" font-weight="900">G</text>
-    <circle cx="${tx(MUL[k][0])}" cy="${ty(MUL[k][1])}" r="6" fill="#ffc94d" stroke="#0d1230" stroke-width="2"/><text x="${tx(MUL[k][0]) + 8}" y="${ty(MUL[k][1]) + 16}" fill="#ffc94d" font-size="13" font-weight="900">${k}G</text></svg>`;
+    ${T ? `<circle cx="${tx(T[0])}" cy="${ty(T[1])}" r="8" fill="none" stroke="#ff5c73" stroke-width="3"/><text x="${tx(T[0])}" y="${ty(T[1]) - 13}" text-anchor="middle" fill="#ff5c73" font-size="13" font-weight="900" stroke="#0d1230" stroke-width="4" paint-order="stroke">? × G</text>` : ""}
+    <circle cx="${tx(Gp[0])}" cy="${ty(Gp[1])}" r="6" fill="#34d982" stroke="#0d1230" stroke-width="2"/><text x="${tx(Gp[0]) - 4}" y="${ty(Gp[1]) - 11}" fill="#34d982" font-size="13" font-weight="900" stroke="#0d1230" stroke-width="4" paint-order="stroke">G · Start</text>
+    <circle cx="${tx(MUL[k][0])}" cy="${ty(MUL[k][1])}" r="6" fill="#ffc94d" stroke="#0d1230" stroke-width="2"/><text x="${tx(MUL[k][0]) + (MUL[k][0] > 60 ? -8 : 8)}" y="${ty(MUL[k][1]) + 18}" text-anchor="${MUL[k][0] > 60 ? "end" : "start"}" fill="#ffc94d" font-size="13" font-weight="900" stroke="#0d1230" stroke-width="4" paint-order="stroke">${k} × G</text></svg>`;
   $("toyN").innerHTML = `<b>${k} × G</b> = Punkt (${MUL[k][0]}, ${MUL[k][1]}). Die gelbe Spur zeigt alle Sprünge: kein Muster, keine Abkürzung. Vorwärts brauchst du nur ${Math.ceil(Math.log2(k + 1)) + 1} Rechenschritte (Verdoppeln und Addieren), rückwärts nur Raten.`;
 }
 $("kk").oninput = toy;
@@ -142,7 +143,7 @@ let tries = 0;
 function newTarget(){ target = 2 + Bit.rand(1)[0] % 76; tries = 0; $("gN").textContent = "Der rote Kreis ist k × G. Finde k zwischen 1 und 78."; $("gIn").value = ""; toy(); }
 $("gNew").onclick = newTarget;
 $("gGo").onclick = () => { const g = +$("gIn").value; if (!g) return; tries++; $("kk").value = g; toy();
-  $("gN").innerHTML = g === target ? `🎉 <b>Richtig nach ${tries} Versuchen!</b> Bei 79 Punkten geht das noch. Bei Bitcoin müsstest du bis zu <b>10<sup>77</sup></b> Mal raten.` : `Versuch ${tries}: Leider nicht. Die gelbe Spur zeigt, wo ${g} × G landet.`;
+  $("gN").innerHTML = g === target ? `🎉 <b>Richtig nach ${tries} ${tries === 1 ? "Versuch" : "Versuchen"}!</b> Bei 79 Punkten geht das noch. Bei Bitcoin müsstest du bis zu <b>10<sup>77</sup></b> Mal raten.` : `Versuch ${tries}: Leider nicht. Die gelbe Spur zeigt, wo ${g} × G landet.`;
   if (g === target){ Lern.confetti && Lern.confetti(); } };
 newTarget();
 // 3) Echte Kurve
