@@ -575,40 +575,6 @@ const Lern = (() => {
     return true;
   }
 
-  // ---------- Einstufungstest: Wer Vorwissen hat, überspringt Welten ----------
-  // Nur die Grundlagen (Welt 1 und 2) lassen sich überspringen. Ab Welt 3 (Sicherheit, Geld, Technik) lernt jeder selbst.
-  // Je Welt 3 Fragen, alle müssen sitzen. Übersprungene Level zählen als geschafft (1 Stern). Der Boss bleibt als Prüfung.
-  const PLACE = [
-    [["Wie entsteht der größte Teil des Geldes heute?", ["Durch Kredite der Geschäftsbanken", "Durch Gelddrucken der Zentralbank", "Durch neue Goldfunde"], 0],
-     ["Was bedeutet eine Inflation von 3 %?", ["Preise steigen im Schnitt um 3 % pro Jahr", "Löhne steigen um 3 %", "Die Geldmenge sinkt um 3 %"], 0],
-     ["Was war der Goldstandard?", ["Geld war in Gold eintauschbar", "Gold war als Zahlungsmittel verboten", "Banken zahlten Zinsen in Gold"], 0]],
-    [["Wie viele Bitcoin wird es höchstens geben?", ["21 Millionen", "100 Millionen", "Unbegrenzt viele"], 0],
-     ["Was passiert beim Halving?", ["Neue Bitcoin pro Block halbieren sich", "Der Preis halbiert sich", "Die Gebühren halbieren sich"], 0],
-     ["Welches Problem löst Bitcoin ohne Bank?", ["Dass digitales Geld doppelt ausgegeben wird", "Dass Geld schwankt", "Dass man Steuern zahlen muss"], 0]]];
-  function placement(box, onDone){
-    let w = 0, q = 0, right = 0; const passed = [];
-    const step = () => {
-      if (q === 3){ if (right === 3){ passed.push(w); w++; q = 0; right = 0; if (w < PLACE.length) return step(); } return result(); }
-      const [t, o, ok] = PLACE[w][q], order = o.map((x, i) => [Math.random(), i, x]).sort((a, b) => a[0] - b[0]);
-      box.innerHTML = `<p class="muted sm" style="margin:0 0 4px">Welt ${w + 1} · ${CHAPTERS[w][0]} ${CHAPTERS[w][1]} · Frage ${q + 1} von 3</p><div class="pbar"><i style="width:${(w*3 + q)/(PLACE.length*3)*100}%"></i></div><p class="dq">${t}</p>
-        <div class="opts">${order.map(([, i, x]) => `<button type="button" data-i="${i}">${x}</button>`).join("")}<button type="button" data-i="-1" class="idk">🤷 Weiß ich nicht</button></div>`;
-      box.querySelector(".opts").onclick = e => { const b = e.target.closest("button"); if (!b) return; const r = +b.dataset.i === ok; right += r ? 1 : 0; sfx(r ? "ok" : "no"); q++;
-        if (!r) q = 3; step(); };
-    };
-    const result = () => {
-      const n = passed.length;
-      if (!n){ box.innerHTML = `<p class="dq" style="margin-top:0">🌱 Am besten startest du ganz vorne in <b>Welt 1</b>.</p><p class="muted" style="margin:0">Keine Sorge, die ersten Level sind schnell gemacht und machen Spaß.</p>`; onDone && onDone(0); return; }
-      const ids = passed.flatMap(k => CHAPTERS[k][3]);
-      box.innerHTML = `<p class="dq" style="margin-top:0">🎯 Stark! Du kennst die Grundlagen aus <b>${n === 1 ? "Welt 1" : "Welt 1 und 2"}</b> schon.</p>
-        <p class="muted" style="margin:0 0 10px">Wir haken diese ${ids.length} Level als übersprungen ab (je 1 Stern, für mehr Sterne jederzeit nachholbar). Die <b>Bosse</b> warten trotzdem als Prüfung. Ab Welt 3 geht es um <b>Sicherheit und dein Geld</b>, das machst du am besten selbst Schritt für Schritt.</p>
-        <div class="acts" style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" type="button" data-a="ok">✓ Übernehmen</button><button class="btn ghost" type="button" data-a="no">Lieber von vorn</button></div>`;
-      box.querySelector(".acts").onclick = e => { const b = e.target.closest("[data-a]"); if (!b) return;
-        if (b.dataset.a === "ok"){ const s = load(); ids.forEach(id => { if (!done(s, id)) s[id] = Object.assign({}, s[id], {quiz: 1, total: 3, skip: 1}); }); save(s); confetti(); toast(`🎯 ${ids.length} Level übersprungen!`); onDone && onDone(n, true); }
-        else { box.innerHTML = `<p class="muted" style="margin:0">Alles klar, du startest in Welt 1. Den Test kannst du jederzeit wiederholen.</p>`; onDone && onDone(n, false); } };
-    };
-    step();
-  }
-
   // ---------- Wiederholen: Lernkartei mit wachsenden Abständen ----------
   // Fach 0 = morgen, dann 3, 7, 21, 60 Tage. Falsch = zurück in Fach 0.
   const RK = "satsland-rep", RINT = [1, 3, 7, 21, 60], DAY = 864e5;
@@ -749,5 +715,5 @@ const Lern = (() => {
   }
 
   init();
-  return {sfx, placement, review, repDue, shareCard, calm, calmToggle, PRO, proOf, TITLES, syncExport, syncImport, TITLES_LIST, titles, finalCard, GLOSSAR, nextStep, PATH, CHAPTERS, ART, art, BOSSES, boss, bossWon, bossCard, CARD, daily, streak, say, GK, chapterOf, LEVELS, level, count, load, done, visit, quiz, renderNext, nextAfter, sha256, confetti, toast};
+  return {sfx, review, repDue, shareCard, calm, calmToggle, PRO, proOf, TITLES, syncExport, syncImport, TITLES_LIST, titles, finalCard, GLOSSAR, nextStep, PATH, CHAPTERS, ART, art, BOSSES, boss, bossWon, bossCard, CARD, daily, streak, say, GK, chapterOf, LEVELS, level, count, load, done, visit, quiz, renderNext, nextAfter, sha256, confetti, toast};
 })();
