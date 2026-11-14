@@ -61,6 +61,7 @@
       <div class="prop"><b>2. Immer 64 Zeichen</b>Ein Wort oder ein ganzes Buch: Der Fingerabdruck ist <b style="display:inline">immer gleich lang</b>.<button class="btn ghost" type="button" id="p2">📚 Ganzes Buch hashen</button><div class="o" id="o2"></div></div>
       <div class="prop"><b>3. Nicht umkehrbar</b>Aus dem Hash kommst du <b style="display:inline">nie</b> zurück zum Text. Du kannst nur raten und vergleichen.<button class="btn ghost" type="button" onclick="document.getElementById('h3s').scrollIntoView({behavior:'smooth'})">Selbst probieren ↓</button></div>
     </div>
+      <p class="note"><b>Ganz genau genommen:</b> Es gibt unendlich viele mögliche Texte, aber „nur“ 2<sup>256</sup> Hashes. Zwei verschiedene Texte <i>könnten</i> also denselben Hash haben (eine <b>Kollision</b>). Bei SHA-256 hat aber noch nie jemand eine gefunden, und gezielt eine zu erzeugen gilt als praktisch unmöglich.</p>
   </section>
 
   <section class="card" aria-labelledby="h3s">
@@ -80,7 +81,7 @@
   <section class="card" aria-labelledby="h5s">
     <h2 id="h5s">Das solltest du dir merken</h2>
     <div class="learn">
-      <div><b>Fingerabdruck</b><span>Ein Hash erkennt Daten <b>eindeutig</b> wieder, ohne die Daten selbst zu zeigen.</span></div>
+      <div><b>Fingerabdruck</b><span>Ein Hash erkennt Daten <b>praktisch eindeutig</b> wieder, ohne sie zu zeigen.</span></div>
       <div><b>Lawinen-Effekt</b><span>Ein einziges geändertes Zeichen ergibt einen <b>komplett anderen</b> Hash. Fälschungen fallen sofort auf.</span></div>
       <div><b>Einbahnstraße</b><span>Vom Hash zurück zum Text geht nicht. Man kann nur <b>raten</b>. Darauf beruht das Mining.</span></div>
       <div><b>Überall in Bitcoin</b><span>Blöcke sind über Hashes <b>verkettet</b>, Adressen und Signaturen nutzen sie auch.</span></div>
@@ -94,7 +95,7 @@
   <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
 </div>
 
-<script src="../lern.js?v=44"></script>
+<script src="../lern.js?v=45"></script>
 <script>
 /* =====================================================================
    FINGERABDRUCK-MASCHINE – Lernwelt von Satsland

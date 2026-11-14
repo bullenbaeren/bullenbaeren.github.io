@@ -95,7 +95,7 @@ canvas{display:block;width:100%;height:clamp(300px,52vw,430px)}
       <div class="step"><b>1 · Abschicken</b><span>Deine Überweisung landet erst im <b>Mempool</b>, dem Wartesaal aller unbestätigten Transaktionen.</span></div>
       <div class="step"><b>2 · Gebühr bieten</b><span>Miner nehmen zuerst die mit der höchsten Gebühr pro Platz (<b>sat/vB</b>). Ein Block hat nur begrenzt Platz.</span></div>
       <div class="step"><b>3 · Zug fährt ab</b><span>Im Schnitt alle <b>10 Minuten</b> findet ein Miner einen Block. Das ist Zufall, manchmal 1 Minute, manchmal 40.</span></div>
-      <div class="step"><b>4 · Bestätigt</b><span>Jeder weitere Block obendrauf ist eine <b>Bestätigung</b>. Nach 6 gilt eine Zahlung als praktisch unumkehrbar.</span></div>
+      <div class="step"><b>4 · Bestätigt</b><span>Jeder weitere Block obendrauf ist eine <b>Bestätigung</b>. Nach 6 gilt eine Zahlung als sicher, eine verbreitete Faustregel.</span></div>
     </div>
     <details class="qz"><summary>Teste dich: 3 Fragen</summary><div id="quiz"></div></details>
   </section>
@@ -116,7 +116,7 @@ canvas{display:block;width:100%;height:clamp(300px,52vw,430px)}
 </div>
 
 <details class="foot"><summary>Quellen</summary><p><a href="https://mempool.space">mempool.space</a>: Warteraum, Gebühren und Blöcke live; <a href="https://en.bitcoin.it/wiki/Transaction_fees">Bitcoin Wiki: Transaction fees</a>. Das Spiel ist eine Simulation mit vereinfachten Zahlen.</p></details>
-<script src="../lern.js?v=44"></script>
+<script src="../lern.js?v=45"></script>
 <script>
 /* =====================================================================
    MEMPOOL-BAHNHOF – Lernwelt von Satsland
@@ -202,7 +202,7 @@ function newBlock(b){
   // Übungs-Fahrgast: mitgekommen? Bestätigungen zählen
   if (mine){
     if (mine.state === "wait" && mine.fee >= minFee){ mine.state = "in"; mine.h = b.height; mine.conf = 1; say(`<b>Du bist eingestiegen!</b> Deine Übungs-Überweisung ist in Block ${fmt(b.height)}: 1 Bestätigung.`); }
-    else if (mine.state === "in"){ mine.conf = b.height - mine.h + 1; if (mine.conf === 6) say("<b>6 Bestätigungen!</b> Deine Übungs-Überweisung gilt jetzt als praktisch unumkehrbar."); }
+    else if (mine.state === "in"){ mine.conf = b.height - mine.h + 1; if (mine.conf === 6) say("<b>6 Bestätigungen!</b> Nach der gängigen Faustregel gilt deine Übungs-Überweisung jetzt als sicher."); }
     else if (mine.state === "wait") say(`Zug ${fmt(b.height)} ist voll, dein Fahrgast mit ${fmtFee(mine.fee)} sat/vB wartet noch. Andere haben mehr geboten. Gleich rückt er einen Zug auf.`);
   }
   renderYou();
@@ -434,7 +434,7 @@ function frame(now){
     "✅ <b>3 Bestätigungen:</b> Viele Händler sind jetzt zufrieden.",
     "✅ <b>4 Bestätigungen:</b> Ein Angreifer müsste 4 Blöcke neu rechnen und schneller als alle anderen sein.",
     "✅ <b>5 Bestätigungen:</b> Fast geschafft.",
-    "🛡️ <b>6 Bestätigungen (ca. 1 Stunde):</b> Gilt seit den Anfängen als praktisch unumkehrbar. Viele Börsen warten so lange bei großen Beträgen."];
+    "🛡️ <b>6 Bestätigungen (ca. 1 Stunde):</b> Eine <b>Faustregel</b>, keine mathematische Garantie. Je größer der Betrag, desto länger warten viele, Börsen oft so lange."];
   const draw = () => { const v = +document.getElementById("cf").value; document.getElementById("cfV").textContent = v;
     document.getElementById("cfB").innerHTML = v ? Array.from({length: v}, (_, i) => `<span class="${i === 0 ? "me" : ""}">${i === 0 ? "Du" : "+" + i}</span>`).join("") : '<span style="background:transparent;border-style:dashed;color:var(--muted)">?</span>';
     document.getElementById("cfT").innerHTML = T[v] + (v ? ' <span class="muted">Warum? Wer eine bestätigte Zahlung rückgängig machen will, müsste alle Blöcke danach neu minen und das ehrliche Netz überholen.</span>' : ""); };
@@ -444,7 +444,7 @@ function frame(now){
 const QUIZ = [
   ["Wovon hängt ab, wie schnell deine Überweisung bestätigt wird?", ["Von der Höhe des Betrags", "Von der Gebühr pro Platz (sat/vB), wenn viel los ist", "Von der Uhrzeit"], 1, "Miner füllen jeden Block zuerst mit den Transaktionen, die pro vByte am meisten zahlen. Der Betrag selbst spielt keine Rolle."],
   ["Wie oft kommt im Schnitt ein neuer Block?", ["Jede Minute", "Etwa alle 10 Minuten", "Einmal pro Stunde"], 1, "Im Schnitt alle 10 Minuten, aber das ist Zufall: Manchmal kommen zwei Blöcke in einer Minute, manchmal dauert es eine halbe Stunde."],
-  ["Ab wann gilt eine Bitcoin-Zahlung als praktisch unumkehrbar?", ["Sofort beim Abschicken", "Nach etwa 6 Bestätigungen", "Nach 30 Tagen"], 1, "Mit jedem weiteren Block obendrauf wird es schwerer, die Zahlung rückgängig zu machen. Nach 6 Blöcken gilt sie als sicher."],
+  ["Ab wann gilt eine Bitcoin-Zahlung nach der Faustregel als sicher?", ["Sofort beim Abschicken", "Nach etwa 6 Bestätigungen", "Nach 30 Tagen"], 1, "Mit jedem weiteren Block obendrauf wird es schwerer, die Zahlung rückgängig zu machen. Nach 6 Blöcken gilt sie als sicher."],
 ];
 Lern.quiz($("quiz"), "bahnhof", QUIZ, "../"); Lern.visit("bahnhof"); Lern.renderNext("bahnhof", "../");
 resize(); startDemo(); connect(); loadPrice(); setInterval(loadPrice, 5*60*1000);

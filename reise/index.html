@@ -52,7 +52,7 @@
       <div><b>Unterschrift</b><span>Deine Wallet unterschreibt mit dem <b>privaten Schlüssel</b>. Niemand kann die Zahlung danach ändern.</span></div>
       <div><b>Warteraum</b><span>In der <b>Mempool</b> wartet die Zahlung. Höhere Gebühr heißt früher dran.</span></div>
       <div><b>Block</b><span>Ein Miner packt sie in einen <b>Block</b> und findet per Proof of Work den passenden Hash.</span></div>
-      <div><b>Bestätigungen</b><span>Jeder weitere Block ist eine Bestätigung. Ab etwa <b>6</b> gilt eine Zahlung als praktisch unumkehrbar.</span></div>
+      <div><b>Bestätigungen</b><span>Jeder weitere Block ist eine Bestätigung. Ab etwa <b>6</b> gilt eine Zahlung nach verbreiteter Faustregel als sicher, mathematisch endgültig ist sie nie.</span></div>
     </div>
     <details class="qz"><summary>Teste dich: 3 Fragen</summary><div id="quiz"></div></details>
   </section>
@@ -62,7 +62,7 @@
   <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
 </div>
 
-<script src="../lern.js?v=44"></script>
+<script src="../lern.js?v=45"></script>
 <script>
 /* =====================================================================
    REISE EINER ZAHLUNG – Lernwelt von Satsland
@@ -113,7 +113,7 @@ Promise.allSettled([
   $("mode").className = "mode " + (L.live ? "live" : "demo"); $("mode").textContent = L.live ? "Live" : "Beispielwerte"; draw(); });
 draw();
 
-const QUIZ = [["Womit wird eine Bitcoin-Zahlung unterschrieben?", ["Mit dem privaten Schlüssel deiner Wallet", "Mit Annas Adresse", "Von einem Miner"], 0, "Die Unterschrift beweist, dass die Bitcoin dir gehören."], ["Wo wartet eine Zahlung, bevor sie in einen Block kommt?", ["In der Mempool", "Bei der Bank", "Auf Annas Handy"], 0, "Miner wählen dort die Zahlungen mit der höchsten Gebühr pro Byte."], ["Ab wie vielen Bestätigungen gilt eine große Zahlung als praktisch unumkehrbar?", ["Etwa 6", "1", "100"], 0, "6 Blöcke dauern ungefähr eine Stunde. Kleine Beträge brauchen oft weniger."]];
+const QUIZ = [["Womit wird eine Bitcoin-Zahlung unterschrieben?", ["Mit dem privaten Schlüssel deiner Wallet", "Mit Annas Adresse", "Von einem Miner"], 0, "Die Unterschrift beweist, dass die Bitcoin dir gehören."], ["Wo wartet eine Zahlung, bevor sie in einen Block kommt?", ["In der Mempool", "Bei der Bank", "Auf Annas Handy"], 0, "Miner wählen dort die Zahlungen mit der höchsten Gebühr pro Byte."], ["Ab wie vielen Bestätigungen gilt eine große Zahlung nach der Faustregel als sicher?", ["Etwa 6", "1", "100"], 0, "6 Blöcke dauern ungefähr eine Stunde. Kleine Beträge brauchen oft weniger."]];
 Lern.quiz($("quiz"), "reise", QUIZ, "../"); Lern.visit("reise"); Lern.renderNext("reise", "../");
 })();
 </script>

@@ -91,7 +91,7 @@
     <h2 id="h3s">Das solltest du dir merken</h2>
     <div class="learn">
       <div><b>Nicht deine Schlüssel …</b><span>… nicht deine Bitcoin. Auf einer Börse gehören die Schlüssel <b>der Börse</b>, du hast nur ein Versprechen.</span></div>
-      <div><b>Hot vs. Cold</b><span>Handy-Wallets sind <b>online</b> und praktisch. Hardware-Wallets halten den Schlüssel <b>offline</b>, Viren kommen nicht ran.</span></div>
+      <div><b>Hot vs. Cold</b><span>Handy-Wallets sind <b>online</b> und praktisch. Hardware-Wallets halten den Schlüssel <b>offline</b>, Viren kommen schwer ran. Gegen Phishing hilft nur: jede Zahlung auf dem Gerät prüfen.</span></div>
       <div><b>Seed ist das Backup</b><span>Gerät weg? Mit den <b>12 oder 24 Wörtern</b> holst du alles zurück. Ohne sie ist alles verloren.</span></div>
       <div><b>Wie Geldbörse und Tresor</b><span>Kleingeld fürs Bezahlen aufs Handy, <b>Erspartes auf die Hardware-Wallet</b>. Viele nutzen beides.</span></div>
     </div>
@@ -104,7 +104,7 @@
   <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
 </div>
 
-<script src="../lern.js?v=44"></script>
+<script src="../lern.js?v=45"></script>
 <script>
 /* =====================================================================
    WALLET-CHECK – Lernwelt von Satsland
@@ -141,7 +141,7 @@ function rec(){
   if (u === 0 && a <= 1){ r = 1; why = "Für kleine Beträge zum Bezahlen ist eine Handy-Wallet ideal, gerne mit Lightning. Seed-Wörter trotzdem notieren."; }
   else if (u === 0){ r = 1; why = "Zum Bezahlen eine Handy-Wallet, aber nur mit dem, was du bald ausgibst. Den Rest besser auf eine Hardware-Wallet."; }
   else if (a === 0){ r = 1; why = "Für den Anfang reicht eine Handy-Wallet. Wichtig: Seed-Wörter auf Papier notieren und sicher aufbewahren."; }
-  else if (a <= 2){ r = 2; why = "Fürs Sparen ist eine Hardware-Wallet der Standard. Sie kostet etwa 60 bis 200 € und hält den Schlüssel offline."; }
+  else if (a <= 2){ r = 2; why = "Fürs Sparen ist eine Hardware-Wallet der Standard. Sie kostet etwa 60 bis 200 € und hält den Schlüssel offline. Trotzdem: jede Zahlung auf dem Gerät prüfen, nur beim Hersteller kaufen und die Wörter sicher aufbewahren."; }
   else { r = 3; why = "Bei großen Beträgen lohnt sich Multisig oder eine Hardware-Wallet mit Passphrase. So gibt es keinen einzelnen Schwachpunkt. Lass dir beim Einrichten Zeit."; }
   $("rec").innerHTML = `<strong>${W[r][0]} Empfehlung: ${W[r][1]}</strong>${why} <span class="muted">Die Börse nur zum Kaufen, danach abheben.</span>`;
   $("wl2").innerHTML = W.map((w, i) => card(i, i === r ? "rec" : "", "", ["Bequem, aber du vertraust der Börse.", "Bequem und kostenlos, aber online.", "Sehr sicher, etwas Aufwand.", "Am sichersten, aber kompliziert."][i])).join("");
