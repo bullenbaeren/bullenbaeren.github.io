@@ -336,7 +336,7 @@ button.btn{height:auto;min-height:44px;padding-top:6px;padding-bottom:6px;line-h
 .next .muted{color:#dfe3ff;font-weight:700;font-size:13px}
 @media (max-width:400px){ .top{gap:6px} .top .snd{width:34px;height:34px;font-size:15px;margin-left:0} .top .back{padding-left:10px;padding-right:10px} }
 a.btn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none}
-.boss .bhp .zw{position:absolute;left:8px;top:1px;z-index:2;font:900 10px var(--f-body);letter-spacing:1px;color:#fff;text-shadow:0 1px 0 #0d1230}
+.boss .bhp .zw{position:absolute;left:2px;top:20px;z-index:2;font:900 10px var(--f-body);letter-spacing:1px;color:#fff;text-shadow:0 1px 0 #0d1230}
 .boss .bimg.rise{animation:brise .7s cubic-bezier(.3,1.4,.5,1)} @keyframes brise{0%{transform:scale(.6);opacity:0;filter:brightness(2.5)}100%{transform:none;opacity:1}}
 .boss .arena.mirW .bimg{left:50%;bottom:70px;width:130px;height:130px;margin-left:-65px}
 .boss .mirr{position:absolute;left:8px;right:8px;bottom:10px;z-index:4;text-align:center;animation:bpop .5s .4s both}

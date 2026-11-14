@@ -431,8 +431,8 @@ const Lern = (() => {
     5: [["Die Nodes lehnen mich ab?!", "Meine Rechenleistung bröckelt!", "Regeln sind Regeln?!"], ["Ich schreibe die Geschichte um!", "Meine Kette ist länger!", "51 % … Hahaha!"]],
     f: [["Hm … stimmt eigentlich.", "Okay, das wusste ich nicht.", "Du hast echt was gelernt."], ["Siehst du? Ich hatte recht!", "Ha, ich werd wieder stärker!", "Bleib doch, wie du warst."]]};
   function boss(k){
-    // k = 0–5: Welt-Boss (5 Fragen, 4 Treffer nötig, du 2 Leben, 15 s) · k = "f": Endboss „Dein altes Ich“ (12 Sprüche + Finale, immer alle, Zweifel 9 → bleibt bis zum Finale ≥ 1, falsch = +1, 15 s)
-    const fin = k === "f", [img, name, taunt, Q] = fin ? FINAL : BOSSES[k], HP = fin ? 9 : 4, LIVES = fin ? 0 : 2, TIME = 15;
+    // k = 0–5: Welt-Boss (5 Fragen, 4 Treffer nötig, du 2 Leben, 15 s) · k = "f": Endboss „Dein altes Ich“ (12 Sprüche + Finale, immer alle, 13 Zweifel-Balken, richtig −1, falsch +1, Finale −5, 15 s)
+    const fin = k === "f", [img, name, taunt, Q] = fin ? FINAL : BOSSES[k], HP = fin ? 13 : 4, LIVES = fin ? 0 : 2, TIME = 15;
     const [c1, c2] = BTH[k] || BTH.f, [HIT, MISS] = BLINES[k] || BLINES.f;
     const bg = document.createElement("div"); bg.className = "bossbg";
     let i = 0, hp = HP, lives = LIVES, t = 0, timer = 0, lock = false, combo = 0, miss = 0;
@@ -470,9 +470,9 @@ const Lern = (() => {
       const ok = n === 0, [, , why] = order[i], fast = ok && t > TIME*.7;
       box.querySelectorAll(".opts button").forEach(b => { b.disabled = true; if (+b.dataset.n === 0) b.classList.add("ok"); else if (+b.dataset.n === n) b.classList.add("no"); });
       const w = box.querySelector(".why"); w.hidden = false; w.innerHTML = `<b>${n < 0 ? "⏰ Zeit um!" : ok ? "✅ Treffer!" : "💥 Autsch."}</b> ${why}`;
-      if (ok){ hp = fin && i < order.length - 1 ? Math.max(1, hp - 1) : hp - 1; combo++;
+      if (ok){ const last = fin && i === order.length - 1; hp = last ? Math.max(0, hp - 5) : fin ? Math.max(1, hp - 1) : hp - 1; combo++;
         sfx("coin"); const z = document.createElement("span"); z.className = "zap"; z.innerHTML = art("coin"); fx.appendChild(z); setTimeout(() => z.remove(), 700);
-        setTimeout(() => { sfx("hit"); re(im, "ouch"); re(A, "flash"); float(fast ? "SUPERSCHNELL!" : "TREFFER!", "hit"); if (combo >= 2) float(`${combo}× COMBO`, "cmb"); if (fin) setTimeout(() => say2(pickOne(HIT)), 500); else say2(pickOne(HIT)); hud(); }, 380);
+        setTimeout(() => { sfx("hit"); re(im, "ouch"); re(A, "flash"); float(last ? "FINALSCHLAG!" : fast ? "SUPERSCHNELL!" : "TREFFER!", "hit"); if (combo >= 2) float(`${combo}× COMBO`, "cmb"); if (fin) setTimeout(() => say2(pickOne(HIT)), 500); else say2(pickOne(HIT)); hud(); }, 380);
       } else if (fin){ sfx("no"); miss++; combo = 0; hp++; re(B, "hit"); re(A, "dmg"); re(im, "laugh"); float(n < 0 ? "ZEIT UM! +1 ZWEIFEL" : "+1 ZWEIFEL", "miss"); setTimeout(() => say2(pickOne(MISS)), 900); hud();
       } else { sfx("no"); lives--; combo = 0; re(B, "hit"); re(A, "dmg"); re(im, "laugh"); float(n < 0 ? "ZEIT UM!" : "−1 ❤️", "miss"); say2(pickOne(MISS)); hud(); }
       i++; setTimeout(ask, 2300);
