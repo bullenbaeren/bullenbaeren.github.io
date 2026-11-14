@@ -323,8 +323,8 @@ details.fold[open] > summary{margin-bottom:12px}
     const art = (n, cx, cy, sz) => L.art(n).replace("<svg", `<svg x="${cx - sz / 2}" y="${cy - sz / 2}" width="${sz}" height="${sz}"`);
     const chip = (cx, cy, t, side, col = "#dfe3ff", bg = "rgba(11,15,42,.88)", fs = 12.5) => { const w = t.length * fs * .56 + 18, x0 = Math.max(4, Math.min(W - 4 - w, side > 0 ? cx : side < 0 ? cx - w : cx - w / 2));
       return `<rect x="${x0}" y="${cy - 13}" width="${w}" height="26" rx="13" fill="${bg}"/><text x="${x0 + w / 2}" y="${cy + 4.5}" fill="${col}" font-size="${fs}" font-weight="800" text-anchor="middle" font-family="system-ui,sans-serif">${t}</text>`; };
-    let g = `<defs><linearGradient id="msky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#070a22"/><stop offset=".2" stop-color="#1d2463"/><stop offset=".42" stop-color="#4a2a7a"/><stop offset=".64" stop-color="#a8408a"/><stop offset=".84" stop-color="#ff8a6a"/><stop offset="1" stop-color="#ffd0a0"/></linearGradient>
-       <linearGradient id="mroad" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="${H}"><stop offset="0" stop-color="#2c3480"/><stop offset=".5" stop-color="#8a4a9a"/><stop offset="1" stop-color="#ffd9c0"/></linearGradient>
+    let g = `<defs><linearGradient id="msky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#070a22"/><stop offset=".2" stop-color="#1d2463"/><stop offset=".42" stop-color="#4a2a7a"/><stop offset=".64" stop-color="#a070b0"/><stop offset=".84" stop-color="#f2b0b0"/><stop offset="1" stop-color="#ffe8cc"/></linearGradient>
+       <linearGradient id="mroad" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="${H}"><stop offset="0" stop-color="#2c3480"/><stop offset=".5" stop-color="#b98ac0"/><stop offset="1" stop-color="#fff2e6"/></linearGradient>
        <radialGradient id="msun"><stop offset="0" stop-color="#fff2c0"/><stop offset=".45" stop-color="#ffc06a" stop-opacity=".8"/><stop offset="1" stop-color="#ffc06a" stop-opacity="0"/></radialGradient>
       <linearGradient id="mtn" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2b3274"/><stop offset=".3" stop-color="#3a2a6e" stop-opacity=".7"/><stop offset=".55" stop-color="#4a2a6e" stop-opacity="0"/></linearGradient>
        <linearGradient id="mtnS" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#000" stop-opacity=".16"/><stop offset=".5" stop-color="#000" stop-opacity="0"/></linearGradient>
@@ -335,7 +335,7 @@ details.fold[open] > summary{margin-bottom:12px}
     // Pyramide als ruhige Silhouette im Hintergrund
     g += `<path d="M${W / 2},${peakY - 70} L${W + 40},${H} L-40,${H}Z" fill="url(#mtn)" opacity=".75"/><path d="M${W / 2},${peakY - 70} L${W + 40},${H} L${W / 2 + 26},${H}Z" fill="url(#mtnS)"/><path d="M${W / 2},${peakY - 70} l-34 62 15-6 19 20 20-24 14 8z" fill="#eef0ff" opacity=".9"/>`;
     // Sonnenaufgang unten, Wolken in der Dämmerung
-    g += `<circle cx="${W * .8}" cy="${H - 210}" r="160" fill="url(#msun)"/><circle cx="${W * .8}" cy="${H - 210}" r="44" fill="#ffe4a0"/><path d="M0 ${H - 70}q${W * .25}-55 ${W * .5}-12t${W * .5}-22V${H}H0z" fill="#e8806a"/><path d="M0 ${H - 26}q${W * .3}-34 ${W * .6}0t${W * .4}-12V${H}H0z" fill="#c65a6a"/>`;
+    g += `<circle cx="${W * .8}" cy="${H - 210}" r="160" fill="url(#msun)"/><circle cx="${W * .8}" cy="${H - 210}" r="44" fill="#ffe4a0"/><path d="M0 ${H - 70}q${W * .25}-55 ${W * .5}-12t${W * .5}-22V${H}H0z" fill="#f4c0b4"/><path d="M0 ${H - 26}q${W * .3}-34 ${W * .6}0t${W * .4}-12V${H}H0z" fill="#e6a4a8"/>`;
     [[.18, .62, "#c48ad0", .3], [.8, .7, "#ffb0c8", .35], [.2, .8, "#ffc9a8", .4], [.78, .9, "#ffe0c0", .45]].forEach(([fx, fy, c, o]) => { const cx = W * fx, cy = H * fy; g += `<g fill="${c}" opacity="${o}"><ellipse cx="${cx}" cy="${cy}" rx="58" ry="14"/><ellipse cx="${cx + 24}" cy="${cy - 10}" rx="32" ry="14"/><ellipse cx="${cx - 22}" cy="${cy - 6}" rx="24" ry="11"/></g>`; });
     g += `<g class="shoot"><line x1="${W * .12}" y1="${peakY - 30}" x2="${W * .12 + 70}" y2="${peakY}" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/></g><g class="shoot s2"><line x1="${W * .55}" y1="${H * .22}" x2="${W * .55 + 60}" y2="${H * .22 + 26}" stroke="#fff" stroke-width="2" stroke-linecap="round"/></g>`;
     for (let i = 0; i < 12; i++){ const n = (i * 7) % (N - 1); g += `<circle class="fly2" style="animation-delay:${(i * .53) % 6}s" cx="${(P[n][0] + ((i * 53) % 120 - 60)).toFixed(0)}" cy="${P[n][1].toFixed(0)}" r="2.2" fill="#ffe08a"/>`; }
@@ -353,8 +353,8 @@ details.fold[open] > summary{margin-bottom:12px}
     // Stationen
     let bubble = "";
     nodes.forEach((n, i) => { const [cx, cy] = P[i], ok = isDone(n), now = i === cur, boss = n.t === "b", r = boss ? R + 9 : R, locked = !ok && !now;
-      const ready = boss && L.CHAPTERS[n.k][3].every(id => Lern.done(s, id)), base = boss ? (ok ? "#c4581c" : ready ? "#a33a5a" : "#3a2a4a")   : ok ? "#ff9f2e" : now ? "#ffc94d" : "#323a7a";
-      const lip = boss ? (ok ? "#7a3410" : "#21162e") : ok ? "#c46a10" : now ? "#c98a00" : "#1c2256";
+      const lt = n.k < 3, ready = boss && L.CHAPTERS[n.k][3].every(id => Lern.done(s, id)), base = boss ? (ok ? "#c4581c" : ready ? "#a33a5a" : "#3a2a4a")   : ok ? "#ff9f2e" : now ? "#ffc94d" : lt ? "#fff4ea" : "#323a7a";
+      const lip = boss ? (ok ? "#7a3410" : "#21162e") : ok ? "#c46a10" : now ? "#c98a00" : lt ? "#d9b4a4" : "#1c2256";
       const name = boss ? L.BOSSES[n.k][1] : L.TITLES[n.id][0], lw = (name.length + (boss ? 3 : 0)) * (boss ? 13 : 12.5) * .56 + 18;
       let side = cx > W / 2 ? -1 : 1;   // Schild dorthin, wo Platz ist, damit nichts über den Rand ragt
       const fitR = cx + r + 8 + lw <= W - 4, fitL = cx - r - 8 - lw >= 4;
@@ -365,7 +365,7 @@ details.fold[open] > summary{margin-bottom:12px}
         <g opacity="${locked && !boss ? .45 : 1}">${art(boss ? L.BOSSES[n.k][0] : L.CARD[n.id], cx, cy, boss ? r * 1.75 : r * 1.3)}</g></g>`;
       if (ok) g += `<circle cx="${cx + r * .75}" cy="${cy - r * .7}" r="10" fill="#fff" stroke="#0a0d26" stroke-width="2.5"/><path d="M${cx + r * .75 - 5} ${cy - r * .7}l3.5 3.5 6.5-7.5" fill="none" stroke="#178a4c" stroke-width="3" stroke-linecap="round"/>`;
       if (boss && !ok) g += `<text x="${cx}" y="${cy - r - 6}" font-size="16" text-anchor="middle">👑</text>`;
-      g += chip(cx + side * (r + 8), side ? cy : boss ? cy - r - (now ? 58 : ok ? 20 : 34) : cy + r + 24, (boss ? (ok ? "🏆 " : "👹 ") : "") + name, side, boss ? "#ffb3c2" : now ? "#ffc94d" : ok ? "#ffe2b8" : "#9aa2c8", boss ? "rgba(58,20,40,.92)" : "rgba(11,15,42,.88)", boss ? 13 : 12.5);
+      g += chip(cx + side * (r + 8), side ? cy : boss ? cy - r - (now ? 58 : ok ? 20 : 34) : cy + r + 24, (boss ? (ok ? "🏆 " : "👹 ") : "") + name, side, boss ? "#ffb3c2" : now ? "#ffc94d" : ok ? "#ffe2b8" : lt ? "#f6e3ee" : "#9aa2c8", boss ? "rgba(58,20,40,.92)" : lt ? "rgba(70,30,70,.86)" : "rgba(11,15,42,.88)", boss ? 13 : 12.5);
       // Sprechblase zuletzt zeichnen (liegt dann oben) und vom nächsten Knoten weg schieben
       if (now){ const nx = P[i + 1] ? P[i + 1][0] : cx, bx = Math.max(36, Math.min(W - 36, cx + (nx > cx ? -22 : 22))), by = cy - r - 14;
         bubble = `<g class="bob"><path d="M${cx - 6} ${by - 3}l${(cx - bx) * .2 + 6} 12 6-12z" fill="#fff" stroke="#0a0d26" stroke-width="3" stroke-linejoin="round"/><rect x="${bx - 32}" y="${by - 30}" width="64" height="30" rx="15" fill="#fff" stroke="#0a0d26" stroke-width="3"/><rect x="${cx - 7}" y="${by - 4}" width="14" height="4" fill="#fff"/><text x="${bx}" y="${by - 10}" font-size="14" font-weight="900" text-anchor="middle" font-family="system-ui" fill="#0a0d26">${boss ? "KAMPF!" : "START"}</text></g>`; }
