@@ -334,3 +334,7 @@ button.btn{height:auto;min-height:44px;padding-top:6px;padding-bottom:6px;line-h
 /* Mindestschriftgröße für Kleingedrucktes */
 .wrap small{font-size:max(11px,.8333em)} .tcard small{font-size:11px}
 .next .muted{color:#dfe3ff;font-weight:700;font-size:13px}
+/* Vorlesen */
+.tts.on{border-color:var(--gold);background:rgba(255,201,77,.15)}
+.reading{outline:2px solid rgba(255,201,77,.7);outline-offset:4px;border-radius:8px;background:rgba(255,201,77,.06)}
+@media (max-width:400px){ .top{gap:6px} .top .snd{width:34px;height:34px;font-size:15px;margin-left:0} .top .back{padding-left:10px;padding-right:10px} }

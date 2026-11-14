@@ -653,6 +653,27 @@ const Lern = (() => {
     const upd = () => { b.textContent = sndOn() ? "🔊" : "🔇"; b.title = sndOn() ? "Ton & Vibration aus" : "Ton & Vibration an"; b.setAttribute("aria-label", b.title); };
     b.onclick = () => { try { localStorage.setItem(SND, sndOn() ? "0" : "1"); } catch(e){} upd(); sfx("click"); }; upd(); top.appendChild(b);
   }
+  // Vorlesen: Der Browser liest die Seite vor (keine Daten verlassen das Gerät). Nur auf Level-Seiten.
+  function ttsBtn(){
+    const top = document.querySelector(".top"), S = window.speechSynthesis;
+    if (!top || !S || !window.SpeechSynthesisUtterance || !document.querySelector(".wrap h1") || location.pathname.replace(/\/$/, "").split("/").pop() === "" ) return;
+    const b = document.createElement("button"); b.type = "button"; b.className = "snd tts"; let on = false, cur = null;
+    const set = v => { on = v; b.textContent = v ? "⏹" : "🗣️"; b.title = v ? "Vorlesen stoppen" : "Seite vorlesen"; b.setAttribute("aria-label", b.title); b.classList.toggle("on", v); if (!v && cur){ cur.classList.remove("reading"); cur = null; } };
+    const voice = () => (S.getVoices() || []).find(v => /^de(-|_|$)/i.test(v.lang));
+    const parts = () => [...document.querySelectorAll(".wrap h1, .wrap .lead, .wrap section h2, .wrap section h3, .wrap section p, .wrap section .learn > div, .wrap section li")]
+      .filter(e => e.offsetParent && !e.closest(".q, .quiz, details.foot, .next, .chap, svg, .say, button, .opts, #next") && e.textContent.trim().length > 2);
+    b.onclick = () => {
+      if (on){ S.cancel(); set(false); return; }
+      const L = parts(); let i = 0; if (!L.length) return; set(true); S.cancel();
+      const next = () => { if (!on) return; if (cur) cur.classList.remove("reading"); if (i >= L.length){ set(false); return; }
+        cur = L[i++]; cur.classList.add("reading"); cur.scrollIntoView({behavior: calm ? "auto" : "smooth", block: "center"});
+        const u = new SpeechSynthesisUtterance(cur.innerText.replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu, "").replace(/\s+/g, " ").trim());
+        u.lang = "de-DE"; const v = voice(); if (v) u.voice = v; u.rate = 1; u.onend = next; u.onerror = () => set(false); S.speak(u); };
+      next();
+    };
+    set(false); top.appendChild(b);
+    addEventListener("pagehide", () => S.cancel());
+  }
   document.addEventListener("click", e => { if (e.target.closest(".btn:not(.q .btn)")) sfx("click"); });
 
   // ---------- Level geschafft: Sterne und großer Weiter-Knopf ----------
@@ -688,7 +709,7 @@ const Lern = (() => {
   }
   const seg = location.pathname.split("/").filter(Boolean), last = seg[seg.length - 1], here = PATH.some(([id]) => id === last) || proOf(last) >= 0 ? last : "";
   function init(){
-    badge(); sndBtn(); intro(); stand(); glossify(); reveal(); guide(); setTimeout(titles, 1500);
+    badge(); sndBtn(); ttsBtn(); intro(); stand(); glossify(); reveal(); guide(); setTimeout(titles, 1500);
     if (here && CARD[here]){ const h = document.querySelector("h1"); if (h && !h.previousElementSibling){ const i = document.createElement("span"); i.className = "wico"; i.setAttribute("aria-hidden", "true"); i.innerHTML = art(CARD[here]); h.before(i);
       const pk = proOf(here), k = pk >= 0 ? pk : chapterOf(here), c = CHAPTERS[k], p = document.createElement("p"); p.className = "chap"; p.innerHTML = pk >= 0 ? `🔬 Profi-Pfad · Welt ${k + 1} · ${c[0]} ${c[1]} · Vertiefung ${PRO[k].indexOf(here) + 1} von ${PRO[k].length}` : `Welt ${k + 1} · ${c[0]} ${c[1]} · Level ${k + 1}-${c[3].indexOf(here) + 1} von ${c[3].length}`; i.after(p); } }
   }
