@@ -5,11 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Gefühls-Achterbahn · Satsland</title>
 <meta name="description" content="Lernwelt: FOMO und FUD. Erlebe acht echte Momente der Bitcoin-Geschichte und entscheide selbst: kaufen, halten oder verkaufen?">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Gefühls-Achterbahn · Satsland">
+<meta property="og:description" content="Lernwelt: FOMO und FUD. Erlebe acht echte Momente der Bitcoin-Geschichte und entscheide selbst: kaufen, halten oder verkaufen?">
+<meta property="og:image" content="https://satsland.github.io/og/fomo.jpg">
+<meta property="og:url" content="https://satsland.github.io/fomo/">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#0b0f2a">
 <link rel="icon" href="../icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-<link rel="stylesheet" href="../lern.css?v=48">
+<link rel="stylesheet" href="../lern.css?v=49">
 <style>
 /* Lernwelt "FOMO & FUD": nur seitenspezifische Teile, der Rest kommt aus lern.css */
 .idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
@@ -124,7 +130,7 @@ function chart(){
 }
 
 fetch("https://api.coinbase.com/v2/prices/BTC-USD/spot").then(r => r.json()).then(j => { const p = +j.data.amount; if (p > 0){ now = p; live = true; } }).catch(() => {})
-  .finally(() => { if (!now) now = 100000; $("mode").className = "mode " + (live ? "live" : "demo"); $("mode").textContent = live ? "Live-Kurs" : "Kurs geschätzt"; draw(); });
+  .finally(() => { if (!now) now = 100000; $("mode").className = "mode " + (live ? "live" : "demo"); $("mode").textContent = live ? "Live" : "Schätzung"; draw(); });
 
 const QUIZ = [
   ["Was bedeutet FOMO?", ["Angst, etwas zu verpassen", "Ein Bitcoin-Upgrade", "Eine Börse"], 0, "Fear Of Missing Out: Man kauft, weil alle anderen schon reich zu werden scheinen. Oft ist der Kurs dann schon hoch."],

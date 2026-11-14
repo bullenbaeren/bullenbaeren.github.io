@@ -335,3 +335,4 @@ button.btn{height:auto;min-height:44px;padding-top:6px;padding-bottom:6px;line-h
 .wrap small{font-size:max(11px,.8333em)} .tcard small{font-size:11px}
 .next .muted{color:#dfe3ff;font-weight:700;font-size:13px}
 @media (max-width:400px){ .top{gap:6px} .top .snd{width:34px;height:34px;font-size:15px;margin-left:0} .top .back{padding-left:10px;padding-right:10px} }
+a.btn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none}

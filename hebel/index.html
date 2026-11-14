@@ -5,11 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Hebel-Falle · Satsland</title>
 <meta name="description" content="Lernwelt: Hebel und Liquidation. Teste mit echten Kursen der letzten Tage, wie schnell eine gehebelte Wette alles verliert.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Hebel-Falle · Satsland">
+<meta property="og:description" content="Lernwelt: Hebel und Liquidation. Teste mit echten Kursen der letzten Tage, wie schnell eine gehebelte Wette alles verliert.">
+<meta property="og:image" content="https://satsland.github.io/og/hebel.jpg">
+<meta property="og:url" content="https://satsland.github.io/hebel/">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#0b0f2a">
 <link rel="icon" href="../icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-<link rel="stylesheet" href="../lern.css?v=48">
+<link rel="stylesheet" href="../lern.css?v=49">
 <style>
 /* Lernwelt "Hebel": nur seitenspezifische Teile, der Rest kommt aus lern.css */
 .idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
@@ -153,7 +159,7 @@ async function load(){
   } catch(e){
     let p = 100000; C = []; for (let k = 0; k < 73; k++){ const c = p*(1 + Math.sin(k/6)*.006 + (Math.random() - .5)*.012); C.push([Math.min(p, c)*.996, Math.max(p, c)*1.004, c]); p = c; }
   }
-  $("mode").className = "mode " + (live ? "live" : "demo"); $("mode").textContent = live ? "Echte Kurse, 3 Tage" : "Beispielverlauf";
+  $("mode").className = "mode " + (live ? "live" : "demo"); $("mode").textContent = live ? "Live" : "Beispielwerte";
   facts(); chart(0, C[0][2], 0); table();
 }
 $("lev").addEventListener("input", facts);

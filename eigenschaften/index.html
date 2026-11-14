@@ -5,11 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Geld-Duell · Satsland</title>
 <meta name="description" content="Lernwelt: Was macht Bitcoin aus? Muscheln, Gold, Euro und Bitcoin im Punkte-Duell um zehn Eigenschaften von gutem Geld.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Geld-Duell · Satsland">
+<meta property="og:description" content="Lernwelt: Was macht Bitcoin aus? Muscheln, Gold, Euro und Bitcoin im Punkte-Duell um zehn Eigenschaften von gutem Geld.">
+<meta property="og:image" content="https://satsland.github.io/og/eigenschaften.jpg">
+<meta property="og:url" content="https://satsland.github.io/eigenschaften/">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#0b0f2a">
 <link rel="icon" href="../icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-<link rel="stylesheet" href="../lern.css?v=48">
+<link rel="stylesheet" href="../lern.css?v=49">
 <style>
 /* Lernwelt "Eigenschaften": nur seitenspezifische Teile, der Rest kommt aus lern.css */
 .idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
@@ -161,7 +167,7 @@ function end(){
 }
 
 fetch("https://api.coinbase.com/v2/prices/BTC-EUR/spot").then(x => x.json()).then(j => { eurPrice = +j.data.amount || 0; }).catch(() => {})
-  .finally(() => { $("mode").className = "mode " + (eurPrice ? "live" : "demo"); $("mode").textContent = eurPrice ? "Live-Kurs" : "Ohne Live-Daten"; });
+  .finally(() => { $("mode").className = "mode " + (eurPrice ? "live" : "demo"); $("mode").textContent = eurPrice ? "Live" : "Beispielwerte"; });
 
 const QUIZ = [
   ["Welche Eigenschaft hat Bitcoin, die Euro nicht hat?", ["Einen stabilen Preis", "Eine feste Obergrenze, die niemand ändern kann", "Er ist älter"], 1, "Die Menge von 21 Millionen steht fest. Eine Zentralbank kann dagegen neues Geld schaffen."],

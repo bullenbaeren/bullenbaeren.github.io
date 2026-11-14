@@ -5,11 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Wechselgeld-Kasse · Satsland</title>
 <meta name="description" content="Lernwelt: Wie Bitcoin in einer Wallet liegt (UTXO), warum es Wechselgeld gibt und wovon die Gebühr abhängt.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Wechselgeld-Kasse · Satsland">
+<meta property="og:description" content="Lernwelt: Wie Bitcoin in einer Wallet liegt (UTXO), warum es Wechselgeld gibt und wovon die Gebühr abhängt.">
+<meta property="og:image" content="https://satsland.github.io/og/utxo.jpg">
+<meta property="og:url" content="https://satsland.github.io/utxo/">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#0b0f2a">
 <link rel="icon" href="../icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-<link rel="stylesheet" href="../lern.css?v=48">
+<link rel="stylesheet" href="../lern.css?v=49">
 <style>
 /* Lernwelt "UTXO": nur seitenspezifische Teile, der Rest kommt aus lern.css */
 .idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
@@ -152,7 +158,7 @@ $("reset").onclick = reset;
 
 // Live: aktueller Gebühren-Satz
 fetch(MP + "v1/fees/recommended").then(r => r.json()).then(j => { if (j.halfHourFee > 0){ rate = j.halfHourFee; live = true; } }).catch(() => {})
-  .finally(() => { $("mode").className = "mode " + (live ? "live" : "demo"); $("mode").textContent = live ? `Live: ${rate.toLocaleString("de-DE")} sat/vB` : "Beispiel: 5 sat/vB"; calc(); });
+  .finally(() => { $("mode").className = "mode " + (live ? "live" : "demo"); $("mode").textContent = live ? "Live" : "Beispielwerte"; calc(); });
 
 // Live: eine echte Transaktion von gerade eben
 async function real(){
@@ -165,7 +171,7 @@ async function real(){
     $("real").innerHTML = `<div class="col"><b>Rein: ${ins.length} Betr${ins.length > 1 ? "äge" : "ag"}</b><ul>${li(ins)}</ul></div><span class="arr" aria-hidden="true">→</span><div class="col"><b>Raus: ${outs.length} Betr${outs.length > 1 ? "äge" : "ag"}</b><ul>${li(outs)}</ul></div>
       <p class="note" style="grid-column:1/-1">Gebühr: <b>${tx.fee.toLocaleString("de-DE")} sats</b> = alles, was rein ging, minus alles, was raus geht. <a href="https://mempool.space/tx/${tx.txid}" rel="noopener">Auf mempool.space ansehen</a></p>`;
     $("mode2").className = "mode live"; $("mode2").textContent = "Live";
-  } catch(e){ $("real").innerHTML = `<p class="muted">Gerade keine Verbindung zu mempool.space.</p>`; $("mode2").className = "mode demo"; $("mode2").textContent = "Keine Live-Daten"; }
+  } catch(e){ $("real").innerHTML = `<p class="muted">Gerade keine Verbindung zu mempool.space.</p>`; $("mode2").className = "mode demo"; $("mode2").textContent = "Beispielwerte"; }
 }
 $("again").onclick = real; real();
 reset();

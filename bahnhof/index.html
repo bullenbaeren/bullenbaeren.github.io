@@ -11,9 +11,9 @@
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
 <meta property="og:title" content="Mempool-Bahnhof · Satsland">
 <meta property="og:description" content="So kommt deine Bitcoin-Überweisung in einen Block. Der echte Mempool als Bahnhof, live.">
-<meta property="og:image" content="https://satsland.github.io/og.png">
+<meta property="og:image" content="https://satsland.github.io/og/bahnhof.jpg">
 <meta property="og:url" content="https://satsland.github.io/bahnhof/">
-<link rel="stylesheet" href="../lern.css?v=48">
+<link rel="stylesheet" href="../lern.css?v=49">
 <style>
 /* Lernwelt "Mempool-Bahnhof": gleiche Farben und Schriften wie das Spiel. Nur Systemschriften, keine Cookies, kein Tracking. */
 .card > .mode{margin-bottom:8px}
@@ -414,7 +414,7 @@ function renderStats(){
   $("sMin").innerHTML = LV.min ? `${fmtFee(LV.min)} <small style="font-size:.55em;color:var(--muted)">sat/vB</small>` : "–";
   $("sAgo").textContent = LV.tip.ts ? `${Math.floor(Math.max(0, Date.now()/1000 - LV.tip.ts)/60)} Min` : "–";
   $("sNext").textContent = LV.tip.h ? fmt(LV.tip.h + 1) : "–";
-  if (!LV.ok && t > 8 && $("mode").textContent.startsWith("Verbinde")){ $("mode").className = "mode demo"; $("mode").textContent = "Live nicht erreichbar"; }
+  if (!LV.ok && t > 8 && $("mode").textContent.startsWith("Verbinde")){ $("mode").className = "mode demo"; $("mode").textContent = "Beispielwerte"; }
 }
 
 // ---------- Schleife ----------

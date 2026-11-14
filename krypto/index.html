@@ -5,11 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Coin-Check · Satsland</title>
 <meta name="description" content="Lernwelt: Was Bitcoin von Tausenden anderen Coins unterscheidet. Sechs Fragen, mit denen du jeden Coin prüfen kannst.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Coin-Check · Satsland">
+<meta property="og:description" content="Lernwelt: Was Bitcoin von Tausenden anderen Coins unterscheidet. Sechs Fragen, mit denen du jeden Coin prüfen kannst.">
+<meta property="og:image" content="https://satsland.github.io/og/krypto.jpg">
+<meta property="og:url" content="https://satsland.github.io/krypto/">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#0b0f2a">
 <link rel="icon" href="../icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-<link rel="stylesheet" href="../lern.css?v=48">
+<link rel="stylesheet" href="../lern.css?v=49">
 <style>
 /* Lernwelt "Bitcoin vs. Krypto": nur seitenspezifische Teile, der Rest kommt aus lern.css */
 .idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
@@ -119,7 +125,7 @@ fetch("https://api.coingecko.com/api/v3/global").then(r => r.json()).then(j => {
   $("kN").textContent = d.active_cryptocurrencies.toLocaleString("de-DE");
   $("kD").textContent = d.market_cap_percentage.btc.toLocaleString("de-DE", {maximumFractionDigits: 1}) + " %";
   $("mode").className = "mode live"; $("mode").textContent = "Live";
-}).catch(() => { $("kN").textContent = "über 15.000"; $("kD").textContent = "etwa 60 %"; $("mode").className = "mode demo"; $("mode").textContent = "Ungefähre Werte"; });
+}).catch(() => { $("kN").textContent = "über 15.000"; $("kD").textContent = "etwa 60 %"; $("mode").className = "mode demo"; $("mode").textContent = "Schätzung"; });
 
 const QUIZ = [
   ["Warum gibt es so viele Kryptowährungen?", ["Weil jeder mit wenig Aufwand einen eigenen Coin erstellen kann", "Weil Bitcoin sie alle erstellt hat", "Weil jedes Land einen braucht"], 0, "Einen Coin zu kopieren oder neu zu starten ist einfach. Ein Netz aufzubauen, dem Menschen weltweit vertrauen, ist sehr schwer."],

@@ -5,11 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Kopier-Problem · Satsland</title>
 <meta name="description" content="Lernwelt: Warum digitales Geld so schwer ist. Das Doppelausgabe-Problem und wie Bitcoin es ohne Bank löst.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Kopier-Problem · Satsland">
+<meta property="og:description" content="Lernwelt: Warum digitales Geld so schwer ist. Das Doppelausgabe-Problem und wie Bitcoin es ohne Bank löst.">
+<meta property="og:image" content="https://satsland.github.io/og/doppelt.jpg">
+<meta property="og:url" content="https://satsland.github.io/doppelt/">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#0b0f2a">
 <link rel="icon" href="../icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-<link rel="stylesheet" href="../lern.css?v=48">
+<link rel="stylesheet" href="../lern.css?v=49">
 <style>
 /* Lernwelt "Kopier-Problem": nur seitenspezifische Teile, der Rest kommt aus lern.css */
 .idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
@@ -116,7 +122,7 @@ reset();
 Promise.all([fetch("https://mempool.space/api/v1/blocks").then(r => r.json()), fetch("https://mempool.space/api/blocks/tip/height").then(r => r.text())]).then(([bl, h]) => {
   $("kTx").textContent = (bl[0].tx_count || 0).toLocaleString("de-DE") + " Zahlungen"; $("kH").textContent = (+h).toLocaleString("de-DE");
   $("lmode").className = "mode live"; $("lmode").textContent = "Live";
-}).catch(() => { $("kTx").textContent = "Tausende"; $("kH").textContent = "über 900.000"; $("lmode").className = "mode demo"; $("lmode").textContent = "Ohne Live-Daten"; });
+}).catch(() => { $("kTx").textContent = "Tausende"; $("kH").textContent = "über 900.000"; $("lmode").className = "mode demo"; $("lmode").textContent = "Beispielwerte"; });
 
 const QUIZ = [["Warum ist digitales Geld schwer zu bauen?", ["Weil man Dateien beliebig kopieren kann", "Weil Computer zu langsam sind", "Weil es zu teuer ist"], 0, "Ohne Aufpasser könnte man dieselbe Münze mehrmals ausgeben."], ["Wer verhindert bei Bitcoin, dass eine Münze zweimal ausgegeben wird?", ["Tausende Nodes mit demselben Kassenbuch", "Eine Bitcoin-Bank", "Der Erfinder Satoshi"], 0, "Jede Node prüft jede Zahlung. Die zweite Ausgabe ist ungültig."], ["Was ist der Nachteil, wenn eine Bank aufpasst?", ["Man muss ihr vertrauen, sie kann sperren oder Fehler machen", "Es funktioniert gar nicht", "Es ist zu schnell"], 0, "Bitcoin ersetzt dieses Vertrauen durch Regeln, die alle prüfen."]];
 Lern.quiz($("quiz"), "doppelt", QUIZ, "../"); Lern.visit("doppelt"); Lern.renderNext("doppelt", "../");

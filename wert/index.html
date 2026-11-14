@@ -5,11 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Wert-Waage · Satsland</title>
 <meta name="description" content="Lernwelt: Warum hat Bitcoin einen Preis? Angebot, Nachfrage, Knappheit und warum der Kurs schwankt.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Wert-Waage · Satsland">
+<meta property="og:description" content="Lernwelt: Warum hat Bitcoin einen Preis? Angebot, Nachfrage, Knappheit und warum der Kurs schwankt.">
+<meta property="og:image" content="https://satsland.github.io/og/wert.jpg">
+<meta property="og:url" content="https://satsland.github.io/wert/">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#0b0f2a">
 <link rel="icon" href="../icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-<link rel="stylesheet" href="../lern.css?v=48">
+<link rel="stylesheet" href="../lern.css?v=49">
 <style>
 /* Lernwelt "Wert-Waage": nur seitenspezifische Teile, der Rest kommt aus lern.css */
 .idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
@@ -107,7 +113,7 @@ function calc(){
 }
 $("dem").addEventListener("input", calc);
 fetch("https://api.coinbase.com/v2/prices/BTC-USD/spot").then(r => r.json()).then(j => { price = +j.data.amount || 0; live = price > 0; }).catch(() => {})
-  .finally(() => { $("mode").className = "mode " + (live ? "live" : "demo"); $("mode").textContent = live ? "Live-Kurs" : "Kurs geschätzt"; calc(); });
+  .finally(() => { $("mode").className = "mode " + (live ? "live" : "demo"); $("mode").textContent = live ? "Live" : "Schätzung"; calc(); });
 calc();
 
 const QUIZ = [["Warum steigt der Preis, wenn mehr Menschen Bitcoin kaufen wollen?", ["Weil das Angebot fest ist und nicht mitwachsen kann", "Weil dann mehr Bitcoin gedruckt werden", "Weil die Gebühren steigen"], 0, "Bei festem Angebot muss sich der Preis bewegen."], ["Was meint „Netzwerkeffekt“?", ["Je mehr Menschen es nutzen, desto nützlicher wird es für alle", "Das Internet wird schneller", "Miner verdienen mehr"], 0, "Wie beim Telefon: Allein ist es nutzlos."], ["Ist ein steigender Bitcoin-Preis garantiert?", ["Nein, der Preis kann auch stark fallen", "Ja, wegen der 21 Millionen", "Ja, wegen der Halvings"], 0, "Knappheit allein garantiert keinen Preis. Ohne Nachfrage fällt er."]];

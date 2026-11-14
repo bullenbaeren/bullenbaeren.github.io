@@ -5,11 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Mining-Werkstatt · Satsland</title>
 <meta name="description" content="Lernwelt: Was Miner tun, warum Bitcoin Strom braucht und warum im Schnitt alle 10 Minuten ein Block kommt. Selbst minen im Browser.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Mining-Werkstatt · Satsland">
+<meta property="og:description" content="Lernwelt: Was Miner tun, warum Bitcoin Strom braucht und warum im Schnitt alle 10 Minuten ein Block kommt. Selbst minen im Browser.">
+<meta property="og:image" content="https://satsland.github.io/og/mining.jpg">
+<meta property="og:url" content="https://satsland.github.io/mining/">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#0b0f2a">
 <link rel="icon" href="../icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-<link rel="stylesheet" href="../lern.css?v=48">
+<link rel="stylesheet" href="../lern.css?v=49">
 <style>
 /* Lernwelt "Mining": nur seitenspezifische Teile, der Rest kommt aus lern.css */
 .diff{display:flex;align-items:center;gap:12px;margin:8px 0 12px}
@@ -162,7 +168,7 @@ async function load(){
       $("chg").textContent = p(d.difficultyChange); $("prev").textContent = p(d.previousRetarget);
     }
   } catch(e){}
-  $("mode").className = "mode " + (ok ? "live" : "demo"); $("mode").textContent = ok ? "Live" : "Keine Live-Daten";
+  $("mode").className = "mode " + (ok ? "live" : "demo"); $("mode").textContent = ok ? "Live" : "Beispielwerte";
   compare();
 }
 load();

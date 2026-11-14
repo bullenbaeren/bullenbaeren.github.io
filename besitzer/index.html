@@ -5,11 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Wem gehört Bitcoin? · Satsland</title>
 <meta name="description" content="Lernwelt: Wer besitzt Bitcoin? Satoshi, ETFs, Firmen, Staaten und verlorene Coins im Überblick, und wie viel für jeden Menschen übrig bleibt.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Wem gehört Bitcoin? · Satsland">
+<meta property="og:description" content="Lernwelt: Wer besitzt Bitcoin? Satoshi, ETFs, Firmen, Staaten und verlorene Coins im Überblick, und wie viel für jeden Menschen übrig bleibt.">
+<meta property="og:image" content="https://satsland.github.io/og/besitzer.jpg">
+<meta property="og:url" content="https://satsland.github.io/besitzer/">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#0b0f2a">
 <link rel="icon" href="../icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-<link rel="stylesheet" href="../lern.css?v=48">
+<link rel="stylesheet" href="../lern.css?v=49">
 <style>
 /* Lernwelt "Wem gehört Bitcoin?": nur seitenspezifische Teile, der Rest kommt aus lern.css */
 .idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
@@ -94,7 +100,7 @@ const $ = id => document.getElementById(id);
 let height = 924500, live = false;
 const supply = h => { let s = 0, r = 50, b = h + 1; while (b > 0 && r > 1e-8){ const n = Math.min(b, 210000); s += n * r; b -= n; r /= 2; } return s / 1e6; };
 async function load(){ try { const h = +(await (await fetch("https://mempool.space/api/blocks/tip/height")).text()); if (h > 900000){ height = h; live = true; } } catch(e){}
-  $("mode").className = "mode " + (live ? "live" : "demo"); $("mode").textContent = live ? "Live-Blockhöhe" : "Stand Nov. 2026"; bars(); }
+  $("mode").className = "mode " + (live ? "live" : "demo"); $("mode").textContent = live ? "Live" : "Stand Nov. 2026"; bars(); }
 function bars(){
   const mined = supply(height), big = [["🕵️ Satoshi", 1.1, "#ffc94d"], ["💀 Verloren (Schätzung)", 3.5, "#9aa2b8"], ["🏢 Firmen", 1.3, "#7cc4ff"], ["📈 US-ETFs", 1.2, "#b26bff"], ["🏛️ Staaten", 0.6, "#ff9a6a"]];
   const rest = mined - big.reduce((n, b) => n + b[1], 0);

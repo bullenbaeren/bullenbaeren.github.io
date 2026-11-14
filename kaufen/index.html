@@ -5,11 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Erster Kauf · Satsland</title>
 <meta name="description" content="Lernwelt: Bitcoin zum ersten Mal kaufen. Anbieter-Arten vergleichen, versteckte Gebühren erkennen und sicher in die eigene Wallet auszahlen.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Erster Kauf · Satsland">
+<meta property="og:description" content="Lernwelt: Bitcoin zum ersten Mal kaufen. Anbieter-Arten vergleichen, versteckte Gebühren erkennen und sicher in die eigene Wallet auszahlen.">
+<meta property="og:image" content="https://satsland.github.io/og/kaufen.jpg">
+<meta property="og:url" content="https://satsland.github.io/kaufen/">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#0b0f2a">
 <link rel="icon" href="../icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-<link rel="stylesheet" href="../lern.css?v=48">
+<link rel="stylesheet" href="../lern.css?v=49">
 <style>
 /* Lernwelt "Erster Kauf": nur seitenspezifische Teile, der Rest kommt aus lern.css */
 .idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
@@ -100,7 +106,7 @@
 const $ = id => document.getElementById(id);
 let eur = 0, live = false;
 async function price(){ try { const j = await (await fetch("https://mempool.space/api/v1/prices")).json(); if (j.EUR > 0){ eur = j.EUR; live = true; } } catch(e){}
-  $("mode").className = "mode " + (live ? "live" : "demo"); $("mode").textContent = live ? "Live-Kurs" : "Beispielkurs"; if (!eur) eur = 80000; fees(); }
+  $("mode").className = "mode " + (live ? "live" : "demo"); $("mode").textContent = live ? "Live" : "Beispielwerte"; if (!eur) eur = 80000; fees(); }
 const R = [["Bitcoin-only-App", 1.0, 0, "#34d982"], ["Krypto-Börse", 0.3, 0.2, "#7cc4ff"], ["Broker mit Spread", 1.0, 1.5, "#ffc94d"], ["Teurer Anbieter", 2.0, 2.5, "#ff5c73"]];
 function fees(){
   const a = +$("eur").value, ideal = a / eur * 1e8; $("eurV").textContent = a + " €";

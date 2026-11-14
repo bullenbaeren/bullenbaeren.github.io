@@ -11,9 +11,9 @@
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
 <meta property="og:title" content="Knappheit &amp; Halving · Satsland">
 <meta property="og:description" content="Live-Countdown zum nächsten Bitcoin-Halving und warum es nur 21 Millionen gibt.">
-<meta property="og:image" content="https://satsland.github.io/og.png">
+<meta property="og:image" content="https://satsland.github.io/og/halving.jpg">
 <meta property="og:url" content="https://satsland.github.io/halving/">
-<link rel="stylesheet" href="../lern.css?v=48">
+<link rel="stylesheet" href="../lern.css?v=49">
 <style>
 /* Lernwelt "Knappheit & Halving": gleiche Farben und Schriften wie das Spiel. Nur Systemschriften, keine Cookies, kein Tracking. */
 
@@ -238,7 +238,7 @@ async function load(){
       $("feeNote").innerHTML = `Dazu kommen die Gebühren: In den letzten ${withFees.length} Blöcken im Schnitt <b>${btc(fees/1e8)}</b> pro Block. Das sind erst <b>${(fees/rew*100).toLocaleString("de-DE", {maximumFractionDigits: 1})} %</b> der Einnahmen eines Miners, der Rest ist noch die Belohnung.`;
     }
   } catch(e){}
-  if (!live){ tip = heightAt(Date.now()); $("mode").className = "mode demo"; $("mode").textContent = "Geschätzt – keine Live-Daten"; }
+  if (!live){ tip = heightAt(Date.now()); $("mode").className = "mode demo"; $("mode").textContent = "Schätzung"; }
   else { $("mode").className = "mode live"; $("mode").textContent = "Live"; }
   renderClock(); renderYear();
 }

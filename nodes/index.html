@@ -5,11 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Node-Wache · Satsland</title>
 <meta name="description" content="Lernwelt: Was Nodes sind, warum niemand die Regeln von Bitcoin allein ändern kann und warum Dezentralität zählt.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Node-Wache · Satsland">
+<meta property="og:description" content="Lernwelt: Was Nodes sind, warum niemand die Regeln von Bitcoin allein ändern kann und warum Dezentralität zählt.">
+<meta property="og:image" content="https://satsland.github.io/og/nodes.jpg">
+<meta property="og:url" content="https://satsland.github.io/nodes/">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#0b0f2a">
 <link rel="icon" href="../icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-<link rel="stylesheet" href="../lern.css?v=48">
+<link rel="stylesheet" href="../lern.css?v=49">
 <style>
 /* Lernwelt "Nodes": nur seitenspezifische Teile, der Rest kommt aus lern.css */
 .dev{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:4px}
@@ -155,7 +161,7 @@ async function compare(){
   const [a, b] = await Promise.all([tip("https://mempool.space/api/").catch(() => null), tip("https://blockstream.info/api/").catch(() => null)]);
   const put = (r, H, X) => { if (r){ $(H).textContent = "Block " + r.h.toLocaleString("de-DE"); $(X).textContent = "Hash …" + r.x.slice(-12); } };
   put(a, "aH", "aX"); put(b, "bH", "bX");
-  const ok = a || b; $("mode").className = "mode " + (ok ? "live" : "demo"); $("mode").textContent = ok ? "Live" : "Keine Live-Daten";
+  const ok = a || b; $("mode").className = "mode " + (ok ? "live" : "demo"); $("mode").textContent = ok ? "Live" : "Beispielwerte";
   const vd = $("vd");
   if (a && b && a.x === b.x){ vd.className = "verdict ok"; vd.textContent = "✓ Beide sehen exakt denselben Block, ohne sich abzusprechen."; }
   else if (a && b){ vd.className = "verdict"; vd.textContent = `Gerade unterschiedlich (${Math.abs(a.h - b.h)} Block Abstand): Ein neuer Block verbreitet sich noch. In Sekunden sind sich wieder alle einig.`; }

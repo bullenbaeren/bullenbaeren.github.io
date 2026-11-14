@@ -11,9 +11,9 @@
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
 <meta property="og:title" content="Blockchain · Satsland">
 <meta property="og:description" content="Fälsch einen Block und sieh, wie die Kette bricht.">
-<meta property="og:image" content="https://satsland.github.io/og.png">
+<meta property="og:image" content="https://satsland.github.io/og/blockchain.jpg">
 <meta property="og:url" content="https://satsland.github.io/blockchain/">
-<link rel="stylesheet" href="../lern.css?v=48">
+<link rel="stylesheet" href="../lern.css?v=49">
 <style>
 /* Lernwelt "Blockchain": nur seitenspezifische Teile, der Rest kommt aus lern.css */
 /* 1 · Echte Kette */
@@ -133,7 +133,7 @@ async function loadChain(){
   catch(e){ live = false;   // Beispiel-Kette, damit man das Prinzip trotzdem sieht
     const H = h => "00000000000000000002" + sha256("blk" + h).slice(0, 44); let t = Date.now()/1000 - 3600;
     bl = Array.from({length: 6}, (_, i) => { const h = 925500 + i; t += 600; return {height: h, id: H(h), previousblockhash: H(h - 1), timestamp: t, tx_count: 2800 + (i * 937) % 1900, weight: 3.6e6 + (i * 71e3) % 4e5}; }); }
-  $("mode").className = "mode " + (live ? "live" : "demo"); $("mode").textContent = live ? "Live" : "Beispiel, Live nicht erreichbar";
+  $("mode").className = "mode " + (live ? "live" : "demo"); $("mode").textContent = live ? "Live" : "Beispielwerte";
   $("chain").innerHTML = chainHTML(bl, live);
   const c = $("chain"); c.scrollLeft = c.scrollWidth;
 }

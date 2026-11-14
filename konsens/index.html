@@ -5,11 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Einigungs-Labor · Satsland</title>
 <meta name="description" content="Lernwelt: Wie sich Bitcoin-Nodes ohne Chef einigen. Das Problem der byzantinischen Generäle, die längste Kette, Anreize für ehrliche Miner und die Difficulty-Anpassung, mit Live-Daten.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Einigungs-Labor · Satsland">
+<meta property="og:description" content="Lernwelt: Wie sich Bitcoin-Nodes ohne Chef einigen. Das Problem der byzantinischen Generäle, die längste Kette, Anreize für ehrliche Miner und die Difficulty-Anpassung, mit Live-Daten.">
+<meta property="og:image" content="https://satsland.github.io/og/konsens.jpg">
+<meta property="og:url" content="https://satsland.github.io/konsens/">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#0b0f2a">
 <link rel="icon" href="../icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-<link rel="stylesheet" href="../lern.css?v=48">
+<link rel="stylesheet" href="../lern.css?v=49">
 <style>
 /* Lernwelt "Einigungs-Labor": nur seitenspezifische Teile, der Rest kommt aus lern.css */
 .idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
@@ -195,7 +201,7 @@ document.querySelectorAll("[data-h]").forEach(b => b.onclick = () => { const f =
 });
 diffSim();
 async function live(){ let d = null; try { d = await (await fetch("https://mempool.space/api/v1/difficulty-adjustment")).json(); } catch(e){}
-  $("mode").className = "mode " + (d ? "live" : "demo"); $("mode").textContent = d ? "Live" : "Live nicht erreichbar";
+  $("mode").className = "mode " + (d ? "live" : "demo"); $("mode").textContent = d ? "Live" : "Beispielwerte";
   $("dkv").innerHTML = d ? `<div>Aktuelle Periode<b>${Math.round(d.progressPercent)} %</b></div><div>Blockzeit gerade<b>${(d.timeAvg / 60000).toLocaleString("de-DE", {maximumFractionDigits: 1})} Min.</b></div><div>Nächste Anpassung<b class="g">${d.difficultyChange > 0 ? "+" : ""}${d.difficultyChange.toLocaleString("de-DE", {maximumFractionDigits: 1})} %</b></div>`
     : `<div>Periode<b>2.016 Blöcke</b></div><div>Ziel<b>10 Min.</b></div><div>Max. Änderung<b class="g">×4 / ÷4</b></div>`; }
 live();

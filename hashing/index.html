@@ -5,11 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Fingerabdruck-Maschine · Satsland</title>
 <meta name="description" content="Lernwelt: Hashing, der digitale Fingerabdruck. Tippe Text ein und sieh, wie sich der SHA-256-Hash verändert.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Fingerabdruck-Maschine · Satsland">
+<meta property="og:description" content="Lernwelt: Hashing, der digitale Fingerabdruck. Tippe Text ein und sieh, wie sich der SHA-256-Hash verändert.">
+<meta property="og:image" content="https://satsland.github.io/og/hashing.jpg">
+<meta property="og:url" content="https://satsland.github.io/hashing/">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#0b0f2a">
 <link rel="icon" href="../icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-<link rel="stylesheet" href="../lern.css?v=48">
+<link rel="stylesheet" href="../lern.css?v=49">
 <style>
 /* Lernwelt "Hashing": nur seitenspezifische Teile, der Rest kommt aus lern.css */
 .idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
@@ -148,7 +154,7 @@ fetch("https://mempool.space/api/blocks/tip/hash").then(r => r.text()).then(h =>
   const z = h.match(/^0*/)[0].length;
   $("blk").innerHTML = `<em>${h.slice(0, z)}</em>${h.slice(z)}<br><span class="muted" style="font-weight:400">${z} Nullen am Anfang</span>`;
   $("mode").className = "mode live"; $("mode").textContent = "Live";
-}).catch(() => { $("mode").className = "mode demo"; $("mode").textContent = "Keine Live-Daten"; });
+}).catch(() => { $("mode").className = "mode demo"; $("mode").textContent = "Beispielwerte"; });
 
 const QUIZ = [
   ["Du änderst in einem Text ein einziges Komma. Was passiert mit dem Hash?", ["Ein Zeichen ändert sich", "Er sieht komplett anders aus", "Er bleibt gleich"], 1, "Das ist der Lawinen-Effekt: Schon eine winzige Änderung ergibt einen völlig anderen Hash."],

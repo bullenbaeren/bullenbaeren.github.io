@@ -5,11 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Zeitreise · Satsland</title>
 <meta name="description" content="Lernwelt: Die Geschichte von Bitcoin in 15 Momenten, vom Whitepaper bis heute. Mit Kurs damals und heute.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Zeitreise · Satsland">
+<meta property="og:description" content="Lernwelt: Die Geschichte von Bitcoin in 15 Momenten, vom Whitepaper bis heute. Mit Kurs damals und heute.">
+<meta property="og:image" content="https://satsland.github.io/og/geschichte.jpg">
+<meta property="og:url" content="https://satsland.github.io/geschichte/">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#0b0f2a">
 <link rel="icon" href="../icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-<link rel="stylesheet" href="../lern.css?v=48">
+<link rel="stylesheet" href="../lern.css?v=49">
 <style>
 /* Lernwelt "Geschichte": nur seitenspezifische Teile, der Rest kommt aus lern.css */
 .dots{display:flex;gap:4px;margin-top:12px;overflow-x:auto;padding-bottom:4px;scrollbar-width:thin}
@@ -154,7 +160,7 @@ function pizza(){
 Promise.allSettled([
   fetch("https://api.coinbase.com/v2/prices/BTC-USD/spot").then(r => r.json()).then(j => { now = +j.data.amount || 0; }),
   fetch("https://mempool.space/api/blocks/tip/height").then(r => r.text()).then(t => { height = +t || 0; }),
-]).then(() => { $("mode").className = "mode " + (now ? "live" : "demo"); $("mode").textContent = now ? "Live-Kurs" : "Kurs geschätzt"; draw(); pizza(); });
+]).then(() => { $("mode").className = "mode " + (now ? "live" : "demo"); $("mode").textContent = now ? "Live" : "Schätzung"; draw(); pizza(); });
 draw();
 
 const QUIZ = [

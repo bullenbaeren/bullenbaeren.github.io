@@ -5,11 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Knappheits-Messer · Satsland</title>
 <meta name="description" content="Lernwelt: Stock-to-Flow erklärt. Wie knapp ist Bitcoin im Vergleich zu Gold, und was taugen Knappheitsmodelle für Preisprognosen?">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Knappheits-Messer · Satsland">
+<meta property="og:description" content="Lernwelt: Stock-to-Flow erklärt. Wie knapp ist Bitcoin im Vergleich zu Gold, und was taugen Knappheitsmodelle für Preisprognosen?">
+<meta property="og:image" content="https://satsland.github.io/og/knappheit.jpg">
+<meta property="og:url" content="https://satsland.github.io/knappheit/">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#0b0f2a">
 <link rel="icon" href="../icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-<link rel="stylesheet" href="../lern.css?v=48">
+<link rel="stylesheet" href="../lern.css?v=49">
 <style>
 /* Lernwelt "Knappheits-Messer": nur seitenspezifische Teile, der Rest kommt aus lern.css */
 .idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
@@ -95,7 +101,7 @@ function draw(){
 }
 $("yr").addEventListener("input", draw);
 fetch("https://mempool.space/api/blocks/tip/height").then(r => r.text()).then(t => { height = +t || 0; live = height > 0; }).catch(() => {})
-  .finally(() => { $("mode").className = "mode " + (live ? "live" : "demo"); $("mode").textContent = live ? "Live-Blockhöhe" : "geschätzt"; draw(); });
+  .finally(() => { $("mode").className = "mode " + (live ? "live" : "demo"); $("mode").textContent = live ? "Live" : "Schätzung"; draw(); });
 draw();
 
 const QUIZ = [["Was misst Stock-to-Flow?", ["Bestand geteilt durch die neue Menge pro Jahr", "Den Preis pro Gramm", "Die Zahl der Nutzer"], 0, "Je höher die Zahl, desto schwerer ist das Gut zu verwässern."], ["Was passiert mit der Knappheit von Bitcoin bei jedem Halving?", ["Sie verdoppelt sich ungefähr", "Sie halbiert sich", "Sie bleibt gleich"], 0, "Die neue Menge pro Jahr halbiert sich, der Bestand bleibt fast gleich."], ["Hat das Stock-to-Flow-Modell den Preis zuverlässig vorhergesagt?", ["Nein, bekannte Prognosen trafen nicht ein", "Ja, auf den Dollar genau", "Ja, aber nur bei Gold"], 0, "Knappheit allein macht keinen Preis, es braucht Nachfrage."]];
