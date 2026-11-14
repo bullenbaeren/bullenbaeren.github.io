@@ -331,3 +331,6 @@ html.calm .twk,html.calm .shoot,html.calm .fly2,html.calm .confetti{display:none
 @media (max-width:560px){ .ntypes{grid-template-columns:1fr} }
 /* Knöpfe mit zweizeiligem Text wachsen mit statt abzuschneiden */
 button.btn{height:auto;min-height:44px;padding-top:6px;padding-bottom:6px;line-height:1.25}
+/* Mindestschriftgröße für Kleingedrucktes */
+.wrap small{font-size:max(11px,.8333em)} .tcard small{font-size:11px}
+.next .muted{color:#dfe3ff;font-weight:700;font-size:13px}

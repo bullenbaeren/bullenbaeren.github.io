@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#0b0f2a">
 <link rel="icon" href="../icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-<link rel="stylesheet" href="../lern.css?v=43">
+<link rel="stylesheet" href="../lern.css?v=44">
 <style>
 /* Lernwelt "Reise einer Zahlung": nur seitenspezifische Teile, der Rest kommt aus lern.css */
 .idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
@@ -62,7 +62,7 @@
   <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
 </div>
 
-<script src="../lern.js?v=41"></script>
+<script src="../lern.js?v=44"></script>
 <script>
 /* =====================================================================
    REISE EINER ZAHLUNG – Lernwelt von Satsland
@@ -77,11 +77,11 @@ const n = v => Math.round(v).toLocaleString("de-DE");
 // Stationen: [Himmel, Titel, Szene, Text, Live-Zeile, Link, Name der Welt]
 const S = () => [
   ["dawn", "Die Wallet baut die Zahlung", sa("phone", 30, 58, 76) + sa("bag", 72, 60, 60, "grow .5s both", .4) + sl("0,001 BTC → Anna", 50, 16, .6),
-    "Deine Wallet sucht passende <b>Münzen (UTXOs)</b> aus, die dir gehören, und baut daraus eine Zahlung: Diese Münzen rein, 0,001 BTC an Annas Adresse raus, der Rest als <b>Wechselgeld</b> zurück an dich.", "", "utxo/", "Wechselgeld-Kasse"],
+    "Deine Wallet sucht passende <b>Bitcoin-Beträge (UTXOs)</b> aus, die dir gehören, und baut daraus eine Zahlung: Diese Beträge rein, 0,001 BTC an Annas Adresse raus, der Rest als <b>Wechselgeld</b> zurück an dich.", "", "utxo/", "Wechselgeld-Kasse"],
   ["dawn", "Unterschreiben", sa("key", 30, 58, 70, "bobA 1.4s ease-in-out infinite") + sa("letter", 70, 60, 66, "grow .5s both", .4) + sl("✍️ signiert", 70, 26, 1),
     "Die Wallet unterschreibt die Zahlung mit deinem <b>privaten Schlüssel</b>. Der Schlüssel verlässt dabei nie dein Gerät. Jeder kann später mit deinem öffentlichen Schlüssel prüfen, dass die Unterschrift echt ist. Änderst du danach ein Zeichen, ist sie ungültig.", "", "schluessel/", "Schlüssel-Labor"],
   ["night", "Ab ins Netz", sa("phone", 14, 60, 54) + sf("letter", 14, 60, 40, 40, 30, .3) + sf("letter", 14, 60, 66, 70, 30, .6) + sf("letter", 14, 60, 88, 40, 30, .9) + sa("server", 40, 62, 44) + sa("server", 66, 40, 44) + sa("server", 88, 66, 44) + sl("✓ geprüft", 66, 86, 1.6),
-    "Die Zahlung geht an ein paar <b>Nodes</b>, die sie an ihre Nachbarn weitergeben. In Sekunden kennt sie fast das ganze Netz. Jede Node prüft: Ist die Unterschrift echt? Gehören die Münzen wirklich dir und sind sie <b>noch nicht ausgegeben</b>?", "", "doppelt/", "Kopier-Problem"],
+    "Die Zahlung geht an ein paar <b>Nodes</b>, die sie an ihre Nachbarn weitergeben. In Sekunden kennt sie fast das ganze Netz. Jede Node prüft: Ist die Unterschrift echt? Gehören die Bitcoin wirklich dir und sind sie <b>noch nicht ausgegeben</b>?", "", "doppelt/", "Kopier-Problem"],
   ["night", "Warten in der Mempool", sa("train", 50, 64, 90) + sl("Warteraum", 50, 18, .3),
     "Jetzt wartet die Zahlung im <b>Warteraum (Mempool)</b>. Miner suchen sich die Zahlungen mit der höchsten Gebühr pro Byte aus. Wer mehr zahlt, ist früher dran.", `🚉 Gerade warten <b>${n(L.mem)}</b> Zahlungen. Für den nächsten Block reichen etwa <b>${L.fee}</b> sat/vB.`, "bahnhof/", "Mempool-Bahnhof"],
   ["dusk", "Ein Miner findet den Block", sa("pick", 30, 58, 70, "swing .5s ease-in-out 4") + sa("block", 70, 60, 64, "grow .5s both", 2) + sl("Hash mit genug Nullen!", 50, 18, 2.2),
@@ -113,7 +113,7 @@ Promise.allSettled([
   $("mode").className = "mode " + (L.live ? "live" : "demo"); $("mode").textContent = L.live ? "Live" : "Beispielwerte"; draw(); });
 draw();
 
-const QUIZ = [["Womit wird eine Bitcoin-Zahlung unterschrieben?", ["Mit dem privaten Schlüssel deiner Wallet", "Mit Annas Adresse", "Von einem Miner"], 0, "Die Unterschrift beweist, dass die Münzen dir gehören."], ["Wo wartet eine Zahlung, bevor sie in einen Block kommt?", ["In der Mempool", "Bei der Bank", "Auf Annas Handy"], 0, "Miner wählen dort die Zahlungen mit der höchsten Gebühr pro Byte."], ["Ab wie vielen Bestätigungen gilt eine große Zahlung als praktisch unumkehrbar?", ["Etwa 6", "1", "100"], 0, "6 Blöcke dauern ungefähr eine Stunde. Kleine Beträge brauchen oft weniger."]];
+const QUIZ = [["Womit wird eine Bitcoin-Zahlung unterschrieben?", ["Mit dem privaten Schlüssel deiner Wallet", "Mit Annas Adresse", "Von einem Miner"], 0, "Die Unterschrift beweist, dass die Bitcoin dir gehören."], ["Wo wartet eine Zahlung, bevor sie in einen Block kommt?", ["In der Mempool", "Bei der Bank", "Auf Annas Handy"], 0, "Miner wählen dort die Zahlungen mit der höchsten Gebühr pro Byte."], ["Ab wie vielen Bestätigungen gilt eine große Zahlung als praktisch unumkehrbar?", ["Etwa 6", "1", "100"], 0, "6 Blöcke dauern ungefähr eine Stunde. Kleine Beträge brauchen oft weniger."]];
 Lern.quiz($("quiz"), "reise", QUIZ, "../"); Lern.visit("reise"); Lern.renderNext("reise", "../");
 })();
 </script>

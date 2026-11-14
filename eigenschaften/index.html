@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#0b0f2a">
 <link rel="icon" href="../icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-<link rel="stylesheet" href="../lern.css?v=43">
+<link rel="stylesheet" href="../lern.css?v=44">
 <style>
 /* Lernwelt "Eigenschaften": nur seitenspezifische Teile, der Rest kommt aus lern.css */
 .idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
@@ -93,7 +93,7 @@ table.pts{width:100%;border-collapse:separate;border-spacing:0 4px;margin-top:6p
   <p class="foot">Lernen und Unterhaltung, keine Anlageberatung.</p>
 </div>
 
-<script src="../lern.js?v=41"></script>
+<script src="../lern.js?v=44"></script>
 <script>
 /* =====================================================================
    GELD-DUELL – Lernwelt von Satsland
@@ -145,7 +145,7 @@ function pick(i){
   [...$("rd").querySelectorAll(".m")].forEach((b, k) => { b.disabled = true; b.querySelector(".pt").innerHTML = dots(pts[k]) + " " + pts[k];
     if (pts[k] === goal) b.classList.add("win"); if (k === i) b.classList.add("pick", ok ? "x" : "wrong"); });
   $("res").innerHTML = `<ul class="why">${M.map((m, k) => `<li>${m[0]} <b>${pts[k]} P.</b> ${v[k][1]}</li>`).join("")}</ul>
-    <p class="out">${ok ? "✓ <b>Richtig!</b>" : "✗ <b>Daneben.</b>"} <a href="../${link}">Mehr dazu: ${name} →</a></p>
+    <p class="out">${ok ? "✓ <b>Richtig!</b>" : "✗ <b>Daneben.</b>"} ${(() => { const id = link.replace("/", ""), i = Lern.PATH.findIndex(x => x[0] === id), me = Lern.PATH.findIndex(x => x[0] === "eigenschaften"); return i > me ? `<span class="later">Genauer in „${name}“ (Welt ${Lern.chapterOf(id) + 1})</span>` : `<a href="../${link}">Mehr dazu: ${name} →</a>`; })()}</p>
     <div class="nav"><button class="btn" id="go" type="button">${r === R.length - 1 ? "Ergebnis ansehen 🏆" : "Nächste Runde →"}</button></div>`;
   table();
   $("go").onclick = () => { r++; round(); $("game").scrollIntoView({behavior: "smooth", block: "start"}); };
