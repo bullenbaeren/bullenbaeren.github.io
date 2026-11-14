@@ -75,21 +75,19 @@ canvas{display:block;width:100%;height:clamp(300px,52vw,430px)}
 
   <p class="muted" style="margin:0 0 8px;font-size:14px">🎮 <b>Spiel-Bahnhof</b> (Beispiel mit viel Andrang, damit du jeden Platz ausprobieren kannst):</p>
   <section class="stage"><canvas id="cv" role="img" aria-label="Bahnhof: Fahrgäste (Transaktionen) warten auf Züge (Blöcke). Vorne die mit der höchsten Gebühr."></canvas></section>
-  <p class="news" id="news" aria-live="polite">Der Bahnhof öffnet …</p>
-  <div class="row" style="margin:-4px 0 14px"><button class="btn" type="button" id="simB">⛏️ Zeig mir: Ein Block wird gefunden</button></div>
-
-  <section class="card you" aria-label="Deine Übungs-Überweisung">
+  <section class="card you" aria-label="Deine Übungs-Überweisung" style="margin-top:10px">
     <div>
-      <h2>Deine Übungs-Überweisung</h2>
-      <p>Wähle eine Gebühr und schick einen Übungs-Fahrgast los. Es wird <b>kein echtes Bitcoin</b> bewegt. Im Spiel-Bahnhof siehst du, mit welchem Zug du mitkommst und wie du aufrückst.</p>
+      <h2>🎫 Deine Übungs-Überweisung</h2>
+      <p>Gebühr wählen, Fahrgast losschicken. Es wird <b>kein echtes Bitcoin</b> bewegt.</p>
     </div>
     <div class="ctrl">
       <div class="feeRow"><input id="fee" type="range" min="0" max="100" value="30" aria-label="Gebühr in sat pro vByte"><span class="feeVal" id="feeVal">–</span></div>
       <div class="out" id="out">–</div>
-      <div><button class="btn" id="send" type="button">Fahrgast losschicken</button></div>
+      <div class="row" style="gap:8px;flex-wrap:wrap"><button class="btn" id="send" type="button">Fahrgast losschicken</button><button class="btn ghost" type="button" id="simB">⛏️ Block gefunden</button></div>
       <div class="conf" id="conf" hidden aria-label="Bestätigungen"><i></i><i></i><i></i><i></i><i></i><i></i></div>
     </div>
   </section>
+  <p class="news" id="news" aria-live="polite">Der Bahnhof öffnet …</p>
 
   <section class="card how" aria-label="So funktioniert es">
     <h2>So funktioniert's</h2>
@@ -180,7 +178,7 @@ let demoIn = 25;
 function startDemo(){
   mode = "demo"; tip = {h: LV.tip.h || 925500, ts: Date.now()/1000 - 300}; waiting = 42000; if (!eur) eur = 64000;
   demoBlocks(true);
-  say("<b>Spiel-Bahnhof:</b> Schick unten einen Übungs-Fahrgast los und schau zu, wie er Zug für Zug aufrückt. Etwa alle 30 Sekunden fährt ein Zug, oder du tippst auf „Block gefunden“.");
+  say("<b>Spiel-Bahnhof:</b> Schick direkt darunter einen Übungs-Fahrgast los und schau zu, wie er Zug für Zug aufrückt. Etwa alle 30 Sekunden fährt ein Zug, oder du tippst auf „Block gefunden“.");
 }
 function demoBlocks(hi){
   const base = hi ? rnd(18, 30) : rnd(2, 8); mblocks = [];
