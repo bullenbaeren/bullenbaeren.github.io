@@ -14,7 +14,7 @@
 <meta property="og:description" content="Bitcoin spielerisch verstehen, mit echten Live-Daten.">
 <meta property="og:image" content="https://satsland.github.io/og.png">
 <meta property="og:url" content="https://satsland.github.io/">
-<link rel="stylesheet" href="lern.css?v=49">
+<link rel="stylesheet" href="lern.css?v=50">
 <style>
 /* Übersicht der Lernwelten: gleiche Farben und Schriften wie das Spiel. */
 .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
@@ -211,7 +211,7 @@ details.fold[open] > summary{margin-bottom:12px}
   <p class="foot">Unterhaltung und Lernen, keine Anlageberatung. Keine Cookies, kein Tracking. <a href="#" id="guideOn" style="color:inherit">Satoshi zurückholen</a> · <a href="#" id="introOn" style="color:inherit">Einführung ansehen</a> · <a href="#" id="calmOn" style="color:inherit">Weniger Bewegung</a><br><a href="ueber/" style="color:inherit">Über Satsland</a> · <a href="datenschutz/" style="color:inherit">Datenschutz</a> · <a href="#" id="rstOn" style="color:inherit">Fortschritt zurücksetzen</a></p>
   <div class="card" id="rstBox" hidden><h2 style="margin:0 0 4px">🗑️ Fortschritt zurücksetzen?</h2><p class="muted" style="margin:0 0 10px;font-size:14px">Alle geschafften Level, Sterne, Bosse, Titel, die Serie und die Wiederholungsfragen werden auf diesem Gerät gelöscht. Einstellungen wie Ton bleiben. Tipp: Vorher unter „Fortschritt mitnehmen“ einen Code sichern.</p><div class="acts" style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" type="button" id="rstYes" style="background:linear-gradient(180deg,#ff7a8c,#e0405a);color:#fff">Ja, alles löschen</button><button class="btn ghost" type="button" id="rstNo">Abbrechen</button></div></div>
 </div>
-<script src="lern.js?v=48"></script>
+<script src="lern.js?v=49"></script>
 <script>
 // Lernpfad: Fortschritt aus dem eigenen Browser, Häkchen an den Karten, Empfehlung als Nächstes
 (() => {
@@ -285,7 +285,7 @@ details.fold[open] > summary{margin-bottom:12px}
   document.getElementById("guideOn").onclick = e => { e.preventDefault(); try { localStorage.removeItem(Lern.GK); } catch(x){} location.reload(); };
   document.getElementById("album").innerHTML = Lern.BOSSES.map((b, k) => Lern.bossCard(k)).join("") + Lern.finalCard();
   { const w5 = Lern.bossWon(), ready5 = Lern.BOSSES.every((x, k) => w5[k]);
-    document.getElementById("album").insertAdjacentHTML("afterend", `<button class="bossbtn ${w5.f ? "won" : ""}" id="finalBtn" type="button" ${ready5 ? "" : "disabled"}><span class="bi">${Lern.art("satoshi")}</span><span>${w5.f ? "👑 Satoshis Rätsel gelöst" : "★ Endboss: Satoshis Rätsel"}<small>${ready5 ? "10 Fragen aus allen Welten, 12 Sekunden je Frage" : "🔒 Besiege erst alle 6 Welt-Bosse"}</small></span></button>`);
+    document.getElementById("album").insertAdjacentHTML("afterend", `<button class="bossbtn ${w5.f ? "won" : ""}" id="finalBtn" type="button" ${ready5 ? "" : "disabled"}><span class="bi">${Lern.art(w5.f ? "mirror" : "hood")}</span><span>${w5.f ? "🪞 Altes Ich besiegt" : "★ Endboss: Dein altes Ich"}<small>${ready5 ? "13 alte Sprüche widerlegen, 15 Sekunden je Spruch" : "🔒 Besiege erst alle 6 Welt-Bosse"}</small></span></button>`);
     document.getElementById("finalBtn").onclick = () => Lern.boss("f"); }
   document.getElementById("albN").textContent = `${Lern.BOSSES.filter((x, k) => Lern.bossWon()[k]).length} von ${Lern.BOSSES.length}${Lern.bossWon().f ? " · 👑" : ""}`;
   // Klappbereiche: gemerkter Zustand, sonst sinnvoller Standard
@@ -378,9 +378,9 @@ details.fold[open] > summary{margin-bottom:12px}
     // Gipfel
     g += bubble;
     const fw = Lern.bossWon().f, finReady = [0, 1, 2, 3, 4, 5].every(k => won[k]), sx = W / 2, sy = peakY;
-    g += `<g data-b="f" role="button" tabindex="0" aria-label="Endboss: Satoshis Rätsel"><circle cx="${sx}" cy="${sy}" r="90" fill="url(#mglow)"/><ellipse cx="${sx}" cy="${sy + 9}" rx="46" ry="42" fill="${fw ? "#b8860b" : "#5a4a14"}" stroke="#0a0d26" stroke-width="3"/><circle class="nb ${cur >= N && !fw ? "curr" : ""}" cx="${sx}" cy="${sy}" r="46" fill="${fw || finReady ? "#ffd36b" : "#8a7a3a"}" stroke="#0a0d26" stroke-width="3"/>${art("satoshi", sx, sy, 66)}
+    g += `<g data-b="f" role="button" tabindex="0" aria-label="Endboss: Dein altes Ich"><circle cx="${sx}" cy="${sy}" r="90" fill="url(#mglow)"/><ellipse cx="${sx}" cy="${sy + 9}" rx="46" ry="42" fill="${fw ? "#b8860b" : "#5a4a14"}" stroke="#0a0d26" stroke-width="3"/><circle class="nb ${cur >= N && !fw ? "curr" : ""}" cx="${sx}" cy="${sy}" r="46" fill="${fw || finReady ? "#ffd36b" : "#8a7a3a"}" stroke="#0a0d26" stroke-width="3"/>${art(fw ? "mirror" : "hood", sx, sy, 66)}
       <path d="M${sx + 30} ${sy - 44}V${sy - 112}" stroke="#0a0d26" stroke-width="5"/><path class="flag" d="M${sx + 30} ${sy - 112}l46 13-46 15z" fill="#f7931a" stroke="#0a0d26" stroke-width="3.5"/><text x="${sx + 46}" y="${sy - 93}" font-size="14" font-weight="900" fill="#fff" font-family="Arial">₿</text>
-      ${chip(sx - 105, sy + 70, fw ? "🏆 Gipfel erreicht!" : "👑 Endboss: Satoshis Rätsel", 1, "#ffd36b", "rgba(11,15,42,.92)", 14)}</g>`;
+      ${chip(sx - 105, sy + 70, fw ? "🏆 Gipfel erreicht!" : "👑 Endboss: ?", 1, "#ffd36b", "rgba(11,15,42,.92)", 14)}</g>`;
     document.getElementById("map").innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Lernpfad als Berg">${g}</svg>`;
     const gp = document.getElementById("mgold"); if (gp && first){ gp.style.setProperty("--len", gp.getTotalLength()); gp.style.strokeDasharray = gp.getTotalLength(); }
     const ty = (cur >= N ? peakY : P[cur][1]) * (mapw.clientWidth / W);
@@ -399,7 +399,7 @@ details.fold[open] > summary{margin-bottom:12px}
       <div class="mpl">${L.map(id => { const ok = Lern.done(s, id); return `<a href="${Lern.TITLES[id][1]}" class="${ok ? "ok" : ""}"><span class="ic">${Lern.art(Lern.CARD[id])}</span><span>${Lern.TITLES[id][0]}</span><em>${ok ? "✓" : open ? "→" : "🔒"}</em></a>`; }).join("")}</div>`;
     mpop.hidden = mback.hidden = false; document.getElementById("mpx").onclick = closePop; document.getElementById("mpx").focus(); }
   mapw.addEventListener("click", e => { const b = e.target.closest("[data-b]"); if (!b) return; const k = b.dataset.b;
-    if (k === "f"){ if ([0, 1, 2, 3, 4, 5].every(k => won[k])) Lern.boss("f"); else Lern.toast && Lern.toast("👑 Erst alle 6 Bosse besiegen, dann wartet Satoshi am Gipfel!"); return; }
+    if (k === "f"){ if ([0, 1, 2, 3, 4, 5].every(k => won[k])) Lern.boss("f"); else Lern.toast && Lern.toast("👑 Erst alle 6 Bosse besiegen, dann wartet der Endboss am Gipfel!"); return; }
     if (Lern.CHAPTERS[+k][3].every(id => Lern.done(s, id))) Lern.boss(+k); else Lern.toast && Lern.toast("🔒 Schaffe erst alle Level dieser Welt, dann wartet der Boss."); });
   mapw.addEventListener("keydown", e => { if (e.key === "Enter" && e.target.closest("[data-b]")) e.target.closest("[data-b]").dispatchEvent(new MouseEvent("click", {bubbles: true})); });
   function setView(v, first){ view = v; try { localStorage.setItem("satsland-view", v); } catch(e){}

@@ -138,6 +138,9 @@ const Lern = (() => {
     letter: `<path d="M12 28h76v48H12z" fill="#fff1c2" ${SK}/><path d="M12 28l38 28 38-28" fill="none" ${SK}/>${hl(30, 36, 8, 3)}`,
     news: `<path d="M14 16h72v70H14z" fill="#f4efe1" ${SK}/><path d="M22 26h56v10H22z" fill="#0d1230"/><path d="M22 44h26M22 52h26M22 60h26M22 68h26M56 44h22v24H56z" stroke="#7a7a8c" stroke-width="3" fill="#c9cbe0"/>`,
     block: `<path d="M50 12l34 18v40L50 88 16 70V30z" fill="#f7931a" ${SK}/><path d="M16 30l34 18 34-18M50 48v40" fill="none" ${SK}/><path d="M50 12l34 18-34 18-34-18z" fill="#ffb04a" ${SK}/><text x="34" y="72" font-size="22" font-weight="900" text-anchor="middle" fill="#fff" font-family="Arial">₿</text>`,
+    hood: `<ellipse cx="50" cy="96" rx="30" ry="3.5" fill="#000" opacity=".3"/><path d="M20 96c0-24 12-38 30-38s30 14 30 38z" fill="#2a2440" ${SK}/><path d="M26 50c0-22 10-36 24-36s24 14 24 36c0 8-10 11-24 11s-24-3-24-11z" fill="#3b3360" ${SK}/><ellipse cx="50" cy="46" rx="15" ry="14" fill="#0a0820"/><circle cx="50" cy="45" r="17" fill="#f7931a" opacity=".22"/><text x="50" y="55" text-anchor="middle" font-family="Arial Black,Arial,sans-serif" font-weight="900" font-size="25" fill="#f7931a">?</text><text x="50" y="86" text-anchor="middle" font-family="Arial Black,Arial,sans-serif" font-weight="900" font-size="12" fill="#f7931a" opacity=".85">₿</text>`,
+    oldme: `<ellipse cx="50" cy="96" rx="34" ry="3.5" fill="#000" opacity=".3"/><path d="M20 96c0-18 10-28 23-28s23 10 23 28z" fill="#7c8199" ${SK}/><path d="M33 70l10 7 10-7" fill="none" stroke="#5d6278" stroke-width="2"/><circle cx="43" cy="44" r="17" fill="#b8bccb" ${SK}/><path d="M26.5 40q2.5-15.5 17.5-14.5q12.5 1 15 13q-5-6.5-15-7q-10 .5-17.5 8.5z" fill="#6b6f84" ${SK}/><path d="M35 46q3 2 6 0M46 46q3 2 6 0M39 55q4-2 8 0" fill="none" stroke="#0d1230" stroke-width="2.4" stroke-linecap="round"/><text x="60" y="28" font-family="Arial Black,Arial,sans-serif" font-size="9" fill="#9aa2d6">z</text><text x="66" y="21" font-family="Arial Black,Arial,sans-serif" font-size="7" fill="#9aa2d6" opacity=".7">z</text><ellipse cx="76" cy="84" rx="13" ry="9.5" fill="#d9a0b0" ${SK}/><rect x="72" y="76" width="7" height="2" rx="1" fill="#0d1230"/><circle cx="88" cy="83" r="3" fill="#d9a0b0" stroke="#0d1230" stroke-width="2.4"/><circle cx="71" cy="83" r="1.1" fill="#8a90b0"/><circle cx="78" cy="88" r="1" fill="#8a90b0"/><circle cx="82" cy="80" r=".9" fill="#8a90b0"/>`,
+    mirror: `<g stroke="#ffc94d" stroke-width="2.5" stroke-linecap="round" opacity=".55"><path d="M50 2v6M84 14l-5 5M16 14l5 5M96 46h-7M4 46h7"/></g><rect x="25" y="9" width="50" height="84" rx="25" fill="#0d1230" stroke="#c8902a" stroke-width="5"/><rect x="29" y="13" width="42" height="76" rx="21" fill="#1b2160"/><path d="M34 26q7-7 14-5" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" opacity=".3"/><path d="M33 89c0-17 7-27 17-27s17 10 17 27z" fill="#ffb84d" ${SK}/><circle cx="50" cy="41" r="11" fill="#ffc94d" ${SK}/><circle cx="46" cy="40" r="1.6" fill="#0d1230"/><circle cx="54" cy="40" r="1.6" fill="#0d1230"/><path d="M45.5 45q4.5 3.5 9 0" fill="none" stroke="#0d1230" stroke-width="2" stroke-linecap="round"/><text x="50" y="83" text-anchor="middle" font-family="Arial Black,Arial,sans-serif" font-weight="900" font-size="11" fill="#0d1230">₿</text>`,
     satoshi: `<path d="M22 96c0-26 12-40 28-40s28 14 28 40z" fill="#3a3f5c" ${SK}/><path d="M28 50c0-22 10-36 22-36s22 14 22 36c0 8-10 12-22 12s-22-4-22-12z" fill="#4b5072" ${SK}/><ellipse cx="50" cy="46" rx="14" ry="13" fill="#141833"/><circle cx="44" cy="45" r="2.6" fill="#ffc94d"/><circle cx="56" cy="45" r="2.6" fill="#ffc94d"/><text x="50" y="88" font-size="18" font-weight="900" text-anchor="middle" fill="#f7931a" font-family="Arial">₿</text>`,
     hal: `<path d="M22 96c0-24 12-36 28-36s28 12 28 36z" fill="#34d982" ${SK}/><circle cx="50" cy="38" r="20" fill="#ffd0a0" ${SK}/><path d="M30 34c2-14 12-18 20-18s18 4 20 18c-6-6-12-8-20-8s-14 2-20 8z" fill="#8a5a2b" ${SK}/><circle cx="42" cy="40" r="6" fill="#fff" ${SK}/><circle cx="58" cy="40" r="6" fill="#fff" ${SK}/><path d="M48 40h4" ${SK}/><circle cx="42" cy="40" r="2" fill="#0d1230"/><circle cx="58" cy="40" r="2" fill="#0d1230"/><path d="M43 50q7 6 14 0" fill="none" ${SK}/>`,
     coin: coinP(50, 50, 38),
@@ -391,7 +394,28 @@ const Lern = (() => {
       ["Kann eine Miner-Mehrheit mehr als 21 Mio. Bitcoin erzeugen?", ["Nein, die Nodes lehnen solche Blöcke ab", "Ja, ab 51 %", "Ja, ab 90 %"], "Nodes stimmen nicht ab, sie prüfen die Regeln."],
       ["Warum braucht Bitcoin-Mining Strom?", ["Weil Miner raten müssen, bis ein Hash passt", "Für die Kühlung von Börsen", "Für das Drucken von Coins"], "Proof of Work: echter Aufwand schützt das Netz."], ["Welche Kette gilt bei zwei Versionen?", ["Die mit der meisten Rechenarbeit", "Die ältere", "Die mit den meisten Zahlungen"], "Der andere Block verwaist."], ["Warum bleiben Miner ehrlich?", ["Weil Betrug teurer ist und den eigenen Gewinn zerstört", "Weil es eine Polizei gibt", "Weil Satoshi zuschaut"], "Spieltheorie: Eigennutz führt zu Ehrlichkeit."], ["Wie oft wird die Schwierigkeit angepasst?", ["Alle 2.016 Blöcke", "Jeden Block", "Nie"], "Damit ein Block im Schnitt 10 Minuten dauert."]]],
   ];
-  const FINAL = ["satoshi", "Satoshis Rätsel", "Du hast alle besiegt. Aber kennst du wirklich ALLES über Bitcoin?", []];
+  const FINAL = ["hood", "Dein altes Ich", "Wer ich bin? Komm näher …", []];
+  // Endboss-Sprüche je Welt: [Spruch, [richtige Antwort, falsch, falsch], Erklärung] · 2 pro Welt + Finale
+  const MYTHS = [
+    [["Mein Geld auf dem Konto verliert nie an Wert.", ["Doch, Inflation frisst jedes Jahr Kaufkraft", "Stimmt, 100 € bleiben 100 €", "Nur wenn die Bank pleitegeht"], "Bei 2 % Inflation ist nach 35 Jahren die Hälfte weg."],
+     ["Die Zentralbank druckt nur so viel Geld, wie nötig ist.", ["Wer bestimmt, was nötig ist? Eine feste Grenze gibt es nicht", "Stimmt, es gibt eine feste Obergrenze", "Geld wird gar nicht mehr neu geschaffen"], "Euro und Dollar haben keine feste Obergrenze."],
+     ["Geld war schon immer nur Papier.", ["Nein, lange waren es Muscheln, Gold oder Silber", "Stimmt, seit der Steinzeit", "Geld war schon immer digital"], "Ungedecktes Papiergeld gibt es weltweit erst seit 1971."]],
+    [["Bitcoin kann man doch einfach kopieren.", ["Den Code ja, aber nicht das Netzwerk und die Kette", "Stimmt, Rechtsklick und fertig", "Ja, Miner kopieren ständig Coins"], "Jede Kopie ist ein neuer Coin ohne Bitcoins Netz."],
+     ["Irgendwann gibt es einfach mehr als 21 Millionen.", ["Nein, die Nodes lehnen solche Blöcke ab", "Ja, Satoshi kann das jederzeit", "Ja, beim nächsten Halving"], "Die Grenze prüft jede Node selbst."],
+     ["Bitcoin nutzen doch nur Kriminelle.", ["Nein, der illegale Anteil liegt unter 1 %", "Stimmt, zu 90 %", "Bitcoin gibt es nur im Darknet"], "Die meisten nutzen Bitcoin zum Sparen und Bezahlen."]],
+    [["Meine Seed-Wörter speichere ich als Foto, das ist sicher.", ["Nein, offline auf Papier oder Metall", "Ja, in der Cloud ist alles sicher", "Ja, das Handy hat ja eine PIN"], "Alles Digitale kann gehackt werden."],
+     ["Der Support braucht kurz meine Seed-Wörter.", ["Niemals, echter Support fragt nie danach", "Okay, er will ja helfen", "Nur die ersten sechs Wörter"], "Wer deinen Seed hat, hat deine Bitcoin."],
+     ["Auf der Börse liegen meine Bitcoin doch sicher.", ["Nicht deine Schlüssel, nicht deine Bitcoin", "Ja, Börsen gehen nie pleite", "Ja, der Staat haftet dafür"], "Pleite-Börsen haben schon Milliarden an Kundengeld verloren."]],
+    [["Ich setze alles mit Hebel, dann werde ich schneller reich.", ["Mit Hebel kann der ganze Einsatz weg sein", "Hebel ist risikofrei", "Hebel verdoppelt immer den Gewinn"], "10× Hebel: 10 % Minus, und alles ist weg."],
+     ["Ich warte einfach auf den perfekten Zeitpunkt.", ["Den trifft fast niemand, ein Sparplan hilft", "Den sieht man im Chart ganz genau", "Am besten nur bei Rekordhochs kaufen"], "Regelmäßig kaufen glättet den Preis."],
+     ["Bei minus 70 % verkaufe ich alles, sicher ist sicher.", ["Panikverkauf macht den Verlust endgültig", "Richtig, danach geht es nie wieder hoch", "So macht man immer Gewinn"], "Bitcoin fiel mehrmals um über 75 % und erholte sich bisher."]],
+    [["Eine Bitcoin-Zahlung kann ich jederzeit zurückholen.", ["Nein, bestätigte Zahlungen sind endgültig", "Ja, über die Hotline", "Ja, innerhalb von 14 Tagen"], "Darum vor dem Senden die Adresse prüfen."],
+     ["Bitcoin ist viel zu langsam zum Bezahlen.", ["Mit Lightning zahlt man in Sekunden", "Stimmt, jede Zahlung dauert Tage", "Bezahlen geht mit Bitcoin gar nicht"], "Lightning ist fürs schnelle Bezahlen gebaut."],
+     ["Je größer der Betrag, desto höher die Gebühr.", ["Nein, die Gebühr hängt von der Größe in vByte ab", "Stimmt, es ist immer 1 %", "Gebühren gibt es bei Bitcoin nicht"], "1 Million kann günstiger sein als 10 €."]],
+    [["Irgendeine Firma kontrolliert doch Bitcoin.", ["Nein, tausende Nodes prüfen die Regeln selbst", "Ja, die Bitcoin AG", "Ja, Satoshis Firma"], "Bitcoin hat keinen Chef und keine Zentrale."],
+     ["Wer 51 % hat, kann sich einfach fremde Bitcoin nehmen.", ["Nein, dafür bräuchte er den privaten Schlüssel", "Ja, dann gehört ihm alles", "Ja, er kann auch neue drucken"], "Ohne gültige Signatur ist keine Ausgabe gültig."],
+     ["Mining verbrennt Strom für nichts.", ["Der Aufwand macht Angriffe auf das Netz teuer", "Stimmt, der Strom hat keinen Zweck", "Mining braucht gar keinen Strom"], "Über den Stromverbrauch wird gestritten, aber er hat einen Zweck: Proof of Work."]]];
+  const FINALM = ["Bitcoin ist doch nur Betrug.", ["Betrug gibt es drumherum, Bitcoin selbst ist offener, prüfbarer Code", "Stimmt, ein großes Schneeballsystem", "Stimmt, Satoshi hat alle abgezockt"], "Prüfen statt glauben: Jeder kann Code und Kette selbst prüfen."];
   const BK = "satsland-boss";
   function bossWon(){ let o = {}; try { o = JSON.parse(localStorage.getItem(BK)) || {}; } catch(e){}
     if (!o.v2){ const n = {v2: 1}; Object.entries(o).forEach(([k, v]) => { if (k === "5") n.f = v; else if (/^\d$/.test(k)) n[+k + 1] = v; }); o = n; try { localStorage.setItem(BK, JSON.stringify(o)); } catch(e){} }
@@ -405,18 +429,18 @@ const Lern = (() => {
     3: [["Du bleibst ruhig?! Unmöglich!", "Kein Panikkauf?!", "Grrr, so geduldig …"], ["Zu spät! Alle anderen sind reich!", "KAUF! VERKAUF! PANIK!", "Der Kurs rennt dir davon!"]],
     4: [["Hey, das kostet extra!", "Du nimmst die Abkürzung?!", "Meine Brücke wackelt!"], ["Das macht 500 sat Strafe!", "Zurück in die Warteschlange!", "Höhere Gebühr, bitte!"]],
     5: [["Die Nodes lehnen mich ab?!", "Meine Rechenleistung bröckelt!", "Regeln sind Regeln?!"], ["Ich schreibe die Geschichte um!", "Meine Kette ist länger!", "51 % … Hahaha!"]],
-    f: [["Nicht schlecht …", "Du hast das Whitepaper gelesen.", "Beeindruckend."], ["Lies nochmal nach …", "Fast, aber nein.", "Vertrauen ist gut, prüfen ist besser."]]};
+    f: [["Hm … stimmt eigentlich.", "Okay, das wusste ich nicht.", "Du hast echt was gelernt."], ["Siehst du? Ich hatte recht!", "Ha, ich werd wieder stärker!", "Bleib doch, wie du warst."]]};
   function boss(k){
-    // k = 0–5: Welt-Boss (5 Fragen, 4 Treffer nötig, du 2 Leben, 15 s) · k = "f": Endboss (12 Fragen, 8 Treffer, 3 Leben, 12 s)
-    const fin = k === "f", [img, name, taunt, Q] = fin ? FINAL : BOSSES[k], HP = fin ? 8 : 4, LIVES = fin ? 3 : 2, TIME = fin ? 12 : 15;
+    // k = 0–5: Welt-Boss (5 Fragen, 4 Treffer nötig, du 2 Leben, 15 s) · k = "f": Endboss „Dein altes Ich“ (12 Sprüche + Finale, 8 Treffer, falsch = +1 Zweifel, 15 s)
+    const fin = k === "f", [img, name, taunt, Q] = fin ? FINAL : BOSSES[k], HP = fin ? 8 : 4, LIVES = fin ? 0 : 2, TIME = 15;
     const [c1, c2] = BTH[k] || BTH.f, [HIT, MISS] = BLINES[k] || BLINES.f;
     const bg = document.createElement("div"); bg.className = "bossbg";
-    let i = 0, hp = HP, lives = LIVES, t = 0, timer = 0, lock = false, combo = 0;
-    const order = (fin ? BOSSES.flatMap(b => [...b[3]].sort(() => Math.random() - .5).slice(0, 2)) : [...Q].sort(() => Math.random() - .5).slice(0, 5)).sort(() => Math.random() - .5);
+    let i = 0, hp = HP, lives = LIVES, t = 0, timer = 0, lock = false, combo = 0, miss = 0;
+    const mixQ = a => [...a].sort(() => Math.random() - .5), order = fin ? [...mixQ(MYTHS.flatMap(w => mixQ(w).slice(0, 2))), FINALM] : mixQ(Q).slice(0, 5);
     bg.innerHTML = `<div class="boss" role="dialog" aria-label="Boss-Kampf gegen ${name}" style="--c1:${c1};--c2:${c2}">
       <div class="bt"><span class="bnum">${fin ? "ENDBOSS" : "BOSS " + (k + 1)}</span><b>${name}</b><button class="bx" type="button" aria-label="Schließen">×</button></div>
       <div class="arena"><div class="rays"></div>
-        <div class="bhp"><div class="hp"><i class="gh"></i><i class="cur"></i></div><small>${"<s></s>".repeat(HP)}</small></div>
+        <div class="bhp">${fin ? '<b class="zw">ZWEIFEL</b>' : ""}<div class="hp"><i class="gh"></i><i class="cur"></i></div><small>${"<s></s>".repeat(HP)}</small></div>
         <div class="bubble">${taunt}</div><div class="bimg idle">${art(img)}</div><div class="floor"></div>
         <div class="me"><span class="lives"></span><span class="combo"></span></div>
         <div class="fx" aria-hidden="true"></div>
@@ -429,12 +453,13 @@ const Lern = (() => {
     const say2 = txt => { bub.textContent = txt; re(bub, "pop"); };
     const float = (txt, cls) => { const e = document.createElement("span"); e.className = "ft " + cls; e.textContent = txt; fx.appendChild(e); setTimeout(() => e.remove(), 1400); };
     const hud = () => { const w = hp/HP*100 + "%"; bg.querySelector(".hp .cur").style.width = w; setTimeout(() => { const g = bg.querySelector(".hp .gh"); if (g) g.style.width = w; }, 450);
-      bg.querySelector(".lives").innerHTML = Array.from({length: LIVES}, (_, n) => `<i class="${n < lives ? "" : "lost"}">${n < lives ? "❤️" : "🖤"}</i>`).join("");
+      if (fin) return; bg.querySelector(".lives").innerHTML = Array.from({length: LIVES}, (_, n) => `<i class="${n < lives ? "" : "lost"}">${n < lives ? "❤️" : "🖤"}</i>`).join("");
       bg.querySelector(".combo").textContent = combo >= 2 ? `🔥 ${combo}er-Combo` : ""; };
     function ask(){
-      if (hp <= 0 || lives <= 0 || i >= order.length) return end();
+      if (hp <= 0 || (!fin && lives <= 0) || i >= order.length) return end();
       const [q, opts] = order[i], mix = opts.map((o, n) => [Math.random(), n, o]).sort((a, b) => a[0] - b[0]);
-      box.innerHTML = `<div class="tm"><i style="width:100%"></i></div><p class="bq"><span>Frage ${i + 1}</span>${q}</p><div class="opts">${mix.map(([, n, o]) => `<button type="button" data-n="${n}">${o}</button>`).join("")}</div><p class="why" hidden></p>`;
+      if (fin) say2(`„${q}“`);
+      box.innerHTML = `<div class="tm"><i style="width:100%"></i></div><p class="bq"><span>${fin ? (i === order.length - 1 ? "Finale" : `Spruch ${i + 1} von ${order.length}`) : `Frage ${i + 1}`}</span>${fin ? "Was antwortest du deinem alten Ich?" : q}</p><div class="opts">${mix.map(([, n, o]) => `<button type="button" data-n="${n}">${o}</button>`).join("")}</div><p class="why" hidden></p>`;
       t = TIME; lock = false; clearInterval(timer);
       const bar = box.querySelector(".tm");
       timer = setInterval(() => { t -= .1; bar.firstChild.style.width = Math.max(0, t/TIME*100) + "%"; bar.classList.toggle("low", t < TIME*.3); if (t <= 0) answer(-1); }, 100);
@@ -447,34 +472,39 @@ const Lern = (() => {
       const w = box.querySelector(".why"); w.hidden = false; w.innerHTML = `<b>${n < 0 ? "⏰ Zeit um!" : ok ? "✅ Treffer!" : "💥 Autsch."}</b> ${why}`;
       if (ok){ hp--; combo++;
         sfx("coin"); const z = document.createElement("span"); z.className = "zap"; z.innerHTML = art("coin"); fx.appendChild(z); setTimeout(() => z.remove(), 700);
-        setTimeout(() => { sfx("hit"); re(im, "ouch"); re(A, "flash"); float(fast ? "SUPERSCHNELL!" : "TREFFER!", "hit"); if (combo >= 2) float(`${combo}× COMBO`, "cmb"); say2(pickOne(HIT)); hud(); }, 380);
+        setTimeout(() => { sfx("hit"); re(im, "ouch"); re(A, "flash"); float(fast ? "SUPERSCHNELL!" : "TREFFER!", "hit"); if (combo >= 2) float(`${combo}× COMBO`, "cmb"); if (fin) setTimeout(() => say2(pickOne(HIT)), 500); else say2(pickOne(HIT)); hud(); }, 380);
+      } else if (fin){ sfx("no"); miss++; combo = 0; hp = Math.min(HP, hp + 1); re(B, "hit"); re(A, "dmg"); re(im, "laugh"); float(n < 0 ? "ZEIT UM! +1 ZWEIFEL" : "+1 ZWEIFEL", "miss"); setTimeout(() => say2(pickOne(MISS)), 900); hud();
       } else { sfx("no"); lives--; combo = 0; re(B, "hit"); re(A, "dmg"); re(im, "laugh"); float(n < 0 ? "ZEIT UM!" : "−1 ❤️", "miss"); say2(pickOne(MISS)); hud(); }
       i++; setTimeout(ask, 2300);
     }
     function end(){
-      clearInterval(timer); const win = hp <= 0;
-      sfx(win ? "ko" : "lose"); const st = document.createElement("div"); st.className = "stamp " + (win ? "ko" : "go"); st.textContent = win ? "K.O.!" : "GAME OVER"; A.appendChild(st);
-      if (win){ im.classList.remove("idle"); im.classList.add("down"); A.classList.add("won"); say2("Neiiin … besiegt!"); const w = bossWon(); w[k] = lives === LIVES ? "perfect" : (w[k] === "perfect" ? "perfect" : true); try { localStorage.setItem(BK, JSON.stringify(w)); } catch(e){} setTimeout(confetti, 500); if (fin) toast("👑 Satoshis Rätsel gelöst! Die goldene Karte gehört dir."); titles(); }
+      clearInterval(timer); const win = hp <= 0, perf = fin ? miss === 0 : lives === LIVES;
+      sfx(win ? "ko" : "lose"); if (!(fin && win)){ const st = document.createElement("div"); st.className = "stamp " + (win ? "ko" : "go"); st.textContent = win ? "K.O.!" : "GAME OVER"; A.appendChild(st); }
+      if (win && fin){ const s = load(), lv = level(count(s)); A.classList.add("won", "mirW"); bub.style.opacity = 0; im.classList.remove("idle"); im.innerHTML = art("mirror"); re(im, "rise");
+        A.insertAdjacentHTML("beforeend", `<div class="mirr"><b>„Du hast dein altes Ich besiegt.“</b><span>${lv.ico} ${lv.name} · ${count(s)} Level · 6 Bosse</span></div>`); }
+      if (win){ if (!fin){ im.classList.remove("idle"); im.classList.add("down"); A.classList.add("won"); say2("Neiiin … besiegt!"); } const w = bossWon(); w[k] = perf ? "perfect" : (w[k] === "perfect" ? "perfect" : true); try { localStorage.setItem(BK, JSON.stringify(w)); } catch(e){} setTimeout(confetti, 500); if (fin) toast("🪞 Dein altes Ich ist besiegt! Die goldene Karte gehört dir."); titles(); }
       else { re(im, "laugh"); say2(pickOne(MISS)); }
-      box.innerHTML = `<div class="end"><b>${win ? "🏆 Boss besiegt!" : "💀 Der Boss gewinnt diesmal"}</b><p class="muted">${win ? (lives === LIVES ? "Ohne einen Fehler! ✨ Du bekommst die Glanz-Bosskarte." : "Die Boss-Karte liegt jetzt in deinem Album. Ohne Fehler gibt es die Glanzkarte.") : "Lies die Erklärungen in den Leveln nochmal und versuch es erneut."}</p>
+      box.innerHTML = `<div class="end"><b>${win ? (fin ? "🪞 Das bist jetzt du." : "🏆 Boss besiegt!") : fin ? "😴 Dein altes Ich bleibt noch" : "💀 Der Boss gewinnt diesmal"}</b><p class="muted">${win ? fin ? (perf ? "Ohne einen Fehler! ✨ Die goldene Karte gehört dir, dazu deine Urkunde." : "Die goldene Karte liegt jetzt in deinem Album. Hol dir jetzt deine Urkunde.") : (perf ? "Ohne einen Fehler! ✨ Du bekommst die Glanz-Bosskarte." : "Die Boss-Karte liegt jetzt in deinem Album. Ohne Fehler gibt es die Glanzkarte.") : "Lies die Erklärungen in den Leveln nochmal und versuch es erneut."}</p>
         ${win && fin ? '<label class="muted sm" style="display:block;margin-top:8px">Name für die Urkunde (bleibt auf deinem Gerät)<input id="shN" maxlength="28" autocomplete="off" style="display:block;width:100%;margin-top:4px;padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.2);background:rgba(0,0,0,.3);color:inherit;font:inherit"></label>' : ""}
         <div class="acts" style="justify-content:center;display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">${win ? `<button class="btn" type="button" data-a="share">📤 ${fin ? "Urkunde" : "Teilen"}</button>` : '<button class="btn" type="button" data-a="again">↺ Nochmal</button>'}<button class="btn ghost" type="button" data-a="close">Schließen</button></div></div>`;
       box.querySelector(".end").onclick = e => { const a = e.target.closest("button"); if (!a) return;
-        if (a.dataset.a === "share"){ const n = box.querySelector("#shN"); shareCard(k, lives === LIVES, n ? n.value.trim() : ""); return; }
+        if (a.dataset.a === "share"){ const n = box.querySelector("#shN"); shareCard(k, perf, n ? n.value.trim() : ""); return; }
         close(); if (a.dataset.a === "again") boss(k); else if (win) location.reload(); };
     }
-    hud(); setTimeout(ask, 1200);
+    hud();
+    if (fin){ setTimeout(() => { im.innerHTML = art("oldme"); re(im, "rise"); sfx("hit"); say2("Ich bin du. Von früher. Ich glaub das alles nicht."); }, 1600); setTimeout(ask, 4200); }
+    else setTimeout(ask, 1200);
   }
   // Teilen-Karte nach Bosssieg bzw. Urkunde nach dem Endboss (Bild, nur auf dem Gerät erzeugt)
   function shareCard(k, perfect, who){
-    const fin = k === "f", [img, name] = fin ? FINAL : BOSSES[k], s = load(), lv = level(count(s)), S = 1080;
+    const fin = k === "f", [img0, name] = fin ? FINAL : BOSSES[k], img = fin ? "mirror" : img0, s = load(), lv = level(count(s)), S = 1080;
     const c = document.createElement("canvas"); c.width = c.height = S; const g = c.getContext("2d");
     const bg = g.createLinearGradient(0, 0, 0, S); bg.addColorStop(0, fin ? "#3a2a08" : "#1d2463"); bg.addColorStop(1, "#0b0f2a"); g.fillStyle = bg; g.fillRect(0, 0, S, S);
     g.strokeStyle = fin ? "#ffc94d" : "#f7931a"; g.lineWidth = 14; g.strokeRect(40, 40, S - 80, S - 80); g.lineWidth = 3; g.strokeRect(66, 66, S - 132, S - 132);
     const txt = (t, y, size, col, w = 900) => { g.font = `${w} ${size}px "Arial Black", Arial, sans-serif`; g.fillStyle = col; g.textAlign = "center"; g.fillText(t, S/2, y); };
     const im = new Image(); im.onload = () => {
       if (fin){ txt("URKUNDE", 190, 92, "#ffc94d"); txt("Satsland durchgespielt", 260, 46, "#ffffff", 700); if (who) txt(who, 400, 70, "#ffffff");
-        g.drawImage(im, S/2 - 170, who ? 450 : 330, 340, 340); txt("Alle 6 Welten · alle Bosse · Satoshis Rätsel gelöst", who ? 860 : 760, 34, "#dfe3ff", 700); }
+        g.drawImage(im, S/2 - 170, who ? 450 : 330, 340, 340); txt("Alle 6 Welten · alle Bosse · altes Ich besiegt", who ? 860 : 760, 34, "#dfe3ff", 700); }
       else { txt(perfect ? "✨ BOSS BESIEGT – OHNE FEHLER" : "🏆 BOSS BESIEGT", 180, 52, "#ffc94d"); g.drawImage(im, S/2 - 210, 230, 420, 420);
         txt(name, 740, 64, "#ffffff"); txt(`Welt ${k + 1} · ${CHAPTERS[k][0]} ${CHAPTERS[k][1]}`, 810, 38, "#dfe3ff", 700); }
       txt(`${lv.ico} Rang: ${lv.name} · ${count(s)} von ${PATH.length} Level`, 930, 34, "#9aa2d6", 700);
@@ -485,7 +515,7 @@ const Lern = (() => {
     im.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="400" height="400">${ART[img]}</svg>`);
   }
   function finalCard(){ const won = bossWon().f;
-    return `<span class="tcard bosscard goldcard ${won ? "got" : "lock"}"><span class="tn">★</span><span class="tart">${won ? art("satoshi") : "?"}</span><b>${won ? "Satoshis Rätsel" : "Endboss"}</b><small>${won ? "👑 Goldene Karte" : "Alle Bosse besiegen"}</small></span>`; }
+    return `<span class="tcard bosscard goldcard ${won ? "got" : "lock"}"><span class="tn">★</span><span class="tart">${won ? art("mirror") : "?"}</span><b>${won ? "Dein altes Ich" : "Endboss"}</b><small>${won ? "👑 Goldene Karte" : "Alle Bosse besiegen"}</small></span>`; }
   function bossCard(k){ const won = bossWon()[k], [img, name] = BOSSES[k];
     return `<span class="tcard bosscard ${won ? "got" : "lock"} ${won === "perfect" ? "shiny" : ""}"><span class="tn">B${k + 1}</span><span class="tart">${won ? art(img) : "?"}</span><b>${won ? name : "Boss " + (k + 1)}</b><small>${won === "perfect" ? "✨ Glanzkarte" : won ? "🏆 besiegt" : "Welt " + (k + 1)}</small></span>`; }
 
