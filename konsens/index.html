@@ -60,7 +60,7 @@
 
   <section class="card" aria-labelledby="h2s">
     <h2 id="h2s">2 · Zwei Blöcke gleichzeitig: Welche Kette gilt?</h2>
-    <p class="muted" style="margin:0">Manchmal finden zwei Miner fast zeitgleich einen Block. Kurz gibt es zwei Versionen. Die Regel: <b>Es gilt die Kette mit der meisten Arbeit.</b> Sobald eine Seite den nächsten Block findet, wechseln alle dorthin.</p>
+    <p class="muted" style="margin:0">Manchmal finden zwei Miner fast zeitgleich einen Block. Kurz gibt es zwei Versionen. Die Regel: <b>Es gilt die gültige Kette mit der meisten Arbeit.</b> Ungültige Blöcke zählen nie, egal wie viel Arbeit dahintersteckt. Sobald eine Seite den nächsten Block findet, wechseln alle dorthin.</p>
     <div class="race nogl" id="race"></div>
     <div class="seg2"><button class="btn" type="button" id="rS">⚡ Zwei Blöcke gleichzeitig!</button><button class="btn" type="button" id="rN" disabled>⛏️ Nächster Block</button></div>
     <p class="note" id="rT"></p>
@@ -77,7 +77,7 @@
   <section class="card" aria-labelledby="h4s">
     <h2 id="h4s">4 · Warum Ehrlichkeit sich lohnt</h2>
     <div class="pay">
-      <div class="h"><b>⛏️ Ehrlich minen</b>Jeder gefundene Block bringt <b>3,125 BTC</b> plus Gebühren. Planbar, legal, und der Wert deiner Belohnung bleibt erhalten.</div>
+      <div class="h"><b>⛏️ Ehrlich minen</b>Jeder gefundene Block bringt <b>3,125 BTC</b> plus Gebühren. Planbar und legal. Was die Belohnung in Euro wert ist, hängt vom Bitcoin-Kurs ab.</div>
       <div class="pa"><b>😈 Betrügen</b>Braucht über die Hälfte der weltweiten Rechenleistung: Milliarden für Geräte und Strom. Selbst wenn es klappt, bricht das Vertrauen und damit der <b>Wert</b> deiner eigenen Bitcoin und Geräte ein.</div>
     </div>
     <p class="note">Das ist der eigentliche Trick von Bitcoin: Die Regeln sind so gebaut, dass <b>Ehrlichkeit mehr Gewinn bringt als Betrug</b>. Man muss den Minern nicht vertrauen, sie handeln aus Eigennutz richtig. Fachleute nennen das <b>Spieltheorie</b>.</p>
@@ -200,7 +200,7 @@ async function live(){ let d = null; try { d = await (await fetch("https://mempo
     : `<div>Periode<b>2.016 Blöcke</b></div><div>Ziel<b>10 Min.</b></div><div>Max. Änderung<b class="g">×4 / ÷4</b></div>`; }
 live();
 
-const QUIZ = [["Welche Kette gilt, wenn es zwei Versionen gibt?", ["Die ältere", "Die mit der meisten Rechenarbeit", "Die von Satoshi", "Die mit den meisten Zahlungen"], 1, "Nodes folgen immer der Kette mit der meisten Arbeit. Der andere Block verwaist."], ["Warum lohnt sich Betrug für Miner meist nicht?", ["Weil er verboten ist", "Weil er Milliarden kostet und den Wert der eigenen Bitcoin zerstören würde", "Weil Satoshi aufpasst", "Er lohnt sich immer"], 1, "Ehrliches Minen bringt sichere Belohnung. Ein Angriff würde das Vertrauen und damit den eigenen Gewinn vernichten."], ["Wie oft passt Bitcoin die Schwierigkeit an?", ["Jeden Block", "Alle 2.016 Blöcke, etwa alle 2 Wochen", "Einmal im Jahr", "Nie"], 1, "Alle 2.016 Blöcke, damit ein Block im Schnitt 10 Minuten dauert."]];
+const QUIZ = [["Welche Kette gilt, wenn es zwei Versionen gibt?", ["Die ältere", "Die mit der meisten Rechenarbeit", "Die von Satoshi", "Die mit den meisten Zahlungen"], 1, "Nodes folgen immer der gültigen Kette mit der meisten Arbeit. Der andere Block verwaist."], ["Warum lohnt sich Betrug für Miner meist nicht?", ["Weil er verboten ist", "Weil er Milliarden kostet und den Wert der eigenen Bitcoin zerstören würde", "Weil Satoshi aufpasst", "Er lohnt sich immer"], 1, "Ehrliches Minen bringt sichere Belohnung. Ein Angriff würde das Vertrauen und damit den eigenen Gewinn vernichten."], ["Wie oft passt Bitcoin die Schwierigkeit an?", ["Jeden Block", "Alle 2.016 Blöcke, etwa alle 2 Wochen", "Einmal im Jahr", "Nie"], 1, "Alle 2.016 Blöcke, damit ein Block im Schnitt 10 Minuten dauert."]];
 Lern.quiz($("quiz"), "konsens", QUIZ, "../"); Lern.visit("konsens"); Lern.renderNext("konsens", "../");
 })();
 </script>
