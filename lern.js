@@ -576,43 +576,31 @@ const Lern = (() => {
   }
 
   // ---------- Einstufungstest: Wer Vorwissen hat, überspringt Welten ----------
-  // Je Welt 3 Fragen, ab 2 richtigen gilt die Welt als bekannt; Abbruch bei der ersten nicht bestandenen Welt.
-  // Übersprungene Level zählen als geschafft (1 Stern, mit Vermerk). Der Boss der Welt bleibt als Prüfung.
+  // Nur die Grundlagen (Welt 1 und 2) lassen sich überspringen. Ab Welt 3 (Sicherheit, Geld, Technik) lernt jeder selbst.
+  // Je Welt 3 Fragen, alle müssen sitzen. Übersprungene Level zählen als geschafft (1 Stern). Der Boss bleibt als Prüfung.
   const PLACE = [
     [["Wie entsteht der größte Teil des Geldes heute?", ["Durch Kredite der Geschäftsbanken", "Durch Gelddrucken der Zentralbank", "Durch neue Goldfunde"], 0],
      ["Was bedeutet eine Inflation von 3 %?", ["Preise steigen im Schnitt um 3 % pro Jahr", "Löhne steigen um 3 %", "Die Geldmenge sinkt um 3 %"], 0],
      ["Was war der Goldstandard?", ["Geld war in Gold eintauschbar", "Gold war als Zahlungsmittel verboten", "Banken zahlten Zinsen in Gold"], 0]],
     [["Wie viele Bitcoin wird es höchstens geben?", ["21 Millionen", "100 Millionen", "Unbegrenzt viele"], 0],
      ["Was passiert beim Halving?", ["Neue Bitcoin pro Block halbieren sich", "Der Preis halbiert sich", "Die Gebühren halbieren sich"], 0],
-     ["Welches Problem löst Bitcoin ohne Bank?", ["Dass digitales Geld doppelt ausgegeben wird", "Dass Geld schwankt", "Dass man Steuern zahlen muss"], 0]],
-    [["Wozu dienen die 12 oder 24 Seed-Wörter?", ["Damit stellst du deine Wallet wieder her", "Das ist das Passwort der Börse", "Das ist deine Bitcoin-Adresse"], 0],
-     ["Jemand verspricht dir 2 % Gewinn pro Tag. Was ist das?", ["Sehr wahrscheinlich Betrug", "Ein gutes Angebot", "Ein normaler Sparplan"], 0],
-     ["Was heißt „Not your keys, not your coins“?", ["Ohne eigene Schlüssel gehören dir die Bitcoin nicht wirklich", "Schlüssel kann man nachkaufen", "Bitcoin braucht keinen Schlüssel"], 0]],
-    [["Was ist ein Sparplan?", ["Regelmäßig den gleichen Betrag kaufen", "Einmal alles auf einmal kaufen", "Nur am Tiefpunkt kaufen"], 0],
-     ["10-facher Hebel, der Kurs fällt um 10 %. Was passiert?", ["Der Einsatz ist komplett weg", "10 % Verlust", "1 % Verlust"], 0],
-     ["Was ist FOMO?", ["Die Angst, etwas zu verpassen", "Ein Börsenname", "Ein Kursindikator"], 0]],
-    [["Wovon hängt die Bitcoin-Gebühr ab?", ["Wie eilig es ist und wie groß die Zahlung in Daten ist", "Vom Betrag in Euro", "Von der Uhrzeit"], 0],
-     ["Was ist Lightning?", ["Eine zweite Ebene für schnelle, günstige Zahlungen", "Eine andere Kryptowährung", "Ein Mining-Gerät"], 0],
-     ["Was ist der Mempool?", ["Der Warteraum für unbestätigte Zahlungen", "Ein Bitcoin-Fonds", "Eine Wallet-App"], 0]],
-    [["Was macht eine Hashfunktion?", ["Sie macht aus Daten einen festen Fingerabdruck", "Sie verschlüsselt umkehrbar", "Sie komprimiert Bilder"], 0],
-     ["Was prüfen Nodes?", ["Ob alle Regeln eingehalten werden", "Den Kurs", "Die Ausweise der Nutzer"], 0],
-     ["Was könnte ein 51-%-Angriff?", ["Frische Zahlungen blockieren oder zurückdrehen", "Neue Bitcoin über 21 Mio. erzeugen", "Fremde Bitcoin stehlen"], 0]]];
+     ["Welches Problem löst Bitcoin ohne Bank?", ["Dass digitales Geld doppelt ausgegeben wird", "Dass Geld schwankt", "Dass man Steuern zahlen muss"], 0]]];
   function placement(box, onDone){
     let w = 0, q = 0, right = 0; const passed = [];
     const step = () => {
-      if (q === 3){ if (right >= 2){ passed.push(w); w++; q = 0; right = 0; if (w < PLACE.length) return step(); } return result(); }
+      if (q === 3){ if (right === 3){ passed.push(w); w++; q = 0; right = 0; if (w < PLACE.length) return step(); } return result(); }
       const [t, o, ok] = PLACE[w][q], order = o.map((x, i) => [Math.random(), i, x]).sort((a, b) => a[0] - b[0]);
-      box.innerHTML = `<p class="muted sm" style="margin:0 0 4px">Welt ${w + 1} · ${CHAPTERS[w][0]} ${CHAPTERS[w][1]} · Frage ${q + 1} von 3</p><div class="pbar"><i style="width:${(w*3 + q)/18*100}%"></i></div><p class="dq">${t}</p>
+      box.innerHTML = `<p class="muted sm" style="margin:0 0 4px">Welt ${w + 1} · ${CHAPTERS[w][0]} ${CHAPTERS[w][1]} · Frage ${q + 1} von 3</p><div class="pbar"><i style="width:${(w*3 + q)/(PLACE.length*3)*100}%"></i></div><p class="dq">${t}</p>
         <div class="opts">${order.map(([, i, x]) => `<button type="button" data-i="${i}">${x}</button>`).join("")}<button type="button" data-i="-1" class="idk">🤷 Weiß ich nicht</button></div>`;
       box.querySelector(".opts").onclick = e => { const b = e.target.closest("button"); if (!b) return; const r = +b.dataset.i === ok; right += r ? 1 : 0; sfx(r ? "ok" : "no"); q++;
-        if (q === 2 && right === 0){ q = 3; } step(); };
+        if (!r) q = 3; step(); };
     };
     const result = () => {
       const n = passed.length;
       if (!n){ box.innerHTML = `<p class="dq" style="margin-top:0">🌱 Am besten startest du ganz vorne in <b>Welt 1</b>.</p><p class="muted" style="margin:0">Keine Sorge, die ersten Level sind schnell gemacht und machen Spaß.</p>`; onDone && onDone(0); return; }
       const ids = passed.flatMap(k => CHAPTERS[k][3]);
-      box.innerHTML = `<p class="dq" style="margin-top:0">🎯 Stark! Du kennst dich in <b>${n === 1 ? "Welt 1" : "Welt 1 bis " + n}</b> schon aus.</p>
-        <p class="muted" style="margin:0 0 10px">Wir haken diese ${ids.length} Level als übersprungen ab (je 1 Stern, du kannst sie jederzeit für mehr Sterne nachholen). Die <b>Bosse</b> dieser Welten warten trotzdem als Prüfung.</p>
+      box.innerHTML = `<p class="dq" style="margin-top:0">🎯 Stark! Du kennst die Grundlagen aus <b>${n === 1 ? "Welt 1" : "Welt 1 und 2"}</b> schon.</p>
+        <p class="muted" style="margin:0 0 10px">Wir haken diese ${ids.length} Level als übersprungen ab (je 1 Stern, für mehr Sterne jederzeit nachholbar). Die <b>Bosse</b> warten trotzdem als Prüfung. Ab Welt 3 geht es um <b>Sicherheit und dein Geld</b>, das machst du am besten selbst Schritt für Schritt.</p>
         <div class="acts" style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" type="button" data-a="ok">✓ Übernehmen</button><button class="btn ghost" type="button" data-a="no">Lieber von vorn</button></div>`;
       box.querySelector(".acts").onclick = e => { const b = e.target.closest("[data-a]"); if (!b) return;
         if (b.dataset.a === "ok"){ const s = load(); ids.forEach(id => { if (!done(s, id)) s[id] = Object.assign({}, s[id], {quiz: 1, total: 3, skip: 1}); }); save(s); confetti(); toast(`🎯 ${ids.length} Level übersprungen!`); onDone && onDone(n, true); }
