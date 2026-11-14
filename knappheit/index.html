@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#0b0f2a">
 <link rel="icon" href="../icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-<link rel="stylesheet" href="../lern.css?v=41">
+<link rel="stylesheet" href="../lern.css?v=43">
 <style>
 /* Lernwelt "Knappheits-Messer": nur seitenspezifische Teile, der Rest kommt aus lern.css */
 .idea{padding:12px 14px;border-radius:14px;background:rgba(247,147,26,.1);border:1px solid rgba(247,147,26,.4);font-size:15px;line-height:1.5}
@@ -25,7 +25,7 @@
 .sf b{font:900 15px var(--f-num);text-align:right}
 .ctl{margin-top:14px} .ctl label{display:block;font-size:13px;color:var(--muted)} .ctl .row{display:flex;align-items:center;gap:10px} .ctl .row input{flex:1} .ctl .row b{font:900 18px var(--f-num);min-width:4ch;text-align:right}
 .formula{margin-top:12px;padding:10px 12px;border-radius:12px;background:#0b0f2a;border:1px solid var(--line);font:700 15px var(--f-num);text-align:center}
-.crit{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px} .crit div{border:2px solid var(--line);border-radius:14px;padding:10px 12px;font-size:14px;line-height:1.5} .crit .p{border-color:rgba(52,217,130,.5)} .crit .c{border-color:rgba(255,92,115,.5)} .crit b{display:block;font-family:var(--f-display)}
+.crit{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px} .crit div{border:2px solid var(--line);border-radius:14px;padding:10px 12px;font-size:14px;line-height:1.5} .crit .p{border-color:rgba(52,217,130,.5)} .crit .c{border-color:rgba(255,92,115,.5)} .crit > b:first-child{display:block;font-family:var(--f-display)}
 @media (max-width:620px){ .crit{grid-template-columns:1fr} }
 </style>
 </head>
@@ -48,7 +48,7 @@
 
   <section class="card" aria-labelledby="h2s">
     <h2 id="h2s">Kann man damit den Preis vorhersagen?</h2>
-    <p class="muted" style="margin:0">2019 wurde ein bekanntes <b>Stock-to-Flow-Modell</b> veröffentlicht, ein unter Fachleuten <b>umstrittenes</b> Bewertungsmodell <span class="mk mk2">umstritten</span>. Es behauptete: Steigt die Knappheit nach jedem Halving, steigt der Preis nach einer festen Formel mit. Es wurde sehr populär, und dann ziemlich falsch.</p>
+    <p class="muted" style="margin:0">2019 wurde ein bekanntes <b>Stock-to-Flow-Modell</b> veröffentlicht <span class="mk mk2">umstritten</span>. Es behauptete: Steigt die Knappheit nach jedem Halving, steigt der Preis nach einer festen Formel mit. Es wurde sehr populär, und dann ziemlich falsch.</p>
     <div class="crit">
       <div class="p"><b>👍 Was stimmt</b>Bitcoin wird mit jedem Halving messbar knapper. Ab etwa 2028 ist er nach dieser Rechnung knapper als Gold. Knappheit ist eine Voraussetzung für Wert.</div>
       <div class="c"><b>👎 Was nicht stimmt</b>Knappheit allein macht keinen Preis, es braucht auch <b>Nachfrage</b>. Bekannte Prognosen des Modells, etwa 100.000 $ bis Ende 2021, trafen nicht ein. Ein Zusammenhang in der Vergangenheit ist keine Garantie.</div>

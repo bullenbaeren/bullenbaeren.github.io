@@ -324,3 +324,10 @@ html.calm .twk,html.calm .shoot,html.calm .fly2,html.calm .confetti{display:none
 
 /* Einzelner Lern-Kasten nimmt die ganze Breite */
 .learn > div:only-child{grid-column:1/-1}
+/* Kennzeichnung am Absatzanfang steht als eigene Zeile darüber */
+.note > .mk:first-child{display:table;margin:0 0 6px}
+/* Node-Arten als kleine Kacheln */
+.ntypes{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px} .ntypes div{border-radius:12px;padding:10px;background:rgba(255,255,255,.04);border:1px solid var(--line)} .ntypes b{display:block;font-size:14px;margin-bottom:3px} .ntypes span{font-size:13px;color:var(--muted);line-height:1.4}
+@media (max-width:560px){ .ntypes{grid-template-columns:1fr} }
+/* Knöpfe mit zweizeiligem Text wachsen mit statt abzuschneiden */
+button.btn{height:auto;min-height:44px;padding-top:6px;padding-bottom:6px;line-height:1.25}

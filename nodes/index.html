@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#0b0f2a">
 <link rel="icon" href="../icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-<link rel="stylesheet" href="../lern.css?v=41">
+<link rel="stylesheet" href="../lern.css?v=43">
 <style>
 /* Lernwelt "Nodes": nur seitenspezifische Teile, der Rest kommt aus lern.css */
 .dev{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:4px}
@@ -83,7 +83,8 @@
     <p class="res" id="res" aria-live="polite"></p>
     <div class="cons" id="cons"></div>
     <details class="foot" style="margin-top:10px"><summary>Und was können Miner doch?</summary><p>Mit mehr als der Hälfte der Rechenleistung (51 %-Angriff) könnten Miner <b>Transaktionen blockieren</b> oder eine eigene, frische Zahlung zurückdrehen. Das wäre extrem teuer. <b>Regeln ändern</b>, also mehr Coins erzeugen oder fremde Coins nehmen, können sie trotzdem nicht.</p>
-    <p class="note"><b>Nicht jede Node ist gleich:</b> Eine <b>Full Node</b> lädt und prüft die ganze Blockchain selbst. Eine <b>Pruned Node</b> prüft genauso alles, löscht danach aber alte Blöcke, um Platz zu sparen. Viele Handy-Wallets sind <b>Light-Clients</b>: Sie prüfen nur Teile und verlassen sich für den Rest auf andere Nodes. Merke: <b>Miner schlagen Blöcke vor, Nodes prüfen die Regeln.</b></p></details>
+    <div class="ntypes"><div><b>🗄️ Full Node</b><span>Lädt und prüft die ganze Blockchain.</span></div><div><b>✂️ Pruned Node</b><span>Prüft auch alles, löscht aber alte Blöcke.</span></div><div><b>📱 Light-Client</b><span>Prüft nur Teile, vertraut anderen Nodes.</span></div></div>
+    <p class="note">Merke: <b>Miner schlagen Blöcke vor, Nodes prüfen die Regeln.</b></p></details>
   </section>
 
 <section class="card" aria-labelledby="hNs">
